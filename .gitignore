@@ -1,0 +1,30 @@
+## MAC OS
+.DS_Store
+
+## TEXTMATE
+*.tmproj
+tmtags
+
+## EMACS
+*~
+\#*
+.\#*
+
+## VIM
+*.swp
+
+## Rubymine
+.idea
+
+## PROJECT::GENERAL
+coverage
+rdoc
+pkg
+*.rbc
+.rvmrc
+
+## PROJECT::SPECIFIC
+.yardoc
+doc
+.rbenv-version
+.rbx
