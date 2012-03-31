@@ -17,12 +17,16 @@ Gem::Specification.new do |s|
   s.files         += %w(LICENSE README.md)
   s.files         += %w(money-rails.gemspec)
 
-
   s.test_files    = s.files.grep(%r{^(test|spec|features)/})
 
   s.require_path = "lib"
 
+  s.add_development_dependency "rails", "~> 3.0"
+  s.add_development_dependency "sqlite3"
+  s.add_development_dependency "rspec-rails"
+  s.add_development_dependency "bundler", ">= 1.0.0"
+
   s.add_dependency(%q<money>, [">= 4.0.2"])
-  s.add_dependency(%q<activesupport>, [">= 3.0"])
-  s.add_dependency(%q<railties>, [">= 3.0"])
+  s.add_dependency(%q<activesupport>, ["~> 3.0"])
+  s.add_dependency(%q<railties>, ["~> 3.0"])
 end
