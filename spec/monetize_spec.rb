@@ -4,7 +4,7 @@ describe MoneyRails::Monetizable do
 
   describe "monetize" do
     before :each do
-      @product = Product.create(price_cents: 3000, discount: 150)
+      @product = Product.create(:price_cents => 3000, :discount => 150)
     end
 
     it "attaches a Money object to model field" do
