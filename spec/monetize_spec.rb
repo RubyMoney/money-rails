@@ -12,7 +12,7 @@ describe MoneyRails::Monetizable do
     end
 
     it "respects :target_name argument" do
-      @product.discount_value == Money.new(150)
+      @product.discount_value.should == Money.new(150)
     end
   end
 end
