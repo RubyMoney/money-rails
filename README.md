@@ -1,5 +1,6 @@
 # RubyMoney - Money-Rails
 
+[![Build Status](https://secure.travis-ci.org/RubyMoney/money-rails.png?branch=master)](http://travis-ci.org/RubyMoney/money-rails)
 
 ## Introduction
 
