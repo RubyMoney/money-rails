@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
 # Add dependencies required to use your gem here.
-gem 'money', ">= 4.0.2"
+gem 'money', "~> 5.0"
 gem 'activesupport', "~> 3.0"
 gem 'railties', "~> 3.0"
 

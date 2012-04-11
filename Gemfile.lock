@@ -41,7 +41,7 @@ GEM
       mime-types (~> 1.16)
       treetop (~> 1.4.8)
     mime-types (1.18)
-    money (4.0.2)
+    money (5.0.0)
       i18n (~> 0.4)
       json
     multi_json (1.2.0)
@@ -102,7 +102,7 @@ PLATFORMS
 DEPENDENCIES
   activesupport (~> 3.0)
   bundler (>= 1.0.0)
-  money (>= 4.0.2)
+  money (~> 5.0)
   rails (~> 3.0)
   railties (~> 3.0)
   rspec-rails

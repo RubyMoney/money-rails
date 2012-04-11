@@ -26,7 +26,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency "rspec-rails"
   s.add_development_dependency "bundler", ">= 1.0.0"
 
-  s.add_dependency(%q<money>, [">= 4.0.2"])
+  s.add_dependency(%q<money>, ["~> 5.0"])
   s.add_dependency(%q<activesupport>, ["~> 3.0"])
   s.add_dependency(%q<railties>, ["~> 3.0"])
 end
