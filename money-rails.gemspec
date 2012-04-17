@@ -8,25 +8,24 @@ Gem::Specification.new do |s|
   s.license       = "MIT"
   s.authors       = ["Andreas Loupasakis", "Shane Emmons", "Simone Carletti"]
   s.email         = ["alup.rubymoney@gmail.com"]
-  s.description   = %q{This library provides integration of RubyMoney - Money gem with Rails}
-  s.summary       = %q{Money gem integration with Rails}
+  s.description   = "This library provides integration of RubyMoney - Money gem with Rails"
+  s.summary       = "Money gem integration with Rails"
   s.homepage      = "https://github.com/RubyMoney/money"
 
-#  s.files         = `git ls-files`.split($\)
   s.files         =  Dir.glob("{lib,spec}/**/*")
   s.files         += %w(LICENSE README.md)
   s.files         += %w(money-rails.gemspec)
 
-  s.test_files    = s.files.grep(%r{^(test|spec|features)/})
+  s.test_files    = s.files.grep(/^spec\//)
 
   s.require_path = "lib"
 
-  s.add_development_dependency "rails", "~> 3.0"
-  s.add_development_dependency "sqlite3"
-  s.add_development_dependency "rspec-rails"
-  s.add_development_dependency "bundler", ">= 1.0.0"
+  s.add_dependency "money",         "~> 5.0.0"
+  s.add_dependency "activesupport", "~> 3.0"
+  s.add_dependency "railties",      "~> 3.0"
 
-  s.add_dependency(%q<money>, ["~> 5.0"])
-  s.add_dependency(%q<activesupport>, ["~> 3.0"])
-  s.add_dependency(%q<railties>, ["~> 3.0"])
+  s.add_development_dependency "rails",       "~> 3.0"
+  s.add_development_dependency "sqlite3",     "~> 1.3.6"
+  s.add_development_dependency "rspec",       "~> 2.9.0"
+  s.add_development_dependency "rspec-rails", "~> 2.9.0"
 end
