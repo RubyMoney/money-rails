@@ -1,7 +1,11 @@
 module MoneyRails
   module Monetizable
     class Railtie < ::Rails::Railtie
-      ActiveRecord::Base.send :include, Monetizable
+      initializer "moneyrails.initialize" do
+        ActiveSupport.on_load(:active_record) do
+          include MoneyRails::Monetizable
+        end
+      end
     end
   end
 end
