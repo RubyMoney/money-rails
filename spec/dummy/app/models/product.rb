@@ -6,9 +6,9 @@ class Product < ActiveRecord::Base
   monetize :price_cents
 
   # Use a custom name for the Money attribute
-  monetize :discount, :target_name => "discount_value"
+  monetize :discount, :as => "discount_value"
 
   # Override default currency (USD) with a specific one (EUR) for this field only
-  monetize :bonus_cents, :field_currency => :eur
+  monetize :bonus_cents, :with_currency => :eur
 
 end
