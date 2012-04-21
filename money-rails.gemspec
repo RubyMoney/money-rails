@@ -13,8 +13,8 @@ Gem::Specification.new do |s|
   s.homepage      = "https://github.com/RubyMoney/money"
 
   s.files         =  Dir.glob("{lib,spec}/**/*")
-  s.files         += %w(LICENSE README.md)
-  s.files         += %w(money-rails.gemspec)
+  s.files         += %w(CHANGELOG.md LICENSE README.md)
+  s.files         += %w(Rakefile money-rails.gemspec)
 
   s.test_files    = s.files.grep(/^spec\//)
 
