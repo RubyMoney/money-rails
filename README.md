@@ -42,18 +42,30 @@ Now each Product object will also have an attribute called ```price``` which
 is a Money object and can be used for money comparisons, conversions etc.
 
 In this case the name of the money attribute is created automagically by removing the
-```_cents``` suffix of the column name. If you prefer another name for the
-money attribute, then you can provide ```target_name``` argument with a string
+```_cents``` suffix of the column name. 
+
+If you are using another db column name or you prefer another name for the
+money attribute, then you can provide ```as``` argument with a string
 value to the ```monetize``` macro:
 
 ```ruby
-monetize :discount, :target_name => "discount_value"
+monetize :discount, :as => "discount_value"
 ```
 
 Now the model objects will have a ```discount_value``` attribute which
 is a Money object, wrapping the value of ```discount``` column to a
 Money instance.
 
+### Field currencies
+
+You can define a specific currency per monetized field:
+
+```ruby
+monetize :discount, :as => "discount_value", :with_currency => :eur
+```
+
+Now ```discount_value``` will give you a Money object using EUR as
+currency.
 
 ## License
 
