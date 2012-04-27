@@ -15,6 +15,7 @@ doc
 # bundler
 .bundle
 vendor/bundle
+bin
 
 # logging
 *.log
