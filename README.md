@@ -24,6 +24,21 @@ Or install it yourself as:
 
     $ gem install money-rails
 
+You may also install money configuration initializer:
+
+```
+$ rails g money_rails:initializer
+```
+
+There, you can provide the default currency value for the rails app:
+```
+MoneyRails.configure do |config|
+
+  # To set the default currency
+  #
+  config.default_currency :usd
+end
+```
 
 ## Usage
 
