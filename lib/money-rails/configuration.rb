@@ -8,14 +8,16 @@ module MoneyRails
     #
     # example: Provide a default currency for the application
     #   MoneyRails.configure do |config|
-    #     config.default_currency :eur
+    #     config.default_currency = :eur
     #   end
     def configure
       yield self
     end
 
+    # Configuration parameters
+
     # Set default currency of money library
-    def default_currency(currency_name)
+    def default_currency=(currency_name)
       Money.default_currency = Money::Currency.new(currency_name)
     end
   end
