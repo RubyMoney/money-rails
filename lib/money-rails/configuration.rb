@@ -20,5 +20,10 @@ module MoneyRails
     def default_currency=(currency_name)
       Money.default_currency = Money::Currency.new(currency_name)
     end
+
+    # Use (by default) validation of numericality for each monetized field.
+    mattr_accessor :include_validations
+    @@include_validations = true
+
   end
 end

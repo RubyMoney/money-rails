@@ -63,6 +63,13 @@ module MoneyRails
             end
           }
         end
+
+        # Include numericality validation if needed
+        if MoneyRails.include_validations
+          class_eval do
+            validates_numericality_of subunit_name
+          end
+        end
       end
     end
   end
