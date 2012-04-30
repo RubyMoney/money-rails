@@ -2,9 +2,7 @@ module MoneyRails
   module Monetizable
     class Railtie < ::Rails::Railtie
       initializer "moneyrails.initialize" do
-        ActiveSupport.on_load(:active_record) do
-          include MoneyRails::Monetizable
-        end
+        MoneyRails::Orms.extend_for :active_record
       end
     end
   end
