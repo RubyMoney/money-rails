@@ -30,15 +30,8 @@ You may also install money configuration initializer:
 $ rails g money_rails:initializer
 ```
 
-There, you can provide the default currency value for the rails app:
-```
-MoneyRails.configure do |config|
-
-  # To set the default currency
-  #
-  config.default_currency :usd
-end
-```
+There, you can define the default currency value and set other
+configuration parameters for the rails app.
 
 ## Usage
 
@@ -64,11 +57,11 @@ money attribute, then you can provide ```as``` argument with a string
 value to the ```monetize``` macro:
 
 ```ruby
-monetize :discount, :as => "discount_value"
+monetize :discount_subunit, :as => "discount"
 ```
 
-Now the model objects will have a ```discount_value``` attribute which
-is a Money object, wrapping the value of ```discount``` column to a
+Now the model objects will have a ```discount``` attribute which
+is a Money object, wrapping the value of ```discount_subunit``` column to a
 Money instance.
 
 ### Field currencies
@@ -76,11 +69,57 @@ Money instance.
 You can define a specific currency per monetized field:
 
 ```ruby
-monetize :discount, :as => "discount_value", :with_currency => :eur
+monetize :discount_subunit, :as => "discount", :with_currency => :eur
 ```
 
-Now ```discount_value``` will give you a Money object using EUR as
+Now ```discount_subunit``` will give you a Money object using EUR as
 currency.
+
+### Configuration parameters
+
+You can handle a bunch of configuration params through ```money.rb``` initializer:
+
+```
+MoneyRails.configure do |config|
+
+  # To set the default currency
+  #
+  config.default_currency = :usd
+
+  # To handle the inclusion of validations for monetized fields
+  # The default value is true
+  #
+  config.include_validations = true
+
+  # Register a custom currency
+  #
+  # config.register_currency = {
+  #   :priority            => 1,
+  #   :iso_code            => "EU4",
+  #   :name                => "Euro with subunit of 4 digits",
+  #   :symbol              => "€",
+  #   :symbol_first        => true,
+  #   :subunit             => "Subcent",
+  #   :subunit_to_unit     => 10000,
+  #   :thousands_separator => ".",
+  #   :decimal_mark        => ","
+  # }
+end
+```
+
+* default_currecy: Set the default (application wide) currency (USD is the default)
+* include_validations: Permit the inclusion of a ```validates_numericality_of```
+  validation for each monetized field (the default is true)
+* register_currency: Register one custom currency. This option can be
+  used more than once to set more custom currencies. The value should be
+  a hash of all the necessary key/value pairs (important keys: :priority, :iso_code, :name,
+  :symbol, :symbol_first, :subunit, :subunit_to_unit, :thousands_separator, :decimal_mark).
+
+## Maintainers
+
+* Andreas Loupasakis (https://github.com/alup)
+* Shane Emmons (https://github.com/semmons99)
+* Simone Carletti (https://github.com/weppos)
 
 ## License
 
