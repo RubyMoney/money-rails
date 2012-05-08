@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    money-rails (0.1.0)
+    money-rails (0.2.0)
       activesupport (~> 3.0)
       money (~> 5.0.0)
       railties (~> 3.0)
