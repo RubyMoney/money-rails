@@ -10,6 +10,11 @@ Use 'monetize' to specify which fields you want to be backed by
 Money objects and helpers provided by the [money](http://github.com/Rubymoney/money)
 gem.
 
+Currently, this library is in active development mode, so if you would
+like to have a new feature feel free to open a new issue
+[here](https://github.com/RubyMoney/money-rails/issues). You are also
+welcome to contribute to the project.
+
 ## Installation
 
 Add this line to your application's Gemfile:
