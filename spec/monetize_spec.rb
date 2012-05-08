@@ -10,6 +10,8 @@ describe MoneyRails::Monetizable do
 
     it "attaches a Money object to model field" do
       @product.price.should be_an_instance_of(Money)
+      @product.discount_value.should be_an_instance_of(Money)
+      @product.bonus.should be_an_instance_of(Money)
     end
 
     it "returns the expected money amount as a Money object" do
@@ -27,7 +29,7 @@ describe MoneyRails::Monetizable do
     end
 
     it "overrides table currency with a field specific" do
-      @product.bonus.currency.should == Money::Currency.find(:eur)
+      @product.bonus.currency.should == Money::Currency.find(:usd)
     end
 
     it "uses numericality validation" do
