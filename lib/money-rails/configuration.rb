@@ -26,6 +26,17 @@ module MoneyRails
       Money::Currency.register(currency_options)
     end
 
+    # Set default bank object
+    #
+    # example (given that eu_central_bank is in Gemfile):
+    #   MoneyRails.configure do |config|
+    #     config.default_bank = EuCentralBank.new
+    #   end
+    delegate :default_bank=, :to => :Money
+
+    # Provide exchange rates
+    delegate :add_rate, :to => :Money
+
     # Use (by default) validation of numericality for each monetized field.
     mattr_accessor :include_validations
     @@include_validations = true

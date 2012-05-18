@@ -6,6 +6,10 @@ MoneyRails.configure do |config|
   #
   config.default_currency = :eur
 
+  # Add some rates
+  config.add_rate "USD", "CAD", 1.24515
+  config.add_rate "CAD", "USD", 0.803115
+
   # To handle the inclusion of validations for monetized fields
   # The default value is true
   #
