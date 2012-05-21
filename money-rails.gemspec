@@ -10,7 +10,7 @@ Gem::Specification.new do |s|
   s.email         = ["alup.rubymoney@gmail.com"]
   s.description   = "This library provides integration of RubyMoney - Money gem with Rails"
   s.summary       = "Money gem integration with Rails"
-  s.homepage      = "https://github.com/RubyMoney/money"
+  s.homepage      = "https://github.com/RubyMoney/money-rails"
 
   s.files         =  Dir.glob("{lib,spec}/**/*")
   s.files         += %w(CHANGELOG.md LICENSE README.md)
