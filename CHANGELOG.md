@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.3.0 (next version)
+
+- Fix conversion of monetized attribute value, whether a currency
+  table column exists or not.
+- Add configuration options for currency exchange (config.add_rate,
+  config.default_bank)
+
 ## 0.2.0
 
 - Add new generator to install money.rb initializer
