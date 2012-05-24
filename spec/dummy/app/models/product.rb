@@ -1,6 +1,6 @@
 class Product < ActiveRecord::Base
 
-  attr_accessible :price_cents, :discount, :bonus_cents
+  attr_accessible :price_cents, :discount, :bonus_cents, :currency
 
   # Use money-rails macros
   monetize :price_cents
