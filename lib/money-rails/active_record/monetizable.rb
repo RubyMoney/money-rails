@@ -21,11 +21,14 @@ module MoneyRails
               ":with_currency or :with_model_currency")
           end
 
-          # Model currency field name
+          # Optional table column which holds currency iso_codes
+          # It allows per row currency values
+          # Overrides default currency
           model_currency_name = options[:with_model_currency] ||
             options[:model_currency] || "currency"
 
-          # Override Model and default currency
+          # This attribute allows per column currency values
+          # Overrides row and default currency
           field_currency_name = options[:with_currency] ||
             options[:field_currency] || nil
 
@@ -44,25 +47,42 @@ module MoneyRails
             name = subunit_name << "_money"
           end
 
-          class_eval do
-            composed_of name.to_sym,
-              :class_name => "Money",
-              :mapping => [[subunit_name, "cents"], [model_currency_name, "currency_as_string"]],
-              :constructor => Proc.new { |cents, currency|
+          has_currency_table_column = self.attribute_names.include? model_currency_name
+
+          if has_currency_table_column
+            mappings = [[subunit_name, "cents"], [model_currency_name, "currency_as_string"]]
+            constructor = Proc.new { |cents, currency|
               Money.new(cents || 0, field_currency_name || currency ||
                         Money.default_currency)
-            },
-              :converter => Proc.new { |value|
-              if  value.respond_to?(:to_money)
-                if field_currency_name
-                  value.to_money(field_currency_name)
-                else
-                  value.to_money
-                end
+            }
+            converter = Proc.new { |value|
+              if value.respond_to?(:to_money)
+                # if arg is nil then falls back to global default
+                value.to_money(field_currency_name || self.send(model_currency_name))
               else
                 raise(ArgumentError, "Can't convert #{value.class} to Money")
               end
             }
+          else
+            mappings = [[subunit_name, "cents"]]
+            constructor = Proc.new { |cents|
+              Money.new(cents || 0, field_currency_name || Money.default_currency)
+            }
+            converter = Proc.new { |value|
+              if value.respond_to?(:to_money)
+                value.to_money(field_currency_name)
+              else
+                raise(ArgumentError, "Can't convert #{value.class} to Money")
+              end
+            }
+          end
+
+          class_eval do
+            composed_of name.to_sym,
+              :class_name => "Money",
+              :mapping => mappings,
+              :constructor => constructor,
+              :converter => converter
           end
 
           # Include numericality validation if needed
