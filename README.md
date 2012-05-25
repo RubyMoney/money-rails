@@ -77,7 +77,7 @@ You can define a specific currency per monetized field:
 monetize :discount_subunit, :as => "discount", :with_currency => :eur
 ```
 
-Now ```discount_subunit``` will give you a Money object using EUR as
+Now ```discount``` will give you a Money object using EUR as
 currency.
 
 ### Configuration parameters
