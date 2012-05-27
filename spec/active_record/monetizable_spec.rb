@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe MoneyRails::Monetizable do
+describe MoneyRails::ActiveRecord::Monetizable do
 
   describe "monetize" do
     before :each do
