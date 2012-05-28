@@ -38,29 +38,14 @@ describe MoneyRails::ActiveRecord::Monetizable do
     end
 
     context "currency levels" do
-      before :each do
-        @product2 = Product.create(:price_cents => 1000, :discount => 100,
-                                   :bonus_cents => 120, :currency => "GBP")
-      end
 
-      it "uses Money default currency if there is not row or column value" do
-        @product.price.currency.should == Money::Currency.find(:eur)
-        @product.discount_value.currency.should == Money::Currency.find(:eur)
+      it "uses Money default currency if :with_currency has not been used" do
         @service.discount.currency.should == Money::Currency.find(:eur)
       end
 
-      it "uses row currency value correctly" do
-        @product2.price.currency.should == Money::Currency.find(:gbp)
-        @product2.discount_value.currency.should == Money::Currency.find(:gbp)
-      end
-
-      it "overrides row currency with a column specific" do
-        @product.bonus.currency.should == Money::Currency.find(:usd)
-        @product2.bonus.currency.should == Money::Currency.find(:usd)
-      end
-
-      it "overrides default currency with a column specific in tables without currency column" do
+      it "overrides default currency with the value of :with_currency argument" do
         @service.charge.currency.should == Money::Currency.find(:usd)
+        @product.bonus.currency.should == Money::Currency.find(:usd)
       end
     end
   end

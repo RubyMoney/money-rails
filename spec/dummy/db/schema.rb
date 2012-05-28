@@ -19,7 +19,6 @@ ActiveRecord::Schema.define(:version => 20120524052716) do
     t.datetime "created_at",  :null => false
     t.datetime "updated_at",  :null => false
     t.integer  "bonus_cents"
-    t.string   "currency"
   end
 
   create_table "services", :force => true do |t|
