@@ -37,16 +37,46 @@ describe MoneyRails::ActiveRecord::Monetizable do
       @product.save.should be_true
     end
 
-    context "currency levels" do
+    it "uses Money default currency if :with_currency has not been used" do
+      @service.discount.currency.should == Money::Currency.find(:eur)
+    end
 
-      it "uses Money default currency if :with_currency has not been used" do
-        @service.discount.currency.should == Money::Currency.find(:eur)
+    it "overrides default currency with the value of :with_currency argument" do
+      @service.charge.currency.should == Money::Currency.find(:usd)
+      @product.bonus.currency.should == Money::Currency.find(:usd)
+    end
+
+    context "for model with currency column:" do
+      before :each do
+        @transaction = Transaction.create(:amount_cents => 2400, :tax_cents => 600,
+                                          :currency => :usd)
       end
 
-      it "overrides default currency with the value of :with_currency argument" do
-        @service.charge.currency.should == Money::Currency.find(:usd)
-        @product.bonus.currency.should == Money::Currency.find(:usd)
+      it "overrides default currency with the value of row currency" do
+        @transaction.amount.currency.should == Money::Currency.find(:usd)
       end
+
+      it "constructs the money attribute from the stored mapped attribute values" do
+        @transaction.amount.should == Money.new(2400, :usd)
+      end
+
+      it "instantiates correctly Money objects from the mapped attributes" do
+        t = Transaction.new(:amount_cents => 2500, :currency => "CAD")
+        t.amount.should == Money.new(2500, "CAD")
+      end
+
+      it "assigns correctly Money objects to the attribute" do
+        @transaction.amount = Money.new(2500, :eur)
+        @transaction.save.should be_true
+        @transaction.amount.cents.should == Money.new(2500, :eur).cents
+        @transaction.amount.currency_as_string.should == "EUR"
+      end
+
+      it "raises exception if a non Money object is assigned to the attribute" do
+        expect { @transaction.amount = "not a Money object" }.to raise_error(ArgumentError)
+        expect { @transaction.amount = 234 }.to raise_error(ArgumentError)
+      end
+
     end
   end
 end

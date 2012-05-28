@@ -50,18 +50,15 @@ module MoneyRails
           has_currency_table_column = self.attribute_names.include? model_currency_name
 
           if has_currency_table_column
+            raise(ArgumentError, ":with_currency should not be used with tables" \
+                  " which contain a column for currency values") if field_currency_name
+
             mappings = [[subunit_name, "cents"], [model_currency_name, "currency_as_string"]]
             constructor = Proc.new { |cents, currency|
-              Money.new(cents || 0, field_currency_name || currency ||
-                        Money.default_currency)
+              Money.new(cents || 0, currency || Money.default_currency)
             }
             converter = Proc.new { |value|
-              if value.respond_to?(:to_money)
-                # if arg is nil then falls back to global default
-                value.to_money(field_currency_name || self.send(model_currency_name))
-              else
-                raise(ArgumentError, "Can't convert #{value.class} to Money")
-              end
+              raise(ArgumentError, "Only Money objects are allowed for assignment")
             }
           else
             mappings = [[subunit_name, "cents"]]
