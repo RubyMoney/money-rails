@@ -55,7 +55,8 @@ module MoneyRails
 
             mappings = [[subunit_name, "cents"], [model_currency_name, "currency_as_string"]]
             constructor = Proc.new { |cents, currency|
-              Money.new(cents || 0, currency || Money.default_currency)
+              Money.new(cents || 0, currency || self.respond_to?(:currency) &&
+                        self.currency || Money.default_currency)
             }
             converter = Proc.new { |value|
               raise(ArgumentError, "Only Money objects are allowed for assignment")
@@ -63,11 +64,13 @@ module MoneyRails
           else
             mappings = [[subunit_name, "cents"]]
             constructor = Proc.new { |cents|
-              Money.new(cents || 0, field_currency_name || Money.default_currency)
+              Money.new(cents || 0, field_currency_name || self.respond_to?(:currency) &&
+                        self.currency || Money.default_currency)
             }
             converter = Proc.new { |value|
               if value.respond_to?(:to_money)
-                value.to_money(field_currency_name)
+                value.to_money(field_currency_name || self.respond_to?(:currency) &&
+                              self.currency)
               else
                 raise(ArgumentError, "Can't convert #{value.class} to Money")
               end
@@ -86,6 +89,20 @@ module MoneyRails
           if MoneyRails.include_validations
             class_eval do
               validates_numericality_of subunit_name
+            end
+          end
+        end
+
+        def register_currency(currency_name)
+          # Lookup the given currency_name and raise exception if
+          # no currency is found
+          currency_object = Money::Currency.find currency_name
+          raise(ArgumentError, "Can't find #{currency_name} currency code") unless currency_object
+
+          class_eval do
+            @currency = currency_object
+            class << self
+              attr_reader :currency
             end
           end
         end
