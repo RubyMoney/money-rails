@@ -91,6 +91,10 @@ MoneyRails.configure do |config|
   #
   config.default_currency = :usd
 
+  # Add custom exchange rates
+  config.add_rate "USD", "CAD", 1.24515
+  config.add_rate "CAD", "USD", 0.803115
+
   # To handle the inclusion of validations for monetized fields
   # The default value is true
   #
@@ -119,6 +123,10 @@ end
   used more than once to set more custom currencies. The value should be
   a hash of all the necessary key/value pairs (important keys: :priority, :iso_code, :name,
   :symbol, :symbol_first, :subunit, :subunit_to_unit, :thousands_separator, :decimal_mark).
+* add_rate: Provide custom exchange rate for currencies in one direction
+  only! This rate is added to the attached bank object.
+* default_bank: The default bank object holding exchange rates etc.
+  (https://github.com/RubyMoney/money#currency-exchange)
 
 ## Maintainers
 
