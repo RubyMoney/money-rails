@@ -69,16 +69,108 @@ Now the model objects will have a ```discount``` attribute which
 is a Money object, wrapping the value of ```discount_subunit``` column to a
 Money instance.
 
-### Field currencies
+### Currencies
 
-You can define a specific currency per monetized field:
+Money-rails supports a set of options to handle currencies for your
+monetized fields. The default option for every conversion is to use
+the global default currency of Money library, as given in the configuration
+initializer of money-rails:
 
 ```ruby
-monetize :discount_subunit, :as => "discount", :with_currency => :eur
+# config/initializers/money.rb
+MoneyRails.configure do |config|
+
+  # set the default currency
+  config.default_currency = :usd
+
+end
 ```
 
-Now ```discount``` will give you a Money object using EUR as
-currency.
+In many cases this is not enough, so there are some other options to
+satisfy your needs.
+
+#### Model Currency
+
+You can define a specific currency for an activerecord model. This currency is
+used for the creation and conversions of the Money objects referring to
+every monetized attributes of the specific model. This means it overrides
+the global default currency of Money library. To attach a currency to a
+model use the ```register_currency``` macro:
+
+```ruby
+# app/models/product.rb
+class Product < ActiveRecord::Base
+
+  # Use EUR as model level currency
+  register_currency :eur
+
+  monetize :discount_subunit, :as => "discount"
+  monetize :bonus_cents
+
+end
+```
+
+Now ```product.discount``` and ```product.bonus``` will return a Money
+object using EUR as currency, instead of the default USD.
+
+#### Attribute Currency (:with_currency)
+
+By using the key ```:with_currency``` with a currency symbol value in
+the ```monetize``` macro call, you can define a currency in a more
+granular way. This way you attach a currency only to the specific monetized
+model attribute. It also allows to override both the model level
+and the global default currency:
+
+```ruby
+# app/models/product.rb
+class Product < ActiveRecord::Base
+
+  # Use EUR as model level currency
+  register_currency :eur
+
+  monetize :discount_subunit, :as => "discount"
+  monetize :bonus_cents, :with_currency => :gbp
+
+end
+```
+
+In this case the ```product.bonus``` will return a Money object of GBP
+currency, whereas ```product.discount.currency_as_string # => EUR ```
+
+#### Instance Currencies
+
+All the previous options do not require any extra model field to hold
+currency values. If you need to provide differrent currency per model
+instance, then you need to add a column with the name ```currency```
+in your db table. Money-rails will discover this automatically,
+and will use this knowledge to override the model level and global
+default values. Attribute currency cannot be combined with instance
+currency!
+
+```ruby
+class Transaction < ActiveRecord::Base
+
+  # This model has a separate currency column
+  attr_accessible :amount_cents, :currency, :tax_cents
+
+  # Use model level currency
+  register_currency :gbp
+
+  monetize :amount_cents
+  monetize :tax_cents
+
+end
+
+# Now instantiating with a specific currency overrides the
+# the model and global currencies
+t = Transaction.new(:amount_cents => 2500, :currency => "CAD")
+t.amount == Money.new(2500, "CAD") # true
+```
+
+WARNING: In this case :with_currency is not permitted and the usage
+of this parameter will cause an ArgumentError exception.
+
+In general, the use of this strategy is discouraged unless there is a reason.
 
 ### Configuration parameters
 
