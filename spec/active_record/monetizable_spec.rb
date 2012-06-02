@@ -62,6 +62,11 @@ describe MoneyRails::ActiveRecord::Monetizable do
       @product.save.should be_true
       @product.price.cents.should == 2500
       @product.price.currency_as_string.should == "USD"
+
+      @service.discount = 2
+      @service.save.should be_true
+      @service.discount.cents.should == 200
+      @service.discount.currency_as_string.should == "EUR"
     end
 
     it "overrides default, model currency with the value of :with_currency in fixnum assignments" do
@@ -69,6 +74,11 @@ describe MoneyRails::ActiveRecord::Monetizable do
       @product.save.should be_true
       @product.bonus.cents.should == 2500
       @product.bonus.currency_as_string.should == "GBP"
+
+      @service.charge = 2
+      @service.save.should be_true
+      @service.charge.cents.should == 200
+      @service.charge.currency_as_string.should == "USD"
     end
 
     it "overrides default currency with model currency, in fixnum assignments" do
