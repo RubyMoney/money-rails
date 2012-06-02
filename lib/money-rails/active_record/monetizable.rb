@@ -70,7 +70,7 @@ module MoneyRails
             converter = Proc.new { |value|
               if value.respond_to?(:to_money)
                 value.to_money(field_currency_name || self.respond_to?(:currency) &&
-                              self.currency)
+                              self.currency || Money.default_currency)
               else
                 raise(ArgumentError, "Can't convert #{value.class} to Money")
               end
