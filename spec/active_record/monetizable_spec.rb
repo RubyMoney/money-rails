@@ -69,6 +69,18 @@ describe MoneyRails::ActiveRecord::Monetizable do
       @service.discount.currency_as_string.should == "EUR"
     end
 
+    it "assigns correctly String objects to the attribute" do
+      @product.price = "25"
+      @product.save.should be_true
+      @product.price.cents.should == 2500
+      @product.price.currency_as_string.should == "USD"
+
+      @service.discount = "2"
+      @service.save.should be_true
+      @service.discount.cents.should == 200
+      @service.discount.currency_as_string.should == "EUR"
+    end
+
     it "overrides default, model currency with the value of :with_currency in fixnum assignments" do
       @product.bonus = 25
       @product.save.should be_true
@@ -81,6 +93,18 @@ describe MoneyRails::ActiveRecord::Monetizable do
       @service.charge.currency_as_string.should == "USD"
     end
 
+    it "overrides default, model currency with the value of :with_currency in string assignments" do
+      @product.bonus = "25"
+      @product.save.should be_true
+      @product.bonus.cents.should == 2500
+      @product.bonus.currency_as_string.should == "GBP"
+
+      @service.charge = "2"
+      @service.save.should be_true
+      @service.charge.cents.should == 200
+      @service.charge.currency_as_string.should == "USD"
+    end
+
     it "overrides default currency with model currency, in fixnum assignments" do
       @product.discount_value = 5
       @product.save.should be_true
@@ -88,8 +112,22 @@ describe MoneyRails::ActiveRecord::Monetizable do
       @product.discount_value.currency_as_string.should == "USD"
     end
 
+    it "overrides default currency with model currency, in string assignments" do
+      @product.discount_value = "5"
+      @product.save.should be_true
+      @product.discount_value.cents.should == 500
+      @product.discount_value.currency_as_string.should == "USD"
+    end
+
     it "falls back to default currency, in fixnum assignments" do
       @service.discount = 5
+      @service.save.should be_true
+      @service.discount.cents.should == 500
+      @service.discount.currency_as_string.should == "EUR"
+    end
+
+    it "falls back to default currency, in string assignments" do
+      @service.discount = "5"
       @service.save.should be_true
       @service.discount.cents.should == 500
       @service.discount.currency_as_string.should == "EUR"
