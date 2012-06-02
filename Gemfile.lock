@@ -114,9 +114,12 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  activerecord-jdbc-adapter
+  activerecord-jdbcsqlite3-adapter
   guard-rspec (~> 0.7.2)
+  jruby-openssl
   money-rails!
   rails (~> 3.0)
   rspec (~> 2.9.0)
   rspec-rails (~> 2.9.0)
-  sqlite3 (~> 1.3.6)
+  sqlite3

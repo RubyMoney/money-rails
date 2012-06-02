@@ -5,11 +5,11 @@ rvm:
   - 1.9.3
   - ruby-head
   #  TODO: Refactor deps and dummy rails app to enable the following
-  #- jruby-18mode
-  #- jruby-19mode ## json error
-  #- jruby-head ## json error
-  #- rbx-18mode ## sqlite3 error
-  #- rbx-19mode ## sqlite3 error
+  - jruby-18mode
+  - jruby-19mode ## json error
+  - jruby-head ## json error
+  - rbx-18mode ## sqlite3 error
+  - rbx-19mode ## sqlite3 error
   - ree
 notifications:
   recipients:
