@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.3.1
+
+- Fix bug with string assignment to monetized field. (GH-11)
+
 ## 0.3.0
 
 - Add support for model-wise currency.
