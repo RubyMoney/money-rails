@@ -1,11 +1,12 @@
 require "money"
 require "money-rails/configuration"
+require "money-rails/version"
+require 'money-rails/hooks'
 
 module MoneyRails
   extend Configuration
-
 end
 
-require "money-rails/version"
-require "money-rails/orms"
-require "money-rails/railtie"
+if defined? Rails
+  require "money-rails/railtie"
+end
