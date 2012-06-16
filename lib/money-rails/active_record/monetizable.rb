@@ -55,7 +55,7 @@ module MoneyRails
 
             mappings = [[subunit_name, "cents"], [model_currency_name, "currency_as_string"]]
             constructor = Proc.new { |cents, currency|
-              Money.new(cents || 0, currency || self.respond_to?(:currency) &&
+              Money.new(cents, currency || self.respond_to?(:currency) &&
                         self.currency || Money.default_currency)
             }
             converter = Proc.new { |value|
@@ -64,11 +64,13 @@ module MoneyRails
           else
             mappings = [[subunit_name, "cents"]]
             constructor = Proc.new { |cents|
-              Money.new(cents || 0, field_currency_name || self.respond_to?(:currency) &&
+              Money.new(cents, field_currency_name || self.respond_to?(:currency) &&
                         self.currency || Money.default_currency)
             }
             converter = Proc.new { |value|
-              if value.respond_to?(:to_money)
+              if options[:allow_nil] && value.blank?
+                nil
+              elsif value.respond_to?(:to_money)
                 value.to_money(field_currency_name || self.respond_to?(:currency) &&
                               self.currency || Money.default_currency)
               else
@@ -82,13 +84,14 @@ module MoneyRails
               :class_name => "Money",
               :mapping => mappings,
               :constructor => constructor,
-              :converter => converter
+              :converter => converter,
+              :allow_nil => options[:allow_nil]
           end
 
           # Include numericality validation if needed
           if MoneyRails.include_validations
             class_eval do
-              validates_numericality_of subunit_name
+              validates_numericality_of subunit_name, :allow_nil => options[:allow_nil]
             end
           end
         end
