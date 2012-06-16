@@ -18,6 +18,12 @@ module MoneyRails
           # Mongoid 3.x stuff here
         end
       end
+
+      # For ActionView
+      ActiveSupport.on_load(:action_view) do
+        require 'money-rails/helpers/action_view_extension'
+        ::ActionView::Base.send :include, MoneyRails::ActionViewExtension
+      end
     end
   end
 end
