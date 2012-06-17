@@ -18,3 +18,8 @@ RSpec::Core::RakeTask.new
 
 task :default => :spec
 task :test => :spec
+
+desc "Update AUTHORS file"
+task :authors do
+  sh "git shortlog -s | awk '{ print $2 \" \" $3 }' > AUTHORS"
+end
