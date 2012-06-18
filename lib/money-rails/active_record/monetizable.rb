@@ -88,6 +88,18 @@ module MoneyRails
               :allow_nil => options[:allow_nil]
           end
 
+          if options[:allow_nil]
+            class_eval do
+              # Fixes issue with composed_of that breaks on blank params
+              # TODO: This should be removed when we will only support rails >=4.0
+              define_method "#{name}_with_blank_support=" do |value|
+                value = nil if value.blank?
+                send "#{name}_without_blank_support=", value
+              end
+              alias_method_chain "#{name}=", :blank_support
+            end
+          end
+
           # Include numericality validation if needed
           if MoneyRails.include_validations
             class_eval do

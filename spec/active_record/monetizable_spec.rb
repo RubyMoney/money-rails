@@ -150,12 +150,18 @@ describe MoneyRails::ActiveRecord::Monetizable do
       @product.optional_price.should be_nil
     end
 
+    it "sets field to nil, in instantiation if allow_nil is set" do
+      pr = Product.new(:optional_price => nil, :price_cents => 5320,
+        :discount => 350, :bonus_cents => 320)
+      pr.optional_price.should be_nil
+      pr.save.should be_true
+      pr.optional_price.should be_nil
+    end
+
     it "sets field to nil, in blank assignments if allow_nil is set" do
-      pending "composed_of doen't current support nil contructor values" do
-        @product.optional_price = "" 
-        @product.save.should be_true
-        @product.optional_price.should be_nil
-      end
+      @product.optional_price = ""
+      @product.save.should be_true
+      @product.optional_price.should be_nil
     end
     
     context "for model with currency column:" do
