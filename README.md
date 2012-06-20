@@ -208,16 +208,17 @@ MoneyRails.configure do |config|
 end
 ```
 
-* default_currecy: Set the default (application wide) currency (USD is the default)
-* include_validations: Permit the inclusion of a ```validates_numericality_of```
+* ```default_currecy```: Set the default (application wide) currency (USD is the default)
+* ```include_validations```: Permit the inclusion of a ```validates_numericality_of```
   validation for each monetized field (the default is true)
-* register_currency: Register one custom currency. This option can be
+* ```register_currency```: Register one custom currency. This option can be
   used more than once to set more custom currencies. The value should be
-  a hash of all the necessary key/value pairs (important keys: :priority, :iso_code, :name,
-  :symbol, :symbol_first, :subunit, :subunit_to_unit, :thousands_separator, :decimal_mark).
-* add_rate: Provide custom exchange rate for currencies in one direction
+  a hash of all the necessary key/value pairs (important keys: ```:priority```, ```:iso_code```,
+  ```:name```, ```:symbol```, ```:symbol_first```, ```:subunit```, ```:subunit_to_unit```,
+  ```:thousands_separator```, ```:decimal_mark```).
+* ```add_rate```: Provide custom exchange rate for currencies in one direction
   only! This rate is added to the attached bank object.
-* default_bank: The default bank object holding exchange rates etc.
+* ```default_bank```: The default bank object holding exchange rates etc.
   (https://github.com/RubyMoney/money#currency-exchange)
 
 ## Maintainers
