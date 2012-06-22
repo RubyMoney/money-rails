@@ -69,6 +69,22 @@ Now the model objects will have a ```discount``` attribute which
 is a Money object, wrapping the value of ```discount_subunit``` column to a
 Money instance.
 
+### Allow nil values
+
+If you want to allow the assignment of nil and/or blank values to a specific
+monetized field, you can use the `:allow_nil` parameter like this:
+
+```
+# in Product model
+monetize :optional_price_cents, :allow_nil => true
+
+# then blank assignments are permitted
+product.optional_price = nil
+product.save # returns without errors
+product.optional_price # => nil
+product.optional_price_cents # => nil
+```
+
 ### Currencies
 
 Money-rails supports a set of options to handle currencies for your
@@ -220,6 +236,49 @@ end
   only! This rate is added to the attached bank object.
 * ```default_bank```: The default bank object holding exchange rates etc.
   (https://github.com/RubyMoney/money#currency-exchange)
+
+### Helpers
+
+* the `currency_symbol` helper method
+
+```
+<%= currency_symbol %>
+```
+This will render a `span` dom element with the default currency symbol.
+
+* the `humanized_money` helper method
+
+```
+<%= humanized_money @money_object %>
+```
+This will render a formatted money value without the currency symbol and
+without the cents part if it contains only zeros (uses
+`:no_cents_fi_whole flag`).
+
+* humanize with symbol helper
+
+```
+<%= humanized_money_with_symbol @money_object %>
+```
+This will render a formatted money value including the currency symbol and
+without the cents part if it contains only zeros.
+
+* get the money value without the cents part
+
+```
+<%= money_without_cents @money_object %>
+```
+This will render a formatted money value without the currency symbol and
+without the cents part.
+
+* get the money value without the cents part and including the currency
+  symbol
+
+```
+<%= money_without_cents_and_with_symbol @money_object %>
+```
+This will render a formatted money value including the currency symbol and
+without the cents part.
 
 ## Maintainers
 
