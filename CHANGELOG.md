@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.4.0 (next version)
+## 0.4.0
 - Provide ActionView helpers integration.
 - Map blank value assignments (for monetized fields) to nil.
 - Allow nil values for monetized fields. (GH-15)
