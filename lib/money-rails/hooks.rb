@@ -11,7 +11,7 @@ module MoneyRails
       begin; require 'mongoid'; rescue LoadError; end
       if defined? ::Mongoid
         if ::Mongoid::VERSION =~ /^2(.*)/
-          # Mongoid 2.x stuff here
+          require 'money-rails/mongoid/two' # Loading the file is enough
         end
 
         if ::Mongoid::VERSION =~ /^3(.*)/
