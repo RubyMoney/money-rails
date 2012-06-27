@@ -1,3 +1,6 @@
+# multiple gemfiles
+gemfiles/*.lock
+
 # RVM / rbenv version files
 .rvmrc
 .rbenv-version
