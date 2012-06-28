@@ -40,14 +40,16 @@ configuration parameters for the rails app.
 
 ## Usage
 
+### ActiveRecord
+
 For example, we create a Product model which has an integer price_cents column
 and we want to handle it by using a Money object instead:
 
 ```ruby
 class Product < ActiveRecord::Base
-  
+
   monetize :price_cents
-  
+
 end
 ```
 
@@ -55,7 +57,7 @@ Now each Product object will also have an attribute called ```price``` which
 is a Money object and can be used for money comparisons, conversions etc.
 
 In this case the name of the money attribute is created automagically by removing the
-```_cents``` suffix of the column name. 
+```_cents``` suffix of the column name.
 
 If you are using another db column name or you prefer another name for the
 money attribute, then you can provide ```as``` argument with a string
@@ -69,7 +71,7 @@ Now the model objects will have a ```discount``` attribute which
 is a Money object, wrapping the value of ```discount_subunit``` column to a
 Money instance.
 
-### Allow nil values
+#### Allow nil values
 
 If you want to allow the assignment of nil and/or blank values to a specific
 monetized field, you can use the `:allow_nil` parameter like this:
@@ -84,6 +86,45 @@ product.save # returns without errors
 product.optional_price # => nil
 product.optional_price_cents # => nil
 ```
+
+### Mongoid 2.X
+
+`Money` is available as a field type to supply during a field definition:
+
+```ruby
+class Product
+  include Mongoid::Document
+
+  field :price, type: Money
+end
+
+obj = Product.new
+# => #<Product _id: 4fe865699671383656000001, _type: nil, price: nil>
+
+obj.price
+# => nil
+
+obj.price = Money.new(100, 'EUR')
+# => #<Money cents:100 currency:EUR>
+
+obj.price
+#=> #<Money cents:100 currency:EUR>
+
+obj.save
+# => true
+
+obj
+# => #<Product _id: 4fe865699671383656000001, _type: nil, price: {:cents=>100, :currency_iso=>"EUR"}>
+
+obj.price
+#=> #<Money cents:100 currency:EUR>
+
+## You can access the money hash too :
+obj[:price]
+# => {:cents=>100, :currency_iso=>"EUR"}
+```
+
+The usual options on `field` as `index`, `default`, ..., are available.
 
 ### Currencies
 
@@ -107,11 +148,11 @@ satisfy your needs.
 
 #### Model Currency
 
-You can define a specific currency for an activerecord model. This currency is
-used for the creation and conversions of the Money objects referring to
-every monetized attributes of the specific model. This means it overrides
-the global default currency of Money library. To attach a currency to a
-model use the ```register_currency``` macro:
+You can define a specific currency for an activerecord model (not for mongoid).
+This currency is used for the creation and conversions of the Money objects
+referring to every monetized attributes of the specific model.
+This means it overrides the global default currency of Money library.
+To attach a currency to a model use the ```register_currency``` macro:
 
 ```ruby
 # app/models/product.rb
