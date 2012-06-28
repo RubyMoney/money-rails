@@ -48,63 +48,45 @@ module MoneyRails
           end
 
           has_currency_table_column = self.attribute_names.include? model_currency_name
-
-          if has_currency_table_column
-            raise(ArgumentError, ":with_currency should not be used with tables" \
-                  " which contain a column for currency values") if field_currency_name
-
-            mappings = [[subunit_name, "cents"], [model_currency_name, "currency_as_string"]]
-            constructor = Proc.new { |cents, currency|
-              Money.new(cents, currency || self.respond_to?(:currency) &&
-                        self.currency || Money.default_currency)
-            }
-            converter = Proc.new { |value|
-              raise(ArgumentError, "Only Money objects are allowed for assignment")
-            }
-          else
-            mappings = [[subunit_name, "cents"]]
-            constructor = Proc.new { |cents|
-              Money.new(cents, field_currency_name || self.respond_to?(:currency) &&
-                        self.currency || Money.default_currency)
-            }
-            converter = Proc.new { |value|
-              if options[:allow_nil] && value.blank?
-                nil
-              elsif value.respond_to?(:to_money)
-                value.to_money(field_currency_name || self.respond_to?(:currency) &&
-                              self.currency || Money.default_currency)
-              else
-                raise(ArgumentError, "Can't convert #{value.class} to Money")
-              end
-            }
-          end
-
-          class_eval do
-            composed_of name.to_sym,
-              :class_name => "Money",
-              :mapping => mappings,
-              :constructor => constructor,
-              :converter => converter,
-              :allow_nil => options[:allow_nil]
-          end
-
-          if options[:allow_nil]
-            class_eval do
-              # Fixes issue with composed_of that breaks on blank params
-              # TODO: This should be removed when we will only support rails >=4.0
-              define_method "#{name}_with_blank_support=" do |value|
-                value = nil if value.blank?
-                send "#{name}_without_blank_support=", value
-              end
-              alias_method_chain "#{name}=", :blank_support
-            end
-          end
+          
+          raise(ArgumentError, ":with_currency should not be used with tables" \
+                  " which contain a column for currency values") if has_currency_table_column && field_currency_name
 
           # Include numericality validation if needed
-          if MoneyRails.include_validations
-            class_eval do
-              validates_numericality_of subunit_name, :allow_nil => options[:allow_nil]
+          validates_numericality_of subunit_name, :allow_nil => options[:allow_nil] if MoneyRails.include_validations
+            
+          define_method name do
+            amount = read_attribute(subunit_name)
+            amount = Money.new(amount, send("currency_for_#{name}")) unless amount.blank? 
+
+            instance_variable_set "@#{name}", amount
+          end
+
+          define_method "#{name}=" do |value|
+            if options[:allow_nil] && value.blank?
+              write_attribute(subunit_name, nil)
+              write_attribute(:currency, nil) if has_currency_table_column
+              instance_variable_set "@#{name}", nil
+              return
             end
+              
+            if has_currency_table_column 
+              raise(ArgumentError, "Only Money objects are allowed for assignment") unless value.kind_of?(Money)
+              money = value
+              write_attribute(model_currency_name, money.currency.iso_code)
+            else
+              raise(ArgumentError, "Can't convert #{value.class} to Money") unless value.respond_to?(:to_money) 
+              money = value.to_money(send("currency_for_#{name}"))
+            end
+
+            instance_variable_set "@#{name}", money
+
+            write_attribute(subunit_name, money.cents)
+          end
+
+          define_method "currency_for_#{name}" do
+            (has_currency_table_column ? read_attribute(:currency) : field_currency_name) || 
+              (self.class.respond_to?(:currency) && self.class.currency) || Money.default_currency
           end
         end
 
