@@ -47,7 +47,7 @@ module MoneyRails
             name = subunit_name << "_money"
           end
 
-          has_currency_table_column = self.attribute_names.include? model_currency_name
+          has_currency_table_column = self.column_names.include? model_currency_name
 
           if has_currency_table_column
             raise(ArgumentError, ":with_currency should not be used with tables" \
