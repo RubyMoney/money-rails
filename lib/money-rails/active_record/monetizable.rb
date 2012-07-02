@@ -48,16 +48,16 @@ module MoneyRails
           end
 
           has_currency_table_column = self.column_names.include? model_currency_name
-          
+
           raise(ArgumentError, ":with_currency should not be used with tables" \
                   " which contain a column for currency values") if has_currency_table_column && field_currency_name
 
           # Include numericality validation if needed
           validates_numericality_of subunit_name, :allow_nil => options[:allow_nil] if MoneyRails.include_validations
-            
+
           define_method name do
             amount = read_attribute(subunit_name)
-            amount = Money.new(amount, send("currency_for_#{name}")) unless amount.blank? 
+            amount = Money.new(amount, send("currency_for_#{name}")) unless amount.blank?
 
             instance_variable_set "@#{name}", amount
           end
@@ -69,13 +69,13 @@ module MoneyRails
               instance_variable_set "@#{name}", nil
               return
             end
-              
-            if has_currency_table_column 
+
+            if has_currency_table_column
               raise(ArgumentError, "Only Money objects are allowed for assignment") unless value.kind_of?(Money)
               money = value
               write_attribute(model_currency_name, money.currency.iso_code)
             else
-              raise(ArgumentError, "Can't convert #{value.class} to Money") unless value.respond_to?(:to_money) 
+              raise(ArgumentError, "Can't convert #{value.class} to Money") unless value.respond_to?(:to_money)
               money = value.to_money(send("currency_for_#{name}"))
             end
 
@@ -85,7 +85,7 @@ module MoneyRails
           end
 
           define_method "currency_for_#{name}" do
-            (has_currency_table_column ? read_attribute(:currency) : field_currency_name) || 
+            (has_currency_table_column ? read_attribute(:currency) : field_currency_name) ||
               (self.class.respond_to?(:currency) && self.class.currency) || Money.default_currency
           end
         end
