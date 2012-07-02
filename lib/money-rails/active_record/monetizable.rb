@@ -24,7 +24,7 @@ module MoneyRails
           # Optional table column which holds currency iso_codes
           # It allows per row currency values
           # Overrides default currency
-          model_currency_name = options[:with_model_currency] ||
+          currency_column_name = options[:with_model_currency] ||
             options[:model_currency] || "currency"
 
           # This attribute allows per column currency values
@@ -47,7 +47,7 @@ module MoneyRails
             name = subunit_name << "_money"
           end
 
-          has_currency_table_column = self.column_names.include? model_currency_name
+          has_currency_table_column = self.column_names.include? currency_column_name
 
           raise(ArgumentError, ":with_currency should not be used with tables" \
                   " which contain a column for currency values") if has_currency_table_column && field_currency_name
@@ -65,7 +65,7 @@ module MoneyRails
           define_method "#{name}=" do |value|
             if options[:allow_nil] && value.blank?
               write_attribute(subunit_name, nil)
-              write_attribute(:currency, nil) if has_currency_table_column
+              write_attribute(currency_column_name, nil) if has_currency_table_column
               instance_variable_set "@#{name}", nil
               return
             end
@@ -73,7 +73,7 @@ module MoneyRails
             if has_currency_table_column
               raise(ArgumentError, "Only Money objects are allowed for assignment") unless value.kind_of?(Money)
               money = value
-              write_attribute(model_currency_name, money.currency.iso_code)
+              write_attribute(currency_column_name, money.currency.iso_code)
             else
               raise(ArgumentError, "Can't convert #{value.class} to Money") unless value.respond_to?(:to_money)
               money = value.to_money(send("currency_for_#{name}"))
@@ -85,7 +85,7 @@ module MoneyRails
           end
 
           define_method "currency_for_#{name}" do
-            row_currency = read_attribute(model_currency_name)
+            row_currency = read_attribute(currency_column_name)
             if has_currency_table_column && row_currency
               Money::Currency.find(row_currency)
             elsif field_currency_name
