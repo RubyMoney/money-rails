@@ -57,7 +57,14 @@ module MoneyRails
 
           define_method name do
             amount = read_attribute(subunit_name)
-            amount = Money.new(amount, send("currency_for_#{name}")) unless amount.blank?
+            attr_currency = send("currency_for_#{name}")
+
+            # Dont create a new Money instance if the values haven't changed
+            memoized = instance_variable_get("@#{name}")
+            return memoized if memoized && memoized.cents == amount &&
+              memoized.currency == attr_currency
+
+            amount = Money.new(amount, attr_currency) unless amount.blank?
 
             instance_variable_set "@#{name}", amount
           end
