@@ -85,8 +85,16 @@ module MoneyRails
           end
 
           define_method "currency_for_#{name}" do
-            (has_currency_table_column ? read_attribute(:currency) : field_currency_name) ||
-              (self.class.respond_to?(:currency) && self.class.currency) || Money.default_currency
+            row_currency = read_attribute(model_currency_name)
+            if has_currency_table_column && row_currency
+              Money::Currency.find(row_currency)
+            elsif field_currency_name
+              Money::Currency.find(field_currency_name)
+            elsif self.class.respond_to?(:currency)
+              self.class.currency
+            else
+              Money.default_currency
+            end
           end
         end
 
