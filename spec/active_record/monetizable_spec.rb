@@ -164,6 +164,14 @@ if defined? ActiveRecord
         @product.save.should be_true
         @product.optional_price.should be_nil
       end
+
+      context "for column with currency:" do
+        it "is overridden by instance currency" do
+          product = Product.create(:price_cents => 5320, :discount => 350, :bonus_cents => 320)
+          product.stub(:currency) { "EUR" }
+          product.bonus.currency_as_string.should == "EUR"
+        end
+      end
       
       context "for model with currency column:" do
         before :each do
@@ -201,9 +209,9 @@ if defined? ActiveRecord
           @transaction.amount.currency_as_string.should == "EUR"
         end
 
-        it "raises exception if a non Money object is assigned to the attribute" do
-          expect { @transaction.amount = "not a Money object" }.to raise_error(ArgumentError)
-          expect { @transaction.amount = 234 }.to raise_error(ArgumentError)
+        it "uses default currency if a non Money object is assigned to the attribute" do
+          @transaction.amount = 234
+          @transaction.amount.currency_as_string.should == "USD"
         end
 
       end
