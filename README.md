@@ -2,6 +2,7 @@
 
 [![Build Status](https://secure.travis-ci.org/RubyMoney/money-rails.png?branch=master)](http://travis-ci.org/RubyMoney/money-rails)
 [![Dependency Status](https://gemnasium.com/RubyMoney/money-rails.png)](https://gemnasium.com/RubyMoney/money-rails)
+[![Code Climate](https://codeclimate.com/badge.png)](https://codeclimate.com/github/Robymoney/money-rails)
 
 ## Introduction
 
