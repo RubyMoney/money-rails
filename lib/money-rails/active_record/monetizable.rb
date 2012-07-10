@@ -70,7 +70,7 @@ module MoneyRails
             end
 
             send("#{subunit_name}=", money.try(:cents))
-            send("#{instance_currency_name}=", money.try(:currency)) if self.respond_to?("#{instance_currency_name}=")
+            send("#{instance_currency_name}=", money.try(:currency).try(:iso_code)) if self.respond_to?("#{instance_currency_name}=")
 
             instance_variable_set "@#{name}", money
           end

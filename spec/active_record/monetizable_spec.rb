@@ -181,6 +181,14 @@ if defined? ActiveRecord
           @dummy_product2 = DummyProduct.create(:price_cents => 2600) # nil currency
         end
 
+        it "serializes correctly the currency to a new instance of model" do
+          d = DummyProduct.new
+          d.price = Money.new(10, "EUR")
+          d.save!
+          d.reload
+          d.currency.should == "EUR"
+        end
+
         it "overrides default currency with the value of row currency" do
           @transaction.amount.currency.should == Money::Currency.find(:usd)
         end
