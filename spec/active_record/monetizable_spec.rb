@@ -172,7 +172,19 @@ if defined? ActiveRecord
           product.bonus.currency_as_string.should == "EUR"
         end
       end
-      
+
+      context "for column with model currency:" do
+        it "has default currency if not specified" do
+          product = Product.create(:sale_price_amount => 1234)
+          product.sale_price.currency_as_string == 'USD'
+        end
+        it "is overridden by instance currency column" do
+          product = Product.create(:sale_price_amount => 1234,
+                                   :sale_price_currency_code => 'CAD')
+          product.sale_price.currency_as_string.should == 'CAD'
+        end
+      end
+
       context "for model with currency column:" do
         before :each do
           @transaction = Transaction.create(:amount_cents => 2400, :tax_cents => 600,
