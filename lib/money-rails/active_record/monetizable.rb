@@ -24,6 +24,7 @@ module MoneyRails
           # Optional accessor to be run on an instance to detect currency 
           instance_currency_name = options[:with_model_currency] ||
             options[:model_currency] || "currency"
+          instance_currency_name = instance_currency_name.to_s
 
           # This attribute allows per column currency values
           # Overrides row and default currency
