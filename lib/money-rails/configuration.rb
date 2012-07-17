@@ -1,3 +1,6 @@
+require 'active_support/core_ext/module/delegation'
+require 'active_support/core_ext/module/attribute_accessors'
+
 module MoneyRails
 
   # MoneyRails configuration module.
