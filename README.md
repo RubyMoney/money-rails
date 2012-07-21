@@ -153,7 +153,7 @@ obj.save
 obj
 # => #<Product _id: 4fe865699671383656000001, _type: nil, currency: "EUR">
 
-obj.price
+obj.currency
 #=> #<Money::Currency currency:EUR>
 ```
 
