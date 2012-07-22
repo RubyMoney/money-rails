@@ -203,8 +203,8 @@ currency values. If you need to provide differrent currency per model
 instance, then you need to add a column with the name ```currency```
 in your db table. Money-rails will discover this automatically,
 and will use this knowledge to override the model level and global
-default values. Attribute currency cannot be combined with instance
-currency!
+default values. Non-nil instance currency values also override attribute
+currency values, so they have the highest precedence.
 
 ```ruby
 class Transaction < ActiveRecord::Base
@@ -220,16 +220,11 @@ class Transaction < ActiveRecord::Base
 
 end
 
-# Now instantiating with a specific currency overrides the
+# Now instantiating with a specific currency overrides
 # the model and global currencies
 t = Transaction.new(:amount_cents => 2500, :currency => "CAD")
 t.amount == Money.new(2500, "CAD") # true
 ```
-
-WARNING: In this case :with_currency is not permitted and the usage
-of this parameter will cause an ArgumentError exception.
-
-In general, the use of this strategy is discouraged unless there is a reason.
 
 ### Configuration parameters
 
