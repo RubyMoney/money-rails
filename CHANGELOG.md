@@ -1,6 +1,18 @@
 # Changelog
 
+## 0.5.0
+
+- Refactored instance currency implementation. Now, instance currency
+  is permitted to override the field currency, if they are both non-nil
+  values. (GH-23)
+- Replaced deprecated composed_of with a custom implementation for
+  activerecord. (GH-20)
+- Refactored testing structure to support multiple ORMs/ODMS.
+- Added Mongoid 2.x basic support. It uses serialization 
+  (a differrent approach than activerecord for now). (GH-19)
+
 ## 0.4.0
+
 - Provide ActionView helpers integration.
 - Map blank value assignments (for monetized fields) to nil.
 - Allow nil values for monetized fields. (GH-15)
