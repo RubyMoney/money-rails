@@ -8,7 +8,7 @@ module MoneyRails
       end
 
       # For Mongoid
-      begin; require 'mongoid'; rescue LoadError; end
+      begin; require 'mongoid'; require 'mongoid/version'; rescue LoadError; end
       if defined? ::Mongoid
         if ::Mongoid::VERSION =~ /^2(.*)/
           require 'money-rails/mongoid/two' # Loading the file is enough
