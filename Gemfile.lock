@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    money-rails (0.4.0)
+    money-rails (0.5.0)
       activesupport (~> 3.0)
       money (~> 5.0.0)
       railties (~> 3.0)
@@ -38,7 +38,7 @@ GEM
       multi_json (~> 1.0)
     arel (3.0.2)
     builder (3.0.0)
-    database_cleaner (0.7.2)
+    database_cleaner (0.8.0)
     diff-lcs (1.1.3)
     erubis (2.7.0)
     ffi (1.0.11)
@@ -126,7 +126,7 @@ PLATFORMS
 DEPENDENCIES
   activerecord-jdbc-adapter
   activerecord-jdbcsqlite3-adapter
-  database_cleaner
+  database_cleaner (>= 0.8.0)
   guard-rspec (~> 1.1)
   jruby-openssl
   money-rails!

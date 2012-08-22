@@ -28,5 +28,5 @@ Gem::Specification.new do |s|
   s.add_development_dependency "rspec",       "~> 2.10"
   s.add_development_dependency "rspec-rails", "~> 2.10"
   s.add_development_dependency "guard-rspec", "~> 1.1"
-  s.add_development_dependency 'database_cleaner', ['>= 0']
+  s.add_development_dependency 'database_cleaner', ['>= 0.8.0']
 end
