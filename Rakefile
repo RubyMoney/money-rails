@@ -20,7 +20,13 @@ task :default => "spec:all"
 task :test => :spec
 
 namespace :spec do
-  desc "Run Tests against mongoid"
+  desc "Run Tests against mongoid (version 3)"
+  task :mongoid3 do
+    sh "BUNDLE_GEMFILE='gemfiles/mongoid3.gemfile' bundle --quiet"
+    sh "BUNDLE_GEMFILE='gemfiles/mongoid3.gemfile' bundle exec rake -t spec"
+  end
+
+  desc "Run Tests against mongoid (version 2)"
   task :mongoid2 do
     sh "BUNDLE_GEMFILE='gemfiles/mongoid2.gemfile' bundle --quiet"
     sh "BUNDLE_GEMFILE='gemfiles/mongoid2.gemfile' bundle exec rake -t spec"
@@ -34,6 +40,10 @@ namespace :spec do
 
   desc "Run Tests against all ORMs"
   task :all do
+    # Mongoid 3
+    sh "BUNDLE_GEMFILE='gemfiles/mongoid3.gemfile' bundle --quiet"
+    sh "BUNDLE_GEMFILE='gemfiles/mongoid3.gemfile' bundle exec rake -t spec"
+
     # Mongoid 2
     sh "BUNDLE_GEMFILE='gemfiles/mongoid2.gemfile' bundle --quiet"
     sh "BUNDLE_GEMFILE='gemfiles/mongoid2.gemfile' bundle exec rake -t spec"
