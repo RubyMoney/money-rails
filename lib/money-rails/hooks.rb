@@ -15,7 +15,7 @@ module MoneyRails
         end
 
         if ::Mongoid::VERSION =~ /^3(.*)/
-          # Mongoid 3.x stuff here
+          require 'money-rails/mongoid/three'
         end
       end
 
