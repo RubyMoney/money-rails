@@ -89,7 +89,7 @@ product.optional_price # => nil
 product.optional_price_cents # => nil
 ```
 
-### Mongoid 2.X
+### Mongoid 2.x and 3.x
 
 `Money` is available as a field type to supply during a field definition:
 
@@ -317,6 +317,11 @@ without the cents part.
 ```
 This will render a formatted money value including the currency symbol and
 without the cents part.
+
+## Supported ORMs/ODMs
+
+* ActiveRecord (>= 3.x)
+* Mongoid (2.x, 3.x)
 
 ## Maintainers
 
