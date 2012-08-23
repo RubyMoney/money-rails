@@ -18,6 +18,16 @@ gemfile:
   - gemfiles/mongoid2.gemfile
   - gemfiles/mongoid3.gemfile
   - Gemfile
+matrix:
+  exclude:
+    - rvm: 1.8.7
+      gemfile: gemfiles/mongoid3.gemfile
+    - rvm: 1.9.2
+      gemfile: gemfiles/mongoid3.gemfile
+    - rvm: rbx-18mode
+      gemfile: gemfiles/mongoid3.gemfile
+    - rvm: ree
+      gemfile: gemfiles/mongoid3.gemfile
 notifications:
   recipients:
     - andreas@aloop.org
