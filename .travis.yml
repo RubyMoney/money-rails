@@ -16,6 +16,7 @@ rvm:
   - ree
 gemfile:
   - gemfiles/mongoid2.gemfile
+  - gemfiles/mongoid3.gemfile
   - Gemfile
 notifications:
   recipients:
