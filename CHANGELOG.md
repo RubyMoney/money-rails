@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.6.0 (Next)
+- Added basic support for Mongoid >= 3.0.
+
 ## 0.5.0
 
 - Refactored instance currency implementation. Now, instance currency
