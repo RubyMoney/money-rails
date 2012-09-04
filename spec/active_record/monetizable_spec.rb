@@ -234,6 +234,10 @@ if defined? ActiveRecord
           @transaction.amount.currency_as_string.should == "USD"
         end
 
+        it "constructs the money object from the mapped method value" do
+          @transaction.total.should == Money.new(3000, :usd)
+        end
+
       end
     end
 

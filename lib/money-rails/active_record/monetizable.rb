@@ -49,8 +49,8 @@ module MoneyRails
           # Include numericality validation if needed
           validates_numericality_of subunit_name, :allow_nil => options[:allow_nil] if MoneyRails.include_validations
 
-          define_method name do
-            amount = send(subunit_name)
+          define_method name do |*args|
+            amount = send(subunit_name, *args)
             attr_currency = send("currency_for_#{name}")
 
             # Dont create a new Money instance if the values haven't changed
