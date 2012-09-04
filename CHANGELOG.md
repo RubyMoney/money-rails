@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.6.0 (Next)
+## 0.6.0
 - Added basic support for Mongoid >= 3.0.
 - Allow class methods to be monetized (ActiveRecord only - GH-34)
 
