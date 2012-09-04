@@ -128,6 +128,23 @@ obj[:price]
 
 The usual options on `field` as `index`, `default`, ..., are available.
 
+### Method conversion
+
+Method return values can be converted in the same way attributes are converted. For example:
+
+```ruby
+class Transaction < ActiveRecord::Base
+
+  monetize :price_cents, :tax_cents, :total_cents
+  def total_cents
+    return price_cents + tax_cents
+  end
+
+end
+```
+
+Now each Transaction object has a method called `total` which returns a Money object.
+
 ### Currencies
 
 Money-rails supports a set of options to handle currencies for your
