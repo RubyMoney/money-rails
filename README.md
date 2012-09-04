@@ -135,7 +135,9 @@ Method return values can be converted in the same way attributes are converted. 
 ```ruby
 class Transaction < ActiveRecord::Base
 
-  monetize :price_cents, :tax_cents, :total_cents
+  monetize :price_cents
+  monetize :tax_cents
+  monetize :total_cents
   def total_cents
     return price_cents + tax_cents
   end
