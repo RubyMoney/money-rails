@@ -3,7 +3,7 @@ module MoneyRails
     def self.init
       # For Active Record
       ActiveSupport.on_load(:active_record) do
-        require 'money-rails/active_record/validator'
+        require 'money-rails/active_model/validator'
         require 'money-rails/active_record/monetizable'
         ::ActiveRecord::Base.send :include, MoneyRails::ActiveRecord::Monetizable
       end

@@ -51,7 +51,7 @@ module MoneyRails
             validates_numericality_of subunit_name, :allow_nil => options[:allow_nil]
 
             # Allow only Money objects or Numeric values!
-            validates name.to_sym, :money => { :allow_nil => true }
+            validates name.to_sym, 'money_rails/active_model/money' => { :allow_nil => true }
           end
 
           define_method name do |*args|
