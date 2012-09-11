@@ -47,7 +47,12 @@ module MoneyRails
           end
 
           # Include numericality validation if needed
-          validates_numericality_of subunit_name, :allow_nil => options[:allow_nil] if MoneyRails.include_validations
+          if MoneyRails.include_validations
+            validates_numericality_of subunit_name, :allow_nil => options[:allow_nil]
+
+            # Allow only Money objects or Numeric values!
+            validates name.to_sym, :money => { :allow_nil => true }
+          end
 
           define_method name do |*args|
             amount = send(subunit_name, *args)
@@ -64,6 +69,10 @@ module MoneyRails
           end
 
           define_method "#{name}=" do |value|
+
+            # Lets keep the before_type_cast value
+            instance_variable_set "@#{name}_before_type_cast", value
+
             if options[:allow_nil] && value.blank?
               money = nil
             else
@@ -86,6 +95,10 @@ module MoneyRails
             else
               Money.default_currency
             end
+          end
+
+          define_method "#{name}_before_type_cast" do
+            instance_variable_get "@#{name}_before_type_cast"
           end
         end
 
