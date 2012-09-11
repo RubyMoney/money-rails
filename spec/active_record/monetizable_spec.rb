@@ -26,6 +26,18 @@ if defined? ActiveRecord
         @product.price_cents.should == 3210
       end
 
+      it "assigns the correct value from a Money object using create" do
+        @product = Product.create(:price => Money.new(3210, "USD"), :discount => 150,
+                                  :bonus_cents => 200, :optional_price => 100)
+        @product.valid?.should be_true
+        @product.price_cents.should == 3210
+      end
+
+      it "updates correctly from a Money object using update_attributes" do
+        @product.update_attributes(:price => Money.new(215, "USD")).should be_true
+        @product.price_cents.should == 215
+      end
+
       it "respects :as argument" do
         @product.discount_value.should == Money.new(150, "USD")
       end
@@ -36,6 +48,24 @@ if defined? ActiveRecord
 
         @product.price_cents = 2000
         @product.save.should be_true
+      end
+
+      it "respects numericality validation when using update_attributes" do
+        @product.update_attributes(:price_cents => "some text").should be_false
+        @product.update_attributes(:price_cents => 2000).should be_true
+      end
+
+      it "uses numericality validation on money attribute" do
+        @product.price = "some text"
+        @product.save.should be_false
+
+        @product.price = Money.new(320, "USD")
+        @product.save.should be_true
+      end
+
+      it "respects numericality validation when using update_attributes on money attribute" do
+        @product.update_attributes(:price => "some text").should be_false
+        @product.update_attributes(:price => Money.new(320, 'USD')).should be_true
       end
 
       it "doesn't allow nil by default" do
