@@ -126,6 +126,37 @@ obj[:price]
 # => {:cents=>100, :currency_iso=>"EUR"}
 ```
 
+`Money::Currency` is also available as a field type:
+
+```ruby
+class Account
+  include Mongoid::Document
+
+  field :currency, type: Money::Currency
+end
+
+obj = Account.new
+# => #<Account _id: 4fe865699671383656000001, _type: nil, currency: nil>
+
+obj.currency
+# => nil
+
+obj.currency = Money::Currency.new('EUR')
+# => #<Money::Currency currency:EUR>
+
+obj.currency
+#=> #<Money::Currency currency:EUR>
+
+obj.save
+# => true
+
+obj
+# => #<Product _id: 4fe865699671383656000001, _type: nil, currency: "EUR">
+
+obj.currency
+#=> #<Money::Currency currency:EUR>
+```
+
 The usual options on `field` as `index`, `default`, ..., are available.
 
 ### Method conversion

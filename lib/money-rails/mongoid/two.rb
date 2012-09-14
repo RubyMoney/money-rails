@@ -23,3 +23,23 @@ class Money
     }
   end
 end
+
+class Money::Currency
+  include ::Mongoid::Fields::Serializable
+
+  # Mongo friendly -> Money::Currency
+  def deserialize(object)
+    return nil if object.nil?
+
+    ::Money::Currency.find object
+  end
+
+  # Money::Currency -> Mongo friendly
+  def serialize(object)
+    return nil unless object.is_a? Money::Currency
+
+    object.iso_code
+  end
+end
+
+

@@ -22,4 +22,25 @@ if defined?(Mongoid) && ::Mongoid::VERSION =~ /^2(.*)/
       end
     end
   end
+
+  describe Money::Currency do
+    let(:denom) { Denominateable.create(:unit => Money::Currency.find('EUR')) }
+
+    context "serialize" do
+      it "serializes correctly a Money::Currency object to an iso_code string" do
+        denom.unit.should == Money::Currency.find('EUR')
+      end
+    end
+
+    context "deserialize" do
+      subject { denom.unit }
+      it { should be_an_instance_of(Money::Currency) }
+      it { should == Money::Currency.find('EUR') }
+      it "returns nil if a nil value was stored" do
+        nil_denom = Priceable.create(:unit => nil)
+        nil_denom.unit.should be_nil
+      end
+    end
+  end
+
 end
