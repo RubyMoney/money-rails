@@ -6,7 +6,8 @@ if defined? ActiveRecord
     describe "monetize" do
       before :each do
         @product = Product.create(:price_cents => 3000, :discount => 150,
-                                  :bonus_cents => 200, :optional_price => 100)
+                                  :bonus_cents => 200, :optional_price => 100,
+                                  :sale_price_amount => 1200)
         @service = Service.create(:charge_cents => 2000, :discount_cents => 120)
       end
 
