@@ -80,6 +80,32 @@ if defined? ActiveRecord
         @product.optional_price.should be_nil
       end
 
+      it "doesn't raise exception if validation is used and nil is not allowed" do
+        expect { @product.price = nil }.to_not raise_error
+      end
+
+      it "doesn't save nil values if validation is used and nil is not allowed" do
+        @product.price = nil
+        @product.save
+        @product.price_cents.should_not be_nil
+      end
+
+      it "resets before_type_cast attr every time a save operation occurs" do
+        v = Money.new(100, :usd)
+        @product.price = v
+        @product.price_before_type_cast.should == v
+        @product.save
+        @product.price_before_type_cast.should be_nil
+        @product.price = 10
+        @product.price_before_type_cast.should == 10
+        @product.save
+        @product.price_before_type_cast.should be_nil
+        @product.bonus = ""
+        @product.bonus_before_type_cast.should == ""
+        @product.save.should be_false
+        @product.bonus_before_type_cast.should be_nil
+      end
+
       it "uses Money default currency if :with_currency has not been used" do
         @service.discount.currency.should == Money::Currency.find(:eur)
       end
