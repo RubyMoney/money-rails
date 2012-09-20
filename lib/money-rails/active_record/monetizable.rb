@@ -46,6 +46,13 @@ module MoneyRails
             name = subunit_name << "_money"
           end
 
+          # Create a reverse mapping of the monetized attributes
+          @monetized_attributes ||= {}
+          @monetized_attributes[name.to_sym] = subunit_name
+          class << self
+            attr_reader :monetized_attributes
+          end unless respond_to? :monetized_attributes
+
           # Include numericality validation if needed
           if MoneyRails.include_validations
             validates_numericality_of subunit_name, :allow_nil => options[:allow_nil]
@@ -76,7 +83,11 @@ module MoneyRails
             if options[:allow_nil] && value.blank?
               money = nil
             else
-              money = value.is_a?(Money) ? value : value.to_money(send("currency_for_#{name}"))
+              begin
+                money = value.is_a?(Money) ? value : value.to_money(send("currency_for_#{name}"))
+              rescue NoMethodError
+                return nil
+              end
             end
 
             send("#{subunit_name}=", money.try(:cents))
@@ -99,6 +110,12 @@ module MoneyRails
 
           define_method "#{name}_before_type_cast" do
             instance_variable_get "@#{name}_before_type_cast"
+          end
+
+          # Hook to ensure the reset of before_type_cast attr
+          # TODO: think of a better way to avoid this
+          after_validation do
+            instance_variable_set "@#{name}_before_type_cast", nil
           end
         end
 
