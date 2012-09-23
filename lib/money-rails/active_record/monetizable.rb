@@ -78,7 +78,7 @@ module MoneyRails
           define_method "#{name}=" do |value|
 
             # Lets keep the before_type_cast value
-            instance_variable_set "@#{name}_before_type_cast", value
+            instance_variable_set "@#{name}_money_before_type_cast", value
 
             if options[:allow_nil] && value.blank?
               money = nil
@@ -108,14 +108,14 @@ module MoneyRails
             end
           end
 
-          define_method "#{name}_before_type_cast" do
-            instance_variable_get "@#{name}_before_type_cast"
+          define_method "#{name}_money_before_type_cast" do
+            instance_variable_get "@#{name}_money_before_type_cast"
           end
 
           # Hook to ensure the reset of before_type_cast attr
           # TODO: think of a better way to avoid this
           after_validation do
-            instance_variable_set "@#{name}_before_type_cast", nil
+            instance_variable_set "@#{name}_money_before_type_cast", nil
           end
         end
 

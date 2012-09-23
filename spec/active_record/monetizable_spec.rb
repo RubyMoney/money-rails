@@ -90,20 +90,20 @@ if defined? ActiveRecord
         @product.price_cents.should_not be_nil
       end
 
-      it "resets before_type_cast attr every time a save operation occurs" do
+      it "resets money_before_type_cast attr every time a save operation occurs" do
         v = Money.new(100, :usd)
         @product.price = v
-        @product.price_before_type_cast.should == v
+        @product.price_money_before_type_cast.should == v
         @product.save
-        @product.price_before_type_cast.should be_nil
+        @product.price_money_before_type_cast.should be_nil
         @product.price = 10
-        @product.price_before_type_cast.should == 10
+        @product.price_money_before_type_cast.should == 10
         @product.save
-        @product.price_before_type_cast.should be_nil
+        @product.price_money_before_type_cast.should be_nil
         @product.bonus = ""
-        @product.bonus_before_type_cast.should == ""
+        @product.bonus_money_before_type_cast.should == ""
         @product.save.should be_false
-        @product.bonus_before_type_cast.should be_nil
+        @product.bonus_money_before_type_cast.should be_nil
       end
 
       it "uses Money default currency if :with_currency has not been used" do

@@ -10,7 +10,7 @@ module MoneyRails
         return unless record.changed_attributes.keys.include? subunit_attr
 
         # WARNING: Currently this is only defined in ActiveRecord extension!
-        before_type_cast = "#{attr}_before_type_cast"
+        before_type_cast = "#{attr}_money_before_type_cast"
         raw_value = record.send(before_type_cast) if record.respond_to?(before_type_cast.to_sym)
 
         # Skip it if raw_value is already a Money object
