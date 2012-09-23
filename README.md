@@ -342,6 +342,12 @@ without the cents part.
 * ActiveRecord (>= 3.x)
 * Mongoid (2.x, 3.x)
 
+## Supported Ruby interpreters
+
+* MRI Ruby >= 1.8.7
+
+You can see a full list of the currently supported interpreters in [travis.yml](http://github.com/RubyMoney/money-rails/blob/master/.travis.yml)
+
 ## Maintainers
 
 * Andreas Loupasakis (https://github.com/alup)
