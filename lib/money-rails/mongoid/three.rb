@@ -14,7 +14,7 @@ class Money
     # this custom class from it.
     def demongoize(object)
       return nil if object.nil?
-
+      object.symbolize_keys!
       ::Money.new(object[:cents], object[:currency_iso])
     end
 
@@ -23,7 +23,9 @@ class Money
     def mongoize(object)
       case object
       when Money then object.mongoize
-      when Hash then ::Money.new(object[:cents], object[:currency]).mongoize
+      when Hash then
+        object.symbolize_keys!
+        ::Money.new(object[:cents], object[:currency]).mongoize
       else object
       end
     end
