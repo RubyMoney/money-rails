@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.7.0 (coming soon)
+- Added custom validator for Money fields (GH-36)
+  TODO: decouple validator from active_record
+- Added mongodb service test support for travis CI
+- Fixed issue with current value assignment in text_field tags (GH-37)
+- Fixed issue related to symbolized keys in Mongoid (GH-40)
+
 ## 0.6.0
 - Added basic support for Mongoid >= 3.0.
 - Allow class methods to be monetized (ActiveRecord only - GH-34)
