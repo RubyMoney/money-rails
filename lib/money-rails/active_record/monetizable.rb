@@ -43,7 +43,7 @@ module MoneyRails
             name = subunit_name.sub(/_cents$/, "")
           else
             # FIXME: provide a better default
-            name = subunit_name << "_money"
+            name = [subunit_name, "money"].join("_")
           end
 
           # Create a reverse mapping of the monetized attributes
