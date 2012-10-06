@@ -9,6 +9,9 @@ Gemfile.lock
 # rcov generated
 coverage
 
+# Ignore the default SQLite database.
+/db/*.sqlite3
+
 # rdoc generated
 rdoc
 
