@@ -20,6 +20,10 @@ if defined?(Mongoid) && ::Mongoid::VERSION =~ /^3(.*)/
         nil_priceable = Priceable.create(:price => nil)
         nil_priceable.price.should be_nil
       end
+      it 'returns nil if an unknown value was stored' do
+        zero_priceable = Priceable.create(:price => 0)
+        zero_priceable.price.should be_nil
+      end
     end
 
     context "evolve" do
