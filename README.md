@@ -337,6 +337,35 @@ without the cents part.
 This will render a formatted money value including the currency symbol and
 without the cents part.
 
+## Convert to JSON/XML
+Add `as_json` and `to_xml` to automaticly get money in JSON/XML output to your model:
+```
+class Transaction < ActiveRecord::Base
+
+  # This model has a separate currency column
+  attr_accessible :amount_cents
+
+  monetize :amount_cents
+
+  def as_json options=nil
+    options ||= {}
+    options[:methods] = ((options[:methods] || []) + [:amount])
+    super options
+  end
+
+  def to_xml options=nil
+    options ||= {}
+    options[:methods] = ((options[:methods] || []) + [:amount])
+    super options
+  end  
+
+end
+```
+Or write in you controller:
+```
+format.json { render json: @transactions.to_json(:methods => [:amount]) }
+```
+
 ## Supported ORMs/ODMs
 
 * ActiveRecord (>= 3.x)
