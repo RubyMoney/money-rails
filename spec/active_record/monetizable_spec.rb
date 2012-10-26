@@ -240,6 +240,11 @@ if defined? ActiveRecord
                                    :sale_price_currency_code => 'CAD')
           product.sale_price.currency_as_string.should == 'CAD'
         end
+        it "is fx overridden by instance currency column" do
+          product = Product.create(:sale_price => "12,34",
+                                   :sale_price_currency_code => 'EUR')
+          product.valid?.should be_true
+        end
       end
 
       context "for model with currency column:" do
