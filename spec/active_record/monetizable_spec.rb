@@ -62,6 +62,10 @@ if defined? ActiveRecord
 
         @product.price = Money.new(320, "USD")
         @product.save.should be_true
+        
+        @product.sale_price = "12,34"
+        @product.sale_price_currency_code = 'EUR'
+        @product.valid?.should be_true
       end
 
       it "respects numericality validation when using update_attributes on money attribute" do
@@ -239,11 +243,6 @@ if defined? ActiveRecord
           product = Product.create(:sale_price_amount => 1234,
                                    :sale_price_currency_code => 'CAD')
           product.sale_price.currency_as_string.should == 'CAD'
-        end
-        it "is fx overridden by instance currency column" do
-          product = Product.create(:sale_price => "12,34",
-                                   :sale_price_currency_code => 'EUR')
-          product.valid?.should be_true
         end
       end
 
