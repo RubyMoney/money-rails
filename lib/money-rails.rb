@@ -9,4 +9,5 @@ end
 
 if defined? Rails
   require "money-rails/railtie"
+  require "money-rails/engine"
 end
