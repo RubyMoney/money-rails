@@ -62,6 +62,10 @@ if defined? ActiveRecord
 
         @product.price = Money.new(320, "USD")
         @product.save.should be_true
+        
+        @product.sale_price = "12,34"
+        @product.sale_price_currency_code = 'EUR'
+        @product.valid?.should be_true
       end
 
       it "respects numericality validation when using update_attributes on money attribute" do
