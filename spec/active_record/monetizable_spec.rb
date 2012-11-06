@@ -68,6 +68,23 @@ if defined? ActiveRecord
         @product.valid?.should be_true
       end
 
+      it "fails validation with the proper error message if money value is invalid decimal" do
+        @product.price = "12.23.24"
+        @product.save.should be_false
+        @product.errors[:price].first.should match(/Must be a valid/)
+      end
+
+      it "fails validation with the proper error message if money value has invalid thousands part" do
+        @product.price = "12,23.24"
+        @product.save.should be_false
+        @product.errors[:price].first.should match(/Must be a valid/)
+      end
+
+      it "passes validation if money value has correct format" do
+        @product.price = "12,230.24"
+        @product.save.should be_true
+      end
+
       it "respects numericality validation when using update_attributes on money attribute" do
         @product.update_attributes(:price => "some text").should be_false
         @product.update_attributes(:price => Money.new(320, 'USD')).should be_true
