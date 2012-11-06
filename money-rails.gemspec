@@ -12,7 +12,7 @@ Gem::Specification.new do |s|
   s.summary       = "Money gem integration with Rails"
   s.homepage      = "https://github.com/RubyMoney/money-rails"
 
-  s.files         =  Dir.glob("{lib,spec}/**/*")
+  s.files         =  Dir.glob("{lib,spec,config}/**/*")
   s.files         += %w(CHANGELOG.md LICENSE README.md)
   s.files         += %w(Rakefile money-rails.gemspec)
 
