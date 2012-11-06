@@ -20,22 +20,33 @@ module MoneyRails
           # remove currency symbol, and negative sign
           currency = record.send("currency_for_#{attr}")
           raw_value = raw_value.to_s.gsub(currency.symbol, "").gsub(/^-/, "")
-          
+
           decimal_pieces = raw_value.split(currency.decimal_mark)
+
           # check for numbers like 12.23.45
           if decimal_pieces.length > 2
-            record.errors.add(attr, I18n.t('errors.messages.invalid_currencym', { :thousands => currency.thousands_separator, :decimal => currency.decimal_mark }))
+            record.errors.add(attr, I18n.t('errors.messages.invalid_currencym',
+                                           { :thousands => currency.thousands_separator,
+                                             :decimal => currency.decimal_mark }))
           end
 
           pieces = decimal_pieces[0].split(currency.thousands_separator)
+
+          # check for valid thousands separation
           if pieces.length > 1
-            record.errors.add(attr, I18n.t('errors.messages.invalid_currencym', { :thousands => currency.thousands_separator, :decimal => currency.decimal_mark })) unless pieces[0].length <= 3
+            record.errors.add(attr, I18n.t('errors.messages.invalid_currencym',
+                                           { :thousands => currency.thousands_separator,
+                                             :decimal => currency.decimal_mark })) if pieces[0].length > 3
             (1..pieces.length-1).each do |index|
-              record.errors.add(attr, I18n.t('errors.messages.invalid_currencym', { :thousands => currency.thousands_separator, :decimal => currency.decimal_mark })) unless pieces[index].length == 3
+              record.errors.add(attr, I18n.t('errors.messages.invalid_currencym',
+                                             { :thousands => currency.thousands_separator,
+                                               :decimal => currency.decimal_mark })) if pieces[index].length != 3
             end
           end
+
           # remove thousands separators
           raw_value = raw_value.to_s.gsub(currency.thousands_separator, '')
+
           # normalize decimal mark
           raw_value = raw_value.to_s.gsub(currency.decimal_mark, '.')
         end
