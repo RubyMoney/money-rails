@@ -13,7 +13,7 @@ if defined?(Mongoid) && ::Mongoid::VERSION =~ /^3(.*)/
     end
 
     context "demongoize" do
-      subject { priceable.price }
+      subject { Priceable.first.price }
       it { should be_an_instance_of(Money) }
       it { should == Money.new(100, 'EUR') }
       it "returns nil if a nil value was stored" do
