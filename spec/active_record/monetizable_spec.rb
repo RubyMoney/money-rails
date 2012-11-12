@@ -1,14 +1,19 @@
 require 'spec_helper'
 
+class Sub < Product; end
+
 if defined? ActiveRecord
   describe MoneyRails::ActiveRecord::Monetizable do
-
     describe "monetize" do
       before :each do
         @product = Product.create(:price_cents => 3000, :discount => 150,
                                   :bonus_cents => 200, :optional_price => 100,
                                   :sale_price_amount => 1200)
         @service = Service.create(:charge_cents => 2000, :discount_cents => 120)
+      end
+
+      it "should be inherited by subclasses" do
+        Sub.monetized_attributes.should == Product.monetized_attributes
       end
 
       it "attaches a Money object to model field" do
