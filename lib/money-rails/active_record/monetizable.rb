@@ -50,7 +50,9 @@ module MoneyRails
           @monetized_attributes ||= {}
           @monetized_attributes[name.to_sym] = subunit_name
           class << self
-            attr_reader :monetized_attributes
+            def monetized_attributes
+              @monetized_attributes || superclass.monetized_attributes
+            end
           end unless respond_to? :monetized_attributes
 
           # Include numericality validation if needed
