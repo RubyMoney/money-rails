@@ -15,11 +15,15 @@ class Money
 
   # Money -> Mongo friendly
   def serialize(object)
-    return nil unless object.is_a? Money
-
-    {
-      :cents        => object.cents,
-      :currency_iso => object.currency.iso_code
-    }
+    case
+    when object.is_a?(Money)
+        {
+          :cents        => object.cents,
+          :currency_iso => object.currency.iso_code
+        }
+    when object.respond_to?(:to_money)
+        serialize(object.to_money)
+    else nil
+    end
   end
 end
