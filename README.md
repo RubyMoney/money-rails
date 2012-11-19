@@ -344,7 +344,7 @@ without the cents part.
 
 ## Supported Ruby interpreters
 
-* MRI Ruby >= 1.8.7
+* MRI Ruby >= 1.9.2
 
 You can see a full list of the currently supported interpreters in [travis.yml](http://github.com/RubyMoney/money-rails/blob/master/.travis.yml)
 
