@@ -1,14 +1,19 @@
 require 'spec_helper'
 
+class Sub < Product; end
+
 if defined? ActiveRecord
   describe MoneyRails::ActiveRecord::Monetizable do
-
     describe "monetize" do
       before :each do
         @product = Product.create(:price_cents => 3000, :discount => 150,
                                   :bonus_cents => 200, :optional_price => 100,
                                   :sale_price_amount => 1200)
         @service = Service.create(:charge_cents => 2000, :discount_cents => 120)
+      end
+
+      it "should be inherited by subclasses" do
+        Sub.monetized_attributes.should == Product.monetized_attributes
       end
 
       it "attaches a Money object to model field" do
@@ -66,6 +71,23 @@ if defined? ActiveRecord
         @product.sale_price = "12,34"
         @product.sale_price_currency_code = 'EUR'
         @product.valid?.should be_true
+      end
+
+      it "fails validation with the proper error message if money value is invalid decimal" do
+        @product.price = "12.23.24"
+        @product.save.should be_false
+        @product.errors[:price].first.should match(/Must be a valid/)
+      end
+
+      it "fails validation with the proper error message if money value has invalid thousands part" do
+        @product.price = "12,23.24"
+        @product.save.should be_false
+        @product.errors[:price].first.should match(/Must be a valid/)
+      end
+
+      it "passes validation if money value has correct format" do
+        @product.price = "12,230.24"
+        @product.save.should be_true
       end
 
       it "respects numericality validation when using update_attributes on money attribute" do

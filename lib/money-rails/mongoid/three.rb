@@ -13,9 +13,9 @@ class Money
     # Get the object as it was stored in the database, and instantiate
     # this custom class from it.
     def demongoize(object)
-      if object.is_a?(Hash) && object.has_key?(:cents)
+      if object.is_a?(Hash)
         object = object.symbolize_keys
-        ::Money.new(object[:cents], object[:currency_iso])
+        object.has_key?(:cents) ? ::Money.new(object[:cents], object[:currency_iso]) : nil
       else
         nil
       end
@@ -24,11 +24,13 @@ class Money
     # Takes any possible object and converts it to how it would be
     # stored in the database.
     def mongoize(object)
-      case object
-      when Money then object.mongoize
-      when Hash then
+      case
+      when object.is_a?(Money) then object.mongoize
+      when object.is_a?(Hash) then
         object.symbolize_keys!
         ::Money.new(object[:cents], object[:currency]).mongoize
+      when object.respond_to?(:to_money) then
+          object.to_money.mongoize
       else object
       end
     end
