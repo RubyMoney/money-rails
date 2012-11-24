@@ -6,6 +6,7 @@
 - Added mongodb service test support for travis CI
 - Fixed issue with current value assignment in text_field tags (GH-37)
 - Fixed issue related to symbolized keys in Mongoid (GH-40)
+- Added monetize/demonetize methods for ActiveRecord migrations
 
 ## 0.6.0
 - Added basic support for Mongoid >= 3.0.
@@ -19,7 +20,7 @@
 - Replaced deprecated composed_of with a custom implementation for
   activerecord. (GH-20)
 - Refactored testing structure to support multiple ORMs/ODMS.
-- Added Mongoid 2.x basic support. It uses serialization 
+- Added Mongoid 2.x basic support. It uses serialization
   (a differrent approach than activerecord for now). (GH-19)
 
 ## 0.4.0

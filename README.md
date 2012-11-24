@@ -44,6 +44,31 @@ configuration parameters for the rails app.
 
 ### ActiveRecord
 
+#### Migration helpers
+
+If you want to add money field to product model you may use ```monetize``` helper. That
+helper might be customized inside ```MoneyRails.configure``` block. You should customize
+```monetize``` helper to match the most common use case and utilize it across all migrations.
+
+```ruby
+class MonetizeProduct < ActiveRecord::Migration
+  def change
+    monetize :products, :price
+
+    # OR
+
+    change_table :products do |t|
+      t.monetize :price
+    end
+  end
+end
+```
+
+```monetize``` helper is revertable, so you may use it inside ```change``` migrations.
+If you writing separate ```up``` and ```down``` methods, you may use ```demonetize``` helper.
+
+#### Usage example
+
 For example, we create a Product model which has an integer price_cents column
 and we want to handle it by using a Money object instead:
 
