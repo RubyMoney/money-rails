@@ -19,36 +19,40 @@ module MoneyRails
         if !raw_value.blank?
           # remove currency symbol, and negative sign
           currency = record.send("currency_for_#{attr}")
-          raw_value = raw_value.to_s.gsub(currency.symbol, "").gsub(/^-/, "")
+          decimal_mark = I18n.t('number.currency.format.separator', default: currency.decimal_mark)
+          thousands_separator = I18n.t('number.currency.format.delimiter', default: currency.thousands_separator)
+          symbol = I18n.t('number.currency.format.unit', default: currency.symbol)
 
-          decimal_pieces = raw_value.split(currency.decimal_mark)
+          raw_value = raw_value.to_s.gsub(symbol, "").gsub(/^-/, "")
+
+          decimal_pieces = raw_value.split(decimal_mark)
 
           # check for numbers like 12.23.45
           if decimal_pieces.length > 2
             record.errors.add(attr, I18n.t('errors.messages.invalid_currencym',
-                                           { :thousands => currency.thousands_separator,
-                                             :decimal => currency.decimal_mark }))
+                                           { :thousands => thousands_separator,
+                                             :decimal => decimal_mark }))
           end
 
-          pieces = decimal_pieces[0].split(currency.thousands_separator)
+          pieces = decimal_pieces[0].split(thousands_separator)
 
           # check for valid thousands separation
           if pieces.length > 1
             record.errors.add(attr, I18n.t('errors.messages.invalid_currencym',
-                                           { :thousands => currency.thousands_separator,
-                                             :decimal => currency.decimal_mark })) if pieces[0].length > 3
+                                           { :thousands => thousands_separator,
+                                             :decimal => decimal_mark })) if pieces[0].length > 3
             (1..pieces.length-1).each do |index|
               record.errors.add(attr, I18n.t('errors.messages.invalid_currencym',
-                                             { :thousands => currency.thousands_separator,
-                                               :decimal => currency.decimal_mark })) if pieces[index].length != 3
+                                             { :thousands => thousands_separator,
+                                               :decimal => decimal_mark })) if pieces[index].length != 3
             end
           end
 
           # remove thousands separators
-          raw_value = raw_value.to_s.gsub(currency.thousands_separator, '')
+          raw_value = raw_value.to_s.gsub(thousands_separator, '')
 
           # normalize decimal mark
-          raw_value = raw_value.to_s.gsub(currency.decimal_mark, '.')
+          raw_value = raw_value.to_s.gsub(decimal_mark, '.')
         end
         super(record, attr, raw_value)
       end
