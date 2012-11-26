@@ -1,11 +1,23 @@
 # Changelog
 
-## 0.7.0 (coming soon)
+## 0.7.0
 - Added custom validator for Money fields (GH-36)
-  TODO: decouple validator from active_record
 - Added mongodb service test support for travis CI
 - Fixed issue with current value assignment in text_field tags (GH-37)
+- Fixed concatination of subunit_name and name (to be just a joins) to
+  prevent an infinite loop
+- From now on MoneyRails is an Engine (not only a Railtie)!
+  This means it can use all the extra stuff such as localized files,
+  attached models etc.
+- Updated Money dependency version (Now we depend on 5.1.x)
+- Allow immediate subclasses to inherit monetized_attributes
+- Stopped support for MRI < 1.9.2
 - Fixed issue related to symbolized keys in Mongoid (GH-40)
+
+TODOs (for upcoming releases):
+ - decouple validator from active_record
+ - enhance validator to cover every possible case
+ - update documentation
 
 ## 0.6.0
 - Added basic support for Mongoid >= 3.0.
