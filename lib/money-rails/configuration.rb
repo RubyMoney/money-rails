@@ -43,5 +43,12 @@ module MoneyRails
     # Use (by default) validation of numericality for each monetized field.
     mattr_accessor :include_validations
     @@include_validations = true
+
+    # Default ActiveRecord migration configuration values for columns
+    mattr_accessor :amount_column
+    @@amount_column = { postfix: '_amount', type: :integer, null: false, default: 0, present: true }
+
+    mattr_accessor :currency_column
+    @@currency_column = { postfix: '_currency', type: :string, null: false, default: 'USD', present: true }
   end
 end

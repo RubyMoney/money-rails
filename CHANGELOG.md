@@ -13,6 +13,7 @@
 - Allow immediate subclasses to inherit monetized_attributes
 - Stopped support for MRI < 1.9.2
 - Fixed issue related to symbolized keys in Mongoid (GH-40)
+- Added monetize/demonetize methods for ActiveRecord migrations
 
 TODOs (for upcoming releases):
  - decouple validator from active_record
@@ -31,7 +32,7 @@ TODOs (for upcoming releases):
 - Replaced deprecated composed_of with a custom implementation for
   activerecord. (GH-20)
 - Refactored testing structure to support multiple ORMs/ODMS.
-- Added Mongoid 2.x basic support. It uses serialization 
+- Added Mongoid 2.x basic support. It uses serialization
   (a differrent approach than activerecord for now). (GH-19)
 
 ## 0.4.0
