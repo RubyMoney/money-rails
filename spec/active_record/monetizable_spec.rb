@@ -68,7 +68,7 @@ if defined? ActiveRecord
         @product.price = Money.new(320, "USD")
         @product.save.should be_true
         
-        @product.sale_price = "12,34"
+        @product.sale_price = "12.34"
         @product.sale_price_currency_code = 'EUR'
         @product.valid?.should be_true
       end
@@ -93,6 +93,24 @@ if defined? ActiveRecord
       it "respects numericality validation when using update_attributes on money attribute" do
         @product.update_attributes(:price => "some text").should be_false
         @product.update_attributes(:price => Money.new(320, 'USD')).should be_true
+      end
+
+      it "uses i18n currency format when validating" do
+        I18n.locale = "en-GB"
+        Money.default_currency = Money::Currency.find('EUR')
+        "12.00".to_money.should == Money.new(1200, :eur)
+        transaction = Transaction.new(amount: "12.00", tax: "13.00")
+        transaction.amount_cents.should == 1200        
+        transaction.valid?.should be_true
+      end
+
+      it "defaults to Money::Currency format when no I18n information is present" do
+        I18n.locale = "zxsw"
+        Money.default_currency = Money::Currency.find('EUR')
+        "12,00".to_money.should == Money.new(1200, :eur)
+        transaction = Transaction.new(amount: "12,00", tax: "13,00")
+        transaction.amount_cents.should == 1200        
+        transaction.valid?.should be_true
       end
 
       it "doesn't allow nil by default" do
