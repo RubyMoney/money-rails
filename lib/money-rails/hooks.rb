@@ -6,6 +6,11 @@ module MoneyRails
         require 'money-rails/active_model/validator'
         require 'money-rails/active_record/monetizable'
         ::ActiveRecord::Base.send :include, MoneyRails::ActiveRecord::Monetizable
+
+        %w{options_extractor schema_statements table}.each { |file| require "money-rails/active_record/migration_extensions/#{file}" }
+        ::ActiveRecord::Migration.send :include, MoneyRails::ActiveRecord::MigrationExtensions::SchemaStatements
+        ::ActiveRecord::ConnectionAdapters::TableDefinition.send :include, MoneyRails::ActiveRecord::MigrationExtensions::Table
+        ::ActiveRecord::ConnectionAdapters::Table.send :include, MoneyRails::ActiveRecord::MigrationExtensions::Table
       end
 
       # For Mongoid
