@@ -74,6 +74,10 @@ if defined? ActiveRecord
 
     describe 'remove_money' do
       before do
+        @connection.add_money :items, :price
+        @connection.add_money :items, :price_without_currency, currency: { present: false }
+        @connection.add_money :items, :price_with_full_options, amount: { prefix: :prefix_, postfix: :_postfix }, currency: { column_name: :currency }
+
         @connection.remove_money :items, :price
         @connection.remove_money :items, :price_without_currency, currency: { present: false }
         @connection.remove_money :items, :price_with_full_options, amount: { prefix: :prefix_, postfix: :_postfix }, currency: { column_name: :currency }
