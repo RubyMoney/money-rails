@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.7.1
+- Fix error when instantiating new model in mongoid extension (GH-60)
+
 ## 0.7.0
 - Added custom validator for Money fields (GH-36)
 - Added mongodb service test support for travis CI
