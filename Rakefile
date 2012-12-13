@@ -11,6 +11,10 @@ rescue Bundler::BundlerError => e
   exit e.status_code
 end
 
+APP_RAKEFILE = File.expand_path("../spec/dummy/Rakefile", __FILE__)
+
+load 'rails/tasks/engine.rake' if File.exists?(APP_RAKEFILE)
+
 require 'rake'
 require 'rspec/core/rake_task'
 
@@ -18,6 +22,14 @@ RSpec::Core::RakeTask.new
 
 task :default => "spec:all"
 task :test => :spec
+task :spec => :prepare_test_env
+
+desc "Prepare money-rails engine test environment"
+task :prepare_test_env do
+  Rake.application['app:db:drop:all'].invoke
+  Rake.application['app:db:migrate'].invoke
+  Rake.application['app:db:test:prepare'].invoke
+end
 
 namespace :spec do
   desc "Run Tests against mongoid (version 3)"
