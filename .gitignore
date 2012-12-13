@@ -7,6 +7,9 @@ Gemfile.lock
 .rbenv-version
 .ruby-version
 
+# dummy dbs
+*.sqlite3
+
 # rcov generated
 coverage
 
