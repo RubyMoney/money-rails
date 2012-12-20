@@ -27,7 +27,7 @@ class Money
       case
       when object.is_a?(Money) then object.mongoize
       when object.is_a?(Hash) then
-        object.symbolize_keys!
+        object.symbolize_keys! if object.respond_to?(:symbolize_keys!)
         ::Money.new(object[:cents], object[:currency_iso]).mongoize
       when object.respond_to?(:to_money) then
           object.to_money.mongoize
