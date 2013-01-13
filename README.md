@@ -362,6 +362,36 @@ without the cents part.
 This will render a formatted money value including the currency symbol and
 without the cents part.
 
+### Testing
+
+If you use Rspec there is an test helper implementation.
+Just write `require "money-rails/test_helpers"` in spec_helper.rb and
+`include MoneyRails::TestHelpers` inside a describe block you want to
+use the helper.
+
+* the `monetize` matcher
+
+```
+monetize(:price_cents).should be_true
+```
+This will ensure that a column called `price_cents` is being monetized.
+
+```
+monetize(:price_cents).as(:discount_value).should be_true
+```
+By using `as` chain you can specify the exact name to which a monetized
+column is being mapped.
+
+```
+monetize(:price_cents).with_currency(:gbp).should be_true
+```
+
+By using the `with_currency` chain you can specify the expected currency
+for the chosen money attribute. (You can also combine all the chains.)
+
+For examples on using the test_helpers look at
+[test_helpers_spec.rb](https://github.com/RubyMoney/money-rails/blob/master/spec/test_helpers_spec.rb)
+
 ## Supported ORMs/ODMs
 
 * ActiveRecord (>= 3.x)
