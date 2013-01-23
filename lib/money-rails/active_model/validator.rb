@@ -27,11 +27,12 @@ module MoneyRails
 
           decimal_pieces = raw_value.split(decimal_mark)
 
-          # check for numbers like 12.23.45
-          if decimal_pieces.length > 2
+          # check for numbers like '12.23.45' or '....'
+          unless [1, 2].include? decimal_pieces.length
             record.errors.add(attr, I18n.t('errors.messages.invalid_currency',
                                            { :thousands => thousands_separator,
                                              :decimal => decimal_mark }))
+            return
           end
 
           pieces = decimal_pieces[0].split(thousands_separator)
