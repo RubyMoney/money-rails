@@ -67,7 +67,7 @@ if defined? ActiveRecord
 
         @product.price = Money.new(320, "USD")
         @product.save.should be_true
-        
+
         @product.sale_price = "12.34"
         @product.sale_price_currency_code = 'EUR'
         @product.valid?.should be_true
@@ -79,10 +79,30 @@ if defined? ActiveRecord
         @product.errors[:price].first.should match(/Must be a valid/)
       end
 
+      it "fails validation with the proper error message if money value is nothing but periods" do
+        @product.price = "..."
+        @product.save.should be_false
+        @product.errors[:price].first.should match(/Must be a valid/)
+      end
+
       it "fails validation with the proper error message if money value has invalid thousands part" do
         @product.price = "12,23.24"
         @product.save.should be_false
         @product.errors[:price].first.should match(/Must be a valid/)
+      end
+
+      it "fails validation with the proper error message using numericality validations" do
+        @product.price_in_a_range = "-123"
+        @product.valid?.should be_false
+        @product.errors[:price_in_a_range].first.should match(/Must be greater than zero and less than \$10k/)
+
+        @product.price_in_a_range = "123"
+
+        @product.valid?.should be_true
+
+        @product.price_in_a_range = "10001"
+        @product.valid?.should be_false
+        @product.errors[:price_in_a_range].first.should match(/Must be greater than zero and less than \$10k/)
       end
 
       it "passes validation if money value has correct format" do
@@ -100,7 +120,7 @@ if defined? ActiveRecord
         Money.default_currency = Money::Currency.find('EUR')
         "12.00".to_money.should == Money.new(1200, :eur)
         transaction = Transaction.new(amount: "12.00", tax: "13.00")
-        transaction.amount_cents.should == 1200        
+        transaction.amount_cents.should == 1200
         transaction.valid?.should be_true
       end
 
@@ -109,7 +129,7 @@ if defined? ActiveRecord
         Money.default_currency = Money::Currency.find('EUR')
         "12,00".to_money.should == Money.new(1200, :eur)
         transaction = Transaction.new(amount: "12,00", tax: "13,00")
-        transaction.amount_cents.should == 1200        
+        transaction.amount_cents.should == 1200
         transaction.valid?.should be_true
       end
 
@@ -247,7 +267,7 @@ if defined? ActiveRecord
       end
 
       it "sets field to nil, in nil assignments if allow_nil is set" do
-        @product.optional_price = nil 
+        @product.optional_price = nil
         @product.save.should be_true
         @product.optional_price.should be_nil
       end

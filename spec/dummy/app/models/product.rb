@@ -23,4 +23,11 @@ class Product < ActiveRecord::Base
   monetize :sale_price_amount, :as => :sale_price,
              :with_model_currency => :sale_price_currency_code
 
+  monetize :price_in_a_range_cents, :allow_nil => true,
+    :numericality => {
+      :greater_than_or_equal_to => 0,
+      :less_than_or_equal_to => 10000,
+      :message => "Must be greater than zero and less than $10k"
+    }
+
 end

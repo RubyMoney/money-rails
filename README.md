@@ -114,6 +114,20 @@ product.optional_price # => nil
 product.optional_price_cents # => nil
 ```
 
+#### Numericality validation options
+
+You can also pass along
+[numericality validation options](http://guides.rubyonrails.org/active_record_validations_callbacks.html#numericality)
+such as this:
+
+```ruby
+monetize :price_in_a_range_cents, :allow_nil => true,
+  :numericality => {
+    :greater_than_or_equal_to => 0,
+    :less_than_or_equal_to => 10000
+  }
+```
+
 ### Mongoid 2.x and 3.x
 
 `Money` is available as a field type to supply during a field definition:
