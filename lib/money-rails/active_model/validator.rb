@@ -23,9 +23,10 @@ module MoneyRails
           thousands_separator = I18n.t('number.currency.format.delimiter', default: currency.thousands_separator)
           symbol = I18n.t('number.currency.format.unit', default: currency.symbol)
 
-          raw_value = raw_value.to_s.gsub(symbol, "").gsub(/^-/, "")
+          raw_value = raw_value.to_s.gsub(symbol, "")
+          abs_raw_value = raw_value.gsub(/^-/, "")
 
-          decimal_pieces = raw_value.split(decimal_mark)
+          decimal_pieces = abs_raw_value.split(decimal_mark)
 
           # check for numbers like '12.23.45' or '....'
           unless [1, 2].include? decimal_pieces.length

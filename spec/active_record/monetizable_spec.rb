@@ -91,6 +91,20 @@ if defined? ActiveRecord
         @product.errors[:price].first.should match(/Must be a valid/)
       end
 
+      it "fails validation with the proper error message using numericality validations" do
+        @product.price_in_a_range = "-123"
+        @product.valid?.should be_false
+        @product.errors[:price_in_a_range].first.should match(/Must be greater than zero and less than \$10k/)
+
+        @product.price_in_a_range = "123"
+
+        @product.valid?.should be_true
+
+        @product.price_in_a_range = "10001"
+        @product.valid?.should be_false
+        @product.errors[:price_in_a_range].first.should match(/Must be greater than zero and less than \$10k/)
+      end
+
       it "passes validation if money value has correct format" do
         @product.price = "12,230.24"
         @product.save.should be_true
