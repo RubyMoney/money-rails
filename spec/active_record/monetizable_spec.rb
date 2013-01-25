@@ -105,6 +105,18 @@ if defined? ActiveRecord
         @product.errors[:price_in_a_range].first.should match(/Must be greater than zero and less than \$10k/)
       end
 
+      it "passes validation when amount contains spaces (99 999 999.99)" do
+        @product.price = "99 999 999.99"
+        @product.should be_valid
+        @product.price_cents.should == 9999999999
+      end
+
+      it "passes validation when amount contains underscores (99_999_999.99)" do
+        @product.price = "99_999_999.99"
+        @product.should be_valid
+        @product.price_cents.should == 9999999999
+      end
+
       it "passes validation if money value has correct format" do
         @product.price = "12,230.24"
         @product.save.should be_true
