@@ -57,10 +57,17 @@ module MoneyRails
 
           # Include numericality validation if needed
           if MoneyRails.include_validations
-            validates_numericality_of subunit_name, :allow_nil => options[:allow_nil]
+            validation_options = {
+              :allow_nil => options[:allow_nil],
+              :numericality => true
+            }
+            validates subunit_name, validation_options
 
+            validation_options = { :allow_nil => options[:allow_nil] }
+            validation_options = options[:numericality].merge(validation_options) if options[:numericality]
+            
             # Allow only Money objects or Numeric values!
-            validates name.to_sym, 'money_rails/active_model/money' => { :allow_nil => options[:allow_nil] }
+            validates name.to_sym, 'money_rails/active_model/money' => validation_options
           end
 
           define_method name do |*args|
