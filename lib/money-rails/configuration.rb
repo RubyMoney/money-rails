@@ -50,5 +50,12 @@ module MoneyRails
 
     mattr_accessor :currency_column
     @@currency_column = { postfix: '_currency', type: :string, null: false, default: 'USD', present: true }
+
+    # Use nil values to ignore defaults
+    mattr_accessor :no_cents_if_whole
+    @@no_cents_if_whole = nil
+
+    mattr_accessor :symbol
+    @@symbol = nil
   end
 end
