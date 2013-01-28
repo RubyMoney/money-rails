@@ -4,7 +4,7 @@ MoneyRails.configure do |config|
 
   # To set the default currency
   #
-  #config.default_currency = :usd
+  # config.default_currency = :usd
 
   # Set default bank object
   #
@@ -21,7 +21,7 @@ MoneyRails.configure do |config|
   # To handle the inclusion of validations for monetized fields
   # The default value is true
   #
-  #config.include_validations = true
+  # config.include_validations = true
 
   # Default ActiveRecord migration configuration values for columns:
   #
