@@ -1,5 +1,6 @@
 require 'active_support/core_ext/module/delegation'
 require 'active_support/core_ext/module/attribute_accessors'
+require 'active_support/core_ext/string/inflections'
 
 module MoneyRails
 
@@ -19,14 +20,29 @@ module MoneyRails
 
     # Configuration parameters
 
+    def default_currency
+      Money.default_currency
+    end
+    
     # Set default currency of money library
     def default_currency=(currency_name)
       Money.default_currency = Money::Currency.new(currency_name)
+      set_amount_column_for_default_currency!
+      set_currecy_column_for_default_currency!
     end
 
     # Register a custom currency
     def register_currency=(currency_options)
       Money::Currency.register(currency_options)
+    end
+
+    def set_amount_column_for_default_currency!
+      amount_column.merge! postfix: "_#{default_currency.subunit.downcase.pluralize}"
+    end
+
+    def set_currecy_column_for_default_currency!
+      iso_code = default_currency.iso_code
+      currency_column.merge! default: iso_code
     end
 
     # Set default bank object

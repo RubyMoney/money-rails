@@ -45,7 +45,9 @@ if defined? ActiveRecord
         describe 'currency' do
           subject { Item.columns_hash['price_currency'] }
 
-          its (:default) { should eq 'USD' }
+          # set in spec/dummy/config/initializers/money.rb
+          its (:default) { should eq 'EUR' }
+          
           its (:null) { should be_false }
           its (:type) { should eq :string }
         end

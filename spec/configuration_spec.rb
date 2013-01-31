@@ -50,5 +50,13 @@ describe "configuration" do
       # Reset global setting
       MoneyRails.symbol = nil
     end
+
+    it "changes the amount and currency column settings based on the default currency" do
+      MoneyRails.default_currency = :inr
+      
+      MoneyRails.amount_column[:postfix].should == "_#{MoneyRails.default_currency.subunit.downcase.pluralize}"
+      MoneyRails.currency_column[:default].should == MoneyRails.default_currency.iso_code
+    end
+    
   end
 end
