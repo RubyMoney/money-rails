@@ -35,12 +35,12 @@ module MoneyRails
 
           # Form target name for the money backed ActiveModel field:
           # if a target name is provided then use it
-          # if there is a "_cents" suffix then just remove it to create the target name
+          # if there is a "_{column.postfix}" suffix then just remove it to create the target name
           # if none of the previous is the case then use a default suffix
           if name
             name = name.to_s
-          elsif subunit_name =~ /_cents$/
-            name = subunit_name.sub(/_cents$/, "")
+          elsif subunit_name =~ /#{MoneyRails::Configuration.amount_column[:postfix]}$/
+            name = subunit_name.sub(/#{MoneyRails::Configuration.amount_column[:postfix]}$/, "")
           else
             # FIXME: provide a better default
             name = [subunit_name, "money"].join("_")
