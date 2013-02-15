@@ -320,7 +320,7 @@ MoneyRails.configure do |config|
 end
 ```
 
-* ```default_currecy```: Set the default (application wide) currency (USD is the default)
+* ```default_currency```: Set the default (application wide) currency (USD is the default)
 * ```include_validations```: Permit the inclusion of a ```validates_numericality_of```
   validation for each monetized field (the default is true)
 * ```register_currency```: Register one custom currency. This option can be
