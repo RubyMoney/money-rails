@@ -28,7 +28,7 @@ module MoneyRails
     def default_currency=(currency_name)
       Money.default_currency = Money::Currency.new(currency_name)
       set_amount_column_for_default_currency!
-      set_currecy_column_for_default_currency!
+      set_currency_column_for_default_currency!
     end
 
     # Register a custom currency
@@ -40,7 +40,7 @@ module MoneyRails
       amount_column.merge! postfix: "_#{default_currency.subunit.downcase.pluralize}"
     end
 
-    def set_currecy_column_for_default_currency!
+    def set_currency_column_for_default_currency!
       iso_code = default_currency.iso_code
       currency_column.merge! default: iso_code
     end
