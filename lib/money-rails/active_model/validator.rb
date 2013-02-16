@@ -50,9 +50,10 @@ module MoneyRails
             end
           end
 
-          # Remove thousands separators, normalize decimal mark,
+          # Remove symbol, thousands separators, normalize decimal mark,
           # remove whitespaces and _ (E.g. 99 999 999 or 12_300_200.20)
           raw_value = raw_value.to_s
+            .gsub(symbol, '')
             .gsub(thousands_separator, '')
             .gsub(decimal_mark, '.')
             .gsub(/[\s_]/, '')
