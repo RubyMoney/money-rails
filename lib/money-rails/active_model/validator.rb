@@ -51,6 +51,9 @@ module MoneyRails
           # remove thousands separators
           raw_value = raw_value.to_s.gsub(thousands_separator, '')
 
+          # remove symbol
+          raw_value = raw_value.to_s.gsub(symbol, '')
+
           # normalize decimal mark
           raw_value = raw_value.to_s.gsub(decimal_mark, '.')
         end
