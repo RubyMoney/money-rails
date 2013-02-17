@@ -128,21 +128,31 @@ if defined? ActiveRecord
       end
 
       it "uses i18n currency format when validating" do
+        old_locale = I18n.locale
+
         I18n.locale = "en-GB"
         Money.default_currency = Money::Currency.find('EUR')
         "12.00".to_money.should == Money.new(1200, :eur)
         transaction = Transaction.new(amount: "12.00", tax: "13.00")
         transaction.amount_cents.should == 1200
         transaction.valid?.should be_true
+
+        # reset locale setting
+        I18n.locale = old_locale
       end
 
       it "defaults to Money::Currency format when no I18n information is present" do
+        old_locale = I18n.locale
+
         I18n.locale = "zxsw"
         Money.default_currency = Money::Currency.find('EUR')
         "12,00".to_money.should == Money.new(1200, :eur)
         transaction = Transaction.new(amount: "12,00", tax: "13,00")
         transaction.amount_cents.should == 1200
         transaction.valid?.should be_true
+
+        # reset locale setting
+        I18n.locale = old_locale
       end
 
       it "doesn't allow nil by default" do

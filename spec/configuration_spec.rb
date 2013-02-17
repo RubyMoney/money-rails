@@ -52,10 +52,14 @@ describe "configuration" do
     end
 
     it "changes the amount and currency column settings based on the default currency" do
+      old_currency = MoneyRails.default_currency
       MoneyRails.default_currency = :inr
-      
+
       MoneyRails.amount_column[:postfix].should == "_#{MoneyRails.default_currency.subunit.downcase.pluralize}"
       MoneyRails.currency_column[:default].should == MoneyRails.default_currency.iso_code
+
+      # Reset global setting
+      MoneyRails.default_currency = old_currency
     end
     
   end
