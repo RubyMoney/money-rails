@@ -54,7 +54,7 @@ namespace :spec do
   end
 end
 
-desc "Update AUTHORS file"
-task :authors do
-  sh "git shortlog -s | awk '{ print $2 \" \" $3 }' > AUTHORS"
+desc "Update CONTRIBUTORS file"
+task :contributors do
+  sh "git shortlog -s | awk '{ print $2 \" \" $3 }' > CONTRIBUTORS"
 end
