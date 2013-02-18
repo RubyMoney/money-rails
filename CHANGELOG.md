@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.8.0
+- Added defaults for amount and currency columns in database schema, based on the default currency.
+- Use a better default subunit_unit name (choose the value of column.postfix set in the config).
+- Began support of Rails 4.
+- Added global settings for money object formatted output (:no_cents_if_whole, :symbol options).
+- Enhanced money validator.
+- Added ability to use numericality validations on monetize (GH-70).
+- Fixed error caused by ActiveSupport::HashWithIndifferentAccess
+  (GH-62).
+- Added money-rails test helper (rspec matcher).
+
 ## 0.7.1
 - Fix error when instantiating new model in mongoid extension (GH-60)
 
