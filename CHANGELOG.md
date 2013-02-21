@@ -1,5 +1,7 @@
 # Changelog
 
+## master
+
 ## 0.8.0
 - Added defaults for amount and currency columns in database schema, based on the default currency.
 - Use a better default subunit_unit name (choose the value of column.postfix set in the config).

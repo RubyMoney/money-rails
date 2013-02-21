@@ -44,29 +44,6 @@ configuration parameters for the rails app.
 
 ### ActiveRecord
 
-#### Migration helpers
-
-If you want to add money field to product model you may use ```add_money``` helper. That
-helper might be customized inside ```MoneyRails.configure``` block. You should customize
-```add_money``` helper to match the most common use case and utilize it across all migrations.
-
-```ruby
-class MonetizeProduct < ActiveRecord::Migration
-  def change
-    add_money :products, :price
-
-    # OR
-
-    change_table :products do |t|
-      t.money :price
-    end
-  end
-end
-```
-
-```add_money``` helper is revertable, so you may use it inside ```change``` migrations.
-If you writing separate ```up``` and ```down``` methods, you may use ```remove_money``` helper.
-
 #### Usage example
 
 For example, we create a Product model which has an integer price_cents column
@@ -97,6 +74,29 @@ monetize :discount_subunit, :as => "discount"
 Now the model objects will have a ```discount``` attribute which
 is a Money object, wrapping the value of ```discount_subunit``` column to a
 Money instance.
+
+#### Migration helpers
+
+If you want to add money field to product model you may use ```add_money``` helper. That
+helper might be customized inside ```MoneyRails.configure``` block. You should customize
+```add_money``` helper to match the most common use case and utilize it across all migrations.
+
+```ruby
+class MonetizeProduct < ActiveRecord::Migration
+  def change
+    add_money :products, :price
+
+    # OR
+
+    change_table :products do |t|
+      t.money :price
+    end
+  end
+end
+```
+
+```add_money``` helper is revertable, so you may use it inside ```change``` migrations.
+If you writing separate ```up``` and ```down``` methods, you may use ```remove_money``` helper.
 
 #### Allow nil values
 
