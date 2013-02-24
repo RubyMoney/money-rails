@@ -95,6 +95,16 @@ class MonetizeProduct < ActiveRecord::Migration
 end
 ```
 
+Another example where the currency column is not including:
+
+```ruby
+class MonetizeItem < ActiveRecord::Migration
+  def change
+    add_money :items, :price, currency: { present: false }
+  end
+end
+```
+
 ```add_money``` helper is revertable, so you may use it inside ```change``` migrations.
 If you writing separate ```up``` and ```down``` methods, you may use ```remove_money``` helper.
 
