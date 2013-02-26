@@ -314,6 +314,26 @@ MoneyRails.configure do |config|
   #
   config.include_validations = true
 
+  # Default ActiveRecord migration configuration values for columns:
+  #
+  # config.amount_column = { prefix: '',           # column name prefix
+  #                          postfix: '_cents',    # column name  postfix
+  #                          column_name: nil,     # full column name (overrides prefix, postfix and accessor name)
+  #                          type: :integer,       # column type
+  #                          present: true,        # column will be created
+  #                          null: false,          # other options will be treated as column options
+  #                          default: 0
+  #                        }
+  #
+  # config.currency_column = { prefix: '',
+  #                            postfix: '_currency',
+  #                            column_name: nil,
+  #                            type: :string,
+  #                            present: true,
+  #                            null: false,
+  #                            default: 'USD'
+  #                          }
+
   # Register a custom currency
   #
   # config.register_currency = {
@@ -327,6 +347,13 @@ MoneyRails.configure do |config|
   #   :thousands_separator => ".",
   #   :decimal_mark        => ","
   # }
+
+  # Set money formatted output globally.
+  # Default value is nil meaning "ignore this option".
+  # Options are nil, true, false.
+  #
+  # config.no_cents_if_whole = nil
+  # config.symbol = nil
 end
 ```
 
@@ -342,6 +369,11 @@ end
   only! This rate is added to the attached bank object.
 * ```default_bank```: The default bank object holding exchange rates etc.
   (https://github.com/RubyMoney/money#currency-exchange)
+* ```no_cents_if_whole```: Force `Money#format` method to use its value as the default for ```no_cents_if_whole``` key.
+* ```symbol```: Use its value as the default for ```symbol``` key in
+  `Money#format` method.
+* ```amount_column```: Provide values for the amount column (holding the fractional part of a money object).
+* ```currency_column```: Provide default values or even disable (`present: false`) the currency column.
 
 ### Helpers
 
