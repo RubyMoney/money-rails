@@ -18,10 +18,8 @@ module MoneyRails
       if defined? ::Mongoid
         if ::Mongoid::VERSION =~ /^2(.*)/
           require 'money-rails/mongoid/two' # Loading the file is enough
-        end
-
-        if ::Mongoid::VERSION =~ /^3(.*)/
-          require 'money-rails/mongoid/three'
+        else
+          require 'money-rails/mongoid/money'
         end
       end
 
