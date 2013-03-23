@@ -23,7 +23,7 @@ module MoneyRails
     def default_currency
       Money.default_currency
     end
-    
+
     # Set default currency of money library
     def default_currency=(currency_name)
       Money.default_currency = Money::Currency.new(currency_name)
@@ -37,7 +37,7 @@ module MoneyRails
     end
 
     def set_amount_column_for_default_currency!
-      amount_column.merge! postfix: "_#{default_currency.subunit.downcase.pluralize}"
+      amount_column.merge! postfix: "_#{default_currency.subunit.downcase.pluralize}" if default_currency.subunit
     end
 
     def set_currency_column_for_default_currency!
