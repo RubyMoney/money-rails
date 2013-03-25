@@ -65,6 +65,19 @@ describe "configuration" do
       # Reset global setting
       MoneyRails.default_currency = old_currency
     end
-    
+
+    it "accepts default currency which doesn't have minor unit" do
+      old_currency = MoneyRails.default_currency
+
+      expect {
+        MoneyRails.default_currency = :jpy
+      }.to_not raise_error
+
+      MoneyRails.amount_column[:postfix].should == "_cents"
+
+      # Reset global setting
+      MoneyRails.default_currency = old_currency
+    end
+
   end
 end
