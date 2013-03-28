@@ -100,7 +100,17 @@ module MoneyRails
             end
 
             send("#{subunit_name}=", money.try(:cents))
-            send("#{instance_currency_name}=", money.try(:currency).try(:iso_code)) if self.respond_to?("#{instance_currency_name}=")
+
+            money_currency = money.try(:currency)
+
+            if self.respond_to?("#{instance_currency_name}=")
+              send("#{instance_currency_name}=", money_currency.try(:iso_code))
+            else
+              current_currency = send("currency_for_#{name}")
+              if money_currency && send("currency_for_#{name}") != money_currency
+                raise "Can't change readonly currenc currency '#{current_currency}' to '#{money_currency}' for field '#{name}'"
+              end
+            end
 
             instance_variable_set "@#{name}", money
           end
