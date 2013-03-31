@@ -391,7 +391,7 @@ This will render a `span` dom element with the default currency symbol.
 ```
 This will render a formatted money value without the currency symbol and
 without the cents part if it contains only zeros (uses
-`:no_cents_fi_whole flag`).
+`:no_cents_if_whole flag`).
 
 * humanize with symbol helper
 
