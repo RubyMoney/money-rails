@@ -8,10 +8,24 @@ describe 'MoneyRails::ActionViewExtension' do
   end
 
   describe '#humanized_money' do
-    subject { helper.humanized_money Money.new(12500) }
+    let(:options) { {} }
+    subject { helper.humanized_money Money.new(12500), options }
     it { should be_a String }
     it { should_not include Money.default_currency.symbol }
     it { should_not include Money.default_currency.decimal_mark }
+
+    context 'with symbol options' do
+      let(:options) { { :symbol => true } }
+      it { should include Money.default_currency.symbol }
+    end
+
+    context 'with deprecated symbol' do
+      let(:options) { true }
+      before(:each) do
+        helper.should_receive(:warn)
+      end
+      it { should include Money.default_currency.symbol }
+    end
   end
 
   describe '#humanized_money_with_symbol' do
@@ -22,10 +36,19 @@ describe 'MoneyRails::ActionViewExtension' do
   end
 
   describe '#money_without_cents' do
-    subject { helper.money_without_cents Money.new(12500) }
+    let(:options) { {} }
+    subject { helper.money_without_cents Money.new(12500), options }
     it { should be_a String }
     it { should_not include Money.default_currency.symbol }
     it { should_not include Money.default_currency.decimal_mark }
+
+    context 'with deprecated symbol' do
+      let(:options) { true }
+      before(:each) do
+        helper.should_receive(:warn)
+      end
+      it { should include Money.default_currency.symbol }
+    end
   end
 
   describe '#money_without_cents_and_with_symbol' do
