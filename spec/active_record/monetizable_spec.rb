@@ -103,6 +103,10 @@ if defined? ActiveRecord
         @product.price_in_a_range = "10001"
         @product.valid?.should be_false
         @product.errors[:price_in_a_range].first.should match(/Must be greater than zero and less than \$10k/)
+
+        @product.price_in_a_range = "0"
+        @product.valid?.should be_false
+        @product.errors[:price_in_a_range].first.should match(/Must be greater than zero and less than \$10k/)
       end
 
       it "passes validation when amount contains spaces (99 999 999.99)" do
