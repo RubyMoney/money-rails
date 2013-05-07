@@ -16,6 +16,12 @@ Gem::Specification.new do |s|
   s.files         += %w(CHANGELOG.md LICENSE README.md)
   s.files         += %w(Rakefile money-rails.gemspec)
 
+  s.files.delete("spec/dummy/log")
+  s.files.delete("spec/dummy/log/development.log")
+  s.files.delete("spec/dummy/log/test.log")
+  s.files.delete("spec/dummy/db/development.sqlite3")
+  s.files.delete("spec/dummy/db/test.sqlite3")
+
   s.test_files    = s.files.grep(/^spec\//)
 
   s.require_path = "lib"
