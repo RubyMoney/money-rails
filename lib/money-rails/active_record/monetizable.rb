@@ -71,16 +71,24 @@ module MoneyRails
           end
 
           define_method name do |*args|
+
+            # Get the cents
             amount = send(subunit_name, *args)
+
+            # Get the currency object
             attr_currency = send("currency_for_#{name}")
 
-            # Dont create a new Money instance if the values haven't changed
+            # Get the cached value
             memoized = instance_variable_get("@#{name}")
+
+            # Dont create a new Money instance if the values haven't been changed.
             return memoized if memoized && memoized.cents == amount &&
               memoized.currency == attr_currency
 
+            # If amount is NOT nil (or empty string) load the amount in a Money
             amount = Money.new(amount, attr_currency) unless amount.blank?
 
+            # Cache and return the value (it may be nil)
             instance_variable_set "@#{name}", amount
           end
 
@@ -89,6 +97,7 @@ module MoneyRails
             # Lets keep the before_type_cast value
             instance_variable_set "@#{name}_money_before_type_cast", value
 
+            # Use nil or get a Money object
             if options[:allow_nil] && value.blank?
               money = nil
             else
@@ -99,9 +108,13 @@ module MoneyRails
               end
             end
 
+            # Update cents
             send("#{subunit_name}=", money.try(:cents))
+
+            # Update currency iso value if there is an instance currency attribute
             send("#{instance_currency_name}=", money.try(:currency).try(:iso_code)) if self.respond_to?("#{instance_currency_name}=")
 
+            # Save and return the new Money object
             instance_variable_set "@#{name}", money
           end
 
