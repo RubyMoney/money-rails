@@ -55,6 +55,23 @@ describe "configuration" do
       MoneyRails.symbol = nil
     end
 
+    it "sets the location of the negative sign for formatted output globally" do
+      value = Money.new(-12345600, "EUR")
+      symbol = Money::Currency.find(:eur).symbol
+      value.format.should =~ /#{symbol}-/
+
+      MoneyRails.sign_before_symbol = false
+      value.format.should =~ /#{symbol}-/
+      value.format(sign_before_symbol: false).should =~ /#{symbol}-/
+
+      MoneyRails.sign_before_symbol = true
+      value.format.should =~ /-#{symbol}/
+      value.format(sign_before_symbol: true).should =~ /-#{symbol}/
+
+      # Reset global setting
+      MoneyRails.sign_before_symbol = nil
+    end
+
     it "changes the amount and currency column settings based on the default currency" do
       old_currency = MoneyRails.default_currency
       MoneyRails.default_currency = :inr
