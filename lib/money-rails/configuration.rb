@@ -73,5 +73,8 @@ module MoneyRails
 
     mattr_accessor :symbol
     @@symbol = nil
+
+    mattr_accessor :sign_before_symbol
+    @@sign_before_symbol = nil
   end
 end
