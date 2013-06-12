@@ -44,6 +44,13 @@ if defined? ActiveRecord
         @product.price_cents.should == 215
       end
 
+      it "should rise error if can't change currency" do
+        product = Product.new
+        expect {
+          product.price Money.new(10,'RUB')
+        }.to raise_error
+      end
+
       it "respects :as argument" do
         @product.discount_value.should == Money.new(150, "USD")
       end
@@ -325,6 +332,23 @@ if defined? ActiveRecord
           product = Product.create(:sale_price_amount => 1234,
                                    :sale_price_currency_code => 'CAD')
           product.sale_price.currency_as_string.should == 'CAD'
+        end
+        it 'can change currency of custom column' do
+          product = Product.create!(
+            :price => Money.new(10,'USD'),
+            :bonus => Money.new(10,'GBP'),
+            :discount => 10,
+            :sale_price_amount => 1234,
+            :sale_price_currency_code => 'USD')
+
+          product.sale_price.currency_as_string.should == 'USD'
+
+          product.sale_price = Money.new 456, 'CAD'
+          product.save
+          product.reload
+
+          product.sale_price.currency_as_string.should == 'CAD'
+          product.discount_value.currency_as_string.should == 'USD'
         end
       end
 
