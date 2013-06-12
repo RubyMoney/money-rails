@@ -354,6 +354,7 @@ MoneyRails.configure do |config|
   #
   # config.no_cents_if_whole = nil
   # config.symbol = nil
+  # config.sign_before_symbol = nil
 end
 ```
 
@@ -372,6 +373,7 @@ end
 * ```no_cents_if_whole```: Force `Money#format` method to use its value as the default for ```no_cents_if_whole``` key.
 * ```symbol```: Use its value as the default for ```symbol``` key in
   `Money#format` method.
+* ```sign_before_symbol```: Force `Money#format` to place the negative sign before the currency symbol.
 * ```amount_column```: Provide values for the amount column (holding the fractional part of a money object).
 * ```currency_column```: Provide default values or even disable (`present: false`) the currency column.
 
