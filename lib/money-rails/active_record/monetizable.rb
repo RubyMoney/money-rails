@@ -55,19 +55,53 @@ module MoneyRails
             end
           end unless respond_to? :monetized_attributes
 
-          # Include numericality validation if needed
+          # Include numericality validations if needed.
+          # There are two validation options:
+          #
+          # 1. Subunit field validation (e.g. cents should be > 100)
+          # 2. Money field validation (e.g. euros should be > 10)
+          #
+          # All the options which are available for Rails numericality
+          # validation, are also available for both types.
+          # E.g. 
+          #   monetize :price_in_a_range_cents, :allow_nil => true,
+          #     :subunit_numericality => {
+          #       :greater_than_or_equal_to => 0,
+          #       :less_than_or_equal_to => 10000,
+          #     },
+          #     :numericality => {
+          #       :greater_than_or_equal_to => 0,
+          #       :less_than_or_equal_to => 100,
+          #       :message => "Must be greater than zero and less than $100"
+          #     }
+          #
           if MoneyRails.include_validations
-            validation_options = {
-              :allow_nil => options[:allow_nil],
-              :numericality => true
-            }
-            validates subunit_name, validation_options
 
-            validation_options = { :allow_nil => options[:allow_nil] }
-            validation_options = options[:numericality].merge(validation_options) if options[:numericality]
-            
+            subunit_validation_options =
+              unless options.has_key? :subunit_numericality
+                true
+              else
+                options[:subunit_numericality]
+              end
+
+            money_validation_options =
+              unless options.has_key? :numericality
+                true
+              else
+                options[:numericality]
+              end
+
+            # This is a validation for the subunit
+            validates subunit_name, {
+              :allow_nil => options[:allow_nil],
+              :numericality => subunit_validation_options
+            }
+
             # Allow only Money objects or Numeric values!
-            validates name.to_sym, 'money_rails/active_model/money' => validation_options
+            validates name.to_sym, {
+              :allow_nil => options[:allow_nil],
+              'money_rails/active_model/money' => money_validation_options
+            }
           end
 
           define_method name do |*args|

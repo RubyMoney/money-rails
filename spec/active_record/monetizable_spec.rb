@@ -92,17 +92,37 @@ if defined? ActiveRecord
       end
 
       it "fails validation with the proper error message using numericality validations" do
-        @product.price_in_a_range = "-123"
+        @product.price_in_a_range = "-12"
         @product.valid?.should be_false
-        @product.errors[:price_in_a_range].first.should match(/Must be greater than zero and less than \$10k/)
+        @product.errors[:price_in_a_range].first.should match(/Must be greater than zero and less than \$100/)
 
-        @product.price_in_a_range = "123"
+        @product.price_in_a_range = "0"
+        @product.valid?.should be_false
+        @product.errors[:price_in_a_range].first.should match(/Must be greater than zero and less than \$100/)
 
+        @product.price_in_a_range = "12"
         @product.valid?.should be_true
 
-        @product.price_in_a_range = "10001"
+        @product.price_in_a_range = "101"
         @product.valid?.should be_false
-        @product.errors[:price_in_a_range].first.should match(/Must be greater than zero and less than \$10k/)
+        @product.errors[:price_in_a_range].first.should match(/Must be greater than zero and less than \$100/)
+      end
+
+      it "fails validation with the proper error message on the cents field " do
+        @product.price_in_a_range = "-12"
+        @product.valid?.should be_false
+        @product.errors[:price_in_a_range_cents].first.should match(/greater than 0/)
+
+        @product.price_in_a_range = "0"
+        @product.valid?.should be_false
+        @product.errors[:price_in_a_range_cents].first.should match(/greater than 0/)
+
+        @product.price_in_a_range = "12"
+        @product.valid?.should be_true
+
+        @product.price_in_a_range = "101"
+        @product.valid?.should be_false
+        @product.errors[:price_in_a_range_cents].first.should match(/less than or equal to 10000/)
       end
 
       it "passes validation when amount contains spaces (99 999 999.99)" do
