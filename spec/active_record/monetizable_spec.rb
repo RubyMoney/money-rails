@@ -365,6 +365,11 @@ if defined? ActiveRecord
           t.amount.should == Money.new(2500, "CAD")
         end
 
+        it "test instantiates correctly" do
+          @transaction.amount = Money.new(1000, "RUB")
+          @transaction.reload.amount.currency_as_string.should == "RUB"
+        end
+
         it "assigns correctly Money objects to the attribute" do
           @transaction.amount = Money.new(2500, :eur)
           @transaction.save.should be_true

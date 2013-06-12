@@ -23,13 +23,7 @@ module MoneyRails
 
           # Optional accessor to be run on an instance to detect currency 
           instance_currency_name = options[:with_model_currency] ||
-            options[:model_currency] || "currency"
-          instance_currency_name = instance_currency_name.to_s
-
-          # This attribute allows per column currency values
-          # Overrides row and default currency
-          field_currency_name = options[:with_currency] ||
-            options[:field_currency] || nil
+            options[:model_currency] || nil
 
           name = options[:as] || options[:target_name] || nil
 
@@ -37,6 +31,13 @@ module MoneyRails
           # if a target name is provided then use it
           # if there is a "_{column.postfix}" suffix then just remove it to create the target name
           # if none of the previous is the case then use a default suffix
+          
+          if instance_currency_name
+            instance_currency_name = instance_currency_name.to_s
+          else subunit_name =~ /#{MoneyRails::Configuration.amount_column[:postfix]}$/
+            instance_currency_name = subunit_name.sub(/#{MoneyRails::Configuration.amount_column[:postfix]}$/, MoneyRails::Configuration.currency_column[:postfix])
+          end 
+          
           if name
             name = name.to_s
           elsif subunit_name =~ /#{MoneyRails::Configuration.amount_column[:postfix]}$/
@@ -85,7 +86,6 @@ module MoneyRails
           end
 
           define_method "#{name}=" do |value|
-
             # Lets keep the before_type_cast value
             instance_variable_set "@#{name}_money_before_type_cast", value
 
@@ -108,8 +108,6 @@ module MoneyRails
           define_method "currency_for_#{name}" do
             if self.respond_to?(instance_currency_name) && send(instance_currency_name).present? 
               Money::Currency.find(send(instance_currency_name))
-            elsif field_currency_name
-              Money::Currency.find(field_currency_name)
             elsif self.class.respond_to?(:currency)
               self.class.currency
             else
