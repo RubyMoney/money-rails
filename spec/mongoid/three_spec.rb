@@ -10,6 +10,12 @@ if defined?(Mongoid) && ::Mongoid::VERSION =~ /^3(.*)/
     let!(:priceable_from_hash_with_indifferent_access) {
       Priceable.create(:price => {:cents=>100, :currency_iso=>"EUR"}.with_indifferent_access)
     }
+    let(:priceable_with_hash_field) {
+      Priceable.create(:price_hash => {
+        :key1 => Money.new(100, "EUR"),
+        :key2 => Money.new(200, "USD")
+      })
+    }
 
     context "mongoize" do
       it "mongoizes correctly a Money object to a hash of cents and currency" do
@@ -36,6 +42,13 @@ if defined?(Mongoid) && ::Mongoid::VERSION =~ /^3(.*)/
         priceable_from_hash_with_indifferent_access.price.cents.should == 100
         priceable_from_hash_with_indifferent_access.price.currency.should == Money::Currency.find('EUR')
       end
+    end
+
+    it "serializes correctly a Hash field containing Money objects" do
+      priceable_with_hash_field.price_hash[:key1][:cents].should == 100
+      priceable_with_hash_field.price_hash[:key2][:cents].should == 200
+      priceable_with_hash_field.price_hash[:key1][:currency_iso].should == 'EUR'
+      priceable_with_hash_field.price_hash[:key2][:currency_iso].should == 'USD'
     end
 
     context "demongoize" do

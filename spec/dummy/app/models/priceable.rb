@@ -3,5 +3,6 @@ if defined? Mongoid
     include Mongoid::Document
 
     field :price, :type => Money
+    field :price_hash, :type => Hash
   end
 end
