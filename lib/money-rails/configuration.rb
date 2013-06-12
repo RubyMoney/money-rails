@@ -62,7 +62,7 @@ module MoneyRails
 
     # Default ActiveRecord migration configuration values for columns
     mattr_accessor :amount_column
-    @@amount_column = { postfix: '_cents', type: :integer, null: false, default: 0, present: true }
+    @@amount_column = { postfix: '_cents', type: :integer, present: true }
 
     mattr_accessor :currency_column
     @@currency_column = { postfix: '_currency', type: :string, null: false, default: 'USD', present: true }

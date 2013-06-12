@@ -36,8 +36,8 @@ if defined? ActiveRecord
         describe 'amount' do
           subject { Item.columns_hash['price_cents'] }
 
-          its (:default) { should eq 0 }
-          its (:null) { should be_false }
+          its (:default) { should be_nil }
+          its (:null) { should be_true }
           its (:type) { should eq :integer }
         end
 
