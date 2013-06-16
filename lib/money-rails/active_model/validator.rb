@@ -16,11 +16,13 @@ module MoneyRails
         # Skip it if raw_value is already a Money object
         return if raw_value.is_a?(Money) || raw_value.nil?
 
-        if !raw_value.blank?
+        if raw_value.present?
           # remove currency symbol, and negative sign
           currency = record.send("currency_for_#{attr}")
-          decimal_mark = I18n.t('number.currency.format.separator', default: currency.decimal_mark)
-          thousands_separator = I18n.t('number.currency.format.delimiter', default: currency.thousands_separator)
+          decimal_mark = I18n.t('number.currency.format.separator',
+                                default: currency.decimal_mark)
+          thousands_separator = I18n.t('number.currency.format.delimiter',
+                                       default: currency.thousands_separator)
           symbol = I18n.t('number.currency.format.unit', default: currency.symbol)
 
           raw_value = raw_value.to_s.gsub(symbol, "")
@@ -57,6 +59,7 @@ module MoneyRails
             .gsub(decimal_mark, '.')
             .gsub(/[\s_]/, '')
         end
+
         super(record, attr, raw_value)
       end
     end
