@@ -2,7 +2,8 @@ class Product < ActiveRecord::Base
 
   attr_accessible :price_cents, :discount, :bonus_cents,
     :price, :discount_value, :bonus, :optional_price_cents, :optional_price,
-    :sale_price, :sale_price_amount, :sale_price_currency_code
+    :sale_price, :sale_price_amount, :sale_price_currency_code,
+    :price_in_a_range_cents, :price_in_a_range
 
   # Use USD as model level currency
   register_currency :usd

@@ -125,6 +125,24 @@ if defined? ActiveRecord
         @product.errors[:price_in_a_range_cents].first.should match(/less than or equal to 10000/)
       end
 
+      it "fails validation when a non number string is given" do
+        @product = Product.create(:price_in_a_range => "asd")
+        @product.valid?.should be_false
+        @product.errors[:price_in_a_range].first.should match(/greater than zero/)
+
+        @product = Product.create(:price_in_a_range => "asd23")
+        @product.valid?.should be_false
+        @product.errors[:price_in_a_range].first.should match(/greater than zero/)
+
+        @product = Product.create(:price => "asd")
+        @product.valid?.should be_false
+        @product.errors[:price].first.should match(/is not a number/)
+
+        @product = Product.create(:price => "asd23")
+        @product.valid?.should be_false
+        @product.errors[:price].first.should match(/is not a number/)
+      end
+
       it "passes validation when amount contains spaces (99 999 999.99)" do
         @product.price = "99 999 999.99"
         @product.should be_valid
@@ -206,10 +224,13 @@ if defined? ActiveRecord
         @product.price_money_before_type_cast.should == 10
         @product.save
         @product.price_money_before_type_cast.should be_nil
+      end
+
+      it "does not reset money_before_type_cast attr if save operation fails" do
         @product.bonus = ""
         @product.bonus_money_before_type_cast.should == ""
         @product.save.should be_false
-        @product.bonus_money_before_type_cast.should be_nil
+        @product.bonus_money_before_type_cast.should == ""
       end
 
       it "uses Money default currency if :with_currency has not been used" do
