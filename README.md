@@ -469,4 +469,4 @@ You can see a full list of the currently supported interpreters in [travis.yml](
 
 ## License
 
-MIT License. Copyright 2012 RubyMoney.
+MIT License. Copyright 2012-2013 RubyMoney.
