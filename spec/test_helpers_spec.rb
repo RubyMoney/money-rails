@@ -14,17 +14,34 @@ if defined? ActiveRecord
     end
 
     describe "monetize matcher" do
-
       it "matches model attribute without a '_cents' suffix by default" do
-        monetize(:price_cents).should be_true
+        product.should monetize(:price_cents)
       end
 
       it "matches model attribute specified by :as chain" do
-        monetize(:price_cents).as(:discount_value).should be_true
+        product.should monetize(:discount).as(:discount_value)
       end
 
       it "matches model attribute with currency specified by :with_currency chain" do
-        monetize(:price_cents).with_currency(:gbp).should be_true
+        product.should monetize(:bonus_cents).with_currency(:gbp)
+      end
+
+      it "does not match non existed attribute" do
+        product.should_not monetize(:price_fake)
+      end
+
+      it "does not match wrong currency iso" do
+        product.should_not monetize(:bonus_cents).with_currency(:usd)
+      end
+
+      it "does not match wrong money attribute name" do
+        product.should_not monetize(:bonus_cents).as(:bonussss)
+      end
+
+      context "using subject" do
+        subject { product }
+
+        it { should monetize(:price_cents) }
       end
     end
   end

@@ -17,29 +17,29 @@ module MoneyRails
       match do |target|
         matched = true
         money_attr = @as.presence || attr.to_s.sub(/_cents$/, "")
-        matched = false unless target.send(money_attr).instance_of? Money
-        if @currency_iso
-          matched = false unless target.send(money_attr.to_sym).currency.id == @currency_iso
-        end
+        matched = false if !target.respond_to?(money_attr) ||
+          !target.send(money_attr).instance_of?(Money) ||
+          (@currency_iso &&
+           target.send(money_attr.to_sym).currency.id != @currency_iso)
         matched
       end
 
       description do
-        description = "monetize #{expected}"
+        description = "monetize #{attr}"
         description << " as #{@as}" if @as
         description << " with currency #{@currency_iso}" if @currency_iso
         description
       end
 
       failure_message_for_should do |actual|
-        msg = "expected that #{actual} would be monetized"
+        msg = "expected that #{attr} of #{actual} would be monetized"
         msg << " as #{@as}" if @as
         msg << " with currency #{@currency_iso}" if @currency_iso
         msg
       end
 
       failure_message_for_should_not do |actual|
-        msg = "expected that #{actual} would not be monetized"
+        msg = "expected that #{attr} of #{actual} would not be monetized"
         msg << " as #{@as}" if @as
         msg << " with currency #{@currency_iso}" if @currency_iso
         msg
