@@ -334,6 +334,14 @@ if defined? ActiveRecord
         @service.discount.currency_as_string.should == "EUR"
       end
 
+      it "assigns the money attribute using the :with_dollars argument" do
+        @product.dollars_money = "5"
+        @product.save.should be_true
+        @product.dollars_money.cents.should == 500
+        @product.dollars_money.dollars.should == 5
+        @product.dollars_money.currency_as_string.should == "USD"
+      end
+
       it "sets field to nil, in nil assignments if allow_nil is set" do
         @product.optional_price = nil
         @product.save.should be_true
