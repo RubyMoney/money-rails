@@ -96,6 +96,10 @@ if defined? ActiveRecord
         @product.valid?.should be_false
         @product.errors[:price_in_a_range].first.should match(/Must be greater than zero and less than \$100/)
 
+        @product.price_in_a_range = Money.new(-1200, "USD")
+        @product.valid?.should be_false
+        @product.errors[:price_in_a_range].first.should match(/Must be greater than zero and less than \$100/)
+
         @product.price_in_a_range = "0"
         @product.valid?.should be_false
         @product.errors[:price_in_a_range].first.should match(/Must be greater than zero and less than \$100/)
@@ -103,7 +107,14 @@ if defined? ActiveRecord
         @product.price_in_a_range = "12"
         @product.valid?.should be_true
 
+        @product.price_in_a_range = Money.new(1200, "USD")
+        @product.valid?.should be_true
+
         @product.price_in_a_range = "101"
+        @product.valid?.should be_false
+        @product.errors[:price_in_a_range].first.should match(/Must be greater than zero and less than \$100/)
+
+        @product.price_in_a_range = Money.new(10100, "USD")
         @product.valid?.should be_false
         @product.errors[:price_in_a_range].first.should match(/Must be greater than zero and less than \$100/)
       end

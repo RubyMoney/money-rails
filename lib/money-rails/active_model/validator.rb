@@ -14,7 +14,7 @@ module MoneyRails
         raw_value = record.send(before_type_cast) if record.respond_to?(before_type_cast.to_sym)
 
         # Skip it if raw_value is already a Money object
-        return if raw_value.is_a?(Money) || raw_value.nil?
+        return if raw_value.nil?
 
         if raw_value.present?
           # remove currency symbol, and negative sign
@@ -25,7 +25,7 @@ module MoneyRails
                                        default: currency.thousands_separator)
           symbol = I18n.t('number.currency.format.unit', default: currency.symbol)
 
-          raw_value = raw_value.to_s.gsub(symbol, "")
+          raw_value = raw_value.to_s.strip.gsub(symbol, "")
           abs_raw_value = raw_value.gsub(/^-/, "")
 
           decimal_pieces = abs_raw_value.split(decimal_mark)
