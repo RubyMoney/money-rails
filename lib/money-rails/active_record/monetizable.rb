@@ -120,7 +120,7 @@ module MoneyRails
               memoized.currency == attr_currency
 
             # If amount is NOT nil (or empty string) load the amount in a Money
-            amount = Money.new(amount, attr_currency) unless amount.blank?
+            amount = (options[:with_dollars] ? Money.new_with_dollars(amount, attr_currency) : Money.new(amount, attr_currency)) unless amount.blank?
 
             # Cache and return the value (it may be nil)
             instance_variable_set "@#{name}", amount
