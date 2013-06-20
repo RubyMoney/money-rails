@@ -9,12 +9,23 @@ module MoneyRails
         subunit_attr = record.class.monetized_attributes[attr.to_sym]
         return unless record.changed_attributes.keys.include? subunit_attr
 
+        raw_value = nil
+
         # WARNING: Currently this is only defined in ActiveRecord extension!
         before_type_cast = "#{attr}_money_before_type_cast"
-        raw_value = record.send(before_type_cast) if record.respond_to?(before_type_cast.to_sym)
+        raw_value = record.send(before_type_cast) if record.respond_to?(
+          before_type_cast.to_sym)
 
-        # Skip it if raw_value is already a Money object
-        return if raw_value.nil?
+        # If raw value is nil and changed subunit is nil, then
+        # nil is a assigned value, elsewhere we should treat the
+        # subunit value as the one assigned.
+        if raw_value.nil?
+          if record.send(subunit_attr)
+            raw_value = record.send(subunit_attr)
+          end
+        end
+
+        return if options[:allow_nil] && raw_value.nil?
 
         # Skip normalization for Numeric values
         # which can directly be handled by NumericalityValidator
