@@ -16,7 +16,9 @@ module MoneyRails
         # Skip it if raw_value is already a Money object
         return if raw_value.nil?
 
-        if raw_value.present?
+        # Skip normalization for Numeric values
+        # which can directly be handled by NumericalityValidator
+        if raw_value.present? && !raw_value.is_a?(Numeric)
           # remove currency symbol, and negative sign
           currency = record.send("currency_for_#{attr}")
           decimal_mark = I18n.t('number.currency.format.separator',

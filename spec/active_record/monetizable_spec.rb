@@ -91,6 +91,22 @@ if defined? ActiveRecord
         @product.errors[:price].first.should match(/Must be a valid/)
       end
 
+      it "passes validation if money value is a Float and the currency decimal mark is not period" do
+        # The corresponding String would be "12,34" euros
+        @service.discount = 12.34
+        @service.save.should be_true
+      end
+
+       it "passes validation if money value is a Float" do
+        @product.price = 12.34
+        @product.save.should be_true
+      end
+
+      it "passes validation if money value is an Integer" do
+        @product.price = 12
+        @product.save.should be_true
+      end
+
       it "fails validation with the proper error message using numericality validations" do
         @product.price_in_a_range = "-12"
         @product.valid?.should be_false
