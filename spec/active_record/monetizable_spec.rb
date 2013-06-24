@@ -402,6 +402,7 @@ if defined? ActiveRecord
                                             :currency => :usd)
           @dummy_product1 = DummyProduct.create(:price_cents => 2400, :currency => :usd)
           @dummy_product2 = DummyProduct.create(:price_cents => 2600) # nil currency
+          @dummy_product3 = DummyProduct.create(:price_cents => 2600, :currency => :foo) # invalid currency
         end
 
         it "serializes correctly the currency to a new instance of model" do
@@ -418,6 +419,10 @@ if defined? ActiveRecord
 
         it "overrides default currency with the currency registered for the model" do
           @dummy_product2.price.currency.should == Money::Currency.find(:gbp)
+        end
+
+        it "overrides default currency with the currency registered for the model if currency is invalid" do
+          @dummy_product3.price.currency.should == Money::Currency.find(:gbp)
         end
 
         it "overrides default and model currency with the row currency" do
