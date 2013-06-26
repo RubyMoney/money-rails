@@ -32,6 +32,12 @@ namespace :spec do
     sh "BUNDLE_GEMFILE='gemfiles/mongoid2.gemfile' bundle exec rake -t spec"
   end
 
+  desc "Run Tests against rails 4"
+  task :rails4 do
+    sh "BUNDLE_GEMFILE='gemfiles/rails4.gemfile' bundle --quiet"
+    sh "BUNDLE_GEMFILE='gemfiles/rails4.gemfile' bundle exec rake -t spec"
+  end
+
   desc "Run Tests against activerecord"
   task :activerecord do
     sh "bundle --quiet"
@@ -47,6 +53,10 @@ namespace :spec do
     # Mongoid 2
     sh "BUNDLE_GEMFILE='gemfiles/mongoid2.gemfile' bundle --quiet"
     sh "BUNDLE_GEMFILE='gemfiles/mongoid2.gemfile' bundle exec rake -t spec"
+
+    # rails 4
+    sh "BUNDLE_GEMFILE='gemfiles/rails4.gemfile' bundle --quiet"
+    sh "BUNDLE_GEMFILE='gemfiles/rails4.gemfile' bundle exec rake -t spec"
 
     # ActiveRecord
     sh "bundle --quiet"
