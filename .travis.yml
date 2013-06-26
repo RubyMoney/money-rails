@@ -4,6 +4,7 @@ services: mongodb
 rvm:
   - 1.9.2
   - 1.9.3
+  - 2.0.0
   #  FIXME: failing native extensions
   #- ruby-head
   #  TODO: investigate failure
@@ -14,7 +15,8 @@ rvm:
 gemfile:
   - gemfiles/mongoid2.gemfile
   - gemfiles/mongoid3.gemfile
-  - Gemfile
+  - gemfiles/rails3.gemfile
+  - gemfiles/rails4.gemfile
 matrix:
   exclude:
     - rvm: 1.9.2
