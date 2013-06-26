@@ -8,7 +8,7 @@ if defined? ActiveRecord
       before :each do
         @product = Product.create(:price_cents => 3000, :discount => 150,
                                   :bonus_cents => 200, :optional_price => 100,
-                                  :sale_price_amount => 1200)
+                                  :sale_price_amount => 1200, :dollars => 500)
         @service = Service.create(:charge_cents => 2000, :discount_cents => 120)
       end
 
@@ -20,6 +20,7 @@ if defined? ActiveRecord
         @product.price.should be_an_instance_of(Money)
         @product.discount_value.should be_an_instance_of(Money)
         @product.bonus.should be_an_instance_of(Money)
+        @product.dollars_money.should be_an_instance_of(Money)
       end
 
       it "returns the expected money amount as a Money object" do
@@ -34,7 +35,7 @@ if defined? ActiveRecord
 
       it "assigns the correct value from a Money object using create" do
         @product = Product.create(:price => Money.new(3210, "USD"), :discount => 150,
-                                  :bonus_cents => 200, :optional_price => 100)
+                                  :bonus_cents => 200, :optional_price => 100, :dollars => 500)
         @product.valid?.should be_true
         @product.price_cents.should == 3210
       end
@@ -46,6 +47,10 @@ if defined? ActiveRecord
 
       it "respects :as argument" do
         @product.discount_value.should == Money.new(150, "USD")
+      end
+
+      it "respects :with_dollars argument" do
+        @product.dollars_money.should == Money.new(50000, "USD")
       end
 
       it "uses numericality validation" do
@@ -356,6 +361,14 @@ if defined? ActiveRecord
         @service.discount.currency_as_string.should == "EUR"
       end
 
+      it "assigns the money attribute using the :with_dollars argument" do
+        @product.dollars_money = "5"
+        @product.save.should be_true
+        @product.dollars_money.cents.should == 500
+        @product.dollars_money.dollars.should == 5
+        @product.dollars_money.currency_as_string.should == "USD"
+      end
+
       it "sets field to nil, in nil assignments if allow_nil is set" do
         @product.optional_price = nil
         @product.save.should be_true
@@ -364,7 +377,7 @@ if defined? ActiveRecord
 
       it "sets field to nil, in instantiation if allow_nil is set" do
         pr = Product.new(:optional_price => nil, :price_cents => 5320,
-          :discount => 350, :bonus_cents => 320)
+          :discount => 350, :bonus_cents => 320, :dollars => 500)
         pr.optional_price.should be_nil
         pr.save.should be_true
         pr.optional_price.should be_nil
@@ -378,7 +391,7 @@ if defined? ActiveRecord
 
       context "for column with currency:" do
         it "is overridden by instance currency" do
-          product = Product.create(:price_cents => 5320, :discount => 350, :bonus_cents => 320)
+          product = Product.create(:price_cents => 5320, :discount => 350, :bonus_cents => 320, :dollars => 500)
           product.stub(:currency) { "EUR" }
           product.bonus.currency_as_string.should == "EUR"
         end

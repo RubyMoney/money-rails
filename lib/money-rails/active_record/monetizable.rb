@@ -120,7 +120,7 @@ module MoneyRails
               memoized.currency == attr_currency
 
             # If amount is NOT nil (or empty string) load the amount in a Money
-            amount = Money.new(amount, attr_currency) unless amount.blank?
+            amount = (options[:with_dollars] ? Money.new_with_dollars(amount, attr_currency) : Money.new(amount, attr_currency)) unless amount.blank?
 
             # Cache and return the value (it may be nil)
             instance_variable_set "@#{name}", amount
@@ -143,7 +143,7 @@ module MoneyRails
             end
 
             # Update cents
-            send("#{subunit_name}=", money.try(:cents))
+            send("#{subunit_name}=", money.try(options[:with_dollars] ? :dollars : :cents))
 
             # Update currency iso value if there is an instance currency attribute
             send("#{instance_currency_name}=", money.try(:currency).try(:iso_code)) if self.respond_to?("#{instance_currency_name}=")

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130124023419) do
+ActiveRecord::Schema.define(:version => 20130618183104) do
 
   create_table "dummy_products", :force => true do |t|
     t.string   "currency"
@@ -26,13 +26,14 @@ ActiveRecord::Schema.define(:version => 20130124023419) do
   create_table "products", :force => true do |t|
     t.integer  "price_cents"
     t.integer  "discount"
-    t.datetime "created_at",                              :null => false
-    t.datetime "updated_at",                              :null => false
+    t.datetime "created_at",                                                              :null => false
+    t.datetime "updated_at",                                                              :null => false
     t.integer  "bonus_cents"
     t.integer  "optional_price_cents"
-    t.integer  "sale_price_amount",        :default => 0, :null => false
+    t.integer  "sale_price_amount",                                      :default => 0,   :null => false
     t.string   "sale_price_currency_code"
     t.integer  "price_in_a_range_cents"
+    t.decimal  "dollars",                  :precision => 8, :scale => 2, :default => 0.0
   end
 
   create_table "services", :force => true do |t|
