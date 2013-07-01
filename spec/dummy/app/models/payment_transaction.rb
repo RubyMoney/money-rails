@@ -1,6 +1,6 @@
 class PaymentTransaction < ActiveRecord::Base
 
-  attr_accessible :acquirer_id, :amount_cents, :amount_currency, :tax_cents, :tax_currency
+  attr_accessible :acquirer_id, :amount_cents, :amount_currency, :tax_cents, :tax_currency, :amount, :tax
 
   monetize :amount_cents
   monetize :tax_cents

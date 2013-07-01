@@ -457,6 +457,47 @@ if defined? ActiveRecord
       end
     end
 
+    describe "monetize with no default currency" do
+      let(:payment_transaction) {PaymentTransaction.create(amount_cents: 10000,
+                                                           amount_currency: 'GBP',
+                                                           tax_cents: 5,
+                                                           tax_currency: 'CHF') }
+
+      it "attaches a Money object to model field" do
+        payment_transaction.amount.should be_an_instance_of(Money)
+        payment_transaction.tax.should be_an_instance_of(Money)
+        payment_transaction.total.should be_an_instance_of(Money)
+      end
+
+      it "returns the expected money amount as a Money object" do
+        payment_transaction.amount.should == Money.new(10000, "GBP")
+        payment_transaction.tax.should == Money.new(5, "CHF")
+      end
+
+      it "assigns the correct value from a Money object" do
+        payment_transaction.amount = Money.new(3210, "CHF")
+        payment_transaction.save.should be_true
+        payment_transaction.amount_cents.should == 3210
+        payment_transaction.amount_currency.should == 'CHF'
+      end
+
+      it "assigns the correct value from a Money object using create" do
+        payment_transaction = PaymentTransaction.create(amount: Money.new(3210, 'GBP'),
+                                                        tax: Money.new(5, 'CHF'))
+        payment_transaction.valid?.should be_true
+        payment_transaction.amount_cents.should == 3210
+        payment_transaction.amount_currency.should == 'GBP'
+        payment_transaction.tax_cents.should == 5
+        payment_transaction.tax_currency.should == 'CHF'
+      end
+
+      it "updates correctly from a Money object using update_attributes" do
+        payment_transaction.update_attributes(amount: Money.new(215, "CHF")).should be_true
+        payment_transaction.amount_cents.should == 215
+        payment_transaction.amount_currency.should == 'CHF'
+      end
+    end
+
     describe "register_currency" do
       it "attaches currency at model level" do
         Product.currency.should == Money::Currency.find(:usd)
