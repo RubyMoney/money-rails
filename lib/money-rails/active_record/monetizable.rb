@@ -21,9 +21,9 @@ module MoneyRails
               ":with_currency or :with_model_currency")
           end
 
-          # Optional accessor to be run on an instance to detect currency 
+          # Optional accessor to be run on an instance to detect currency
           instance_currency_name = options[:with_model_currency] ||
-            options[:model_currency] || "currency"
+            options[:model_currency] || MoneyRails::Configuration.currency_column[:column_name] || "currency"
           instance_currency_name = instance_currency_name.to_s
 
           # This attribute allows per column currency values
@@ -63,7 +63,7 @@ module MoneyRails
           #
           # All the options which are available for Rails numericality
           # validation, are also available for both types.
-          # E.g. 
+          # E.g.
           #   monetize :price_in_a_range_cents, :allow_nil => true,
           #     :subunit_numericality => {
           #       :greater_than_or_equal_to => 0,
