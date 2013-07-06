@@ -396,6 +396,12 @@ if defined? ActiveRecord
         end
       end
 
+      context 'subunit set in constructor' do
+        it 'does not care about order of arguments' do
+          DummyProduct.create(:price => 123, :currency => :jpy).price_cents.should == DummyProduct.create(:currency => :jpy, :price => 123).price_cents
+        end
+      end
+
       context "for model with currency column:" do
         before :each do
           @transaction = Transaction.create(:amount_cents => 2400, :tax_cents => 600,
