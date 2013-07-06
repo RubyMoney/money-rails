@@ -169,6 +169,13 @@ module MoneyRails
             instance_variable_get "@#{name}_money_before_type_cast"
           end
 
+          class_eval do
+            def assign_attributes(new_attributes, options = {})
+              self.currency = new_attributes[:currency] if new_attributes[:currency]
+              super(new_attributes, options)
+            end
+          end
+
           # Hook to ensure the reset of before_type_cast attr
           # TODO: think of a better way to avoid this
           after_save do
