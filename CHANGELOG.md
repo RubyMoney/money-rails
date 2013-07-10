@@ -2,7 +2,14 @@
 
 ## master
 
-## 0.8.0
+## 0.8.1
+- Remove unnecessary files from gem build.
+- Add options to ActionView helpers that enable the usage of any of the rules ::Money.format allows.
+- Fix "setting amount_column for default_currency" to only accept
+  postfix for default_currency with subunit.
+- Add mongoid 4 support.
+
+## 0.8.0 (yanked)
 - Added defaults for amount and currency columns in database schema, based on the default currency.
 - Use a better default subunit_unit name (choose the value of column.postfix set in the config).
 - Began support of Rails 4.
