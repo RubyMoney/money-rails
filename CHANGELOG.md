@@ -1,6 +1,15 @@
 # Changelog
 
-## master
+## master (next release)
+- Add testing tasks for rails 4.x
+- Fix issue with Numeric values in MoneyValidator (GH-83).
+- Fix test helper
+- Fix issue with money validator (GH-102).
+- Change validation logic. Support Subunit and Money field
+  validation with NumericalityValidator options.
+  Moreover, now Money objects are normalized and pass through
+  all validation steps.
+- Add support for the global configuration of the sign_before_setting formatting option.
 
 ## 0.8.1
 - Remove unnecessary files from gem build.
