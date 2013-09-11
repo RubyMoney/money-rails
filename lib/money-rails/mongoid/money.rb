@@ -3,8 +3,8 @@ class Money
   # Converts an object of this instance into a database friendly value.
   def mongoize
     {
-      :cents        => cents,
-      :currency_iso => currency.iso_code
+      :cents        => cents.mongoize,
+      :currency_iso => currency.iso_code.mongoize
     }
   end
 

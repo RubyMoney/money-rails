@@ -10,6 +10,7 @@ if defined?(Mongoid) && ::Mongoid::VERSION =~ /^3(.*)/
     let!(:priceable_from_hash_with_indifferent_access) {
       Priceable.create(:price => {:cents=>100, :currency_iso=>"EUR"}.with_indifferent_access)
     }
+    let(:priceable_with_infinite_precision) { Priceable.create(:price => Money.new(BigDecimal.new('100.1'), 'EUR')) }
     let(:priceable_with_hash_field) {
       Priceable.create(:price_hash => {
         :key1 => Money.new(100, "EUR"),
@@ -41,6 +42,21 @@ if defined?(Mongoid) && ::Mongoid::VERSION =~ /^3(.*)/
       it "mongoizes correctly a HashWithIndifferentAccess of cents and currency" do
         priceable_from_hash_with_indifferent_access.price.cents.should == 100
         priceable_from_hash_with_indifferent_access.price.currency.should == Money::Currency.find('EUR')
+      end
+
+      context "infinite_precision = true" do
+        before do
+          Money.infinite_precision = true
+        end
+
+        after do
+          Money.infinite_precision = false
+        end
+
+        it "mongoizes correctly a Money object to a hash of cents and currency" do
+          priceable_with_infinite_precision.price.cents.should == BigDecimal.new('100.1')
+          priceable_with_infinite_precision.price.currency.should == Money::Currency.find('EUR')
+        end
       end
     end
 

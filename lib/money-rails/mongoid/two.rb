@@ -17,12 +17,12 @@ class Money
   def serialize(object)
     case
     when object.is_a?(Money)
-        {
-          :cents        => object.cents,
-          :currency_iso => object.currency.iso_code
-        }
+      {
+        :cents        => object.cents.is_a?(BigDecimal) ? object.cents.to_s : object.cents,
+        :currency_iso => object.currency.iso_code
+      }
     when object.respond_to?(:to_money)
-        serialize(object.to_money)
+      serialize(object.to_money)
     else nil
     end
   end

@@ -6,6 +6,7 @@ if defined?(Mongoid) && ::Mongoid::VERSION =~ /^2(.*)/
     let(:priceable) { Priceable.create(:price => Money.new(100, 'EUR')) }
     let(:priceable_from_num) { Priceable.create(:price => 1) }
     let(:priceable_from_string) { Priceable.create(:price => '1 EUR' )}
+    let(:priceable_with_infinite_precision) { Priceable.create(:price => Money.new(BigDecimal.new('100.1'), 'EUR')) }
 
     context "serialize" do
       it "serializes correctly a Money object to a hash of cents and currency" do
@@ -21,6 +22,21 @@ if defined?(Mongoid) && ::Mongoid::VERSION =~ /^2(.*)/
       it "mongoizes correctly a String object to a hash of cents and currency" do
         priceable_from_string.price.cents.should == 100
         priceable_from_string.price.currency.should == Money::Currency.find('EUR')
+      end
+
+      context "infinite_precision = true" do
+        before do
+          Money.infinite_precision = true
+        end
+
+        after do
+          Money.infinite_precision = false
+        end
+
+        it "mongoizes correctly a Money object to a hash of cents and currency" do
+          priceable_with_infinite_precision.price.cents.should == BigDecimal.new('100.1')
+          priceable_with_infinite_precision.price.currency.should == Money::Currency.find('EUR')
+        end
       end
     end
 
