@@ -25,8 +25,8 @@ module MoneyRails
       end
     end
 
-    def humanized_money_with_symbol(value)
-      humanized_money(value, :symbol => true)
+    def humanized_money_with_symbol(value, options={})
+      humanized_money(value, options.merge(:symbol => true))
     end
 
     def money_without_cents(value, options={})
