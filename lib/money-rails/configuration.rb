@@ -51,7 +51,7 @@ module MoneyRails
     #   MoneyRails.configure do |config|
     #     config.default_bank = EuCentralBank.new
     #   end
-    delegate :default_bank=, :to => :Money
+    delegate :default_bank=, :default_bank, :to => :Money
 
     # Provide exchange rates
     delegate :add_rate, :to => :Money

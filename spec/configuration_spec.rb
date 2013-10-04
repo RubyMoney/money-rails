@@ -96,5 +96,15 @@ describe "configuration" do
       MoneyRails.default_currency = old_currency
     end
 
+    it "assigns a default bank" do
+      old_bank = MoneyRails.default_bank
+
+      bank = Money::Bank::VariableExchange.new
+      MoneyRails.default_bank = bank
+      expect(Money.default_bank).to eq(bank)
+
+      MoneyRails.default_bank = old_bank
+    end
+
   end
 end
