@@ -40,6 +40,17 @@ $ rails g money_rails:initializer
 There, you can define the default currency value and set other
 configuration parameters for the rails app.
 
+### Setup for money-rails development
+
+Our tests are executed with several ORMs - see `Rakefile` for details. To install all required gems run these:
+
+    bundle install --gemfile=gemfiles/mongoid2.gemfile
+    bundle install --gemfile=gemfiles/mongoid3.gemfile
+    bundle install --gemfile=gemfiles/rails3.gemfile
+    bundle install --gemfile=gemfiles/rails4.gemfile
+
+Then you can run the test suite with `rake`,
+
 ## Usage
 
 ### ActiveRecord

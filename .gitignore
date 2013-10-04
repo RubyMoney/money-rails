@@ -5,6 +5,7 @@ Gemfile.lock
 # RVM / rbenv version files
 .rvmrc
 .rbenv-version
+.ruby-version
 
 # rcov generated
 coverage
