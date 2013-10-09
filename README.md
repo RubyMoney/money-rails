@@ -138,7 +138,7 @@ product.optional_price_cents # => nil
 #### Numericality validation options
 
 You can also pass along
-[numericality validation options](http://guides.rubyonrails.org/active_record_validations_callbacks.html#numericality)
+[numericality validation options](http://guides.rubyonrails.org/active_record_validations.html#numericality)
 such as this:
 
 ```ruby
