@@ -146,7 +146,12 @@ module MoneyRails
             send("#{subunit_name}=", money.try(:cents))
 
             # Update currency iso value if there is an instance currency attribute
-            send("#{instance_currency_name}=", money.try(:currency).try(:iso_code)) if self.respond_to?("#{instance_currency_name}=")
+            if self.respond_to?("#{instance_currency_name}=")
+              send("#{instance_currency_name}=", money.try(:currency).try(:iso_code))
+            elsif self.respond_to?("#{name}#{MoneyRails::Configuration.currency_column[:postfix]}=")
+              send("#{name}#{MoneyRails::Configuration.currency_column[:postfix]}=", money.try(:currency).try(:iso_code))
+            end
+
 
             # Save and return the new Money object
             instance_variable_set "@#{name}", money
@@ -160,6 +165,8 @@ module MoneyRails
               Money::Currency.find(field_currency_name)
             elsif self.class.respond_to?(:currency)
               self.class.currency
+            elsif self.respond_to?("#{name}#{MoneyRails::Configuration.currency_column[:postfix]}")
+              Money::Currency.find(self.send("#{name}#{MoneyRails::Configuration.currency_column[:postfix]}"))
             else
               Money.default_currency
             end
