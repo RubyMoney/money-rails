@@ -10,41 +10,26 @@ module MoneyRails
       module ClassMethods
         def monetize(field, *args)
           options = args.extract_options!
+          show_deprecation_warnings(options)
 
           # Stringify model field name
           subunit_name = field.to_s
 
-          if options[:field_currency] || options[:target_name] ||
-            options[:model_currency]
-            ActiveSupport::Deprecation.warn("You are using the old " \
-              "argument keys of monetize command! Instead use :as, " \
-              ":with_currency or :with_model_currency")
-          end
+          name = money_name(options, subunit_name)
 
           # Optional accessor to be run on an instance to detect currency
-          instance_currency_name = options[:with_model_currency] ||
-            options[:model_currency] || MoneyRails::Configuration.currency_column[:column_name] || "currency"
+          instance_currency_name =
+            options[:with_model_currency] ||
+            options[:model_currency] ||
+            name + MoneyRails::Configuration.currency_column[:postfix] ||
+            ""
+
           instance_currency_name = instance_currency_name.to_s
 
           # This attribute allows per column currency values
           # Overrides row and default currency
           field_currency_name = options[:with_currency] ||
             options[:field_currency] || nil
-
-          name = options[:as] || options[:target_name] || nil
-
-          # Form target name for the money backed ActiveModel field:
-          # if a target name is provided then use it
-          # if there is a "_{column.postfix}" suffix then just remove it to create the target name
-          # if none of the previous is the case then use a default suffix
-          if name
-            name = name.to_s
-          elsif subunit_name =~ /#{MoneyRails::Configuration.amount_column[:postfix]}$/
-            name = subunit_name.sub(/#{MoneyRails::Configuration.amount_column[:postfix]}$/, "")
-          else
-            # FIXME: provide a better default
-            name = [subunit_name, "money"].join("_")
-          end
 
           # Create a reverse mapping of the monetized attributes
           @monetized_attributes ||= {}
@@ -146,16 +131,23 @@ module MoneyRails
             send("#{subunit_name}=", money.try(:cents))
 
             # Update currency iso value if there is an instance currency attribute
-            send("#{instance_currency_name}=", money.try(:currency).try(:iso_code)) if self.respond_to?("#{instance_currency_name}=")
+            if self.respond_to?("#{instance_currency_name}=")
+              send("#{instance_currency_name}=", money.try(:currency).try(:iso_code))
+            elsif self.respond_to?("currency=")
+              send("currency=", money.try(:currency).try(:iso_code))
+            end
 
             # Save and return the new Money object
             instance_variable_set "@#{name}", money
           end
 
           define_method "currency_for_#{name}" do
+
             if self.respond_to?(instance_currency_name) && send(instance_currency_name).present? &&
                 Money::Currency.find(send(instance_currency_name))
               Money::Currency.find(send(instance_currency_name))
+            elsif self.respond_to?(:currency) && send(:currency).present? && Money::Currency.find(send(:currency))
+              Money::Currency.find(send(:currency))
             elsif field_currency_name
               Money::Currency.find(field_currency_name)
             elsif self.class.respond_to?(:currency)
@@ -189,6 +181,36 @@ module MoneyRails
             end
           end
         end
+
+        private
+
+        def show_deprecation_warnings(options)
+          if options[:field_currency] || options[:target_name] ||
+            options[:model_currency]
+            ActiveSupport::Deprecation.warn("You are using the old " \
+              "argument keys of monetize command! Instead use :as, " \
+              ":with_currency or :with_model_currency")
+          end
+        end
+
+        def money_name(options, subunit_name)
+          name = options[:as] || options[:target_name] || nil
+
+          # Form target name for the money backed ActiveModel field:
+          # if a target name is provided then use it
+          # if there is a "_{column.postfix}" suffix then just remove it to create the target name
+          # if none of the previous is the case then use a default suffix
+          if name
+            name = name.to_s
+          elsif subunit_name =~ /#{MoneyRails::Configuration.amount_column[:postfix]}$/
+            name = subunit_name.sub(/#{MoneyRails::Configuration.amount_column[:postfix]}$/, "")
+          else
+            # FIXME: provide a better default
+            name = [subunit_name, "money"].join("_")
+          end
+          name
+        end
+
       end
     end
   end

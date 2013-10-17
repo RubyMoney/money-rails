@@ -277,83 +277,83 @@ if defined? ActiveRecord
         @product.price = Money.new(2500, :USD)
         @product.save.should be_true
         @product.price.cents.should == 2500
-        @product.price.currency_as_string.should == "USD"
+        @product.price.should have_currency "USD"
       end
 
       it "assigns correctly Fixnum objects to the attribute" do
         @product.price = 25
         @product.save.should be_true
         @product.price.cents.should == 2500
-        @product.price.currency_as_string.should == "USD"
+        @product.price.should have_currency "USD"
 
         @service.discount = 2
         @service.save.should be_true
         @service.discount.cents.should == 200
-        @service.discount.currency_as_string.should == "EUR"
+        @service.discount.should have_currency "EUR"
       end
 
       it "assigns correctly String objects to the attribute" do
         @product.price = "25"
         @product.save.should be_true
         @product.price.cents.should == 2500
-        @product.price.currency_as_string.should == "USD"
+        @product.price.should have_currency "USD"
 
         @service.discount = "2"
         @service.save.should be_true
         @service.discount.cents.should == 200
-        @service.discount.currency_as_string.should == "EUR"
+        @service.discount.should have_currency "EUR"
       end
 
       it "overrides default, model currency with the value of :with_currency in fixnum assignments" do
         @product.bonus = 25
         @product.save.should be_true
         @product.bonus.cents.should == 2500
-        @product.bonus.currency_as_string.should == "GBP"
+        @product.bonus.should have_currency "GBP"
 
         @service.charge = 2
         @service.save.should be_true
         @service.charge.cents.should == 200
-        @service.charge.currency_as_string.should == "USD"
+        @service.charge.should have_currency "USD"
       end
 
       it "overrides default, model currency with the value of :with_currency in string assignments" do
         @product.bonus = "25"
         @product.save.should be_true
         @product.bonus.cents.should == 2500
-        @product.bonus.currency_as_string.should == "GBP"
+        @product.bonus.should have_currency "GBP"
 
         @service.charge = "2"
         @service.save.should be_true
         @service.charge.cents.should == 200
-        @service.charge.currency_as_string.should == "USD"
+        @service.charge.should have_currency "USD"
       end
 
       it "overrides default currency with model currency, in fixnum assignments" do
         @product.discount_value = 5
         @product.save.should be_true
         @product.discount_value.cents.should == 500
-        @product.discount_value.currency_as_string.should == "USD"
+        @product.discount_value.should have_currency "USD"
       end
 
       it "overrides default currency with model currency, in string assignments" do
         @product.discount_value = "5"
         @product.save.should be_true
         @product.discount_value.cents.should == 500
-        @product.discount_value.currency_as_string.should == "USD"
+        @product.discount_value.should have_currency "USD"
       end
 
       it "falls back to default currency, in fixnum assignments" do
         @service.discount = 5
         @service.save.should be_true
         @service.discount.cents.should == 500
-        @service.discount.currency_as_string.should == "EUR"
+        @service.discount.should have_currency "EUR"
       end
 
       it "falls back to default currency, in string assignments" do
         @service.discount = "5"
         @service.save.should be_true
         @service.discount.cents.should == 500
-        @service.discount.currency_as_string.should == "EUR"
+        @service.discount.should have_currency "EUR"
       end
 
       it "sets field to nil, in nil assignments if allow_nil is set" do
@@ -380,7 +380,7 @@ if defined? ActiveRecord
         it "is overridden by instance currency" do
           product = Product.create(:price_cents => 5320, :discount => 350, :bonus_cents => 320)
           product.stub(:currency) { "EUR" }
-          product.bonus.currency_as_string.should == "EUR"
+          product.bonus.should have_currency "EUR"
         end
       end
 
@@ -392,7 +392,7 @@ if defined? ActiveRecord
         it "is overridden by instance currency column" do
           product = Product.create(:sale_price_amount => 1234,
                                    :sale_price_currency_code => 'CAD')
-          product.sale_price.currency_as_string.should == 'CAD'
+          product.sale_price.should have_currency 'CAD'
         end
       end
 
@@ -442,12 +442,12 @@ if defined? ActiveRecord
           @transaction.amount = Money.new(2500, :eur)
           @transaction.save.should be_true
           @transaction.amount.cents.should == Money.new(2500, :eur).cents
-          @transaction.amount.currency_as_string.should == "EUR"
+          @transaction.amount.should have_currency "EUR"
         end
 
         it "uses default currency if a non Money object is assigned to the attribute" do
           @transaction.amount = 234
-          @transaction.amount.currency_as_string.should == "USD"
+          @transaction.amount.should have_currency "USD"
         end
 
         it "constructs the money object from the mapped method value" do
@@ -463,5 +463,31 @@ if defined? ActiveRecord
         DummyProduct.currency.should == Money::Currency.find(:gbp)
       end
     end
+
+    context "for column with model currency with default name:" do
+      it "has default currency if not specified" do
+        product = Product.create(:stock_value_cents => 1234)
+        product.stock_value.currency_as_string == 'USD'
+      end
+
+      it "is overridden by instance currency column" do
+        product = Product.create(:stock_value_cents => 1234,
+          :stock_value_currency => 'CAD')
+        product.stock_value.should have_currency 'CAD'
+      end
+
+      it "saves the currency when assigned" do
+        product = Product.create(:stock_value_cents => 1234,
+          :stock_value_currency => 'CAD')
+
+        product.stock_value = Money.new(1234, 'CHF')
+        product.save(validate: false)
+        product.reload
+
+        product.stock_value.should have_currency 'CHF'
+      end
+
+    end
   end
+
 end
