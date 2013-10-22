@@ -20,9 +20,6 @@ ActiveRecord::Schema.define(:version => 20130124023419) do
     t.datetime "updated_at",  :null => false
   end
 
-  create_table "items", :force => true do |t|
-  end
-
   create_table "products", :force => true do |t|
     t.integer  "price_cents"
     t.integer  "discount"
