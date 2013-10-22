@@ -376,14 +376,6 @@ if defined? ActiveRecord
         @product.optional_price.should be_nil
       end
 
-      context "for column with currency:" do
-        it "is overridden by instance currency" do
-          product = Product.create(:price_cents => 5320, :discount => 350, :bonus_cents => 320)
-          product.stub(:currency) { "EUR" }
-          product.bonus.currency_as_string.should == "EUR"
-        end
-      end
-
       context "for column with model currency:" do
         it "has default currency if not specified" do
           product = Product.create(:sale_price_amount => 1234)

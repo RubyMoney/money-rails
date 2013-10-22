@@ -23,8 +23,11 @@ module MoneyRails
 
           # Optional accessor to be run on an instance to detect currency
           instance_currency_name = options[:with_model_currency] ||
-            options[:model_currency] || MoneyRails::Configuration.currency_column[:column_name] || "currency"
-          instance_currency_name = instance_currency_name.to_s
+            options[:model_currency] ||
+            MoneyRails::Configuration.currency_column[:column_name]
+
+          instance_currency_name = instance_currency_name &&
+            instance_currency_name.to_s
 
           # This attribute allows per column currency values
           # Overrides row and default currency
@@ -146,15 +149,23 @@ module MoneyRails
             send("#{subunit_name}=", money.try(:cents))
 
             # Update currency iso value if there is an instance currency attribute
-            send("#{instance_currency_name}=", money.try(:currency).try(:iso_code)) if self.respond_to?("#{instance_currency_name}=")
+            if instance_currency_name.present? &&
+              self.respond_to?("#{instance_currency_name}=")
+
+              send("#{instance_currency_name}=",
+                   money.try(:currency).try(:iso_code))
+            end
 
             # Save and return the new Money object
             instance_variable_set "@#{name}", money
           end
 
           define_method "currency_for_#{name}" do
-            if self.respond_to?(instance_currency_name) && send(instance_currency_name).present? &&
-                Money::Currency.find(send(instance_currency_name))
+            if instance_currency_name.present? &&
+              self.respond_to?(instance_currency_name) &&
+              send(instance_currency_name).present? &&
+              Money::Currency.find(send(instance_currency_name))
+
               Money::Currency.find(send(instance_currency_name))
             elsif field_currency_name
               Money::Currency.find(field_currency_name)
