@@ -154,6 +154,13 @@ monetize :price_in_a_range_cents, :allow_nil => true,
   }
 ```
 
+Or, if you prefer, you can skip validations entirely for the attribute. This is useful if chosen attributes
+are aggregate methods and you wish to avoid executing them on every record save.
+
+```ruby
+monetize :price_in_a_range_cents, :disable_validation => true
+```
+
 ### Mongoid 2.x and 3.x
 
 `Money` is available as a field type to supply during a field definition:
