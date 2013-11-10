@@ -78,7 +78,7 @@ module MoneyRails
           #       :message => "Must be greater than zero and less than $100"
           #     }
           #
-          if MoneyRails.include_validations
+          if MoneyRails.include_validations && !options[:disable_validation]
 
             subunit_validation_options =
               unless options.has_key? :subunit_numericality
