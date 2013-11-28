@@ -128,6 +128,11 @@ monetized field, you can use the `:allow_nil` parameter like this:
 # in Product model
 monetize :optional_price_cents, :allow_nil => true
 
+# in Migration
+def change
+  add_money :products, :optional_price, amount: { null: true, default: nil }
+end
+
 # then blank assignments are permitted
 product.optional_price = nil
 product.save # returns without errors
