@@ -29,10 +29,8 @@ MoneyRails.configure do |config|
   #                          postfix: '_cents',    # column name  postfix
   #                          column_name: nil,     # full column name (overrides prefix, postfix and accessor name)
   #                          type: :integer,       # column type
-  #                          present: true,        # column will be created
-  #                          null: false,          # other options will be treated as column options
-  #                          default: 0
-  #                        }
+  #                          present: true         # column will be created
+  #                        }                       # other options will be treated as column options
   #
   # config.currency_column = { prefix: '',
   #                            postfix: '_currency',
