@@ -2,7 +2,7 @@ script: "bundle exec rake spec"
 language: ruby
 services: mongodb
 rvm:
-  - 1.9.2
+  #- 1.9.2
   - 1.9.3
   - 2.0.0
   #  FIXME: failing native extensions
@@ -11,7 +11,7 @@ rvm:
   #  This is an arbitrary failure on travis
   #- jruby-19mode
   #- jruby-head
-  - rbx-19mode
+  #- rbx-19mode
 gemfile:
   - gemfiles/mongoid2.gemfile
   - gemfiles/mongoid3.gemfile
