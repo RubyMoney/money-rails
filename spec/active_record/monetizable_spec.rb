@@ -59,6 +59,11 @@ if defined? ActiveRecord
         product.save.should be_true
       end
 
+      it "skips numericality validation when disabled" do
+        product.invalid_price_cents = 'not_valid'
+        product.save.should be_true
+      end
+
       it "respects numericality validation when using update_attributes" do
         product.update_attributes(:price_cents => "some text").should be_false
         product.update_attributes(:price_cents => 2000).should be_true
