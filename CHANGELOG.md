@@ -1,6 +1,7 @@
 # Changelog
 
 ## master (next release)
+- Raise error when trying to change model based currency
 - Add testing tasks for rails 4.x
 - Fix issue with Numeric values in MoneyValidator (GH-83).
 - Fix test helper
