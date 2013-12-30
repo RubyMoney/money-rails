@@ -292,8 +292,9 @@ currency, whereas ```product.discount.currency_as_string # => EUR ```
 All the previous options do not require any extra model field to hold
 currency values. If you need to provide differrent currency per model
 instance, then you need to add a column with the name ```currency```
-in your db table. Money-rails will discover this automatically,
-and will use this knowledge to override the model level and global
+in your db table. You should specify ```with_model_currency``` as an argument
+to the ```monetize``` macro.
+Money-rails will use this knowledge to override the model level and global
 default values. Non-nil instance currency values also override attribute
 currency values, so they have the highest precedence.
 
@@ -306,8 +307,8 @@ class Transaction < ActiveRecord::Base
   # Use model level currency
   register_currency :gbp
 
-  monetize :amount_cents
-  monetize :tax_cents
+  monetize :amount_cents, with_model_currency: :amount_currency
+  monetize :tax_cents, with_model_currency: :tax_currency
 
 end
 
