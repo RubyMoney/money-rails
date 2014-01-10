@@ -78,3 +78,6 @@ module MoneyRails
     end
   end
 end
+
+# Compatibility with ActiveModel validates method which matches option keys to their validator class
+ActiveModel::Validations::MoneyValidator = MoneyRails::ActiveModel::MoneyValidator

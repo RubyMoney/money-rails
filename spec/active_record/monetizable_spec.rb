@@ -150,6 +150,34 @@ if defined? ActiveRecord
         product.errors[:price_in_a_range].first.should match(/Must be greater than zero and less than \$100/)
       end
 
+      it "fails validation with the proper error message using validates :money" do
+        product.validates_method_amount = "-12"
+        product.valid?.should be_false
+        product.errors[:validates_method_amount].first.should match(/Must be greater than zero and less than \$100/)
+
+        product.validates_method_amount = Money.new(-1200, "USD")
+        product.valid?.should be_false
+        product.errors[:validates_method_amount].first.should match(/Must be greater than zero and less than \$100/)
+
+        product.validates_method_amount = "0"
+        product.valid?.should be_false
+        product.errors[:validates_method_amount].first.should match(/Must be greater than zero and less than \$100/)
+
+        product.validates_method_amount = "12"
+        product.valid?.should be_true
+
+        product.validates_method_amount = Money.new(1200, "USD")
+        product.valid?.should be_true
+
+        product.validates_method_amount = "101"
+        product.valid?.should be_false
+        product.errors[:validates_method_amount].first.should match(/Must be greater than zero and less than \$100/)
+
+        product.validates_method_amount = Money.new(10100, "USD")
+        product.valid?.should be_false
+        product.errors[:validates_method_amount].first.should match(/Must be greater than zero and less than \$100/)
+      end
+
       it "fails validation with the proper error message on the cents field " do
         product.price_in_a_range = "-12"
         product.valid?.should be_false
