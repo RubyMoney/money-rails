@@ -6,6 +6,7 @@ if defined?(Mongoid) && ::Mongoid::VERSION =~ /^3(.*)/
     let!(:priceable) { Priceable.create(:price => Money.new(100, 'EUR')) }
     let!(:priceable_from_num) { Priceable.create(:price => 1) }
     let!(:priceable_from_string) { Priceable.create(:price => '1 EUR' )}
+    let!(:priceable_from_string_with_hyphen) { Priceable.create(:price => '1-2 EUR' )}
     let!(:priceable_from_hash) { Priceable.create(:price => {:cents=>100, :currency_iso=>"EUR"} )}
     let!(:priceable_from_hash_with_indifferent_access) {
       Priceable.create(:price => {:cents=>100, :currency_iso=>"EUR"}.with_indifferent_access)
@@ -32,6 +33,10 @@ if defined?(Mongoid) && ::Mongoid::VERSION =~ /^3(.*)/
       it "mongoizes correctly a String object to a hash of cents and currency" do
         priceable_from_string.price.cents.should == 100
         priceable_from_string.price.currency.should == Money::Currency.find('EUR')
+      end
+
+      it "does not mongoizes correctly a String with hyphen in its middle" do
+        priceable_from_string_with_hyphen.price.should == nil
       end
 
       it "mongoizes correctly a hash of cents and currency" do
