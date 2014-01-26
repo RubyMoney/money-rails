@@ -1,7 +1,5 @@
 source 'https://rubygems.org'
 
-gem "pry"
-
 gemspec
 
 platforms :jruby do
@@ -24,6 +22,7 @@ platform :mri do
 end
 
 group :development do
+  gem "pry"
   gem 'rb-inotify', '~> 0.9'
   gem 'guard'
   gem 'guard-rspec'
