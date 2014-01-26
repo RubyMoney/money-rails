@@ -1,4 +1,6 @@
-script: "bundle exec rake spec"
+before_script:
+  - "bundle exec rake prepare_test_env"
+script: "bundle exec rspec"
 language: ruby
 services: mongodb
 rvm:
