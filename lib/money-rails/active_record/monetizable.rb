@@ -152,21 +152,16 @@ module MoneyRails
 
             money_currency = money.try(:currency)
 
-            if self.respond_to?("#{instance_currency_name}=")
+            # Update currency iso value if there is an instance currency attribute
+            if instance_currency_name.present? &&
+              self.respond_to?("#{instance_currency_name}=")
+
               send("#{instance_currency_name}=", money_currency.try(:iso_code))
             else
               current_currency = send("currency_for_#{name}")
               if money_currency && current_currency != money_currency
                 raise "Can't change readonly currency '#{current_currency}' to '#{money_currency}' for field '#{name}'"
               end
-            end
-
-            # Update currency iso value if there is an instance currency attribute
-            if instance_currency_name.present? &&
-              self.respond_to?("#{instance_currency_name}=")
-
-              send("#{instance_currency_name}=",
-                   money.try(:currency).try(:iso_code))
             end
 
             # Save and return the new Money object
