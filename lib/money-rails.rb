@@ -1,4 +1,6 @@
 require "money"
+require "monetize"
+require "monetize/core_extensions"
 require "money-rails/configuration"
 require "money-rails/money"
 require "money-rails/version"
