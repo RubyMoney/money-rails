@@ -14,6 +14,9 @@ require "money-rails"
 
 module Dummy
   class Application < Rails::Application
+
+    I18n.enforce_available_locales = false # removes deprecation warning
+
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.
@@ -38,6 +41,8 @@ module Dummy
 
     # Configure the default encoding used in templates for Ruby 1.9.
     config.encoding = "utf-8"
+
+    config.secret_key_base = "1234567890" # removes deprecation warning
 
     # Configure sensitive parameters which will be filtered from the log file.
     config.filter_parameters += [:password]

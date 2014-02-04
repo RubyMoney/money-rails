@@ -44,14 +44,11 @@ configuration parameters for the rails app.
 
 ### Setup for money-rails development
 
-Our tests are executed with several ORMs - see `Rakefile` for details. To install all required gems run these:
+Our tests are executed with several ORMs - see `Rakefile` for details. To install all required gems run `rake spec:all` That command will take care of installing all required gems for all the different Gemfiles and then running the test suite with the installed bundle.
 
-    bundle install --gemfile=gemfiles/mongoid2.gemfile
-    bundle install --gemfile=gemfiles/mongoid3.gemfile
-    bundle install --gemfile=gemfiles/rails3.gemfile
-    bundle install --gemfile=gemfiles/rails4.gemfile
+You can also run the test suite against a specific ORM or Rails version, `rake -T` will give you an idea of the possible task (take a look at the tasks under the spec: namespace).
 
-Then you can run the test suite with `rake`,
+If you are testing agains mongoid, make sure to have the mongod process running before executing the suite,  (E.g. `sudo mongod --quiet`)
 
 ## Usage
 
