@@ -48,6 +48,8 @@ Our tests are executed with several ORMs - see `Rakefile` for details. To instal
 
 You can also run the test suite against a specific ORM or Rails version, `rake -T` will give you an idea of the possible task (take a look at the tasks under the spec: namespace).
 
+If you are testing agains mongoid, make sure to have the mongod process running before executing the suite,  (E.g. `sudo mongod --quiet`)
+
 ## Usage
 
 ### ActiveRecord
