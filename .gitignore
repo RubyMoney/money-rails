@@ -9,7 +9,6 @@ Gemfile.lock
 
 # dummy dbs
 *.sqlite3
-spec/dummy/db/schema.rb
 
 # rcov generated
 coverage
