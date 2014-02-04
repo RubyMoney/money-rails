@@ -31,55 +31,34 @@ task :prepare_test_env do
   Rake.application['app:db:test:prepare'].invoke
 end
 
+def run_with_gemfile(gemfile)
+  sh "BUNDLE_GEMFILE='#{gemfile}' bundle install --quiet"
+  sh "BUNDLE_GEMFILE='#{gemfile}' bundle exec rake -t spec"
+end
+
 namespace :spec do
+
   desc "Run Tests against mongoid (version 3)"
-  task :mongoid3 do
-    sh "BUNDLE_GEMFILE='gemfiles/mongoid3.gemfile' bundle --quiet"
-    sh "BUNDLE_GEMFILE='gemfiles/mongoid3.gemfile' bundle exec rake -t spec"
-  end
+  task(:mongoid3) { run_with_gemfile 'gemfiles/mongoid3.gemfile' }
 
   desc "Run Tests against mongoid (version 2)"
-  task :mongoid2 do
-    sh "BUNDLE_GEMFILE='gemfiles/mongoid2.gemfile' bundle --quiet"
-    sh "BUNDLE_GEMFILE='gemfiles/mongoid2.gemfile' bundle exec rake -t spec"
-  end
+  task(:mongoid2) { run_with_gemfile 'gemfiles/mongoid2.gemfile' }
 
   desc "Run Tests against rails 4"
-  task :rails4 do
-    sh "BUNDLE_GEMFILE='gemfiles/rails4.gemfile' bundle --quiet"
-    sh "BUNDLE_GEMFILE='gemfiles/rails4.gemfile' bundle exec rake -t spec"
-  end
+  task(:rails4) { run_with_gemfile 'gemfiles/rails4.gemfile' }
 
   desc "Run Tests against rails 3"
-  task :rails3 do
-    sh "BUNDLE_GEMFILE='gemfiles/rails3.gemfile' bundle --quiet"
-    sh "BUNDLE_GEMFILE='gemfiles/rails3.gemfile' bundle exec rake -t spec"
-  end
+  task(:rails3) { run_with_gemfile 'gemfiles/rails3.gemfile' }
 
-  desc "Run Tests against activerecord"
-  task :activerecord do
-    sh "bundle --quiet"
-    sh "bundle exec rake -t spec"
-  end
+  desc "Run Tests against mongoid 2 & 3"
+  task :mongoid => [:mongoid2, :mongoid3]
+
+  desc "Run Tests against rails 3 & 4"
+  task :rails => [:rails3, :rails4]
 
   desc "Run Tests against all ORMs"
-  task :all do
-    # Mongoid 3
-    sh "BUNDLE_GEMFILE='gemfiles/mongoid3.gemfile' bundle --quiet"
-    sh "BUNDLE_GEMFILE='gemfiles/mongoid3.gemfile' bundle exec rake -t spec"
+  task :all => [:rails, :mongoid]
 
-    # Mongoid 2
-    sh "BUNDLE_GEMFILE='gemfiles/mongoid2.gemfile' bundle --quiet"
-    sh "BUNDLE_GEMFILE='gemfiles/mongoid2.gemfile' bundle exec rake -t spec"
-
-    # rails 4
-    sh "BUNDLE_GEMFILE='gemfiles/rails4.gemfile' bundle --quiet"
-    sh "BUNDLE_GEMFILE='gemfiles/rails4.gemfile' bundle exec rake -t spec"
-
-    # rails 3
-    sh "BUNDLE_GEMFILE='gemfiles/rails3.gemfile' bundle --quiet"
-    sh "BUNDLE_GEMFILE='gemfiles/rails3.gemfile' bundle exec rake -t spec"
-  end
 end
 
 desc "Update CONTRIBUTORS file"
