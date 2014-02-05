@@ -371,6 +371,21 @@ MoneyRails.configure do |config|
   #   :decimal_mark        => ","
   # }
 
+  # Specify a rounding mode
+  # Any one of:
+  # 
+  # BigDecimal::ROUND_UP,
+  # BigDecimal::ROUND_DOWN,
+  # BigDecimal::ROUND_HALF_UP,
+  # BigDecimal::ROUND_HALF_DOWN,
+  # BigDecimal::ROUND_HALF_EVEN,
+  # BigDecimal::ROUND_CEILING,
+  # BigDecimal::ROUND_FLOOR
+  # 
+  # set to BigDecimal::ROUND_HALF_EVEN by default
+  # 
+  config.rounding_mode = BigDecimal::ROUND_HALF_UP 
+
   # Set money formatted output globally.
   # Default value is nil meaning "ignore this option".
   # Options are nil, true, false.
@@ -399,6 +414,7 @@ end
 * ```sign_before_symbol```: Force `Money#format` to place the negative sign before the currency symbol.
 * ```amount_column```: Provide values for the amount column (holding the fractional part of a money object).
 * ```currency_column```: Provide default values or even disable (`present: false`) the currency column.
+* ```rounding_mode```: Set Money.rounding_mode to one of the BigDecimal constants
 
 ### Helpers
 

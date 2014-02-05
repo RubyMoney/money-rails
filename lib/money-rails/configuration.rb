@@ -45,6 +45,19 @@ module MoneyRails
       currency_column.merge! default: iso_code
     end
 
+    def rounding_mode=(mode)
+      valid_modes = [
+        BigDecimal::ROUND_UP,
+        BigDecimal::ROUND_DOWN,
+        BigDecimal::ROUND_HALF_UP,
+        BigDecimal::ROUND_HALF_DOWN,
+        BigDecimal::ROUND_HALF_EVEN,
+        BigDecimal::ROUND_CEILING,
+        BigDecimal::ROUND_FLOOR
+      ]
+      raise ArgumentError, "#{mode} is not a valid rounding mode" unless valid_modes.include?(mode)
+      Money.rounding_mode = mode
+    end
     # Set default bank object
     #
     # example (given that eu_central_bank is in Gemfile):
