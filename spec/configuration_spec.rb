@@ -106,5 +106,23 @@ describe "configuration" do
       MoneyRails.default_bank = old_bank
     end
 
+    describe "rounding mode" do
+      [BigDecimal::ROUND_UP, BigDecimal::ROUND_DOWN, BigDecimal::ROUND_HALF_UP, BigDecimal::ROUND_HALF_DOWN,
+       BigDecimal::ROUND_HALF_EVEN, BigDecimal::ROUND_CEILING, BigDecimal::ROUND_FLOOR].each do |mode|
+        context "when set to #{mode}" do
+          it "sets Money.rounding mode to #{mode}" do
+            MoneyRails.rounding_mode = mode
+            expect(Money.rounding_mode).to eq(mode)
+          end
+        end
+      end
+
+      context "when passed an invalid value" do
+        it "should raise an ArgumentError" do
+          expect(lambda{MoneyRails.rounding_mode = "booyakasha"}).to raise_error(ArgumentError, 'booyakasha is not a valid rounding mode')
+        end
+      end
+    end
+
   end
 end
