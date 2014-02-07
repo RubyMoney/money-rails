@@ -30,7 +30,11 @@ class Money
         object.symbolize_keys! if object.respond_to?(:symbolize_keys!)
         ::Money.new(object[:cents], object[:currency_iso]).mongoize
       when object.respond_to?(:to_money) then
+        begin
           object.to_money.mongoize
+        rescue ArgumentError
+          nil
+        end
       else object
       end
     end
