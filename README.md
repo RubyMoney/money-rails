@@ -42,14 +42,6 @@ $ rails g money_rails:initializer
 There, you can define the default currency value and set other
 configuration parameters for the rails app.
 
-### Setup for money-rails development
-
-Our tests are executed with several ORMs - see `Rakefile` for details. To install all required gems run `rake spec:all` That command will take care of installing all required gems for all the different Gemfiles and then running the test suite with the installed bundle.
-
-You can also run the test suite against a specific ORM or Rails version, `rake -T` will give you an idea of the possible task (take a look at the tasks under the spec: namespace).
-
-If you are testing agains mongoid, make sure to have the mongod process running before executing the suite,  (E.g. `sudo mongod --quiet`)
-
 ## Usage
 
 ### ActiveRecord
@@ -499,6 +491,24 @@ For examples on using the test_helpers look at
 * MRI Ruby >= 1.9.2
 
 You can see a full list of the currently supported interpreters in [travis.yml](http://github.com/RubyMoney/money-rails/blob/master/.travis.yml)
+
+## Contributing
+
+### Steps
+
+1. Fork the repo
+2. Run the tests
+3. Make your changes
+4. Test your changes
+5. Create a Pull Request
+
+### How to run the tests
+
+Our tests are executed with several ORMs - see `Rakefile` for details. To install all required gems run `rake spec:all` That command will take care of installing all required gems for all the different Gemfiles and then running the test suite with the installed bundle.
+
+You can also run the test suite against a specific ORM or Rails version, `rake -T` will give you an idea of the possible task (take a look at the tasks under the spec: namespace).
+
+If you are testing against mongoid, make sure to have the mongod process running before executing the suite,  (E.g. `sudo mongod --quiet`)
 
 ## Maintainers
 
