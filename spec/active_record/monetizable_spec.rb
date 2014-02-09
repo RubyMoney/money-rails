@@ -71,6 +71,21 @@ if defined? ActiveRecord
         product.save.should be_true
       end
 
+      context "when MoneyRails.raise_error_on_money_parsing is true" do
+        before { MoneyRails.raise_error_on_money_parsing = true }
+        after { MoneyRails.raise_error_on_money_parsing = false }
+
+        it "raises exception when a String value with hyphen is assigned" do
+          expect { product.invalid_price = "10-235" }.to raise_error
+        end
+      end
+
+      context "when MoneyRails.raise_error_on_money_parsing is false (default)" do
+        it "does not raise exception when a String value with hyphen is assigned" do
+          expect { product.invalid_price = "10-235" }.not_to raise_error
+        end
+      end
+
       it "respects numericality validation when using update_attributes" do
         product.update_attributes(:price_cents => "some text").should be_false
         product.update_attributes(:price_cents => 2000).should be_true

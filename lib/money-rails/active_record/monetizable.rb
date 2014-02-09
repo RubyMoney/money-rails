@@ -140,10 +140,17 @@ module MoneyRails
             if options[:allow_nil] && value.blank?
               money = nil
             else
-              begin
-                money = value.is_a?(Money) ? value : value.to_money(send("currency_for_#{name}"))
-              rescue NoMethodError
-                return nil
+              if value.is_a?(Money)
+                money = value
+              else
+                begin
+                  money = value.to_money(send("currency_for_#{name}"))
+                rescue NoMethodError
+                  return nil
+                rescue ArgumentError
+                  raise if MoneyRails.raise_error_on_money_parsing
+                  return nil
+                end
               end
             end
 

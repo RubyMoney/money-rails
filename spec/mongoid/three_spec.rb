@@ -6,11 +6,11 @@ if defined?(Mongoid) && ::Mongoid::VERSION =~ /^3(.*)/
     let!(:priceable) { Priceable.create(:price => Money.new(100, 'EUR')) }
     let!(:priceable_from_num) { Priceable.create(:price => 1) }
     let!(:priceable_from_string) { Priceable.create(:price => '1 EUR' )}
-    let!(:priceable_from_string_with_hyphen) { Priceable.create(:price => '1-2 EUR' )}
     let!(:priceable_from_hash) { Priceable.create(:price => {:cents=>100, :currency_iso=>"EUR"} )}
     let!(:priceable_from_hash_with_indifferent_access) {
       Priceable.create(:price => {:cents=>100, :currency_iso=>"EUR"}.with_indifferent_access)
     }
+    let(:priceable_from_string_with_hyphen) { Priceable.create(:price => '1-2 EUR' )}
     let(:priceable_with_infinite_precision) { Priceable.create(:price => Money.new(BigDecimal.new('100.1'), 'EUR')) }
     let(:priceable_with_hash_field) {
       Priceable.create(:price_hash => {
@@ -35,8 +35,19 @@ if defined?(Mongoid) && ::Mongoid::VERSION =~ /^3(.*)/
         priceable_from_string.price.currency.should == Money::Currency.find('EUR')
       end
 
-      it "does not mongoizes correctly a String with hyphen in its middle" do
-        priceable_from_string_with_hyphen.price.should == nil
+      context "when MoneyRails.raise_error_on_money_parsing is true" do
+        before { MoneyRails.raise_error_on_money_parsing = true }
+        after { MoneyRails.raise_error_on_money_parsing = false }
+
+        it "raises exception if the mongoized value is a String with a hyphen" do
+          expect { priceable_from_string_with_hyphen }.to raise_error
+        end
+      end
+
+      context "when MoneyRails.raise_error_on_money_parsing is false" do
+        it "does not mongoizes correctly a String with hyphen in its middle" do
+          priceable_from_string_with_hyphen.price.should == nil
+        end
       end
 
       it "mongoizes correctly a hash of cents and currency" do

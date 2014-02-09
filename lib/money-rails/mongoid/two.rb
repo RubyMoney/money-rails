@@ -22,7 +22,12 @@ class Money
         :currency_iso => object.currency.iso_code
       }
     when object.respond_to?(:to_money)
-      serialize(object.to_money)
+      begin
+        serialize(object.to_money)
+      rescue ArgumentError
+        raise if MoneyRails.raise_error_on_money_parsing
+        nil
+      end
     else nil
     end
   end

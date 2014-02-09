@@ -33,6 +33,7 @@ class Money
         begin
           object.to_money.mongoize
         rescue ArgumentError
+          raise if MoneyRails.raise_error_on_money_parsing
           nil
         end
       else object
