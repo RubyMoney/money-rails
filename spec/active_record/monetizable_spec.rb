@@ -245,6 +245,11 @@ if defined? ActiveRecord
         product.save.should be_true
       end
 
+      it "passes validation if there is a whitespace between the currency symbol and amount" do
+        product.price = "$ 123,456.78"
+        product.save.should be_true
+      end
+
       it "respects numericality validation when using update_attributes on money attribute" do
         product.update_attributes(:price => "some text").should be_false
         product.update_attributes(:price => Money.new(320, 'USD')).should be_true
