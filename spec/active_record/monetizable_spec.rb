@@ -66,6 +66,16 @@ if defined? ActiveRecord
         product.save.should be_true
       end
 
+      it "should enforce greater_than numericality validations" do
+        product.price_cents = 80
+        product.save.should be_false
+      end
+
+      it "should enforce less_than numericality validations" do
+        product.price_cents = 100000
+        product.save.should be_false
+      end
+
       it "shouldn't let 0 pass a greater_than validation requiring a minimum of 1" do
         product.price_cents = 0
         product.save.should be_false
