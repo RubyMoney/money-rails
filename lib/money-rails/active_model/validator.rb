@@ -39,7 +39,7 @@ module MoneyRails
           symbol = I18n.t('number.currency.format.unit', default: currency.symbol)
 
           raw_value = raw_value.to_s.strip.gsub(symbol, "")
-          abs_raw_value = raw_value.gsub(/^-/, "")
+          abs_raw_value = raw_value.strip.gsub(/^-/, "")
 
           decimal_pieces = abs_raw_value.split(decimal_mark)
 
