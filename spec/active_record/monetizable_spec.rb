@@ -50,8 +50,8 @@ if defined? ActiveRecord
       it "should raise error if can't change currency" do
         product = Product.new
         expect {
-          product.price Money.new(10,'RUB')
-        }.to raise_error
+          product.price = Money.new(10, "RUB")
+        }.to raise_error("Can't change readonly currency 'USD' to 'RUB' for field 'price'")
       end
 
       it "respects :as argument" do
