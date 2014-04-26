@@ -66,6 +66,21 @@ if defined? ActiveRecord
         product.save.should be_true
       end
 
+      it "should enforce greater_than numericality validations" do
+        product.price_cents = 80
+        product.save.should be_false
+      end
+
+      it "should enforce less_than numericality validations" do
+        product.price_cents = 100000
+        product.save.should be_false
+      end
+
+      it "shouldn't let 0 pass a greater_than validation requiring a minimum of 1" do
+        product.price_cents = 0
+        product.save.should be_false
+      end
+
       it "skips numericality validation when disabled" do
         product.invalid_price_cents = 'not_valid'
         product.save.should be_true
@@ -196,11 +211,11 @@ if defined? ActiveRecord
       it "fails validation with the proper error message on the cents field " do
         product.price_in_a_range = "-12"
         product.valid?.should be_false
-        product.errors[:price_in_a_range_cents].first.should match(/greater than 0/)
+        product.errors[:price_in_a_range_cents].first.should match(/greater than 1/)
 
         product.price_in_a_range = "0"
         product.valid?.should be_false
-        product.errors[:price_in_a_range_cents].first.should match(/greater than 0/)
+        product.errors[:price_in_a_range_cents].first.should match(/greater than 1/)
 
         product.price_in_a_range = "12"
         product.valid?.should be_true

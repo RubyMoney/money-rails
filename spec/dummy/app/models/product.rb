@@ -27,11 +27,11 @@ class Product < ActiveRecord::Base
 
   monetize :price_in_a_range_cents, :allow_nil => true,
     :subunit_numericality => {
-      :greater_than => 0,
+      :greater_than => 100,
       :less_than_or_equal_to => 10000,
     },
     :numericality => {
-      :greater_than => 0,
+      :greater_than => 1,
       :less_than_or_equal_to => 100,
       :message => "Must be greater than zero and less than $100"
     }
