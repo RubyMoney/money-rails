@@ -72,6 +72,23 @@ describe "configuration" do
       MoneyRails.sign_before_symbol = nil
     end
 
+    it "passes through arbitrary format options" do
+      value = Money.new(-12345600, "EUR")
+      symbol = Money::Currency.find(:eur).symbol
+
+      MoneyRails.default_format = {:symbol_position => :after}
+      value.format.should =~ /#{symbol}\z/
+
+      # Override with "classic" format options for backward compatibility
+      MoneyRails.default_format = {:sign_before_symbol => :false}
+      MoneyRails.sign_before_symbol = true
+      value.format.should =~ /-#{symbol}/
+
+      # Reset global settings
+      MoneyRails.sign_before_symbol = nil
+      MoneyRails.default_format = nil
+    end
+
     it "changes the amount and currency column settings based on the default currency" do
       old_currency = MoneyRails.default_currency
       MoneyRails.default_currency = :inr
