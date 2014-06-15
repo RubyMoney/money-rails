@@ -31,19 +31,19 @@ if defined? ActiveRecord
 
       it "assigns the correct value from a Money object" do
         product.price = Money.new(3210, "USD")
-        product.save.should be_true
+        product.save.should eq(true)
         product.price_cents.should == 3210
       end
 
       it "assigns the correct value from a Money object using create" do
         product = Product.create(:price => Money.new(3210, "USD"), :discount => 150,
                                   :bonus_cents => 200, :optional_price => 100)
-        product.valid?.should be_true
+        product.valid?.should eq(true)
         product.price_cents.should == 3210
       end
 
       it "updates correctly from a Money object using update_attributes" do
-        product.update_attributes(:price => Money.new(215, "USD")).should be_true
+        product.update_attributes(:price => Money.new(215, "USD")).should eq(true)
         product.price_cents.should == 215
       end
 
@@ -60,15 +60,15 @@ if defined? ActiveRecord
 
       it "uses numericality validation" do
         product.price_cents = "foo"
-        product.save.should be_false
+        product.save.should eq(false)
 
         product.price_cents = 2000
-        product.save.should be_true
+        product.save.should eq(true)
       end
 
       it "skips numericality validation when disabled" do
         product.invalid_price_cents = 'not_valid'
-        product.save.should be_true
+        product.save.should eq(true)
       end
 
       context "when MoneyRails.raise_error_on_money_parsing is true" do
@@ -87,144 +87,144 @@ if defined? ActiveRecord
       end
 
       it "respects numericality validation when using update_attributes" do
-        product.update_attributes(:price_cents => "some text").should be_false
-        product.update_attributes(:price_cents => 2000).should be_true
+        product.update_attributes(:price_cents => "some text").should eq(false)
+        product.update_attributes(:price_cents => 2000).should eq(true)
       end
 
       it "uses numericality validation on money attribute" do
         product.price = "some text"
-        product.save.should be_false
+        product.save.should eq(false)
 
         product.price = Money.new(320, "USD")
-        product.save.should be_true
+        product.save.should eq(true)
 
         product.sale_price = "12.34"
         product.sale_price_currency_code = 'EUR'
-        product.valid?.should be_true
+        product.valid?.should eq(true)
       end
 
       it "fails validation with the proper error message if money value is invalid decimal" do
         product.price = "12.23.24"
-        product.save.should be_false
+        product.save.should eq(false)
         product.errors[:price].first.should match(/Must be a valid/)
       end
 
       it "fails validation with the proper error message if money value is nothing but periods" do
         product.price = "..."
-        product.save.should be_false
+        product.save.should eq(false)
         product.errors[:price].first.should match(/Must be a valid/)
       end
 
       it "fails validation with the proper error message if money value has invalid thousands part" do
         product.price = "12,23.24"
-        product.save.should be_false
+        product.save.should eq(false)
         product.errors[:price].first.should match(/Must be a valid/)
       end
 
       it "passes validation if money value is a Float and the currency decimal mark is not period" do
         # The corresponding String would be "12,34" euros
         service.discount = 12.34
-        service.save.should be_true
+        service.save.should eq(true)
       end
 
        it "passes validation if money value is a Float" do
         product.price = 12.34
-        product.save.should be_true
+        product.save.should eq(true)
       end
 
       it "passes validation if money value is an Integer" do
         product.price = 12
-        product.save.should be_true
+        product.save.should eq(true)
       end
 
       it "fails validation with the proper error message using numericality validations" do
         product.price_in_a_range = "-12"
-        product.valid?.should be_false
+        product.valid?.should eq(false)
         product.errors[:price_in_a_range].first.should match(/Must be greater than zero and less than \$100/)
 
         product.price_in_a_range = Money.new(-1200, "USD")
-        product.valid?.should be_false
+        product.valid?.should eq(false)
         product.errors[:price_in_a_range].first.should match(/Must be greater than zero and less than \$100/)
 
         product.price_in_a_range = "0"
-        product.valid?.should be_false
+        product.valid?.should eq(false)
         product.errors[:price_in_a_range].first.should match(/Must be greater than zero and less than \$100/)
 
         product.price_in_a_range = "12"
-        product.valid?.should be_true
+        product.valid?.should eq(true)
 
         product.price_in_a_range = Money.new(1200, "USD")
-        product.valid?.should be_true
+        product.valid?.should eq(true)
 
         product.price_in_a_range = "101"
-        product.valid?.should be_false
+        product.valid?.should eq(false)
         product.errors[:price_in_a_range].first.should match(/Must be greater than zero and less than \$100/)
 
         product.price_in_a_range = Money.new(10100, "USD")
-        product.valid?.should be_false
+        product.valid?.should eq(false)
         product.errors[:price_in_a_range].first.should match(/Must be greater than zero and less than \$100/)
       end
 
       it "fails validation with the proper error message using validates :money" do
         product.validates_method_amount = "-12"
-        product.valid?.should be_false
+        product.valid?.should eq(false)
         product.errors[:validates_method_amount].first.should match(/Must be greater than zero and less than \$100/)
 
         product.validates_method_amount = Money.new(-1200, "USD")
-        product.valid?.should be_false
+        product.valid?.should eq(false)
         product.errors[:validates_method_amount].first.should match(/Must be greater than zero and less than \$100/)
 
         product.validates_method_amount = "0"
-        product.valid?.should be_false
+        product.valid?.should eq(false)
         product.errors[:validates_method_amount].first.should match(/Must be greater than zero and less than \$100/)
 
         product.validates_method_amount = "12"
-        product.valid?.should be_true
+        product.valid?.should eq(true)
 
         product.validates_method_amount = Money.new(1200, "USD")
-        product.valid?.should be_true
+        product.valid?.should eq(true)
 
         product.validates_method_amount = "101"
-        product.valid?.should be_false
+        product.valid?.should eq(false)
         product.errors[:validates_method_amount].first.should match(/Must be greater than zero and less than \$100/)
 
         product.validates_method_amount = Money.new(10100, "USD")
-        product.valid?.should be_false
+        product.valid?.should eq(false)
         product.errors[:validates_method_amount].first.should match(/Must be greater than zero and less than \$100/)
       end
 
       it "fails validation with the proper error message on the cents field " do
         product.price_in_a_range = "-12"
-        product.valid?.should be_false
+        product.valid?.should eq(false)
         product.errors[:price_in_a_range_cents].first.should match(/greater than 0/)
 
         product.price_in_a_range = "0"
-        product.valid?.should be_false
+        product.valid?.should eq(false)
         product.errors[:price_in_a_range_cents].first.should match(/greater than 0/)
 
         product.price_in_a_range = "12"
-        product.valid?.should be_true
+        product.valid?.should eq(true)
 
         product.price_in_a_range = "101"
-        product.valid?.should be_false
+        product.valid?.should eq(false)
         product.errors[:price_in_a_range_cents].first.should match(/less than or equal to 10000/)
       end
 
       it "fails validation when a non number string is given" do
         product = Product.create(:price_in_a_range => "asd")
-        product.valid?.should be_false
+        product.valid?.should eq(false)
         product.errors[:price_in_a_range].first.should match(/greater than zero/)
 
         product = Product.create(:price_in_a_range => "asd23")
-        product.valid?.should be_false
+        product.valid?.should eq(false)
         product.errors[:price_in_a_range].first.should match(/greater than zero/)
 
         product = Product.create(:price => "asd")
-        product.valid?.should be_false
+        product.valid?.should eq(false)
         product.errors[:price].first.should match(/is not a number/)
 
         product = Product.create(:price => "asd23")
-        product.valid?.should be_false
+        product.valid?.should eq(false)
         product.errors[:price].first.should match(/is not a number/)
       end
 
@@ -242,17 +242,17 @@ if defined? ActiveRecord
 
       it "passes validation if money value has correct format" do
         product.price = "12,230.24"
-        product.save.should be_true
+        product.save.should eq(true)
       end
 
       it "passes validation if there is a whitespace between the currency symbol and amount" do
         product.price = "$ 123,456.78"
-        product.save.should be_true
+        product.save.should eq(true)
       end
 
       it "respects numericality validation when using update_attributes on money attribute" do
-        product.update_attributes(:price => "some text").should be_false
-        product.update_attributes(:price => Money.new(320, 'USD')).should be_true
+        product.update_attributes(:price => "some text").should eq(false)
+        product.update_attributes(:price => Money.new(320, 'USD')).should eq(true)
       end
 
       it "uses i18n currency format when validating" do
@@ -263,7 +263,7 @@ if defined? ActiveRecord
         "12.00".to_money.should == Money.new(1200, :eur)
         transaction = Transaction.new(amount: "12.00", tax: "13.00")
         transaction.amount_cents.should == 1200
-        transaction.valid?.should be_true
+        transaction.valid?.should eq(true)
 
         # reset locale setting
         I18n.locale = old_locale
@@ -277,7 +277,7 @@ if defined? ActiveRecord
         "12,00".to_money.should == Money.new(1200, :eur)
         transaction = Transaction.new(amount: "12,00", tax: "13,00")
         transaction.amount_cents.should == 1200
-        transaction.valid?.should be_true
+        transaction.valid?.should eq(true)
 
         # reset locale setting
         I18n.locale = old_locale
@@ -285,12 +285,12 @@ if defined? ActiveRecord
 
       it "doesn't allow nil by default" do
         product.price_cents = nil
-        product.save.should be_false
+        product.save.should eq(false)
       end
 
       it "allows nil if optioned" do
         product.optional_price = nil
-        product.save.should be_true
+        product.save.should eq(true)
         product.optional_price.should be_nil
       end
 
@@ -319,7 +319,7 @@ if defined? ActiveRecord
       it "does not reset money_before_type_cast attr if save operation fails" do
         product.bonus = ""
         product.bonus_money_before_type_cast.should == ""
-        product.save.should be_false
+        product.save.should eq(false)
         product.bonus_money_before_type_cast.should == ""
       end
 
@@ -338,90 +338,90 @@ if defined? ActiveRecord
 
       it "assigns correctly Money objects to the attribute" do
         product.price = Money.new(2500, :USD)
-        product.save.should be_true
+        product.save.should eq(true)
         product.price.cents.should == 2500
         product.price.currency_as_string.should == "USD"
       end
 
       it "assigns correctly Fixnum objects to the attribute" do
         product.price = 25
-        product.save.should be_true
+        product.save.should eq(true)
         product.price.cents.should == 2500
         product.price.currency_as_string.should == "USD"
 
         service.discount = 2
-        service.save.should be_true
+        service.save.should eq(true)
         service.discount.cents.should == 200
         service.discount.currency_as_string.should == "EUR"
       end
 
       it "assigns correctly String objects to the attribute" do
         product.price = "25"
-        product.save.should be_true
+        product.save.should eq(true)
         product.price.cents.should == 2500
         product.price.currency_as_string.should == "USD"
 
         service.discount = "2"
-        service.save.should be_true
+        service.save.should eq(true)
         service.discount.cents.should == 200
         service.discount.currency_as_string.should == "EUR"
       end
 
       it "overrides default, model currency with the value of :with_currency in fixnum assignments" do
         product.bonus = 25
-        product.save.should be_true
+        product.save.should eq(true)
         product.bonus.cents.should == 2500
         product.bonus.currency_as_string.should == "GBP"
 
         service.charge = 2
-        service.save.should be_true
+        service.save.should eq(true)
         service.charge.cents.should == 200
         service.charge.currency_as_string.should == "USD"
       end
 
       it "overrides default, model currency with the value of :with_currency in string assignments" do
         product.bonus = "25"
-        product.save.should be_true
+        product.save.should eq(true)
         product.bonus.cents.should == 2500
         product.bonus.currency_as_string.should == "GBP"
 
         service.charge = "2"
-        service.save.should be_true
+        service.save.should eq(true)
         service.charge.cents.should == 200
         service.charge.currency_as_string.should == "USD"
       end
 
       it "overrides default currency with model currency, in fixnum assignments" do
         product.discount_value = 5
-        product.save.should be_true
+        product.save.should eq(true)
         product.discount_value.cents.should == 500
         product.discount_value.currency_as_string.should == "USD"
       end
 
       it "overrides default currency with model currency, in string assignments" do
         product.discount_value = "5"
-        product.save.should be_true
+        product.save.should eq(true)
         product.discount_value.cents.should == 500
         product.discount_value.currency_as_string.should == "USD"
       end
 
       it "falls back to default currency, in fixnum assignments" do
         service.discount = 5
-        service.save.should be_true
+        service.save.should eq(true)
         service.discount.cents.should == 500
         service.discount.currency_as_string.should == "EUR"
       end
 
       it "falls back to default currency, in string assignments" do
         service.discount = "5"
-        service.save.should be_true
+        service.save.should eq(true)
         service.discount.cents.should == 500
         service.discount.currency_as_string.should == "EUR"
       end
 
       it "sets field to nil, in nil assignments if allow_nil is set" do
         product.optional_price = nil
-        product.save.should be_true
+        product.save.should eq(true)
         product.optional_price.should be_nil
       end
 
@@ -429,13 +429,13 @@ if defined? ActiveRecord
         pr = Product.new(:optional_price => nil, :price_cents => 5320,
           :discount => 350, :bonus_cents => 320)
         pr.optional_price.should be_nil
-        pr.save.should be_true
+        pr.save.should eq(true)
         pr.optional_price.should be_nil
       end
 
       it "sets field to nil, in blank assignments if allow_nil is set" do
         product.optional_price = ""
-        product.save.should be_true
+        product.save.should eq(true)
         product.optional_price.should be_nil
       end
 
@@ -526,7 +526,7 @@ if defined? ActiveRecord
 
         it "assigns correctly Money objects to the attribute" do
           transaction.amount = Money.new(2500, :eur)
-          transaction.save.should be_true
+          transaction.save.should eq(true)
           transaction.amount.cents.should == Money.new(2500, :eur).cents
           transaction.amount.currency_as_string.should == "EUR"
         end
