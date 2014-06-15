@@ -466,6 +466,11 @@ monetize(:price_cents).should be_true
 This will ensure that a column called `price_cents` is being monetized.
 
 ```
+monetize(:price_cents).allow_nil.should be_true
+```
+By using `allow_nil` you can specify money attributes that accept nil values.
+
+```
 monetize(:price_cents).as(:discount_value).should be_true
 ```
 By using `as` chain you can specify the exact name to which a monetized
