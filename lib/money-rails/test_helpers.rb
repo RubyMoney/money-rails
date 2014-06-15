@@ -21,15 +21,32 @@ module MoneyRails
         self
       end
 
+      def allow_nil
+        @allow_nil = true
+        self
+      end
+
       def matches?(actual)
         @actual = actual
 
-        matched = true
         money_attr = @as.presence || @attribute.to_s.sub(/_cents$/, "")
-        matched = false if !actual.respond_to?(money_attr) ||
-          !actual.send(money_attr).instance_of?(Money) ||
-          (@currency_iso &&
-           actual.send(money_attr.to_sym).currency.id != @currency_iso)
+
+        matched = true
+
+        if actual.respond_to?(money_attr)
+          if @allow_nil
+            matched &&= actual.send(money_attr).nil?
+            actual.send("#{money_attr}=", 0)
+          end
+          matched &&= actual.send(money_attr).instance_of?(Money)
+
+          if @currency_iso
+            matched &&= actual.send(money_attr.to_sym).currency.id == @currency_iso
+          end
+        else
+          matched = false
+        end
+
         matched
       end
 
