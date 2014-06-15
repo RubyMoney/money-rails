@@ -36,19 +36,19 @@ if defined? ActiveRecord
         describe 'amount' do
           subject { Item.columns_hash['price_cents'] }
 
-          its (:default) { should eq 0 }
-          its (:null) { should be_false }
-          its (:type) { should eq :integer }
+          it { expect(subject.default).to eq(0) }
+          it { expect(subject.null).to be(false) }
+          it { expect(subject.type).to eq(:integer) }
         end
 
         describe 'currency' do
           subject { Item.columns_hash['price_currency'] }
 
           # set in spec/dummy/config/initializers/money.rb
-          its (:default) { should eq 'EUR' }
+          it { expect(subject.default).to eq('EUR') }
 
-          its (:null) { should be_false }
-          its (:type) { should eq :string }
+          it { expect(subject.null).to be(false) }
+          it { expect(subject.type).to eq(:string) }
         end
       end
 
@@ -61,11 +61,11 @@ if defined? ActiveRecord
         describe 'amount' do
           subject { Item.columns_hash['prefix_price_with_full_options_postfix'] }
 
-          its (:default) { should eq 1 }
-          its (:null) { should be_true }
-          its (:type) { should eq :decimal }
-          its (:precision) { should eq 4 }
-          its (:scale) { should eq 2 }
+          it { expect(subject.default).to eq(1) }
+          it { expect(subject.null).to be(true) }
+          it { expect(subject.type).to eq(:decimal) }
+          it { expect(subject.precision).to eq(4) }
+          it { expect(subject.scale).to eq(2) }
         end
 
         describe 'currency' do
