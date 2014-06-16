@@ -2,6 +2,9 @@
 
 ## master (next release)
 
+## 0.11.0
+- Helpers respect no_cents_if_whole configuration option (GH-157)
+
 ## 0.10.0
 - Depend on Money gem version ~> 6.1.1
 - Depend on monetize gem version ~> 0.3.0
