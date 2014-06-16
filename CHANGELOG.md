@@ -2,6 +2,10 @@
 
 ## master (next release)
 
+## 0.12.0
+- Add allow_nil chain for monetize test helper
+- Add testing tasks for rails 4.1
+
 ## 0.11.0
 - Helpers respect no_cents_if_whole configuration option (GH-157)
 
