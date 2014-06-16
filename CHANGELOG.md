@@ -48,11 +48,6 @@
 - Fixed issue related to symbolized keys in Mongoid (GH-40)
 - Added add_money/remove_money & t.money/t.remove_money methods for ActiveRecord migrations
 
-TODOs (for upcoming releases):
- - decouple validator from active_record
- - enhance validator to cover every possible case
- - update documentation
-
 ## 0.6.0
 - Added basic support for Mongoid >= 3.0.
 - Allow class methods to be monetized (ActiveRecord only - GH-34)
