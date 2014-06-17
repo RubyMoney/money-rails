@@ -1,7 +1,31 @@
 # Changelog
 
 ## master (next release)
+
+## 0.12.0
+- Add allow_nil chain for monetize test helper
+- Add testing tasks for rails 4.1
+
+## 0.11.0
+- Helpers respect no_cents_if_whole configuration option (GH-157)
+
+## 0.10.0
+- Depend on Money gem version ~> 6.1.1
+- Depend on monetize gem version ~> 0.3.0
+- Set mongoized value of cents to float
+- Fix validation error with whitespace between currency symbol and amount
+- Add raise_error_on_money_parsing configuration option (default is false)
+- Add rounding mode configuration option (default is ROUND_HALF_UP)
+- Rescue ArgumentError with invalid values in mongoid (GH-114)
+- Compatiblity between ActiveModel::Validations and MoneyValidator
 - Raise error when trying to change model based currency
+
+## 0.9.0
+- Depend on Money gem version ~> 6.0.0
+- Add disable_validation option for skipping validations on monetized attributes
+- Remove implicit usage of 'currency' as a default currency column
+- Options to humanized_money_with_symbol are passed to humanized_money
+- Fix mongoization of Money when using infinite_precision
 - Add testing tasks for rails 4.x
 - Fix issue with Numeric values in MoneyValidator (GH-83).
 - Fix test helper
@@ -47,11 +71,6 @@
 - Stopped support for MRI < 1.9.2
 - Fixed issue related to symbolized keys in Mongoid (GH-40)
 - Added add_money/remove_money & t.money/t.remove_money methods for ActiveRecord migrations
-
-TODOs (for upcoming releases):
- - decouple validator from active_record
- - enhance validator to cover every possible case
- - update documentation
 
 ## 0.6.0
 - Added basic support for Mongoid >= 3.0.
