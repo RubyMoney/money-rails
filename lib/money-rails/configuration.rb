@@ -21,12 +21,12 @@ module MoneyRails
     # Configuration parameters
 
     def default_currency
-      Money.default_currency
+      Money::Currency.new(Money.default_currency)
     end
 
     # Set default currency of money library
     def default_currency=(currency_name)
-      Money.default_currency = Money::Currency.new(currency_name)
+      Money.default_currency = currency_name
       set_amount_column_for_default_currency!
       set_currency_column_for_default_currency!
     end
