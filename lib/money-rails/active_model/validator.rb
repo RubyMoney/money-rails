@@ -47,7 +47,8 @@ module MoneyRails
           unless [1, 2].include? decimal_pieces.length
             record.errors.add(attr, I18n.t('errors.messages.invalid_currency',
                                            { :thousands => thousands_separator,
-                                             :decimal => decimal_mark }))
+                                             :decimal => decimal_mark,
+                                             :currency => abs_raw_value }))
             return
           end
 
@@ -57,11 +58,13 @@ module MoneyRails
           if pieces.length > 1
             record.errors.add(attr, I18n.t('errors.messages.invalid_currency',
                                            { :thousands => thousands_separator,
-                                             :decimal => decimal_mark })) if pieces[0].length > 3
+                                             :decimal => decimal_mark,
+                                             :currency => abs_raw_value })) if pieces[0].length > 3
             (1..pieces.length-1).each do |index|
               record.errors.add(attr, I18n.t('errors.messages.invalid_currency',
                                              { :thousands => thousands_separator,
-                                               :decimal => decimal_mark })) if pieces[index].length != 3
+                                               :decimal => decimal_mark,
+                                               :currency => abs_raw_value })) if pieces[index].length != 3
             end
           end
 
