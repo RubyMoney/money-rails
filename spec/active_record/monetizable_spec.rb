@@ -107,18 +107,21 @@ if defined? ActiveRecord
         product.price = "12.23.24"
         product.save.should eq(false)
         product.errors[:price].first.should match(/Must be a valid/)
+        product.errors[:price].first.should match(/Got 12.23.24/)
       end
 
       it "fails validation with the proper error message if money value is nothing but periods" do
         product.price = "..."
         product.save.should eq(false)
         product.errors[:price].first.should match(/Must be a valid/)
+        product.errors[:price].first.should match(/Got .../)
       end
 
       it "fails validation with the proper error message if money value has invalid thousands part" do
         product.price = "12,23.24"
         product.save.should eq(false)
         product.errors[:price].first.should match(/Must be a valid/)
+        product.errors[:price].first.should match(/Got 12,23.24/)
       end
 
       it "passes validation if money value is a Float and the currency decimal mark is not period" do
