@@ -32,7 +32,7 @@ class Money
       when object.respond_to?(:to_money) then
         begin
           object.to_money.mongoize
-        rescue ArgumentError
+        rescue ArgumentError, Money::Currency::UnknownCurrency
           raise if MoneyRails.raise_error_on_money_parsing
           nil
         end

@@ -11,7 +11,7 @@ if defined?(Mongoid) && ::Mongoid::VERSION =~ /^4(.*)/
       Priceable.create(:price => {:cents=>100, :currency_iso=>"EUR"}.with_indifferent_access)
     }
     let(:priceable_from_string_with_hyphen) { Priceable.create(:price => '1-2 EUR' )}
-    let(:priceable_from_string_with_invalid_currency) { Priceable.create(:price => '1 TLDR') }
+    let(:priceable_from_string_with_unknown_currency) { Priceable.create(:price => '1 TLDR') }
     let(:priceable_with_infinite_precision) { Priceable.create(:price => Money.new(BigDecimal.new('100.1'), 'EUR')) }
     let(:priceable_with_hash_field) {
       Priceable.create(:price_hash => {
@@ -44,8 +44,8 @@ if defined?(Mongoid) && ::Mongoid::VERSION =~ /^4(.*)/
           expect { priceable_from_string_with_hyphen }.to raise_error
         end
 
-        it "raises exception if the mongoized value is a String with an invalid currency" do
-          expect { priceable_from_string_with_invalid_currency }.to raise_error
+        it "raises exception if the mongoized value is a String with an unknown currency" do
+          expect { priceable_from_string_with_unknown_currency }.to raise_error
         end
       end
 
@@ -54,8 +54,8 @@ if defined?(Mongoid) && ::Mongoid::VERSION =~ /^4(.*)/
           priceable_from_string_with_hyphen.price.should == nil
         end
 
-        it "does not mongoize correctly a String with an invalid currency" do
-          priceable_from_string_with_invalid_currency.price.should == nil
+        it "does not mongoize correctly a String with an unknown currency" do
+          priceable_from_string_with_unknown_currency.price.should == nil
         end
       end
 
