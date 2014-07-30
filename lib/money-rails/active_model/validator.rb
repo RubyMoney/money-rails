@@ -3,11 +3,7 @@ module MoneyRails
     class MoneyValidator < ::ActiveModel::Validations::NumericalityValidator
       def validate_each(record, attr, value)
 
-        # If subunit is not set then no need to validate as it is an
-        # indicator that no assignment has been done onto the virtual
-        # money field.
         subunit_attr = record.class.monetized_attributes[attr.to_sym]
-        return unless record.changed_attributes.keys.include? subunit_attr
 
         raw_value = nil
 
