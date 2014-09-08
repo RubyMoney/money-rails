@@ -1,6 +1,7 @@
 source 'https://rubygems.org'
 
-gem 'rails', '4.1.1'
+gem 'rails', '~> 4.1.5'
+gem 'i18n',  '~> 0.6.9'
 
 platforms :jruby do
   gem "activerecord-jdbc-adapter"
