@@ -8,14 +8,14 @@
 
 ## Introduction
 
-This library provides integration of [money](http://github.com/Rubymoney/money) gem with Rails.
+This library provides integration of the [money](http://github.com/Rubymoney/money) gem with Rails.
 
 Use 'monetize' to specify which fields you want to be backed by
 Money objects and helpers provided by the [money](http://github.com/Rubymoney/money)
 gem.
 
 Currently, this library is in active development mode, so if you would
-like to have a new feature feel free to open a new issue
+like to have a new feature, feel free to open a new issue
 [here](https://github.com/RubyMoney/money-rails/issues). You are also
 welcome to contribute to the project.
 
@@ -29,11 +29,11 @@ And then execute:
 
     $ bundle
 
-Or install it yourself as:
+Or install it yourself using:
 
     $ gem install money-rails
 
-You may also install money configuration initializer:
+You can also use the money configuration initializer:
 
 ```
 $ rails g money_rails:initializer
@@ -48,8 +48,8 @@ configuration parameters for the rails app.
 
 #### Usage example
 
-For example, we create a Product model which has an integer price_cents column
-and we want to handle it by using a Money object instead:
+For example, we create a Product model which has an integer column called
+`price_cents` and we want to handle it using a `Money` object instead:
 
 ```ruby
 class Product < ActiveRecord::Base
@@ -60,27 +60,27 @@ end
 ```
 
 Now each Product object will also have an attribute called ```price``` which
-is a Money object and can be used for money comparisons, conversions etc.
+is a `Money` object, and can be used for money comparisons, conversions etc.
 
 In this case the name of the money attribute is created automagically by removing the
-```_cents``` suffix of the column name.
+```_cents``` suffix from the column name.
 
-If you are using another db column name or you prefer another name for the
-money attribute, then you can provide ```as``` argument with a string
+If you are using another db column name, or you prefer another name for the
+money attribute, then you can provide an ```as``` argument with a string
 value to the ```monetize``` macro:
 
 ```ruby
 monetize :discount_subunit, :as => "discount"
 ```
 
-Now the model objects will have a ```discount``` attribute which
-is a Money object, wrapping the value of ```discount_subunit``` column to a
-Money instance.
+Now the model objects will have a ```discount``` attribute which is a `Money`
+object, wrapping the value of the ```discount_subunit``` column with a Money
+instance.
 
 #### Migration helpers
 
-If you want to add money field to product model you may use ```add_money``` helper. That
-helper might be customized inside ```MoneyRails.configure``` block. You should customize
+If you want to add a money field to a product model you can use the ```add_money``` helper. This
+helper can be customized inside a ```MoneyRails.configure``` block. You should customize the
 ```add_money``` helper to match the most common use case and utilize it across all migrations.
 
 ```ruby
@@ -97,7 +97,7 @@ class MonetizeProduct < ActiveRecord::Migration
 end
 ```
 
-Another example where the currency column is not including:
+Another example, where the currency column is not included:
 
 ```ruby
 class MonetizeItem < ActiveRecord::Migration
@@ -107,13 +107,14 @@ class MonetizeItem < ActiveRecord::Migration
 end
 ```
 
-```add_money``` helper is revertable, so you may use it inside ```change``` migrations.
-If you writing separate ```up``` and ```down``` methods, you may use ```remove_money``` helper.
+The ```add_money``` helper is reversible, so you an use it inside ```change```
+migrations.  If you're writing separate ```up``` and ```down``` methods, you
+can use the ```remove_money``` helper.
 
 #### Allow nil values
 
-If you want to allow the assignment of nil and/or blank values to a specific
-monetized field, you can use the `:allow_nil` parameter like this:
+If you want to allow nil and/or blank values to a specific
+monetized field, you can use the `:allow_nil` parameter:
 
 ```
 # in Product model
@@ -124,7 +125,7 @@ def change
   add_money :products, :optional_price, amount: { null: true, default: nil }
 end
 
-# then blank assignments are permitted
+# now blank assignments are permitted
 product.optional_price = nil
 product.save # returns without errors
 product.optional_price # => nil
@@ -184,7 +185,7 @@ obj
 obj.price
 #=> #<Money cents:100 currency:EUR>
 
-## You can access the money hash too :
+## You can access the money hash too:
 obj[:price]
 # => {:cents=>100, :currency_iso=>"EUR"}
 ```
@@ -193,7 +194,7 @@ The usual options on `field` as `index`, `default`, ..., are available.
 
 ### Method conversion
 
-Method return values can be converted in the same way attributes are converted. For example:
+Method return values can be monetized in the same way attributes are monetized. For example:
 
 ```ruby
 class Transaction < ActiveRecord::Base
@@ -208,13 +209,13 @@ class Transaction < ActiveRecord::Base
 end
 ```
 
-Now each Transaction object has a method called `total` which returns a Money object.
+Now each Transaction object has a method called `total` which returns a `Money` object.
 
 ### Currencies
 
-Money-rails supports a set of options to handle currencies for your
+money-rails supports a set of options to handle currencies for your
 monetized fields. The default option for every conversion is to use
-the global default currency of Money library, as given in the configuration
+the global default currency of the Money library, as given in the configuration
 initializer of money-rails:
 
 ```ruby
@@ -228,15 +229,12 @@ end
 ```
 
 In many cases this is not enough, so there are some other options to
-satisfy your needs.
+meet your needs.
 
 #### Model Currency
 
-You can define a specific currency for an activerecord model (not for mongoid).
-This currency is used for the creation and conversions of the Money objects
-referring to every monetized attributes of the specific model.
-This means it overrides the global default currency of Money library.
-To attach a currency to a model use the ```register_currency``` macro:
+You can override the global default currency within a specific ActiveRecord
+model using the ```register_currency``` macro:
 
 ```ruby
 # app/models/product.rb
@@ -251,22 +249,26 @@ class Product < ActiveRecord::Base
 end
 ```
 
-Now ```product.discount``` and ```product.bonus``` will return a Money
-object using EUR as currency, instead of the default USD.
+Now ```product.discount``` and ```product.bonus``` will return a `Money`
+object using EUR as their currency, instead of the default USD.
+
+(This is not availabe in  Mongoid).
 
 #### Attribute Currency (:with_currency)
 
-By using the key ```:with_currency``` with a currency symbol value in
-the ```monetize``` macro call, you can define a currency in a more
-granular way. This way you attach a currency only to the specific monetized
-model attribute. It also allows to override both the model level
-and the global default currency:
+By passing the option ```:with_currency``` to the ```monetize``` macro call,
+with a currency code as its value, you can define a currency in a more granular
+way. This will you attach the given currency only to the specified monetized model
+attribute (allowing you tom for example, monetize different attributes of the same model with different currencyies.).
+
+This allows you to override both the model level and the global
+default currencies:
 
 ```ruby
 # app/models/product.rb
 class Product < ActiveRecord::Base
 
-  # Use EUR as model level currency
+  # Use EUR as the model level currency
   register_currency :eur
 
   monetize :discount_subunit, :as => "discount"
@@ -275,17 +277,18 @@ class Product < ActiveRecord::Base
 end
 ```
 
-In this case the ```product.bonus``` will return a Money object of GBP
+In this case ```product.bonus``` will return a Money object with GBP as its
 currency, whereas ```product.discount.currency_as_string # => EUR ```
 
 #### Instance Currencies
 
-All the previous options do not require any extra model field to hold
-currency values. If you need to provide differrent currency per model
-instance, then you need to add a column with the name ```currency```
-in your db table. You should specify ```with_model_currency``` as an argument
+All the previous options do not require any extra model fields to hold
+the currency values. If the currency of a field with vary from
+once model instance to another, then you should add a column called ```currency```
+to your database table and pass the option ```with_model_currency```
 to the ```monetize``` macro.
-Money-rails will use this knowledge to override the model level and global
+
+money-rails will use this knowledge to override the model level and global
 default values. Non-nil instance currency values also override attribute
 currency values, so they have the highest precedence.
 
