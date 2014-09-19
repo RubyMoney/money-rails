@@ -124,6 +124,16 @@ if defined? ActiveRecord
         product.errors[:price].first.should match(/Got 12,23.24/)
       end
 
+      it "allow to have empty string as thousands separator" do
+        begin
+          I18n.locale = 'en-US'
+          product.price = '10.00'
+          product.should be_valid
+        ensure
+          I18n.locale = I18n.default_locale
+        end
+      end
+
       it "passes validation if money value is a Float and the currency decimal mark is not period" do
         # The corresponding String would be "12,34" euros
         service.discount = 12.34

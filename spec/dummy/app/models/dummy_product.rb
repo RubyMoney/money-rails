@@ -5,3 +5,4 @@ class DummyProduct < ActiveRecord::Base
   # Use money-rails macros
   monetize :price_cents, :with_model_currency => :currency
 end
+

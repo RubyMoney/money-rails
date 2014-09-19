@@ -52,7 +52,7 @@ module MoneyRails
             return
           end
 
-          pieces = decimal_pieces[0].split(thousands_separator)
+          pieces = decimal_pieces[0].split(thousands_separator.presence)
 
           # check for valid thousands separation
           if pieces.length > 1
