@@ -34,10 +34,7 @@ module MoneyRails
 
           # check for numbers like '12.23.45' or '....'
           unless [1, 2].include? decimal_pieces.length
-            @record.errors.add(@attr, I18n.t('errors.messages.invalid_currency',
-                                           { :thousands => thousands_separator,
-                                             :decimal => decimal_mark,
-                                             :currency => abs_raw_value }))
+            add_error
             return
           end
 
@@ -45,15 +42,9 @@ module MoneyRails
 
           # check for valid thousands separation
           if pieces.length > 1
-            @record.errors.add(@attr, I18n.t('errors.messages.invalid_currency',
-                                           { :thousands => thousands_separator,
-                                             :decimal => decimal_mark,
-                                             :currency => abs_raw_value })) if pieces[0].length > 3
+            add_error if pieces[0].length > 3
             (1..pieces.length-1).each do |index|
-              @record.errors.add(@attr, I18n.t('errors.messages.invalid_currency',
-                                             { :thousands => thousands_separator,
-                                               :decimal => decimal_mark,
-                                               :currency => abs_raw_value })) if pieces[index].length != 3
+              add_error if pieces[index].length != 3
             end
           end
 
@@ -92,6 +83,13 @@ module MoneyRails
 
       def abs_raw_value
        @raw_value.strip.sub(/^-/, "")
+      end
+
+      def add_error
+        @record.errors.add(@attr, I18n.t('errors.messages.invalid_currency',
+                                       { :thousands => thousands_separator,
+                                         :decimal => decimal_mark,
+                                         :currency => abs_raw_value }))
       end
     end
   end
