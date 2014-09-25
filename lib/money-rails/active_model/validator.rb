@@ -28,9 +28,7 @@ module MoneyRails
         # which can directly be handled by NumericalityValidator
         if raw_value_is_non_numeric
           # remove currency symbol, and negative sign
-
           @raw_value = @raw_value.to_s.strip.gsub(symbol, "")
-          abs_raw_value = @raw_value.strip.gsub(/^-/, "")
 
           decimal_pieces = abs_raw_value.split(decimal_mark)
 
@@ -90,6 +88,10 @@ module MoneyRails
 
       def raw_value_is_non_numeric
         @raw_value.present? && !@raw_value.is_a?(Numeric)
+      end
+
+      def abs_raw_value
+       @raw_value.strip.sub(/^-/, "")
       end
     end
   end
