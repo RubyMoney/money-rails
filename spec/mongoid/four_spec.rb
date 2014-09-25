@@ -21,17 +21,17 @@ if defined?(Mongoid) && ::Mongoid::VERSION =~ /^4(.*)/
     }
 
     context "mongoize" do
-      it "mongoizes correctly a Money object to a hash of cents and currency" do
+      it "correctly mongoizes a Money object to a hash of cents and currency" do
         priceable.price.cents.should == 100
         priceable.price.currency.should == Money::Currency.find('EUR')
       end
 
-      it "mongoizes correctly a Numeric object to a hash of cents and currency" do
+      it "correctly mongoizes a Numeric object to a hash of cents and currency" do
         priceable_from_num.price.cents.should == 100
         priceable_from_num.price.currency.should == Money.default_currency
       end
 
-      it "mongoizes correctly a String object to a hash of cents and currency" do
+      it "correctly mongoizes a String object to a hash of cents and currency" do
         priceable_from_string.price.cents.should == 100
         priceable_from_string.price.currency.should == Money::Currency.find('EUR')
       end
@@ -50,21 +50,21 @@ if defined?(Mongoid) && ::Mongoid::VERSION =~ /^4(.*)/
       end
 
       context "when MoneyRails.raise_error_on_money_parsing is false" do
-        it "does not mongoizes correctly a String with hyphen in its middle" do
+        it "does not correctly mongoize a String with a hyphen in its middle" do
           priceable_from_string_with_hyphen.price.should == nil
         end
 
-        it "does not mongoize correctly a String with an unknown currency" do
+        it "does not correctly mongoize a String with an unknown currency" do
           priceable_from_string_with_unknown_currency.price.should == nil
         end
       end
 
-      it "mongoizes correctly a hash of cents and currency" do
+      it "correctly mongoizes a hash of cents and currency" do
         priceable_from_hash.price.cents.should == 100
         priceable_from_hash.price.currency.should == Money::Currency.find('EUR')
       end
 
-      it "mongoizes correctly a HashWithIndifferentAccess of cents and currency" do
+      it "correctly mongoizes a HashWithIndifferentAccess of cents and currency" do
         priceable_from_hash_with_indifferent_access.price.cents.should == 100
         priceable_from_hash_with_indifferent_access.price.currency.should == Money::Currency.find('EUR')
       end
@@ -78,14 +78,14 @@ if defined?(Mongoid) && ::Mongoid::VERSION =~ /^4(.*)/
           Money.infinite_precision = false
         end
 
-        it "mongoizes correctly a Money object to a hash of cents and currency" do
+        it "correctly mongoizes a Money object to a hash of cents and currency" do
           priceable_with_infinite_precision.price.cents.should == BigDecimal.new('100.1')
           priceable_with_infinite_precision.price.currency.should == Money::Currency.find('EUR')
         end
       end
     end
 
-    it "serializes correctly a Hash field containing Money objects" do
+    it "correctly serializes a Hash field containing Money objects" do
       priceable_with_hash_field.price_hash[:key1][:cents].should == 100
       priceable_with_hash_field.price_hash[:key2][:cents].should == 200
       priceable_with_hash_field.price_hash[:key1][:currency_iso].should == 'EUR'
@@ -107,7 +107,7 @@ if defined?(Mongoid) && ::Mongoid::VERSION =~ /^4(.*)/
     end
 
     context "evolve" do
-      it "transforms correctly a Money object to a Mongo friendly value" do
+      it "correctly transforms a Money object into a Mongo friendly value" do
         Priceable.where(:price => Money.new(100, 'EUR')).first.should == priceable
       end
     end
