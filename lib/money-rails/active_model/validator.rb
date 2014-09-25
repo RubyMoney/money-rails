@@ -2,6 +2,7 @@ module MoneyRails
   module ActiveModel
     class MoneyValidator < ::ActiveModel::Validations::NumericalityValidator
       def validate_each(record, attr, value)
+        reset_memoized_variables!
         @record = record
         @attr = attr
 
@@ -36,26 +37,33 @@ module MoneyRails
         end
 
         normalize_raw_value!
-
         super(@record, @attr, @raw_value)
       end
 
       private
+
+      def reset_memoized_variables!
+        [:currency, :decimal_mark, :thousands_separator, :symbol,
+          :abs_raw_value, :decimal_pieces, :pieces_array].each do |var_name|
+          ivar_name = :"@_#{var_name}"
+          remove_instance_variable(ivar_name) if instance_variable_get(ivar_name)
+        end
+      end
 
       def currency
         @_currency ||= @record.send("currency_for_#{@attr}")
       end
 
       def decimal_mark
-        I18n.t('number.currency.format.separator', default: currency.decimal_mark)
+        @_decimal_mark ||= I18n.t('number.currency.format.separator', default: currency.decimal_mark)
       end
 
       def thousands_separator
-        I18n.t('number.currency.format.delimiter', default: currency.thousands_separator)
+        @_thousands_separator ||= I18n.t('number.currency.format.delimiter', default: currency.thousands_separator)
       end
 
       def symbol
-        I18n.t('number.currency.format.unit', default: currency.symbol)
+        @_symbol ||= I18n.t('number.currency.format.unit', default: currency.symbol)
       end
 
       def raw_value_is_non_numeric
@@ -63,7 +71,7 @@ module MoneyRails
       end
 
       def abs_raw_value
-       @raw_value.strip.sub(/^-/, "")
+        @_abs_raw_value ||= @raw_value.strip.sub(/^-/, "")
       end
 
       def add_error
@@ -74,7 +82,7 @@ module MoneyRails
       end
 
       def decimal_pieces
-        abs_raw_value.split(decimal_mark)
+        @_decimal_pieces ||= abs_raw_value.split(decimal_mark)
       end
 
       def value_has_too_many_decimal_points
@@ -82,7 +90,7 @@ module MoneyRails
       end
 
       def pieces_array
-        decimal_pieces[0].split(thousands_separator)
+        @_pieces_array ||= decimal_pieces[0].split(thousands_separator)
       end
 
       def invalid_thousands_separation
