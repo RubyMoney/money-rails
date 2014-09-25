@@ -30,10 +30,8 @@ module MoneyRails
           # remove currency symbol, and negative sign
           @raw_value = @raw_value.to_s.strip.gsub(symbol, "")
 
-          decimal_pieces = abs_raw_value.split(decimal_mark)
-
           # check for numbers like '12.23.45' or '....'
-          unless [1, 2].include? decimal_pieces.length
+          if value_has_too_many_decimal_points
             add_error
             return
           end
@@ -90,6 +88,14 @@ module MoneyRails
                                        { :thousands => thousands_separator,
                                          :decimal => decimal_mark,
                                          :currency => abs_raw_value }))
+      end
+
+      def decimal_pieces
+        abs_raw_value.split(decimal_mark)
+      end
+
+      def value_has_too_many_decimal_points
+        ![1, 2].include?(decimal_pieces.length)
       end
     end
   end
