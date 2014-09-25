@@ -42,7 +42,7 @@ if defined? ActiveRecord
         product.price_cents.should == 3210
       end
 
-      it "updates correctly from a Money object using update_attributes" do
+      it "correctly updates from a Money object using update_attributes" do
         product.update_attributes(:price => Money.new(215, "USD")).should eq(true)
         product.price_cents.should == 215
       end
@@ -339,14 +339,14 @@ if defined? ActiveRecord
         product.bonus.currency.should == Money::Currency.find(:gbp)
       end
 
-      it "assigns correctly Money objects to the attribute" do
+      it "correctly assigns Money objects to the attribute" do
         product.price = Money.new(2500, :USD)
         product.save.should eq(true)
         product.price.cents.should == 2500
         product.price.currency_as_string.should == "USD"
       end
 
-      it "assigns correctly Fixnum objects to the attribute" do
+      it "correctly assigns Fixnum objects to the attribute" do
         product.price = 25
         product.save.should eq(true)
         product.price.cents.should == 2500
@@ -358,7 +358,7 @@ if defined? ActiveRecord
         service.discount.currency_as_string.should == "EUR"
       end
 
-      it "assigns correctly String objects to the attribute" do
+      it "correctly assigns String objects to the attribute" do
         product.price = "25"
         product.save.should eq(true)
         product.price.cents.should == 2500
@@ -492,7 +492,7 @@ if defined? ActiveRecord
           DummyProduct.create(:price_cents => 2600, :currency => :foo)
         end
 
-        it "serializes correctly the currency to a new instance of model" do
+        it "correctly serializes the currency to a new instance of model" do
           d = DummyProduct.new
           d.price = Money.new(10, "EUR")
           d.save!
@@ -522,12 +522,12 @@ if defined? ActiveRecord
           transaction.amount.should == Money.new(2400, :usd)
         end
 
-        it "instantiates correctly Money objects from the mapped attributes" do
+        it "correctly instantiates Money objects from the mapped attributes" do
           t = Transaction.new(:amount_cents => 2500, :currency => "CAD")
           t.amount.should == Money.new(2500, "CAD")
         end
 
-        it "assigns correctly Money objects to the attribute" do
+        it "correctly assigns Money objects to the attribute" do
           transaction.amount = Money.new(2500, :eur)
           transaction.save.should eq(true)
           transaction.amount.cents.should == Money.new(2500, :eur).cents
