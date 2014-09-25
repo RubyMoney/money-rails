@@ -30,29 +30,12 @@ module MoneyRails
           # remove currency symbol, and negative sign
           @raw_value = @raw_value.to_s.strip.gsub(symbol, "")
 
-          # check for numbers like '12.23.45' or '....'
-          if value_has_too_many_decimal_points
-            add_error
-            return
-          end
+          add_error and return if value_has_too_many_decimal_points
+          add_error if invalid_thousands_separation
 
-          pieces = decimal_pieces[0].split(thousands_separator)
-
-          # check for valid thousands separation
-          if pieces.length > 1
-            add_error if pieces[0].length > 3
-            (1..pieces.length-1).each do |index|
-              add_error if pieces[index].length != 3
-            end
-          end
-
-          # Remove thousands separators, normalize decimal mark,
-          # remove whitespaces and _ (E.g. 99 999 999 or 12_300_200.20)
-          @raw_value = @raw_value.to_s
-            .gsub(thousands_separator, '')
-            .gsub(decimal_mark, '.')
-            .gsub(/[\s_]/, '')
         end
+
+        normalize_raw_value!
 
         super(@record, @attr, @raw_value)
       end
@@ -96,6 +79,27 @@ module MoneyRails
 
       def value_has_too_many_decimal_points
         ![1, 2].include?(decimal_pieces.length)
+      end
+
+      def pieces_array
+        decimal_pieces[0].split(thousands_separator)
+      end
+
+      def invalid_thousands_separation
+        return false if pieces_array.length <= 1
+        return true  if pieces_array[0].length > 3
+        pieces_array[1..-1].any? do |thousands_group|
+          thousands_group.length != 3
+        end
+      end
+
+      # Remove thousands separators, normalize decimal mark,
+      # remove whitespaces and _ (E.g. 99 999 999 or 12_300_200.20)
+      def normalize_raw_value!
+        @raw_value = @raw_value.to_s
+          .gsub(thousands_separator, '')
+          .gsub(decimal_mark, '.')
+          .gsub(/[\s_]/, '')
       end
     end
   end
