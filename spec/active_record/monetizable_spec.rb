@@ -71,6 +71,13 @@ if defined? ActiveRecord
         product.save.should eq(true)
       end
 
+      it "passes validation after updating fractional attribute which was previously invalid" do
+        product.price_in_a_range = -5
+        product.should_not be_valid
+        product.price_in_a_range_cents = 500
+        product.should be_valid
+      end
+
       context "when MoneyRails.raise_error_on_money_parsing is true" do
         before { MoneyRails.raise_error_on_money_parsing = true }
         after { MoneyRails.raise_error_on_money_parsing = false }

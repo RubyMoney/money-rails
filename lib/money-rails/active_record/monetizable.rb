@@ -80,7 +80,7 @@ module MoneyRails
           #
           # To disable validation entirely, use :disable_validation, E.g:
           #   monetize :price_in_a_range_cents, :disable_validation => true
-          if MoneyRails.include_validations && !options[:disable_validation]
+          if validation_enabled = MoneyRails.include_validations && !options[:disable_validation]
 
             subunit_validation_options =
               unless options.has_key? :subunit_numericality
@@ -108,6 +108,7 @@ module MoneyRails
               'money_rails/active_model/money' => money_validation_options
             }
           end
+
 
           define_method name do |*args|
 
@@ -155,7 +156,7 @@ module MoneyRails
             end
 
             # Update cents
-            send("#{subunit_name}=", money.try(:cents))
+            write_attribute(subunit_name, money.try(:cents))
 
             money_currency = money.try(:currency)
 
@@ -173,6 +174,16 @@ module MoneyRails
 
             # Save and return the new Money object
             instance_variable_set "@#{name}", money
+          end
+
+          if validation_enabled
+            # Ensure that the before_type_cast value is updated when settin
+            # the subunit value directly
+            define_method "#{subunit_name}=" do |value|
+              before_type_cast = value.to_f / send("currency_for_#{name}").subunit_to_unit
+              instance_variable_set "@#{name}_money_before_type_cast", before_type_cast
+              write_attribute(subunit_name, value)
+            end
           end
 
           define_method "currency_for_#{name}" do
