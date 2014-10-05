@@ -156,7 +156,12 @@ module MoneyRails
             end
 
             # Update cents
-            write_attribute(subunit_name, money.try(:cents))
+            if self.class.attribute_alias?(subunit_name)
+              original_name = self.class.attribute_aliases[subunit_name.to_s]
+              write_attribute(original_name, money.try(:cents))
+            else
+              write_attribute(subunit_name, money.try(:cents))
+            end
 
             money_currency = money.try(:currency)
 

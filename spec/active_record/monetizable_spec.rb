@@ -449,6 +449,14 @@ if defined? ActiveRecord
         product.optional_price.should be_nil
       end
 
+
+      context "when the monetized field is an aliased attribute" do
+        it "writes the subunits to the original (unaliased) column" do
+          product.renamed = "$10.00"
+          expect(product.aliased_cents).to eq 10_00
+        end
+      end
+
       context "for column with model currency:" do
         it "has default currency if not specified" do
           product = Product.create(:sale_price_amount => 1234)

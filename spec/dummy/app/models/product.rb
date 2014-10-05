@@ -39,4 +39,8 @@ class Product < ActiveRecord::Base
     :less_than_or_equal_to => 100,
     :message => 'Must be greater than zero and less than $100',
   }
+
+  alias_attribute :renamed_cents, :aliased_cents
+
+  monetize :renamed_cents, allow_nil: true
 end
