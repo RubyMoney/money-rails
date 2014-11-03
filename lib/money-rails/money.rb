@@ -7,7 +7,6 @@ class Money
     rules = normalize_formatting_rules(rules)
 
     # Apply global defaults for money only for non-nil values
-    # TODO: Add here more setting options
     defaults = {
       no_cents_if_whole: MoneyRails::Configuration.no_cents_if_whole,
       symbol: MoneyRails::Configuration.symbol,
@@ -15,6 +14,10 @@ class Money
     }.reject { |k,v| v.nil? }
 
     rules.reverse_merge!(defaults)
+
+    unless MoneyRails::Configuration.default_format.nil?
+      rules.reverse_merge!(MoneyRails::Configuration.default_format)
+    end
 
     format_without_settings(rules)
   end

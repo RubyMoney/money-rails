@@ -321,16 +321,24 @@ MoneyRails.configure do |config|
 
   # To set the default currency
   #
-  config.default_currency = :usd
+  # config.default_currency = :usd
 
-  # Add custom exchange rates
-  config.add_rate "USD", "CAD", 1.24515
-  config.add_rate "CAD", "USD", 0.803115
+  # Set default bank object
+  #
+  # Example:
+  # config.default_bank = EuCentralBank.new
+
+  # Add exchange rates to current money bank object.
+  # (The conversion rate refers to one direction only)
+  #
+  # Example:
+  # config.add_rate "USD", "CAD", 1.24515
+  # config.add_rate "CAD", "USD", 0.803115
 
   # To handle the inclusion of validations for monetized fields
   # The default value is true
   #
-  config.include_validations = true
+  # config.include_validations = true
 
   # Default ActiveRecord migration configuration values for columns:
   #
@@ -354,6 +362,7 @@ MoneyRails.configure do |config|
 
   # Register a custom currency
   #
+  # Example:
   # config.register_currency = {
   #   :priority            => 1,
   #   :iso_code            => "EU4",
@@ -379,15 +388,17 @@ MoneyRails.configure do |config|
   # 
   # set to BigDecimal::ROUND_HALF_EVEN by default
   # 
-  config.rounding_mode = BigDecimal::ROUND_HALF_UP 
+  # config.rounding_mode = BigDecimal::ROUND_HALF_UP
 
-  # Set money formatted output globally.
+  # Set default money format globally.
   # Default value is nil meaning "ignore this option".
-  # Options are nil, true, false.
+  # Example:
   #
-  # config.no_cents_if_whole = nil
-  # config.symbol = nil
-  # config.sign_before_symbol = nil
+  # config.default_format = {
+  #   :no_cents_if_whole => nil,
+  #   :symbol => nil,
+  #   :sign_before_symbol => nil
+  # }
 end
 ```
 
@@ -403,10 +414,7 @@ end
   only! This rate is added to the attached bank object.
 * ```default_bank```: The default bank object holding exchange rates etc.
   (https://github.com/RubyMoney/money#currency-exchange)
-* ```no_cents_if_whole```: Force `Money#format` method to use its value as the default for ```no_cents_if_whole``` key.
-* ```symbol```: Use its value as the default for ```symbol``` key in
-  `Money#format` method.
-* ```sign_before_symbol```: Force `Money#format` to place the negative sign before the currency symbol.
+* ```default_format```: Force `Money#format` to use these options for formatting.
 * ```amount_column```: Provide values for the amount column (holding the fractional part of a money object).
 * ```currency_column```: Provide default values or even disable (`present: false`) the currency column.
 * ```rounding_mode```: Set Money.rounding_mode to one of the BigDecimal constants
