@@ -72,6 +72,21 @@ describe "configuration" do
       MoneyRails.sign_before_symbol = nil
     end
 
+    it "sets with_currency for formatted output globally" do
+      value = Money.new(12345600, "EUR")
+      symbol = Money::Currency.find(:eur).symbol
+      value.format.should == "#{symbol}123,456.00"
+
+      MoneyRails.with_currency = false
+      value.format.should == "#{symbol}123,456.00"
+
+      MoneyRails.with_currency = true
+      value.format.should == "#{symbol}123,456.00 EUR"
+
+      # Reset global setting
+      MoneyRails.with_currency = nil
+    end
+
     it "changes the amount and currency column settings based on the default currency" do
       old_currency = MoneyRails.default_currency
       MoneyRails.default_currency = :inr

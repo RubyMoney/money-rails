@@ -90,6 +90,9 @@ module MoneyRails
     mattr_accessor :sign_before_symbol
     @@sign_before_symbol = nil
 
+    mattr_accessor :with_currency
+    @@with_currency = nil
+
     # Configure whether to raise exception when an improper value
     # is going to be converted to a Money object.
     mattr_accessor :raise_error_on_money_parsing
