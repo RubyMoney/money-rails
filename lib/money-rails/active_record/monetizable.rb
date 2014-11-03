@@ -167,7 +167,7 @@ module MoneyRails
               send("#{instance_currency_name}=", money_currency.try(:iso_code))
             else
               current_currency = send("currency_for_#{name}")
-              if money_currency && current_currency != money_currency
+              if money_currency && current_currency != money_currency.id
                 raise "Can't change readonly currency '#{current_currency}' to '#{money_currency}' for field '#{name}'"
               end
             end
