@@ -85,11 +85,19 @@ if defined? ActiveRecord
         it "raises exception when a String value with hyphen is assigned" do
           expect { product.invalid_price = "10-235" }.to raise_error
         end
+
+        it "raises exception when an alpha String is assigned" do
+          expect { product.invalid_price = "NA" }.to raise_error
+        end
       end
 
       context "when MoneyRails.raise_error_on_money_parsing is false (default)" do
         it "does not raise exception when a String value with hyphen is assigned" do
           expect { product.invalid_price = "10-235" }.not_to raise_error
+        end
+
+        it "does not raise an exception when an alpha String is assigned" do
+          expect { product.invalid_price = "NA" }.not_to raise_error
         end
       end
 

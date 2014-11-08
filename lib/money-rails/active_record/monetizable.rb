@@ -151,6 +151,9 @@ module MoneyRails
                 rescue ArgumentError
                   raise if MoneyRails.raise_error_on_money_parsing
                   return nil
+                rescue Money::Currency::UnknownCurrency
+                  raise if MoneyRails.raise_error_on_money_parsing
+                  return nil
                 end
               end
             end
