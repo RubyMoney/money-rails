@@ -177,7 +177,7 @@ module MoneyRails
           end
 
           if validation_enabled
-            # Ensure that the before_type_cast value is updated when settin
+            # Ensure that the before_type_cast value is updated when setting
             # the subunit value directly
             define_method "#{subunit_name}=" do |value|
               before_type_cast = value.to_f / send("currency_for_#{name}").subunit_to_unit
