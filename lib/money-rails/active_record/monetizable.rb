@@ -156,7 +156,16 @@ module MoneyRails
             end
 
             # Update cents
-            write_attribute(subunit_name, money.try(:cents))
+            # If the attribute is aliased, make sure we write to the original
+            # attribute name or an error will be raised.
+            # (Note: 'attribute_aliases' doesn't exist in Rails 3.x, so we
+            # can't tell if the attribute was aliased.)
+            if self.class.try(:attribute_aliases).try(:key?, subunit_name)
+              original_name = self.class.attribute_aliases[subunit_name.to_s]
+              write_attribute(original_name, money.try(:cents))
+            else
+              write_attribute(subunit_name, money.try(:cents))
+            end
 
             money_currency = money.try(:currency)
 
