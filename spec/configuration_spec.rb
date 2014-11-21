@@ -5,16 +5,16 @@ describe "configuration" do
   describe "initializer" do
 
     it "sets default currency" do
-      Money.default_currency.should == Money::Currency.new(:eur)
+      expect(Money.default_currency).to eq(Money::Currency.new(:eur))
     end
 
     it "registers a custom currency" do
-      Money::Currency.table.should include(:eu4)
+      expect(Money::Currency.table).to include(:eu4)
     end
 
     it "adds exchange rates given in config initializer" do
-      Money.us_dollar(100).exchange_to("CAD").should == Money.new(124, "CAD")
-      Money.ca_dollar(100).exchange_to("USD").should == Money.new(80, "USD")
+      expect(Money.us_dollar(100).exchange_to("CAD")).to eq(Money.new(124, "CAD"))
+      expect(Money.ca_dollar(100).exchange_to("USD")).to eq(Money.new(80, "USD"))
     end
 
     it "sets no_cents_if_whole value for formatted output globally" do
@@ -23,15 +23,15 @@ describe "configuration" do
 
       value = Money.new(12345600, "EUR")
       mark = Money::Currency.find(:eur).decimal_mark
-      value.format.should =~ /#{mark}/
+      expect(value.format).to match(/#{mark}/)
 
       MoneyRails.no_cents_if_whole = true
-      value.format.should_not =~ /#{mark}/
-      value.format(no_cents_if_whole: false).should =~ /#{mark}/
+      expect(value.format).not_to match(/#{mark}/)
+      expect(value.format(no_cents_if_whole: false)).to match(/#{mark}/)
 
       MoneyRails.no_cents_if_whole = false
-      value.format.should =~ /#{mark}/
-      value.format(no_cents_if_whole: true).should_not =~ /#{mark}/
+      expect(value.format).to match(/#{mark}/)
+      expect(value.format(no_cents_if_whole: true)).not_to match(/#{mark}/)
 
       # Reset global settings
       MoneyRails.no_cents_if_whole = nil
@@ -41,15 +41,15 @@ describe "configuration" do
     it "sets symbol for formatted output globally" do
       value = Money.new(12345600, "EUR")
       symbol = Money::Currency.find(:eur).symbol
-      value.format.should =~ /#{symbol}/
+      expect(value.format).to match(/#{symbol}/)
 
       MoneyRails.symbol = false
-      value.format.should_not =~ /#{symbol}/
-      value.format(symbol: true).should =~ /#{symbol}/
+      expect(value.format).not_to match(/#{symbol}/)
+      expect(value.format(symbol: true)).to match(/#{symbol}/)
 
       MoneyRails.symbol = true
-      value.format.should =~ /#{symbol}/
-      value.format(symbol: false).should_not =~ /#{symbol}/
+      expect(value.format).to match(/#{symbol}/)
+      expect(value.format(symbol: false)).not_to match(/#{symbol}/)
 
       # Reset global setting
       MoneyRails.symbol = nil
@@ -58,15 +58,15 @@ describe "configuration" do
     it "sets the location of the negative sign for formatted output globally" do
       value = Money.new(-12345600, "EUR")
       symbol = Money::Currency.find(:eur).symbol
-      value.format.should =~ /#{symbol}-/
+      expect(value.format).to match(/#{symbol}-/)
 
       MoneyRails.sign_before_symbol = false
-      value.format.should =~ /#{symbol}-/
-      value.format(sign_before_symbol: false).should =~ /#{symbol}-/
+      expect(value.format).to match(/#{symbol}-/)
+      expect(value.format(sign_before_symbol: false)).to match(/#{symbol}-/)
 
       MoneyRails.sign_before_symbol = true
-      value.format.should =~ /-#{symbol}/
-      value.format(sign_before_symbol: true).should =~ /-#{symbol}/
+      expect(value.format).to match(/-#{symbol}/)
+      expect(value.format(sign_before_symbol: true)).to match(/-#{symbol}/)
 
       # Reset global setting
       MoneyRails.sign_before_symbol = nil
@@ -77,12 +77,12 @@ describe "configuration" do
       symbol = Money::Currency.find(:eur).symbol
 
       MoneyRails.default_format = {:symbol_position => :after}
-      value.format.should =~ /#{symbol}\z/
+      expect(value.format).to match(/#{symbol}\z/)
 
       # Override with "classic" format options for backward compatibility
       MoneyRails.default_format = {:sign_before_symbol => :false}
       MoneyRails.sign_before_symbol = true
-      value.format.should =~ /-#{symbol}/
+      expect(value.format).to match(/-#{symbol}/)
 
       # Reset global settings
       MoneyRails.sign_before_symbol = nil
@@ -93,8 +93,8 @@ describe "configuration" do
       old_currency = MoneyRails.default_currency
       MoneyRails.default_currency = :inr
 
-      MoneyRails.amount_column[:postfix].should == "_#{MoneyRails.default_currency.subunit.downcase.pluralize}"
-      MoneyRails.currency_column[:default].should == MoneyRails.default_currency.iso_code
+      expect(MoneyRails.amount_column[:postfix]).to eq("_#{MoneyRails.default_currency.subunit.downcase.pluralize}")
+      expect(MoneyRails.currency_column[:default]).to eq(MoneyRails.default_currency.iso_code)
 
       # Reset global setting
       MoneyRails.default_currency = old_currency
@@ -107,7 +107,7 @@ describe "configuration" do
         MoneyRails.default_currency = :jpy
       }.to_not raise_error
 
-      MoneyRails.amount_column[:postfix].should == "_cents"
+      expect(MoneyRails.amount_column[:postfix]).to eq("_cents")
 
       # Reset global setting
       MoneyRails.default_currency = old_currency

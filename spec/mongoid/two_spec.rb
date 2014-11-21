@@ -11,18 +11,18 @@ if defined?(Mongoid) && ::Mongoid::VERSION =~ /^2(.*)/
 
     context "serialize" do
       it "serializes correctly a Money object to a hash of cents and currency" do
-        priceable.price.cents.should == 100
-        priceable.price.currency.should == Money::Currency.find('EUR')
+        expect(priceable.price.cents).to eq(100)
+        expect(priceable.price.currency).to eq(Money::Currency.find('EUR'))
       end
 
       it "mongoizes correctly a Numeric object to a hash of cents and currency" do
-        priceable_from_num.price.cents.should == 100
-        priceable_from_num.price.currency.should == Money.default_currency
+        expect(priceable_from_num.price.cents).to eq(100)
+        expect(priceable_from_num.price.currency).to eq(Money.default_currency)
       end
 
       it "mongoizes correctly a String object to a hash of cents and currency" do
-        priceable_from_string.price.cents.should == 100
-        priceable_from_string.price.currency.should == Money::Currency.find('EUR')
+        expect(priceable_from_string.price.cents).to eq(100)
+        expect(priceable_from_string.price.currency).to eq(Money::Currency.find('EUR'))
       end
 
       context "infinite_precision = true" do
@@ -35,8 +35,8 @@ if defined?(Mongoid) && ::Mongoid::VERSION =~ /^2(.*)/
         end
 
         it "mongoizes correctly a Money object to a hash of cents and currency" do
-          priceable_with_infinite_precision.price.cents.should == BigDecimal.new('100.1')
-          priceable_with_infinite_precision.price.currency.should == Money::Currency.find('EUR')
+          expect(priceable_with_infinite_precision.price.cents).to eq(BigDecimal.new('100.1'))
+          expect(priceable_with_infinite_precision.price.currency).to eq(Money::Currency.find('EUR'))
         end
       end
 
@@ -51,22 +51,22 @@ if defined?(Mongoid) && ::Mongoid::VERSION =~ /^2(.*)/
 
       context "when MoneyRails.raise_error_on_money_parsing is false" do
         it "does not mongoizes correctly a String with hyphen in its middle" do
-          priceable_from_string_with_hyphen.price.should == nil
+          expect(priceable_from_string_with_hyphen.price).to eq(nil)
         end
       end
     end
 
     context "deserialize" do
       subject { priceable.price }
-      it { should be_an_instance_of(Money) }
-      it { should == Money.new(100, 'EUR') }
+      it { is_expected.to be_an_instance_of(Money) }
+      it { is_expected.to eq(Money.new(100, 'EUR')) }
       it "returns nil if a nil value was stored" do
         nil_priceable = Priceable.create(:price => nil)
-        nil_priceable.price.should be_nil
+        expect(nil_priceable.price).to be_nil
       end
       it 'returns nil if an unknown value was stored' do
         zero_priceable = Priceable.create(:price => [])
-        zero_priceable.price.should be_nil
+        expect(zero_priceable.price).to be_nil
       end
     end
   end
