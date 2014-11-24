@@ -90,7 +90,7 @@ module MoneyRails
       end
 
       def pieces_array
-        @_pieces_array ||= decimal_pieces[0].split(thousands_separator)
+        @_pieces_array ||= decimal_pieces[0].split(thousands_separator.presence)
       end
 
       def invalid_thousands_separation

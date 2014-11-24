@@ -131,6 +131,16 @@ if defined? ActiveRecord
         expect(product.errors[:price].first).to match(/Got 12,23.24/)
       end
 
+      it "allows an empty string as the thousands separator" do
+        begin
+          I18n.locale = 'en-US'
+          product.price = '10.00'
+          expect(product).to be_valid
+        ensure
+          I18n.locale = I18n.default_locale
+        end
+      end
+
       it "passes validation if money value is a Float and the currency decimal mark is not period" do
         # The corresponding String would be "12,34" euros
         service.discount = 12.34
