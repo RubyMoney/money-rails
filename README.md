@@ -79,8 +79,7 @@ instance.
 
 #### Migration helpers
 
-If you want to add a money field to a product model you can use the ```add_money``` helper. This
-helper can be customized inside a ```MoneyRails.configure``` block. You should customize the
+If you want to add a money field to a product model you can use the ```add_money``` helper. This helper can be customized inside a ```MoneyRails.configure``` block. You should customize the
 ```add_money``` helper to match the most common use case and utilize it across all migrations.
 
 ```ruby
@@ -110,6 +109,13 @@ end
 The ```add_money``` helper is reversible, so you an use it inside ```change```
 migrations.  If you're writing separate ```up``` and ```down``` methods, you
 can use the ```remove_money``` helper.
+
+##### Important Note
+
+These helpers are deprecated in version 1.1.0 and will be removed in 2.0.0.
+
+Furtheremore if you are using Rails 4.2.0.beta4 and above together with postgresql,
+then these will not work because they conflict with a new `money` type that was added to ActiveRecord.
 
 #### Allow nil values
 
@@ -377,7 +383,7 @@ MoneyRails.configure do |config|
 
   # Specify a rounding mode
   # Any one of:
-  # 
+  #
   # BigDecimal::ROUND_UP,
   # BigDecimal::ROUND_DOWN,
   # BigDecimal::ROUND_HALF_UP,
@@ -385,9 +391,9 @@ MoneyRails.configure do |config|
   # BigDecimal::ROUND_HALF_EVEN,
   # BigDecimal::ROUND_CEILING,
   # BigDecimal::ROUND_FLOOR
-  # 
+  #
   # set to BigDecimal::ROUND_HALF_EVEN by default
-  # 
+  #
   # config.rounding_mode = BigDecimal::ROUND_HALF_UP
 
   # Set default money format globally.

@@ -14,6 +14,12 @@ if Money.respond_to?(:silence_core_extensions_deprecations=)
   Money.silence_core_extensions_deprecations = true
 end
 
+module MoneyRails
+  def self.deprecator
+    @obj ||= Object.new.stub(:warn)
+  end
+end
+
 RSpec.configure do |config|
   # If true, the base class of anonymous controllers will be inferred
   # automatically. This will be the default behavior in future versions of
