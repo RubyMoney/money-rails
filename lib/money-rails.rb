@@ -5,6 +5,7 @@ require "money-rails/configuration"
 require "money-rails/money"
 require "money-rails/version"
 require 'money-rails/hooks'
+require 'active_support'
 
 module MoneyRails
   extend Configuration
