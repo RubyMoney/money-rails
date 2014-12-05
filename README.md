@@ -259,7 +259,7 @@ object using EUR as their currency, instead of the default USD.
 By passing the option ```:with_currency``` to the ```monetize``` macro call,
 with a currency code as its value, you can define a currency in a more granular
 way. This will you attach the given currency only to the specified monetized model
-attribute (allowing you tom for example, monetize different attributes of the same model with different currencyies.).
+attribute (allowing you to, for example, monetize different attributes of the same model with different currencies.).
 
 This allows you to override both the model level and the global
 default currencies:
