@@ -38,7 +38,7 @@ module MoneyRails
 
           # Form target name for the money backed ActiveModel field:
           # if a target name is provided then use it
-          # if there is a "_{column.postfix}" suffix then just remove it to create the target name
+          # if there is a "{column.postfix}" suffix then just remove it to create the target name
           # if none of the previous is the case then use a default suffix
           if name
             name = name.to_s
