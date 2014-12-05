@@ -421,46 +421,19 @@ end
 
 ### Helpers
 
-* the `currency_symbol` helper method
+_For examples below, `@money_object == <Money fractional:650 currency:USD>`_
 
-```
-<%= currency_symbol %>
-```
-This will render a `span` dom element with the default currency symbol.
+| Helper                                                | Result                                    |
+|:---	                                                |:---	                                    |
+| `currency_symbol`  	                                | `<span class="currency_symbol">$</span>`  |
+| `humanized_money @money_object`  	                    | 6.50                                      |
+| `humanized_money_with_symbol @money_object`           | $6.50                                     |
+| `money_without_cents @money_object`                   | 6                                         |
+| `money_without_cents_and_with_symbol @money_object`   | $6                                        |
 
-* the `humanized_money` helper method
+#### `no_cents_if_whole`
 
-```
-<%= humanized_money @money_object %>
-```
-This will render a formatted money value without the currency symbol and
-without the cents part if it contains only zeros (uses
-`:no_cents_if_whole flag`).
-
-* humanize with symbol helper
-
-```
-<%= humanized_money_with_symbol @money_object %>
-```
-This will render a formatted money value including the currency symbol and
-without the cents part if it contains only zeros.
-
-* get the money value without the cents part
-
-```
-<%= money_without_cents @money_object %>
-```
-This will render a formatted money value without the currency symbol and
-without the cents part.
-
-* get the money value without the cents part and including the currency
-  symbol
-
-```
-<%= money_without_cents_and_with_symbol @money_object %>
-```
-This will render a formatted money value including the currency symbol and
-without the cents part.
+`humanized_money` and `humanized_money_with_symbol` will not render the cents part if it contains only zeros, unless `config.no_cents_if_whole` is set to `false` in the `money.rb` configuration (default: true).
 
 ### Testing
 
