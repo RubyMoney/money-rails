@@ -15,7 +15,9 @@ require "money-rails"
 module Dummy
   class Application < Rails::Application
 
-    I18n.enforce_available_locales = false # removes deprecation warning
+    if I18n.respond_to?(:enforce_available_locales)
+      I18n.enforce_available_locales = false # removes deprecation warning
+    end
 
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
@@ -59,4 +61,3 @@ module Dummy
     config.assets.version = '1.0'
   end
 end
-
