@@ -205,9 +205,9 @@ module MoneyRails
               send(instance_currency_name).present? &&
               Money::Currency.find(send(instance_currency_name))
 
-              Money::Currency.find(send(instance_currency_name))
+              Money::Currency.find(send(instance_currency_name))            
             elsif field_currency_name
-              Money::Currency.find(field_currency_name)
+              Money::Currency.find(send(field_currency_name))
             elsif self.class.respond_to?(:currency)
               self.class.currency
             else
