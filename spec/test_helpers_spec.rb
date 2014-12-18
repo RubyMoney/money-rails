@@ -26,6 +26,10 @@ if defined? ActiveRecord
         expect(product).to monetize(:optional_price).allow_nil
       end
 
+      it "matches nullable model attribute when tested instance has a non-nil value" do
+        expect(product).to monetize(:optional_price).allow_nil
+      end
+
       it "matches model attribute with currency specified by :with_currency chain" do
         expect(product).to monetize(:bonus_cents).with_currency(:gbp)
       end

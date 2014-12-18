@@ -35,7 +35,6 @@ module MoneyRails
 
         if actual.respond_to?(money_attr)
           if @allow_nil
-            matched &&= actual.send(money_attr).nil?
             actual.send("#{money_attr}=", 0)
           end
           matched &&= actual.send(money_attr).instance_of?(Money)
