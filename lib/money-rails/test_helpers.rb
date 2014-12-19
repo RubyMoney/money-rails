@@ -27,28 +27,21 @@ module MoneyRails
       end
 
       def matches?(actual)
-        @actual = actual
-
-        money_attr = @as.presence || @attribute.to_s.sub(/_cents$/, "")
-
-        matched = true
-
-        if actual.respond_to?(money_attr)
-          if @allow_nil
-            matched &&= actual.send(money_attr).nil?
-            actual.send("#{money_attr}=", 0)
-          end
-          matched &&= actual.send(money_attr).instance_of?(Money)
-
-          if @currency_iso
-            matched &&= actual.send(money_attr.to_sym).currency.id == @currency_iso
-          end
+        if actual.is_a?(Class)
+          @actual = actual.new
         else
-          matched = false
+          @actual = actual.class.new
         end
 
-        matched
+        @money_attribute = @as.presence || @attribute.to_s.sub(/_cents$/, "")
+        @money_attribute_setter = "#{@money_attribute}="
+
+        object_responds_to_attributes? &&
+          test_allow_nil &&
+          is_monetized? &&
+          test_currency_iso
       end
+
 
       def description
         desc = "monetize #{@attribute}"
@@ -73,6 +66,35 @@ module MoneyRails
       end
       alias_method :failure_message_for_should_not, :failure_message_when_negated # RSpec 1.2, 2.x, and minitest-matchers
       alias_method :negative_failure_message,       :failure_message_when_negated # RSpec 1.1
+
+      private
+
+      def object_responds_to_attributes?
+        @actual.respond_to?(@attribute) && @actual.respond_to?(@money_attribute)
+      end
+
+      def test_allow_nil
+        if @allow_nil
+          @actual.send(@money_attribute_setter, "")
+          @actual.send(@money_attribute).nil?
+        else
+          true
+        end
+      end
+
+      def is_monetized?
+        @actual.send(@money_attribute_setter, 1)
+        @actual.send(@money_attribute).instance_of?(Money)
+      end
+
+      def test_currency_iso
+        if @currency_iso
+          @actual.send(@money_attribute).currency.id == @currency_iso
+        else
+          true
+        end
+      end
+
     end
   end
 end

@@ -14,38 +14,50 @@ if defined? ActiveRecord
     end
 
     describe "monetize matcher" do
-      it "matches model attribute without a '_cents' suffix by default" do
-        expect(product).to monetize(:price_cents)
+
+      shared_context "monetize matcher" do
+
+        it "matches model attribute without a '_cents' suffix by default" do
+          is_expected.to monetize(:price_cents)
+        end
+
+        it "matches model attribute specified by :as chain" do
+          is_expected.to monetize(:discount).as(:discount_value)
+        end
+
+        it "matches model attribute with nil value specified by :allow_nil chain" do
+          is_expected.to monetize(:optional_price).allow_nil
+        end
+
+        it "matches nullable model attribute when tested instance has a non-nil value" do
+          is_expected.to monetize(:optional_price).allow_nil
+        end
+
+        it "matches model attribute with currency specified by :with_currency chain" do
+          is_expected.to monetize(:bonus_cents).with_currency(:gbp)
+        end
+
+        it "does not match non existed attribute" do
+          is_expected.not_to monetize(:price_fake)
+        end
+
+        it "does not match wrong currency iso" do
+          is_expected.not_to monetize(:bonus_cents).with_currency(:usd)
+        end
+
+        it "does not match wrong money attribute name" do
+          is_expected.not_to monetize(:bonus_cents).as(:bonussss)
+        end
       end
 
-      it "matches model attribute specified by :as chain" do
-        expect(product).to monetize(:discount).as(:discount_value)
-      end
-
-      it "matches model attribute with nil value specified by :allow_nil chain" do
-        expect(product).to monetize(:optional_price).allow_nil
-      end
-
-      it "matches model attribute with currency specified by :with_currency chain" do
-        expect(product).to monetize(:bonus_cents).with_currency(:gbp)
-      end
-
-      it "does not match non existed attribute" do
-        expect(product).not_to monetize(:price_fake)
-      end
-
-      it "does not match wrong currency iso" do
-        expect(product).not_to monetize(:bonus_cents).with_currency(:usd)
-      end
-
-      it "does not match wrong money attribute name" do
-        expect(product).not_to monetize(:bonus_cents).as(:bonussss)
-      end
-
-      context "using subject" do
+      describe "testing against an instance of the model class" do
         subject { product }
+        include_context "monetize matcher"
+      end
 
-        it { is_expected.to monetize(:price_cents) }
+      describe "testing against the model class itself" do
+        subject { Product }
+        include_context "monetize matcher"
       end
     end
   end
