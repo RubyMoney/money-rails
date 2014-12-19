@@ -51,6 +51,9 @@ module MoneyRails
 
           # Create a reverse mapping of the monetized attributes
           @monetized_attributes ||= {}
+          if @monetized_attributes[name.to_sym].present?
+            raise ArgumentError, "#{self} already has a monetized attribute called '#{name}'"
+          end
           @monetized_attributes[name.to_sym] = subunit_name
           class << self
             def monetized_attributes
