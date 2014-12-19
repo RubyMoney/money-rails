@@ -54,6 +54,14 @@ if defined? ActiveRecord
         }.to raise_error("Can't change readonly currency 'USD' to 'RUB' for field 'price'")
       end
 
+      it "raises an error if trying to create two attributes with the same name" do
+        expect do
+          class Product
+            monetize :discount, as: :price
+          end
+        end.to raise_error
+      end
+
       it "respects :as argument" do
         expect(product.discount_value).to eq(Money.new(150, "USD"))
       end
