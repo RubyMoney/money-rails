@@ -17,7 +17,7 @@ module MoneyRails
           if options[:field_currency] || options[:target_name] ||
             options[:model_currency]
             ActiveSupport::Deprecation.warn("You are using the old " \
-              "argument keys of monetize command! Instead use :as, " \
+              "argument keys of the monetize command! Instead use :as, " \
               ":with_currency or :with_model_currency")
           end
 
