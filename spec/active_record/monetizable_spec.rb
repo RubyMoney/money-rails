@@ -256,16 +256,16 @@ if defined? ActiveRecord
         expect(product.errors[:price].first).to match(/is not a number/)
       end
 
-      it "passes validation when amount contains spaces (99 999 999.99)" do
-        product.price = "99 999 999.99"
+      it "passes validation when amount contains spaces (999 999.99)" do
+        product.price = "999 999.99"
         expect(product).to be_valid
-        expect(product.price_cents).to eq(9999999999)
+        expect(product.price_cents).to eq(99999999)
       end
 
-      it "passes validation when amount contains underscores (99_999_999.99)" do
-        product.price = "99_999_999.99"
+      it "passes validation when amount contains underscores (999_999.99)" do
+        product.price = "999_999.99"
         expect(product).to be_valid
-        expect(product.price_cents).to eq(9999999999)
+        expect(product.price_cents).to eq(99999999)
       end
 
       it "passes validation if money value has correct format" do
