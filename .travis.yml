@@ -22,6 +22,7 @@ gemfile:
   - gemfiles/rails3.gemfile
   - gemfiles/rails4.gemfile
   - gemfiles/rails41.gemfile
+  - gemfiles/rails42.gemfile
 matrix:
   exclude:
     - rvm: 1.9.2

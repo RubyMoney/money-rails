@@ -47,6 +47,9 @@ namespace :spec do
   desc "Run Tests against mongoid (version 2)"
   task(:mongoid2) { run_with_gemfile 'gemfiles/mongoid2.gemfile' }
 
+  desc "Run Tests against rails 4.2"
+  task(:rails42) { run_with_gemfile 'gemfiles/rails42.gemfile' }
+
   desc "Run Tests against rails 4.1"
   task(:rails41) { run_with_gemfile 'gemfiles/rails41.gemfile' }
 
@@ -59,8 +62,8 @@ namespace :spec do
   desc "Run Tests against mongoid 2 & 3 & 4"
   task :mongoid => [:mongoid2, :mongoid3, :mongoid4]
 
-  desc "Run Tests against rails 3 & 4 & 4.1"
-  task :rails => [:rails3, :rails4, :rails41]
+  desc "Run Tests against rails 3 & 4 & 4.1 & 4.2"
+  task :rails => [:rails3, :rails4, :rails41, :rails42]
 
   desc "Run Tests against all ORMs"
   task :all => [:rails, :mongoid]

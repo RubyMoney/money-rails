@@ -37,7 +37,8 @@ if defined? ActiveRecord
         describe 'amount' do
           subject { Item.columns_hash['price_cents'] }
 
-          it { expect(subject.default).to eq(0) }
+          it { expect(subject.default.to_i).to eq(0) }
+          it { expect(Item.new.public_send(subject.name)).to eq(0) }
           it { expect(subject.null).to be(false) }
           it { expect(subject.type).to eq(:integer) }
         end
@@ -62,7 +63,8 @@ if defined? ActiveRecord
         describe 'amount' do
           subject { Item.columns_hash['prefix_price_with_full_options_postfix'] }
 
-          it { expect(subject.default).to eq(1) }
+          it { expect(subject.default.to_i).to eq(1) }
+          it { expect(Item.new.public_send(subject.name)).to eq(1) }
           it { expect(subject.null).to be(true) }
           it { expect(subject.type).to eq(:decimal) }
           it { expect(subject.precision).to eq(4) }
