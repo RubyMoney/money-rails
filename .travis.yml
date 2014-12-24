@@ -1,10 +1,11 @@
+sudo: false
 before_script:
   - "bundle exec rake prepare_test_env"
 script: "bundle exec rspec"
 language: ruby
+cache: bundler
 services: mongodb
 rvm:
-  #- 1.9.2
   - 1.9.3
   - 2.0.0
   - 2.1.2
