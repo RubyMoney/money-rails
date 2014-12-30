@@ -116,10 +116,10 @@ module MoneyRails
           define_method name do |*args|
 
             # Get the cents
-            amount = send(subunit_name, *args)
+            amount = public_send(subunit_name, *args)
 
             # Get the currency object
-            attr_currency = send("currency_for_#{name}")
+            attr_currency = public_send("currency_for_#{name}")
 
             # Get the cached value
             memoized = instance_variable_get("@#{name}")
@@ -148,7 +148,7 @@ module MoneyRails
                 money = value
               else
                 begin
-                  money = value.to_money(send("currency_for_#{name}"))
+                  money = value.to_money(public_send("currency_for_#{name}"))
                 rescue NoMethodError
                   return nil
                 rescue ArgumentError
@@ -178,11 +178,11 @@ module MoneyRails
 
             # Update currency iso value if there is an instance currency attribute
             if instance_currency_name.present? &&
-              self.respond_to?("#{instance_currency_name}=")
+              respond_to?("#{instance_currency_name}=")
 
-              send("#{instance_currency_name}=", money_currency.try(:iso_code))
+              public_send("#{instance_currency_name}=", money_currency.try(:iso_code))
             else
-              current_currency = send("currency_for_#{name}")
+              current_currency = public_send("currency_for_#{name}")
               if money_currency && current_currency != money_currency.id
                 raise "Can't change readonly currency '#{current_currency}' to '#{money_currency}' for field '#{name}'"
               end
@@ -196,7 +196,7 @@ module MoneyRails
             # Ensure that the before_type_cast value is updated when setting
             # the subunit value directly
             define_method "#{subunit_name}=" do |value|
-              before_type_cast = value.to_f / send("currency_for_#{name}").subunit_to_unit
+              before_type_cast = value.to_f / public_send("currency_for_#{name}").subunit_to_unit
               instance_variable_set "@#{name}_money_before_type_cast", before_type_cast
               write_attribute(subunit_name, value)
             end
@@ -204,11 +204,11 @@ module MoneyRails
 
           define_method "currency_for_#{name}" do
             if instance_currency_name.present? &&
-              self.respond_to?(instance_currency_name) &&
-              send(instance_currency_name).present? &&
-              Money::Currency.find(send(instance_currency_name))
+              respond_to?(instance_currency_name) &&
+              public_send(instance_currency_name).present? &&
+              Money::Currency.find(public_send(instance_currency_name))
 
-              Money::Currency.find(send(instance_currency_name))
+              Money::Currency.find(public_send(instance_currency_name))
             elsif field_currency_name
               Money::Currency.find(field_currency_name)
             elsif self.class.respond_to?(:currency)
