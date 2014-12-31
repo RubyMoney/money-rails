@@ -29,8 +29,8 @@ class Product < ActiveRecord::Base
       :message => "Must be greater than zero and less than $100"
     }
 
-  attr_accessor :invalid_price_cents
-  monetize :invalid_price_cents, disable_validation: true
+  attr_accessor :accessor_price_cents
+  monetize :accessor_price_cents, disable_validation: true
 
   monetize :validates_method_amount_cents, allow_nil: true
 

@@ -75,7 +75,7 @@ if defined? ActiveRecord
       end
 
       it "skips numericality validation when disabled" do
-        product.invalid_price_cents = 'not_valid'
+        product.accessor_price_cents = 'not_valid'
         expect(product.save).to be_truthy
       end
 
@@ -91,13 +91,13 @@ if defined? ActiveRecord
         after { MoneyRails.raise_error_on_money_parsing = false }
 
         it "raises exception when a String value with hyphen is assigned" do
-          expect { product.invalid_price = "10-235" }.to raise_error
+          expect { product.accessor_price = "10-235" }.to raise_error
         end
       end
 
       context "when MoneyRails.raise_error_on_money_parsing is false (default)" do
         it "does not raise exception when a String value with hyphen is assigned" do
-          expect { product.invalid_price = "10-235" }.not_to raise_error
+          expect { product.accessor_price = "10-235" }.not_to raise_error
         end
       end
 
@@ -393,6 +393,13 @@ if defined? ActiveRecord
         expect(service.save).to be_truthy
         expect(service.discount.cents).to eq(200)
         expect(service.discount.currency_as_string).to eq("EUR")
+      end
+
+      it "correctly assigns objects to a accessor attribute" do
+        product.accessor_price = 1.23
+        expect(product.save).to be_truthy
+        expect(product.accessor_price.cents).to eq(123)
+        expect(product.accessor_price_cents).to eq(123)
       end
 
       it "overrides default, model currency with the value of :with_currency in fixnum assignments" do

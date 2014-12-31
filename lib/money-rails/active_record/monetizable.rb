@@ -162,12 +162,16 @@ module MoneyRails
             end
 
             # Update cents
-            # If the attribute is aliased, make sure we write to the original
-            # attribute name or an error will be raised.
-            # (Note: 'attribute_aliases' doesn't exist in Rails 3.x, so we
-            # can't tell if the attribute was aliased.)
-            if self.class.respond_to?(:attribute_aliases) &&
+            if !validation_enabled
+              # We haven't defined our own subunit writer, so we can invoke
+              # the regular writer, which works with store_accessors
+              public_send("#{subunit_name}=", money.try(:cents))
+            elsif self.class.respond_to?(:attribute_aliases) &&
                   self.class.attribute_aliases.key?(subunit_name)
+              # If the attribute is aliased, make sure we write to the original
+              # attribute name or an error will be raised.
+              # (Note: 'attribute_aliases' doesn't exist in Rails 3.x, so we
+              # can't tell if the attribute was aliased.)
               original_name = self.class.attribute_aliases[subunit_name.to_s]
               write_attribute(original_name, money.try(:cents))
             else
@@ -193,7 +197,7 @@ module MoneyRails
           end
 
           if validation_enabled
-            # Ensure that the before_type_cast value is updated when setting
+            # Ensure that the before_type_cast value is cleared when setting
             # the subunit value directly
             define_method "#{subunit_name}=" do |value|
               before_type_cast = value.to_f / public_send("currency_for_#{name}").subunit_to_unit
