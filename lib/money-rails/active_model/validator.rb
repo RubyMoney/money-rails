@@ -17,10 +17,11 @@ module MoneyRails
         @raw_value = @record.try(before_type_cast)
 
         # If raw value is nil and changed subunit is nil, then
-        # nil is a assigned value, elsewhere we should treat the
+        # nil is a assigned value, else we should treat the
         # subunit value as the one assigned.
-        if @raw_value.nil? && @record.send(subunit_attr)
-          @raw_value = @record.send(subunit_attr)
+        if @raw_value.nil? && @record.public_send(subunit_attr)
+          subunit_value = @record.public_send(subunit_attr)
+          @raw_value = subunit_value.to_f / currency.subunit_to_unit
         end
 
         return if options[:allow_nil] && @raw_value.nil?
@@ -51,7 +52,7 @@ module MoneyRails
       end
 
       def currency
-        @_currency ||= @record.send("currency_for_#{@attr}")
+        @_currency ||= @record.public_send("currency_for_#{@attr}")
       end
 
       def decimal_mark

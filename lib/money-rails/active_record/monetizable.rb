@@ -200,8 +200,7 @@ module MoneyRails
             # Ensure that the before_type_cast value is cleared when setting
             # the subunit value directly
             define_method "#{subunit_name}=" do |value|
-              before_type_cast = value.to_f / public_send("currency_for_#{name}").subunit_to_unit
-              instance_variable_set "@#{name}_money_before_type_cast", before_type_cast
+              instance_variable_set "@#{name}_money_before_type_cast", nil
               write_attribute(subunit_name, value)
             end
           end
