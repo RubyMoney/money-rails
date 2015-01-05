@@ -111,6 +111,11 @@ The ```add_money``` helper is reversible, so you an use it inside ```change```
 migrations.  If you're writing separate ```up``` and ```down``` methods, you
 can use the ```remove_money``` helper.
 
+##### Not for Rails >= 4.2 and PG adapter
+
+Due the adding `money` column type for postgres in Rails 4.2 you will need to use `add_monetize` for add money column,
+`t.monetize` for add column in `create_table` or `change_table` block and `remove_monetize` for removing column.
+
 #### Allow nil values
 
 If you want to allow nil and/or blank values to a specific
@@ -377,7 +382,7 @@ MoneyRails.configure do |config|
 
   # Specify a rounding mode
   # Any one of:
-  # 
+  #
   # BigDecimal::ROUND_UP,
   # BigDecimal::ROUND_DOWN,
   # BigDecimal::ROUND_HALF_UP,
@@ -385,9 +390,9 @@ MoneyRails.configure do |config|
   # BigDecimal::ROUND_HALF_EVEN,
   # BigDecimal::ROUND_CEILING,
   # BigDecimal::ROUND_FLOOR
-  # 
+  #
   # set to BigDecimal::ROUND_HALF_EVEN by default
-  # 
+  #
   # config.rounding_mode = BigDecimal::ROUND_HALF_UP
 
   # Set default money format globally.
