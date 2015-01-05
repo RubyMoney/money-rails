@@ -111,7 +111,7 @@ The ```add_money``` helper is reversible, so you an use it inside ```change```
 migrations.  If you're writing separate ```up``` and ```down``` methods, you
 can use the ```remove_money``` helper.
 
-##### Not for Rails >= 4.2 and PG adapter
+##### Notice for Rails >= 4.2 and PG adapter
 
 Due the adding `money` column type for postgres in Rails 4.2 you will need to use `add_monetize` for add money column,
 `t.monetize` for add column in `create_table` or `change_table` block and `remove_monetize` for removing column.
