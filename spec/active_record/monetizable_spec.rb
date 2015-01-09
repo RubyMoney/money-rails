@@ -297,20 +297,6 @@ if defined? ActiveRecord
         I18n.locale = old_locale
       end
 
-      it "defaults to Money::Currency format when no I18n information is present" do
-        old_locale = I18n.locale
-
-        I18n.locale = "zxsw"
-        Money.default_currency = Money::Currency.find('EUR')
-        expect("12,00".to_money).to eq(Money.new(1200, :eur))
-        transaction = Transaction.new(amount: "12,00", tax: "13,00")
-        expect(transaction.amount_cents).to eq(1200)
-        expect(transaction.valid?).to be_truthy
-
-        # reset locale setting
-        I18n.locale = old_locale
-      end
-
       it "doesn't allow nil by default" do
         product.price_cents = nil
         expect(product.save).to be_falsey
@@ -473,7 +459,6 @@ if defined? ActiveRecord
         expect(product.save).to be_truthy
         expect(product.optional_price).to be_nil
       end
-
 
       context "when the monetized field is an aliased attribute" do
         it "writes the subunits to the original (unaliased) column" do
