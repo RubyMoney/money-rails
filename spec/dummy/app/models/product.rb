@@ -5,6 +5,9 @@ class Product < ActiveRecord::Base
   # Use money-rails macros
   monetize :price_cents
 
+  # Use money-rails macro with multiple fields
+  monetize :delivery_fee_cents, :restock_fee_cents, :allow_nil => true
+
   # Use a custom name for the Money attribute
   monetize :discount, :as => "discount_value"
 
