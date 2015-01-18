@@ -14,7 +14,11 @@ class Money
     # this custom class from it.
     def demongoize(object)
       if object.is_a?(Hash)
-        object = object.deep_symbolize_keys
+        if object.respond_to?(:deep_symbolize_keys)
+          object = object.deep_symbolize_keys
+        else
+          object = object.symbolize_keys
+        end
         object.has_key?(:cents) ? ::Money.new(object[:cents], object[:currency_iso]) : nil
       else
         nil
@@ -27,7 +31,11 @@ class Money
       case
       when object.is_a?(Money) then object.mongoize
       when object.is_a?(Hash) then
-        object.deep_symbolize_keys! if object.respond_to?(:deep_symbolize_keys!)
+        if object.respond_to?(:deep_symbolize_keys!)
+          object.deep_symbolize_keys!
+        elsif object.respond_to?(:symbolize_keys!)
+          object.symbolize_keys!
+        end
         ::Money.new(object[:cents], object[:currency_iso]).mongoize
       when object.respond_to?(:to_money) then
         begin
