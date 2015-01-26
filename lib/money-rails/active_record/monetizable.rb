@@ -222,9 +222,7 @@ module MoneyRails
               end
             end
 
-            define_method "#{name}_money_before_type_cast" do
-              instance_variable_get "@#{name}_money_before_type_cast"
-            end
+            attr_reader "#{name}_money_before_type_cast"
 
             # Hook to ensure the reset of before_type_cast attr
             # TODO: think of a better way to avoid this
