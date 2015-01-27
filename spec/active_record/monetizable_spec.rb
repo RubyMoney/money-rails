@@ -200,6 +200,15 @@ if defined? ActiveRecord
         expect(product.errors[:price_in_a_range].first).to match(/Must be greater than zero and less than \$100/)
       end
 
+      it "fails validation if linked attribute changed" do
+        product = Product.create(:price => Money.new(3210, "USD"), :discount => 150,
+                                 :validates_method_amount => 100,
+                                 :bonus_cents => 200, :optional_price => 100)
+        expect(product.valid?).to be_truthy
+        product.optional_price = 50
+        expect(product.valid?).to be_falsey
+      end
+
       it "fails validation with the proper error message using validates :money" do
         product.validates_method_amount = "-12"
         expect(product.valid?).to be_falsey
