@@ -6,11 +6,7 @@ module MoneyRails
         @record = record
         @attr = attr
 
-        # If subunit is not set then no need to validate as it is an
-        # indicator that no assignment has been done onto the virtual
-        # money field.
         subunit_attr = @record.class.monetized_attributes[@attr.to_sym]
-        return unless @record.changed_attributes.keys.include? subunit_attr
 
         # WARNING: Currently this is only defined in ActiveRecord extension!
         before_type_cast = :"#{@attr}_money_before_type_cast"
