@@ -46,4 +46,7 @@ class Product < ActiveRecord::Base
   alias_attribute :renamed_cents, :aliased_cents
 
   monetize :renamed_cents, allow_nil: true
+
+  # Using postfix to determine currency column (reduced_price_currency)
+  monetize :reduced_price_cents, :allow_nil => true
 end

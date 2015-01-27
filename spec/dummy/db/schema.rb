@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150107061030) do
+ActiveRecord::Schema.define(version: 20150126231442) do
 
   create_table "dummy_products", force: true do |t|
     t.string   "currency"
@@ -34,6 +34,8 @@ ActiveRecord::Schema.define(version: 20150107061030) do
     t.integer  "aliased_cents"
     t.integer  "delivery_fee_cents"
     t.integer  "restock_fee_cents"
+    t.integer  "reduced_price_cents"
+    t.string   "reduced_price_currency"
   end
 
   create_table "services", force: true do |t|

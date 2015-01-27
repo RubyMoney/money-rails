@@ -207,14 +207,19 @@ module MoneyRails
             end
 
             define_method "currency_for_#{name}" do
+              instance_currency_name_with_postfix = "#{name}#{MoneyRails::Configuration.currency_column[:postfix]}"
+
               if instance_currency_name.present? &&
                 respond_to?(instance_currency_name) &&
-                public_send(instance_currency_name).present? &&
                 Money::Currency.find(public_send(instance_currency_name))
 
                 Money::Currency.find(public_send(instance_currency_name))
               elsif field_currency_name
                 Money::Currency.find(field_currency_name)
+              elsif respond_to?(instance_currency_name_with_postfix) &&
+                Money::Currency.find(public_send(instance_currency_name_with_postfix))
+
+                Money::Currency.find(public_send(instance_currency_name_with_postfix))
               elsif self.class.respond_to?(:currency)
                 self.class.currency
               else

@@ -9,7 +9,8 @@ if defined? ActiveRecord
         Product.create(:price_cents => 3000, :discount => 150,
                        :bonus_cents => 200, :optional_price => 100,
                        :sale_price_amount => 1200, :delivery_fee_cents => 100,
-                       :restock_fee_cents => 2000)
+                       :restock_fee_cents => 2000,
+                       :reduced_price_cents => 1500, :reduced_price_currency => :lvl)
       end
 
       let(:service) do
@@ -354,6 +355,10 @@ if defined? ActiveRecord
       it "overrides default currency with the value of :with_currency argument" do
         expect(service.charge.currency).to eq(Money::Currency.find(:usd))
         expect(product.bonus.currency).to eq(Money::Currency.find(:gbp))
+      end
+
+      it "uses currency postfix to determine attribute that stores currency" do
+        expect(product.reduced_price.currency).to eq(Money::Currency.find(:lvl))
       end
 
       it "correctly assigns Money objects to the attribute" do
