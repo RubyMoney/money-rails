@@ -441,6 +441,8 @@ _For examples below, `@money_object == <Money fractional:650 currency:USD>`_
 #### `no_cents_if_whole`
 
 `humanized_money` and `humanized_money_with_symbol` will not render the cents part if it contains only zeros, unless `config.no_cents_if_whole` is set to `false` in the `money.rb` configuration (default: true).
+Note that the `config.default_format` will be overwritten by `config.no_cents_if_whole`.
+So `humanized_money` will ignore `config.default_format = { no_cents_if_whole: false }` if you don't set `config.no_cents_if_whole = false`.
 
 ### Testing
 
