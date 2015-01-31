@@ -2,6 +2,24 @@
 
 ## master (next release)
 
+## 1.3.0
+
+- Use currency_column[:postfix] to automatically determine currency column.
+- Replacing getter method with attr_reader.
+- Support the `disambiguate` option on humanized_money helper.
+- Restore mongoid functionality on Rails < 4.0.
+- Support multiple attributes w/ one call to `monetize` for AR.
+- Add `add_monetize` and `remove_monetize` migration helpers, to fix a naming
+  clash introduced by the Rails 4.2 Postgres adapter Use correct amount for
+  validator when subunit is set directly.
+- Fix store_accessor compatibility.
+- Use `public_send` instead of `send` throughout the `monetize` method.
+
+## 1.2.0
+
+- Fixing tests which were broken on Rails 4.2.
+- Add Rails 4.2 spec and update money dependency to 6.5.0.
+
 ## 1.1.0
 
 - Update dependencies to money 6.4.x and monetize 1.0.x.
