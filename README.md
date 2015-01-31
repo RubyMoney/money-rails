@@ -115,8 +115,10 @@ can use the ```remove_money``` helper.
 
 ##### Notice for Rails >= 4.2 and PG adapter
 
-Due the adding `money` column type for postgres in Rails 4.2 you will need to use `add_monetize` for add money column,
-`t.monetize` for add column in `create_table` or `change_table` block and `remove_monetize` for removing column.
+Due to the addition of the `money` column type for PostgreSQL in Rails 4.2, you
+will need to use `add_monetize` instead of `add_money` column. If you're adding
+the column within a `create_table` block, use `t.monetize`, and use
+`remove_monetize` to remove the column.
 
 #### Allow nil values
 
