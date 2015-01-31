@@ -2,6 +2,33 @@
 
 ## master (next release)
 
+## 1.1.0
+
+- Update dependencies to money 6.4.x and monetize 1.0.x.
+- Make subunit setter (e.g. `#price_cents=`) set the `before_type_cast...` va
+  riable. (Fixes validation errors.)
+- use HashWithIndifferentAccess instead of Hash for
+  ActiveRecord::Base::monetized_attributes
+- Let the 'monetize' test helper work when testing against the model's class,
+  as well as an instance of that class.
+- Remove additional underscore in postfix comment
+- Rescue UnknownCurrency within ActiveRecord
+- Upgrade specs to RSpec 3
+- Use #respond_to? instead of #try? when monetizing an aliased attribute.
+- Allow aliased attributes to be monetized
+- Fix compatability issue with Rails 4.2
+- Allow empty string as thousands separator.
+- Allow using a lambda to set default_currency
+
+## 1.0.0
+
+- Refactoring MoneyRails::ActiveModel::MoneyValidator#validate_each
+- Update dependencies to money 6.2.x and monetize 0.4.x.
+- Rescue from unknown currency errors on mongoization
+- Add specs for Mongoize with invalid currency
+- Add dedicated gemfiles and specs for Mongoid 3 and 4
+- Show actual value of Money object in validation error message
+
 ## 0.12.0
 - Add allow_nil chain for monetize test helper
 - Add testing tasks for rails 4.1
