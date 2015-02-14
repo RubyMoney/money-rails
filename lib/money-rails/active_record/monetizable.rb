@@ -58,7 +58,11 @@ module MoneyRails
             @monetized_attributes[name] = subunit_name
             class << self
               def monetized_attributes
-                @monetized_attributes || superclass.monetized_attributes
+                if @monetized_attributes && superclass.respond_to?(:monetized_attributes)
+                    @monetized_attributes.merge(superclass.monetized_attributes)
+                else
+                  @monetized_attributes || superclass.monetized_attributes
+                end
               end
             end unless respond_to? :monetized_attributes
 

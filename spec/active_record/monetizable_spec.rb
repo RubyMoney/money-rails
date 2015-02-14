@@ -2,6 +2,10 @@ require 'spec_helper'
 
 class Sub < Product; end
 
+class SubProduct < Product
+  monetize :special_price_cents
+end
+
 if defined? ActiveRecord
   describe MoneyRails::ActiveRecord::Monetizable do
     describe "monetize" do
@@ -19,6 +23,10 @@ if defined? ActiveRecord
 
       it "should be inherited by subclasses" do
         expect(Sub.monetized_attributes).to eq(Product.monetized_attributes)
+      end
+
+      it "should be inherited by subclasses with new monetized attribute" do
+        expect(SubProduct.monetized_attributes).to eq(Product.monetized_attributes.merge(special_price: "special_price_cents"))
       end
 
       it "attaches a Money object to model field" do
