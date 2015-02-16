@@ -1,5 +1,7 @@
 module MoneyRails
   class Hooks
+    PG_ADAPTERS = %w(activerecord-jdbcpostgresql-adapter postgresql)
+
     def self.init
       # For Active Record
       ActiveSupport.on_load(:active_record) do
@@ -15,7 +17,8 @@ module MoneyRails
                                   else
                                     false
                                   end
-          postgresql_with_money = rails42 && ['activerecord-jdbcpostgresql-adapter', 'postgresql'].include?(::ActiveRecord::Base.connection.instance_values["config"][:adapter])
+          current_adapter = ::ActiveRecord::Base.connection_config[:adapter]
+          postgresql_with_money = rails42 && PG_ADAPTERS.include?(current_adapter)
         end
 
         require "money-rails/active_record/migration_extensions/options_extractor"
