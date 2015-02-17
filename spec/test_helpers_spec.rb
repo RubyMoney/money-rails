@@ -18,7 +18,7 @@ if defined? ActiveRecord
       shared_context "monetize matcher" do
 
         it "matches model attribute without a '_cents' suffix by default" do
-          is_expected.to monetize(:price_cents)
+          is_expected.to monetize(:price)
         end
 
         it "matches model attribute specified by :as chain" do
@@ -58,6 +58,22 @@ if defined? ActiveRecord
       describe "testing against the model class itself" do
         subject { Product }
         include_context "monetize matcher"
+      end
+
+      describe "testing smth other than cents as a default subunit" do
+        subject { Good }
+        before do
+          MoneyRails.default_currency = :gbp
+          MoneyRails.amount_column[:prefix] = 'some_prefix_'
+        end
+
+        it "matches model attribute with a suffix and with a prefix by default" do
+          is_expected.to monetize(:some_prefix_price_pennies)
+        end
+
+        it "matches model attribute without a '_pennies' suffix by default" do
+          is_expected.to monetize(:price)
+        end
       end
     end
   end
