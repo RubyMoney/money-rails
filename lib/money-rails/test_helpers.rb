@@ -33,7 +33,7 @@ module MoneyRails
           @actual = actual.class.new
         end
 
-        @money_attribute = @as.presence || @attribute.to_s.sub(/_cents$/, "")
+        @money_attribute = @as.presence || attribute_accessor
         @money_attribute_setter = "#{@money_attribute}="
 
         object_responds_to_attributes? &&
@@ -95,6 +95,13 @@ module MoneyRails
         end
       end
 
+      def amount_column_config
+        MoneyRails::Configuration.amount_column
+      end
+
+      def attribute_accessor
+        @attribute.to_s.sub(/^#{amount_column_config[:prefix]}/, "").sub(/#{amount_column_config[:postfix]}$/, "")
+      end
     end
   end
 end
