@@ -43,8 +43,8 @@ module MoneyRails
             # if none of the previous is the case then use a default suffix
             if name
               name = name.to_s
-            elsif subunit_name =~ /#{MoneyRails::Configuration.amount_column[:postfix]}$/
-              name = subunit_name.sub(/#{MoneyRails::Configuration.amount_column[:postfix]}$/, "")
+            elsif has_prefix_or_postfix?(subunit_name)
+              name = cut_prefix_and_postfix(subunit_name)
             else
               # FIXME: provide a better default
               name = [subunit_name, "money"].join("_")
@@ -254,6 +254,17 @@ module MoneyRails
             end
           end
         end
+
+        private
+          def has_prefix_or_postfix?(name)
+            name =~ /#{MoneyRails::Configuration.amount_column[:postfix]}$/ ||
+              name =~ /^#{MoneyRails::Configuration.amount_column[:prefix]}/
+          end
+
+          def cut_prefix_and_postfix(name)
+            name.sub(/^#{MoneyRails::Configuration.amount_column[:prefix]}/, "").
+              sub(/#{MoneyRails::Configuration.amount_column[:postfix]}$/, "")
+          end
       end
     end
   end
