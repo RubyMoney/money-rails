@@ -19,18 +19,20 @@ class Product < ActiveRecord::Base
 
   # Use currency column to determine currency for this field only
   monetize :sale_price_amount, :as => :sale_price,
-             :with_model_currency => :sale_price_currency_code
+    :with_model_currency => :sale_price_currency_code
 
   monetize :price_in_a_range_cents, :allow_nil => true,
-    :subunit_numericality => {
-      :greater_than => 0,
-      :less_than_or_equal_to => 10000,
-    },
-    :numericality => {
-      :greater_than => 0,
-      :less_than_or_equal_to => 100,
-      :message => "Must be greater than zero and less than $100"
-    }
+  :subunit_numericality => {
+    :greater_than => 0,
+  :less_than_or_equal_to => 10000 },
+  :numericality => {
+    :greater_than => 0,
+    :less_than_or_equal_to => 100,
+    :message => "Must be greater than zero and less than $100"
+  }
+
+  # Override default currency (EUR) with a specific one (CAD) for this field only, from a lambda
+  monetize :lambda_price_cents, with_currency: ->(product) { Rails.configuration.lambda_test }, allow_nil: true
 
   attr_accessor :accessor_price_cents
   monetize :accessor_price_cents, disable_validation: true

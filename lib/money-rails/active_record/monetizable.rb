@@ -15,11 +15,10 @@ module MoneyRails
             # Stringify model field name
             subunit_name = field.to_s
 
-            if options[:field_currency] || options[:target_name] ||
-              options[:model_currency]
+            if options[:field_currency] || options[:target_name] || options[:model_currency]
               ActiveSupport::Deprecation.warn("You are using the old " \
-                "argument keys of the monetize command! Instead use :as, " \
-                ":with_currency or :with_model_currency")
+                                              "argument keys of the monetize command! Instead use :as, " \
+                                              ":with_currency or :with_model_currency")
             end
 
             # Optional accessor to be run on an instance to detect currency
@@ -59,7 +58,7 @@ module MoneyRails
             class << self
               def monetized_attributes
                 if @monetized_attributes && superclass.respond_to?(:monetized_attributes)
-                    @monetized_attributes.merge(superclass.monetized_attributes)
+                  @monetized_attributes.merge(superclass.monetized_attributes)
                 else
                   @monetized_attributes || superclass.monetized_attributes
                 end
@@ -91,18 +90,18 @@ module MoneyRails
             if validation_enabled = MoneyRails.include_validations && !options[:disable_validation]
 
               subunit_validation_options =
-                unless options.has_key? :subunit_numericality
-                  true
-                else
-                  options[:subunit_numericality]
-                end
+              unless options.has_key? :subunit_numericality
+                true
+              else
+                options[:subunit_numericality]
+              end
 
               money_validation_options =
-                unless options.has_key? :numericality
-                  true
-                else
-                  options[:numericality]
-                end
+              unless options.has_key? :numericality
+                true
+              else
+                options[:numericality]
+              end
 
               # This is a validation for the subunit
               validates subunit_name, {
@@ -172,7 +171,7 @@ module MoneyRails
                 # the regular writer, which works with store_accessors
                 public_send("#{subunit_name}=", money.try(:cents))
               elsif self.class.respond_to?(:attribute_aliases) &&
-                    self.class.attribute_aliases.key?(subunit_name)
+                  self.class.attribute_aliases.key?(subunit_name)
                 # If the attribute is aliased, make sure we write to the original
                 # attribute name or an error will be raised.
                 # (Note: 'attribute_aliases' doesn't exist in Rails 3.x, so we
@@ -186,9 +185,7 @@ module MoneyRails
               money_currency = money.try(:currency)
 
               # Update currency iso value if there is an instance currency attribute
-              if instance_currency_name.present? &&
-                respond_to?("#{instance_currency_name}=")
-
+              if instance_currency_name.present? && respond_to?("#{instance_currency_name}=")
                 public_send("#{instance_currency_name}=", money_currency.try(:iso_code))
               else
                 current_currency = public_send("currency_for_#{name}")
@@ -213,15 +210,16 @@ module MoneyRails
             define_method "currency_for_#{name}" do
               instance_currency_name_with_postfix = "#{name}#{MoneyRails::Configuration.currency_column[:postfix]}"
 
-              if instance_currency_name.present? &&
-                respond_to?(instance_currency_name) &&
-                Money::Currency.find(public_send(instance_currency_name))
+              if instance_currency_name.present? && respond_to?(instance_currency_name) &&
+                  Money::Currency.find(public_send(instance_currency_name))
 
                 Money::Currency.find(public_send(instance_currency_name))
+              elsif field_currency_name.respond_to?(:call)
+                Money::Currency.find(field_currency_name.call(self))
               elsif field_currency_name
                 Money::Currency.find(field_currency_name)
               elsif respond_to?(instance_currency_name_with_postfix) &&
-                Money::Currency.find(public_send(instance_currency_name_with_postfix))
+                  Money::Currency.find(public_send(instance_currency_name_with_postfix))
 
                 Money::Currency.find(public_send(instance_currency_name_with_postfix))
               elsif self.class.respond_to?(:currency)
