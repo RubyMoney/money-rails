@@ -14,7 +14,8 @@ if defined? ActiveRecord
                        :bonus_cents => 200, :optional_price => 100,
                        :sale_price_amount => 1200, :delivery_fee_cents => 100,
                        :restock_fee_cents => 2000,
-                       :reduced_price_cents => 1500, :reduced_price_currency => :lvl)
+                       :reduced_price_cents => 1500, :reduced_price_currency => :lvl,
+                       :lambda_price_cents => 4000)
       end
 
       let(:service) do
@@ -52,7 +53,7 @@ if defined? ActiveRecord
 
       it "assigns the correct value from a Money object using create" do
         product = Product.create(:price => Money.new(3210, "USD"), :discount => 150,
-                                  :bonus_cents => 200, :optional_price => 100)
+                                 :bonus_cents => 200, :optional_price => 100)
         expect(product.valid?).to be_truthy
         expect(product.price_cents).to eq(3210)
       end
@@ -170,7 +171,7 @@ if defined? ActiveRecord
         expect(service.save).to be_truthy
       end
 
-       it "passes validation if money value is a Float" do
+      it "passes validation if money value is a Float" do
         product.price = 12.34
         expect(product.save).to be_truthy
       end
@@ -438,6 +439,11 @@ if defined? ActiveRecord
         expect(service.save).to be_truthy
         expect(service.charge.cents).to eq(200)
         expect(service.charge.currency_as_string).to eq("USD")
+
+        product.lambda_price = "32"
+        expect(product.save).to be_truthy
+        expect(product.lambda_price.cents).to eq(3200)
+        expect(product.lambda_price.currency_as_string).to eq("CAD")
       end
 
       it "overrides default currency with model currency, in fixnum assignments" do
@@ -476,7 +482,7 @@ if defined? ActiveRecord
 
       it "sets field to nil, in instantiation if allow_nil is set" do
         pr = Product.new(:optional_price => nil, :price_cents => 5320,
-          :discount => 350, :bonus_cents => 320)
+                         :discount => 350, :bonus_cents => 320)
         expect(pr.optional_price).to be_nil
         expect(pr.save).to be_truthy
         expect(pr.optional_price).to be_nil
@@ -514,7 +520,8 @@ if defined? ActiveRecord
             :bonus => Money.new(10,'GBP'),
             :discount => 10,
             :sale_price_amount => 1234,
-            :sale_price_currency_code => 'USD')
+            :sale_price_currency_code => 'USD'
+          )
 
           expect(product.sale_price.currency_as_string).to eq('USD')
 

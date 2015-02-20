@@ -59,5 +59,8 @@ module Dummy
 
     # Version of your assets, change this if you want to expire all your assets
     config.assets.version = '1.0'
+
+    # Currentcy Lambda test
+    config.lambda_test = 'cad'
   end
 end
