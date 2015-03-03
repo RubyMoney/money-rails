@@ -134,6 +134,16 @@ if defined? ActiveRecord
         expect(product.valid?).to be_truthy
       end
 
+      it "separately skips price validations" do
+        product.skip_validation_price = 'hundred thousands'
+        expect(product.save).to be_truthy
+      end
+
+      it "separately skips subunit validations" do
+        product.skip_validation_price_cents = 'ten million'
+        expect(product.save).to be_truthy
+      end
+
       it "fails validation with the proper error message if money value is invalid decimal" do
         product.price = "12.23.24"
         expect(product.save).to be_falsey

@@ -31,6 +31,9 @@ class Product < ActiveRecord::Base
     :message => "Must be greater than zero and less than $100"
   }
 
+  # Skip validations separately from each other
+  monetize :skip_validation_price_cents, subunit_numericality: false, numericality: false, allow_nil: true
+
   # Override default currency (EUR) with a specific one (CAD) for this field only, from a lambda
   monetize :lambda_price_cents, with_currency: ->(product) { Rails.configuration.lambda_test }, allow_nil: true
 

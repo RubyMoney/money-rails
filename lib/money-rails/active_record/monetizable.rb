@@ -90,16 +90,20 @@ module MoneyRails
             if validation_enabled = MoneyRails.include_validations && !options[:disable_validation]
 
               # This is a validation for the subunit
-              validates subunit_name, {
-                :allow_nil => options[:allow_nil],
-                :numericality => options[:subunit_numericality] || true
-              }
+              if subunit_numericality = options.fetch(:subunit_numericality, true)
+                validates subunit_name, {
+                  :allow_nil => options[:allow_nil],
+                  :numericality => subunit_numericality
+                }
+              end
 
               # Allow only Money objects or Numeric values!
-              validates name.to_sym, {
-                :allow_nil => options[:allow_nil],
-                'money_rails/active_model/money' => options[:numericality] || true
-              }
+              if numericality = options.fetch(:numericality, true)
+                validates name.to_sym, {
+                  :allow_nil => options[:allow_nil],
+                  'money_rails/active_model/money' => numericality
+                }
+              end
             end
 
 
