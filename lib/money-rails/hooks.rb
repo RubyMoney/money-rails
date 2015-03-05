@@ -23,9 +23,8 @@ module MoneyRails
 
         require "money-rails/active_record/migration_extensions/options_extractor"
         %w{schema_statements table}.each do |file|
-          if postgresql_with_money
-            require "money-rails/active_record/migration_extensions/#{file}_pg_rails4"
-          else
+          require "money-rails/active_record/migration_extensions/#{file}_pg_rails4"
+          if !postgresql_with_money
             require "money-rails/active_record/migration_extensions/#{file}"
           end
         end
