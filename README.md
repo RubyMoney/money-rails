@@ -162,6 +162,13 @@ are aggregate methods and you wish to avoid executing them on every record save.
 monetize :price_in_a_range_cents, :disable_validation => true
 ```
 
+You can also skip validations independently from each other by simply passing `false`
+to the validation you are willing to skip, like this:
+
+```ruby
+monetize :price_in_a_range_cents, :numericality => false
+```
+
 ### Mongoid 2.x and 3.x
 
 `Money` is available as a field type to supply during a field definition:
