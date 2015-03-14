@@ -8,6 +8,16 @@ module MoneyRails
       extend ActiveSupport::Concern
 
       module ClassMethods
+        def monetized_attributes
+          monetized_attributes = @monetized_attributes || {}
+
+          if superclass.respond_to?(:monetized_attributes)
+            monetized_attributes.merge(superclass.monetized_attributes)
+          else
+            monetized_attributes
+          end
+        end
+
         def monetize(*fields)
           options = fields.extract_options!
 
@@ -50,20 +60,7 @@ module MoneyRails
             end
 
             # Create a reverse mapping of the monetized attributes
-            @monetized_attributes ||= {}.with_indifferent_access
-            if @monetized_attributes[name].present?
-              raise ArgumentError, "#{self} already has a monetized attribute called '#{name}'"
-            end
-            @monetized_attributes[name] = subunit_name
-            class << self
-              def monetized_attributes
-                if @monetized_attributes && superclass.respond_to?(:monetized_attributes)
-                  @monetized_attributes.merge(superclass.monetized_attributes)
-                else
-                  @monetized_attributes || superclass.monetized_attributes
-                end
-              end
-            end unless respond_to? :monetized_attributes
+            track_monetized_attribute name, subunit_name
 
             # Include numericality validations if needed.
             # There are two validation options:
@@ -241,6 +238,18 @@ module MoneyRails
               attr_reader :currency
             end
           end
+        end
+
+        private
+
+        def track_monetized_attribute(name, value)
+          @monetized_attributes ||= {}.with_indifferent_access
+
+          if @monetized_attributes[name].present?
+            raise ArgumentError, "#{self} already has a monetized attribute called '#{name}'"
+          end
+
+          @monetized_attributes[name] = value
         end
       end
     end
