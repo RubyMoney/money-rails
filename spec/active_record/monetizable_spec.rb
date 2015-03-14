@@ -78,6 +78,17 @@ if defined? ActiveRecord
         end.to raise_error
       end
 
+      it "allows subclass to redefine attribute with the same name" do
+        class SubProduct < Product
+          monetize :discount, as: :discount_price, with_currency: :gbp
+        end
+
+        sub_product = SubProduct.new(discount: 100)
+
+        expect(sub_product.discount_price).to be_an_instance_of(Money)
+        expect(sub_product.discount_price.currency.id).to equal :gbp
+      end
+
       it "respects :as argument" do
         expect(product.discount_value).to eq(Money.new(150, "USD"))
       end
