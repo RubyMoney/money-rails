@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150217222612) do
+ActiveRecord::Schema.define(version: 20150303222230) do
 
   create_table "dummy_products", force: true do |t|
     t.string   "currency"
@@ -38,6 +38,7 @@ ActiveRecord::Schema.define(version: 20150217222612) do
     t.string   "reduced_price_currency"
     t.integer  "special_price_cents"
     t.integer  "lambda_price_cents"
+    t.string   "skip_validation_price_cents"
   end
 
   create_table "services", force: true do |t|
