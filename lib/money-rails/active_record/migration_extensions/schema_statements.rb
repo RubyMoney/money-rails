@@ -3,17 +3,11 @@ module MoneyRails
     module MigrationExtensions
       module SchemaStatements
         def add_money(table_name, accessor, options={})
-          [:amount, :currency].each do |attribute|
-            column_present, *opts = OptionsExtractor.extract attribute, table_name, accessor, options
-            add_column *opts if column_present
-          end
+          add_monetize(table_name, accessor, options)
         end
 
         def remove_money(table_name, accessor, options={})
-          [:amount, :currency].each do |attribute|
-            column_present, table_name, column_name, _, _ =  OptionsExtractor.extract attribute, table_name, accessor, options
-            remove_column table_name, column_name if column_present
-          end
+          remove_monetize(table_name, accessor, options)
         end
       end
     end
