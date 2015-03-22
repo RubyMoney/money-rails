@@ -1,6 +1,6 @@
 module MoneyRails
   class Hooks
-    PG_ADAPTERS = %w(activerecord-jdbcpostgresql-adapter postgresql)
+    PG_ADAPTERS = %w(activerecord-jdbcpostgresql-adapter postgresql postgis)
 
     def self.init
       # For Active Record
