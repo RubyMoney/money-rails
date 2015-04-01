@@ -1,10 +1,10 @@
 # RubyMoney - Money-Rails [![endorse](http://api.coderwall.com/alup/endorsecount.png)](http://coderwall.com/alup)
 
-[![Gem Version](https://badge.fury.io/rb/money-rails.png)](http://badge.fury.io/rb/money-rails)
-[![Build Status](https://secure.travis-ci.org/RubyMoney/money-rails.png?branch=master)](http://travis-ci.org/RubyMoney/money-rails)
-[![Dependency Status](https://gemnasium.com/RubyMoney/money-rails.png)](https://gemnasium.com/RubyMoney/money-rails)
-[![Code Climate](https://codeclimate.com/github/RubyMoney/money-rails.png)](https://codeclimate.com/github/RubyMoney/money-rails)
-[![License](http://img.shields.io/license/MIT.png?color=green)](http://opensource.org/licenses/MIT)
+[![Gem Version](https://badge.fury.io/rb/money-rails.svg)](http://badge.fury.io/rb/money-rails)
+[![Build Status](https://secure.travis-ci.org/RubyMoney/money-rails.svg?branch=master)](http://travis-ci.org/RubyMoney/money-rails)
+[![Dependency Status](https://gemnasium.com/RubyMoney/money-rails.svg)](https://gemnasium.com/RubyMoney/money-rails)
+[![Code Climate](https://codeclimate.com/github/RubyMoney/money-rails.svg)](https://codeclimate.com/github/RubyMoney/money-rails)
+[![License](http://img.shields.io/:license-mit-green.svg?style=flat)](http://opensource.org/licenses/MIT)
 
 ## Introduction
 
