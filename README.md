@@ -125,7 +125,7 @@ the column within a `create_table` block, use `t.monetize`, and use
 If you want to allow nil and/or blank values to a specific
 monetized field, you can use the `:allow_nil` parameter:
 
-```
+```ruby
 # in Product model
 monetize :optional_price_cents, :allow_nil => true
 
@@ -332,7 +332,7 @@ t.amount == Money.new(2500, "CAD") # true
 
 You can handle a bunch of configuration params through ```money.rb``` initializer:
 
-```
+```ruby
 MoneyRails.configure do |config|
 
   # To set the default currency
@@ -462,23 +462,23 @@ use the helper.
 
 * the `monetize` matcher
 
-```
+```ruby
 monetize(:price_cents).should be_true
 ```
 This will ensure that a column called `price_cents` is being monetized.
 
-```
+```ruby
 monetize(:price_cents).allow_nil.should be_true
 ```
 By using `allow_nil` you can specify money attributes that accept nil values.
 
-```
+```ruby
 monetize(:price_cents).as(:discount_value).should be_true
 ```
 By using `as` chain you can specify the exact name to which a monetized
 column is being mapped.
 
-```
+```ruby
 monetize(:price_cents).with_currency(:gbp).should be_true
 ```
 
