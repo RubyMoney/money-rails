@@ -67,7 +67,7 @@ if defined? ActiveRecord
         product = Product.new
         expect {
           product.price = Money.new(10, "RUB")
-        }.to raise_error("Can't change readonly currency 'USD' to 'RUB' for field 'price'")
+        }.to raise_error(MoneyRails::ActiveRecord::Monetizable::ReadOnlyCurrencyException, "Can't change readonly currency 'USD' to 'RUB' for field 'price'")
       end
 
       it "raises an error if trying to create two attributes with the same name" do
