@@ -5,6 +5,7 @@ require 'active_support/deprecation/reporting'
 module MoneyRails
   module ActiveRecord
     module Monetizable
+      class ReadOnlyCurrencyException < StandardError; end
       extend ActiveSupport::Concern
 
       module ClassMethods
@@ -177,7 +178,7 @@ module MoneyRails
               else
                 current_currency = public_send("currency_for_#{name}")
                 if money_currency && current_currency != money_currency.id
-                  raise "Can't change readonly currency '#{current_currency}' to '#{money_currency}' for field '#{name}'"
+                  raise ReadOnlyCurrencyException.new("Can't change readonly currency '#{current_currency}' to '#{money_currency}' for field '#{name}'")
                 end
               end
 
