@@ -22,12 +22,22 @@ if defined? ActiveRecord
         Service.create(:charge_cents => 2000, :discount_cents => 120)
       end
 
-      it "should be inherited by subclasses" do
-        expect(Sub.monetized_attributes).to eq(Product.monetized_attributes)
-      end
+      context 'monetized_attributes' do
+        it "should be inherited by subclasses" do
+          monetized_attributes = Sub.monetized_attributes
+          expect(monetized_attributes).to eq(Product.monetized_attributes)
+          monetized_attributes.keys.each do |key|
+            expect(key.is_a? String).to be_truthy
+          end
+        end
 
-      it "should be inherited by subclasses with new monetized attribute" do
-        expect(SubProduct.monetized_attributes).to eq(Product.monetized_attributes.merge(special_price: "special_price_cents"))
+        it "should be inherited by subclasses with new monetized attribute" do
+          monetized_attributes = SubProduct.monetized_attributes
+          expect(monetized_attributes).to eq(Product.monetized_attributes.merge(special_price: "special_price_cents"))
+          monetized_attributes.keys.each do |key|
+            expect(key.is_a? String).to be_truthy
+          end
+        end
       end
 
       it "attaches a Money object to model field" do

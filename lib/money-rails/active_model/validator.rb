@@ -6,7 +6,7 @@ module MoneyRails
         @record = record
         @attr = attr
 
-        subunit_attr = @record.class.monetized_attributes[@attr.to_sym]
+        subunit_attr = @record.class.monetized_attributes[@attr.to_s]
 
         # WARNING: Currently this is only defined in ActiveRecord extension!
         before_type_cast = :"#{@attr}_money_before_type_cast"
