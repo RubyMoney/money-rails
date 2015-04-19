@@ -24,16 +24,16 @@ if defined? ActiveRecord
 
       context 'monetized_attributes' do
         it "should be inherited by subclasses" do
-          monetized_attributes = Sub.monetized_attributes
-          expect(monetized_attributes).to eq(Product.monetized_attributes)
-          monetized_attributes.keys.each do |key|
-            expect(key.is_a? String).to be_truthy
-          end
+          assert_monetized_attributes(Sub.monetized_attributes, Product.monetized_attributes)
         end
 
         it "should be inherited by subclasses with new monetized attribute" do
-          monetized_attributes = SubProduct.monetized_attributes
-          expect(monetized_attributes).to eq(Product.monetized_attributes.merge(special_price: "special_price_cents"))
+          assert_monetized_attributes(SubProduct.monetized_attributes, Product.monetized_attributes.merge(special_price: "special_price_cents"))
+        end
+
+        def assert_monetized_attributes(monetized_attributes, expected_attributes)
+          expect(monetized_attributes).to include expected_attributes
+          expect(monetized_attributes.size).to eql expected_attributes.size
           monetized_attributes.keys.each do |key|
             expect(key.is_a? String).to be_truthy
           end
