@@ -13,14 +13,14 @@
 
 ActiveRecord::Schema.define(version: 20150303222230) do
 
-  create_table "dummy_products", force: true do |t|
+  create_table "dummy_products", force: :cascade do |t|
     t.string   "currency"
     t.integer  "price_cents"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  create_table "products", force: true do |t|
+  create_table "products", force: :cascade do |t|
     t.integer  "price_cents"
     t.integer  "discount"
     t.datetime "created_at"
@@ -41,14 +41,14 @@ ActiveRecord::Schema.define(version: 20150303222230) do
     t.string   "skip_validation_price_cents"
   end
 
-  create_table "services", force: true do |t|
+  create_table "services", force: :cascade do |t|
     t.integer  "charge_cents"
     t.integer  "discount_cents"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  create_table "transactions", force: true do |t|
+  create_table "transactions", force: :cascade do |t|
     t.integer  "amount_cents"
     t.integer  "tax_cents"
     t.string   "currency"
