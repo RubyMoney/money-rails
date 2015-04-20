@@ -29,6 +29,7 @@ module MoneyRails
           @raw_value = @raw_value.to_s.strip.gsub(symbol, "")
 
           add_error and return if value_has_too_many_decimal_points
+          add_error if thousand_separator_after_decimal_mark
           add_error if invalid_thousands_separation
 
         end
@@ -88,6 +89,10 @@ module MoneyRails
 
       def pieces_array
         @_pieces_array ||= decimal_pieces[0].split(thousands_separator.presence)
+      end
+
+      def thousand_separator_after_decimal_mark
+        thousands_separator.present? && decimal_pieces.length == 2 && decimal_pieces[1].include?(thousands_separator)
       end
 
       def invalid_thousands_separation

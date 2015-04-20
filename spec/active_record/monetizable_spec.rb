@@ -188,6 +188,13 @@ if defined? ActiveRecord
         expect(product.errors[:price].first).to match(/Got 12,23.24/)
       end
 
+      it "fails validation with the proper error message if money value has thousand char after decimal mark" do
+        product.price = "1.234,56"
+        expect(product.save).to be_falsey
+        expect(product.errors[:price].first).to match(/Must be a valid/)
+        expect(product.errors[:price].first).to match(/Got 1.234,56/)
+      end
+
       it "allows an empty string as the thousands separator" do
         begin
           I18n.locale = 'en-US'
