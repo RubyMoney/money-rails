@@ -1,4 +1,4 @@
-# RubyMoney - Money-Rails [![endorse](http://api.coderwall.com/alup/endorsecount.png)](http://coderwall.com/alup)
+# RubyMoney - Money-Rails
 
 [![Gem Version](https://badge.fury.io/rb/money-rails.svg)](http://badge.fury.io/rb/money-rails)
 [![Build Status](https://secure.travis-ci.org/RubyMoney/money-rails.svg?branch=master)](http://travis-ci.org/RubyMoney/money-rails)
