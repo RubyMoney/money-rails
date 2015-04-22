@@ -463,23 +463,23 @@ use the helper.
 * the `monetize` matcher
 
 ```ruby
-monetize(:price_cents).should be_true
+is_expected.to monetize(:price_cents)
 ```
 This will ensure that a column called `price_cents` is being monetized.
 
 ```ruby
-monetize(:price_cents).allow_nil.should be_true
+is_expected.to monetize(:price_cents).allow_nil
 ```
 By using `allow_nil` you can specify money attributes that accept nil values.
 
 ```ruby
-monetize(:price_cents).as(:discount_value).should be_true
+is_expected.to monetize(:price_cents).as(:discount_value)
 ```
 By using `as` chain you can specify the exact name to which a monetized
 column is being mapped.
 
 ```ruby
-monetize(:price_cents).with_currency(:gbp).should be_true
+is_expected.to monetize(:price_cents).with_currency(:gbp)
 ```
 
 By using the `with_currency` chain you can specify the expected currency
