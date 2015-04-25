@@ -2,6 +2,29 @@
 
 ## master (next release)
 
+## 1.4.1
+
+ - validator was looking for monetizable_attributes using a symbol key, when the keys are all strings. Asserted string key values in rspec and changed validator to look for a string key.
+ - make monetized_attribute hash comparison order independent
+ - Isolate class used for the monetized_attributes tests to prevent cross-contamination
+ - add gem tasks
+
+## 1.4.0
+
+- Fix validation failing when both superclass and subclass use monetize macros and any of them validates any field
+- Extract db adapter without open connection on load
+- Add support for field currency values to be determined by lambda.
+- Simplify validation options
+- Test for skipping validations separately from each other
+- Instead of requiring either the PG version or the non, always require the PG version and only fail to require the non when using PG, that way monetize will always work and money is supported for backwards compat. This way you can have a system with sqlite for dev and pg for production, for instance, and things still work.
+- Refactor monetized_attributes
+- updating db/schema.rb
+- DRYing migration extensions
+- Testing against latest ruby version
+- Include postgres specific code also when adaptor = postgis.
+- chore(add read only exception class)
+- tiny schema change
+
 ## 1.3.0
 
 - Use currency_column[:postfix] to automatically determine currency column.
