@@ -41,8 +41,7 @@ module MoneyRails
       private
 
       def reset_memoized_variables!
-        [:currency, :decimal_mark, :thousands_separator, :symbol,
-          :abs_raw_value, :decimal_pieces, :pieces_array].each do |var_name|
+        [:currency, :abs_raw_value, :decimal_pieces, :pieces_array].each do |var_name|
           ivar_name = :"@_#{var_name}"
           remove_instance_variable(ivar_name) if instance_variable_get(ivar_name)
         end
@@ -53,15 +52,15 @@ module MoneyRails
       end
 
       def decimal_mark
-        @_decimal_mark ||= I18n.t('number.currency.format.separator', default: currency.decimal_mark)
+        currency.decimal_mark
       end
 
       def thousands_separator
-        @_thousands_separator ||= I18n.t('number.currency.format.delimiter', default: currency.thousands_separator)
+        currency.thousands_separator
       end
 
       def symbol
-        @_symbol ||= I18n.t('number.currency.format.unit', default: currency.symbol)
+        currency.symbol
       end
 
       def raw_value_is_non_numeric
