@@ -646,6 +646,46 @@ if defined? ActiveRecord
           expect(transaction.total).to eq(Money.new(3000, :usd))
         end
 
+        context "and an Italian locale" do
+          around(:each) do |example|
+            I18n.with_locale(:it) do
+              example.run
+            end
+          end
+
+          context "when use_i18n is true" do
+            it "validates with the locale's decimal mark" do
+              transaction.amount = "123,45"
+              expect(transaction.valid?).to be_truthy
+            end
+
+            it "does not validate with the currency's decimal mark" do
+              transaction.amount = "123.45"
+              expect(transaction.valid?).to be_falsey
+            end
+          end
+
+          context "when use_i18n is false" do
+            around(:each) do |example|
+              begin
+                Money.use_i18n = false
+                example.run
+              ensure
+                Money.use_i18n = true
+              end
+            end
+
+            it "does not validate with the locale's decimal mark" do
+              transaction.amount = "123,45"
+              expect(transaction.valid?).to be_falsey
+            end
+
+            it "validates with the currency's decimal mark" do
+              transaction.amount = "123.45"
+              expect(transaction.valid?).to be_truthy
+            end
+          end
+        end
       end
     end
 
