@@ -2,6 +2,8 @@
 
 ## master (next release)
 
+ - Respect Money.use_i18n when validating.
+
 ## 1.4.1
 
  - validator was looking for monetizable_attributes using a symbol key, when the keys are all strings. Asserted string key values in rspec and changed validator to look for a string key.

@@ -53,11 +53,13 @@ module MoneyRails
       end
 
       def decimal_mark
-        @_decimal_mark ||= I18n.t('number.currency.format.separator', default: currency.decimal_mark)
+        character = currency.decimal_mark || '.'
+        @_decimal_mark ||= Money.use_i18n ? I18n.t('number.currency.format.separator', default: character) : character
       end
 
       def thousands_separator
-        @_thousands_separator ||= I18n.t('number.currency.format.delimiter', default: currency.thousands_separator)
+        character = currency.thousands_separator || ','
+        @_thousands_separator ||= Money.use_i18n ? I18n.t('number.currency.format.delimiter', default: character) : character
       end
 
       def symbol
