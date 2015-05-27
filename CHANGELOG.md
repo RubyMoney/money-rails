@@ -2,7 +2,8 @@
 
 ## master (next release)
 
- - Respect Money.use_i18n when validating.
+- Respect Money.use_i18n when validating.
+- Include attribute in validation messages like Rails does.
 
 ## 1.4.1
 
