@@ -75,13 +75,6 @@ if defined? ActiveRecord
         expect(product.price_cents).to eq(215)
       end
 
-      it "should raise error if can't change currency" do
-        product = Product.new
-        expect {
-          product.price = Money.new(10, "RUB")
-        }.to raise_error(MoneyRails::ActiveRecord::Monetizable::ReadOnlyCurrencyException, "Can't change readonly currency 'USD' to 'RUB' for field 'price'")
-      end
-
       it "raises an error if trying to create two attributes with the same name" do
         expect do
           class Product
@@ -132,11 +125,21 @@ if defined? ActiveRecord
         it "raises exception when a String value with hyphen is assigned" do
           expect { product.accessor_price = "10-235" }.to raise_error
         end
+
+        it "raises an exception if it can't change currency" do
+          expect {
+            Product.new.price = Money.new(10, "RUB")
+          }.to raise_error(MoneyRails::ActiveRecord::Monetizable::ReadOnlyCurrencyException, "Can't change readonly currency 'USD' to 'RUB' for field 'price'")
+        end
       end
 
       context "when MoneyRails.raise_error_on_money_parsing is false (default)" do
         it "does not raise exception when a String value with hyphen is assigned" do
           expect { product.accessor_price = "10-235" }.not_to raise_error
+        end
+
+        it "does not raise exception if it can't change currency" do
+          expect { Product.new.price = Money.new(10, "RUB") }.not_to raise_error
         end
       end
 

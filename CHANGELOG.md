@@ -4,6 +4,7 @@
 
 - Respect Money.use_i18n when validating.
 - Include attribute in validation messages like Rails does.
+- Respect `raise_error_on_money_parsing` before raising a MoneyRails::ActiveRecord::Monetizable::ReadOnlyCurrencyException.
 
 ## 1.4.1
 
