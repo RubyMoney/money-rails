@@ -22,12 +22,14 @@ module MoneyRails
 
         return if options[:allow_nil] && @raw_value.nil?
 
+        # Set this before we modify @raw_value below.
+        stringy = @raw_value.present? && !@raw_value.is_a?(Numeric)
+
         # Skip normalization for Numeric values
         # which can directly be handled by NumericalityValidator
-        if raw_value_is_non_numeric
-          # remove currency symbol, and negative sign
-          @raw_value = @raw_value.to_s.strip.gsub(symbol, "")
-
+        if stringy
+          # remove currency symbol
+          @raw_value = @raw_value.to_s.gsub(symbol, "")
           add_error and return if value_has_too_many_decimal_points
           add_error if thousand_separator_after_decimal_mark
           add_error if invalid_thousands_separation
@@ -44,7 +46,7 @@ module MoneyRails
         [:currency, :decimal_mark, :thousands_separator, :symbol,
           :abs_raw_value, :decimal_pieces, :pieces_array].each do |var_name|
           ivar_name = :"@_#{var_name}"
-          remove_instance_variable(ivar_name) if instance_variable_get(ivar_name)
+          remove_instance_variable(ivar_name) if instance_variable_defined?(ivar_name)
         end
       end
 
@@ -66,12 +68,8 @@ module MoneyRails
         @_symbol ||= I18n.t('number.currency.format.unit', default: currency.symbol)
       end
 
-      def raw_value_is_non_numeric
-        @raw_value.present? && !@raw_value.is_a?(Numeric)
-      end
-
       def abs_raw_value
-        @_abs_raw_value ||= @raw_value.strip.sub(/^-/, "")
+        @_abs_raw_value ||= @raw_value.to_s.sub(/^\s*-/, "").strip
       end
 
       def add_error
@@ -112,6 +110,10 @@ module MoneyRails
       # Remove thousands separators, normalize decimal mark,
       # remove whitespaces and _ (E.g. 99 999 999 or 12_300_200.20)
       def normalize_raw_value!
+        # Cache abs_raw_value before normalizing because it's used in
+        # many places and relies on the original @raw_value.
+        abs_raw_value
+
         @raw_value = @raw_value.to_s
           .gsub(thousands_separator, '')
           .gsub(decimal_mark, '.')
