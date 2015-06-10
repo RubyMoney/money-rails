@@ -173,20 +173,21 @@ if defined? ActiveRecord
       it "fails validation with the proper error message if money value is invalid decimal" do
         product.price = "12.23.24"
         expect(product.save).to be_falsey
-        expect(product.errors[:price].first).to match(/Must be a valid/)
-        expect(product.errors[:price].first).to match(/Got 12.23.24/)
+        expect(product.errors[:price].size).to eq(1)
+        expect(product.errors[:price].first).to match(/not a number/)
       end
 
       it "fails validation with the proper error message if money value is nothing but periods" do
         product.price = "..."
         expect(product.save).to be_falsey
-        expect(product.errors[:price].first).to match(/Must be a valid/)
-        expect(product.errors[:price].first).to match(/Got .../)
+        expect(product.errors[:price].size).to eq(1)
+        expect(product.errors[:price].first).to match(/not a number/)
       end
 
       it "fails validation with the proper error message if money value has invalid thousands part" do
         product.price = "12,23.24"
         expect(product.save).to be_falsey
+        expect(product.errors[:price].size).to eq(1)
         expect(product.errors[:price].first).to match(/Must be a valid/)
         expect(product.errors[:price].first).to match(/Got 12,23.24/)
       end
@@ -194,6 +195,7 @@ if defined? ActiveRecord
       it "fails validation with the proper error message if money value has thousand char after decimal mark" do
         product.price = "1.234,56"
         expect(product.save).to be_falsey
+        expect(product.errors[:price].size).to eq(1)
         expect(product.errors[:price].first).to match(/Must be a valid/)
         expect(product.errors[:price].first).to match(/Got 1.234,56/)
       end
@@ -227,14 +229,17 @@ if defined? ActiveRecord
       it "fails validation with the proper error message using numericality validations" do
         product.price_in_a_range = "-12"
         expect(product.valid?).to be_falsey
+        expect(product.errors[:price_in_a_range].size).to eq(1)
         expect(product.errors[:price_in_a_range].first).to match(/Must be greater than zero and less than \$100/)
 
         product.price_in_a_range = Money.new(-1200, "USD")
         expect(product.valid?).to be_falsey
+        expect(product.errors[:price_in_a_range].size).to eq(1)
         expect(product.errors[:price_in_a_range].first).to match(/Must be greater than zero and less than \$100/)
 
         product.price_in_a_range = "0"
         expect(product.valid?).to be_falsey
+        expect(product.errors[:price_in_a_range].size).to eq(1)
         expect(product.errors[:price_in_a_range].first).to match(/Must be greater than zero and less than \$100/)
 
         product.price_in_a_range = "12"
@@ -245,10 +250,12 @@ if defined? ActiveRecord
 
         product.price_in_a_range = "101"
         expect(product.valid?).to be_falsey
+        expect(product.errors[:price_in_a_range].size).to eq(1)
         expect(product.errors[:price_in_a_range].first).to match(/Must be greater than zero and less than \$100/)
 
         product.price_in_a_range = Money.new(10100, "USD")
         expect(product.valid?).to be_falsey
+        expect(product.errors[:price_in_a_range].size).to eq(1)
         expect(product.errors[:price_in_a_range].first).to match(/Must be greater than zero and less than \$100/)
       end
 
@@ -264,14 +271,17 @@ if defined? ActiveRecord
       it "fails validation with the proper error message using validates :money" do
         product.validates_method_amount = "-12"
         expect(product.valid?).to be_falsey
+        expect(product.errors[:validates_method_amount].size).to eq(1)
         expect(product.errors[:validates_method_amount].first).to match(/Must be greater than zero and less than \$100/)
 
         product.validates_method_amount = Money.new(-1200, "USD")
         expect(product.valid?).to be_falsey
+        expect(product.errors[:validates_method_amount].size).to eq(1)
         expect(product.errors[:validates_method_amount].first).to match(/Must be greater than zero and less than \$100/)
 
         product.validates_method_amount = "0"
         expect(product.valid?).to be_falsey
+        expect(product.errors[:validates_method_amount].size).to eq(1)
         expect(product.errors[:validates_method_amount].first).to match(/Must be greater than zero and less than \$100/)
 
         product.validates_method_amount = "12"
@@ -282,20 +292,24 @@ if defined? ActiveRecord
 
         product.validates_method_amount = "101"
         expect(product.valid?).to be_falsey
+        expect(product.errors[:validates_method_amount].size).to eq(1)
         expect(product.errors[:validates_method_amount].first).to match(/Must be greater than zero and less than \$100/)
 
         product.validates_method_amount = Money.new(10100, "USD")
         expect(product.valid?).to be_falsey
+        expect(product.errors[:validates_method_amount].size).to eq(1)
         expect(product.errors[:validates_method_amount].first).to match(/Must be greater than zero and less than \$100/)
       end
 
       it "fails validation with the proper error message on the cents field " do
         product.price_in_a_range = "-12"
         expect(product.valid?).to be_falsey
+        expect(product.errors[:price_in_a_range_cents].size).to eq(1)
         expect(product.errors[:price_in_a_range_cents].first).to match(/greater than 0/)
 
         product.price_in_a_range = "0"
         expect(product.valid?).to be_falsey
+        expect(product.errors[:price_in_a_range_cents].size).to eq(1)
         expect(product.errors[:price_in_a_range_cents].first).to match(/greater than 0/)
 
         product.price_in_a_range = "12"
@@ -303,24 +317,29 @@ if defined? ActiveRecord
 
         product.price_in_a_range = "101"
         expect(product.valid?).to be_falsey
+        expect(product.errors[:price_in_a_range_cents].size).to eq(1)
         expect(product.errors[:price_in_a_range_cents].first).to match(/less than or equal to 10000/)
       end
 
       it "fails validation when a non number string is given" do
         product = Product.create(:price_in_a_range => "asd")
         expect(product.valid?).to be_falsey
+        expect(product.errors[:price_in_a_range].size).to eq(1)
         expect(product.errors[:price_in_a_range].first).to match(/greater than zero/)
 
         product = Product.create(:price_in_a_range => "asd23")
         expect(product.valid?).to be_falsey
+        expect(product.errors[:price_in_a_range].size).to eq(1)
         expect(product.errors[:price_in_a_range].first).to match(/greater than zero/)
 
         product = Product.create(:price => "asd")
         expect(product.valid?).to be_falsey
+        expect(product.errors[:price].size).to eq(1)
         expect(product.errors[:price].first).to match(/is not a number/)
 
         product = Product.create(:price => "asd23")
         expect(product.valid?).to be_falsey
+        expect(product.errors[:price].size).to eq(1)
         expect(product.errors[:price].first).to match(/is not a number/)
       end
 

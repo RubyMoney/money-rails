@@ -25,19 +25,20 @@ module MoneyRails
         # Set this before we modify @raw_value below.
         stringy = @raw_value.present? && !@raw_value.is_a?(Numeric)
 
-        # Skip normalization for Numeric values
-        # which can directly be handled by NumericalityValidator
         if stringy
           # remove currency symbol
           @raw_value = @raw_value.to_s.gsub(symbol, "")
-          add_error and return if value_has_too_many_decimal_points
-          add_error if thousand_separator_after_decimal_mark
-          add_error if invalid_thousands_separation
-
         end
 
         normalize_raw_value!
         super(@record, @attr, @raw_value)
+
+        if stringy and not @record.errors.added?(@attr, :not_a_number)
+          add_error if
+            value_has_too_many_decimal_points or
+            thousand_separator_after_decimal_mark or
+            invalid_thousands_separation
+        end
       end
 
       private
