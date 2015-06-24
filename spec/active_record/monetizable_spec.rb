@@ -668,6 +668,11 @@ if defined? ActiveRecord
           expect(transaction.total).to eq(Money.new(3000, :usd))
         end
 
+        it "allows currency column postfix to be blank" do
+          allow(MoneyRails::Configuration).to receive(:currency_column) { { postfix: nil, column_name: 'currency' } }
+          expect(dummy_product_with_nil_currency.price.currency).to eq(Money::Currency.find(:gbp))
+        end
+
         context "and an Italian locale" do
           around(:each) do |example|
             I18n.with_locale(:it) do
