@@ -690,6 +690,16 @@ if defined? ActiveRecord
               transaction.amount = "123.45"
               expect(transaction.valid?).to be_falsey
             end
+
+            it "validates with the locale's currency symbol" do
+              transaction.amount = "€123"
+              expect(transaction.valid?).to be_truthy
+            end
+
+            it "does not validate with the transaction's currency symbol" do
+              transaction.amount = "$123.45"
+              expect(transaction.valid?).to be_falsey
+            end
           end
 
           context "when use_i18n is false" do
@@ -709,6 +719,16 @@ if defined? ActiveRecord
 
             it "validates with the currency's decimal mark" do
               transaction.amount = "123.45"
+              expect(transaction.valid?).to be_truthy
+            end
+
+            it "does not validate with the locale's currency symbol" do
+              transaction.amount = "€123"
+              expect(transaction.valid?).to be_falsey
+            end
+
+            it "validates with the transaction's currency symbol" do
+              transaction.amount = "$123"
               expect(transaction.valid?).to be_truthy
             end
           end

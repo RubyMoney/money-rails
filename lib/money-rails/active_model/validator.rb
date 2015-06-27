@@ -66,7 +66,7 @@ module MoneyRails
       end
 
       def symbol
-        @_symbol ||= I18n.t('number.currency.format.unit', default: currency.symbol)
+        @_symbol ||= Money.use_i18n ? I18n.t('number.currency.format.unit', default: currency.symbol) : currency.symbol
       end
 
       def abs_raw_value
