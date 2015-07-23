@@ -82,7 +82,7 @@ if defined? ActiveRecord
           class Product
             monetize :discount, as: :price
           end
-        end.to raise_error
+        end.to raise_error ArgumentError
       end
 
       it "allows subclass to redefine attribute with the same name" do
@@ -125,7 +125,7 @@ if defined? ActiveRecord
         after { MoneyRails.raise_error_on_money_parsing = false }
 
         it "raises exception when a String value with hyphen is assigned" do
-          expect { product.accessor_price = "10-235" }.to raise_error
+          expect { product.accessor_price = "10-235" }.to raise_error ArgumentError
         end
 
         it "raises an exception if it can't change currency" do
