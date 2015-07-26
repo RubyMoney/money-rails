@@ -85,10 +85,10 @@ module MoneyRails
             #
             # To disable validation entirely, use :disable_validation, E.g:
             #   monetize :price_in_a_range_cents, :disable_validation => true
-            if validation_enabled = MoneyRails.include_validations && !options[:disable_validation]
+            if (validation_enabled = MoneyRails.include_validations && !options[:disable_validation])
 
               # This is a validation for the subunit
-              if subunit_numericality = options.fetch(:subunit_numericality, true)
+              if (subunit_numericality = options.fetch(:subunit_numericality, true))
                 validates subunit_name, {
                   :allow_nil => options[:allow_nil],
                   :numericality => subunit_numericality
@@ -96,7 +96,7 @@ module MoneyRails
               end
 
               # Allow only Money objects or Numeric values!
-              if numericality = options.fetch(:numericality, true)
+              if (numericality = options.fetch(:numericality, true))
                 validates name.to_sym, {
                   :allow_nil => options[:allow_nil],
                   'money_rails/active_model/money' => numericality

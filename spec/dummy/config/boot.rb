@@ -8,6 +8,6 @@ unless ENV['BUNDLE_GEMFILE']
 	ENV['BUNDLE_GEMFILE'] ||= gemfile
 end
 
-require 'bundler/setup' if File.exists?(ENV['BUNDLE_GEMFILE'])
+require 'bundler/setup' if File.exist?(ENV['BUNDLE_GEMFILE'])
 
 $:.unshift File.expand_path('../../../../lib', __FILE__)

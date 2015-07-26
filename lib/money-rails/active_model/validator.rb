@@ -1,7 +1,7 @@
 module MoneyRails
   module ActiveModel
     class MoneyValidator < ::ActiveModel::Validations::NumericalityValidator
-      def validate_each(record, attr, value)
+      def validate_each(record, attr, _value)
         reset_memoized_variables!
         @record = record
         @attr = attr
