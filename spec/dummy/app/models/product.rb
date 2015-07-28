@@ -35,7 +35,7 @@ class Product < ActiveRecord::Base
   monetize :skip_validation_price_cents, subunit_numericality: false, numericality: false, allow_nil: true
 
   # Override default currency (EUR) with a specific one (CAD) for this field only, from a lambda
-  monetize :lambda_price_cents, with_currency: ->(product) { Rails.configuration.lambda_test }, allow_nil: true
+  monetize :lambda_price_cents, with_currency: ->(_product) { Rails.configuration.lambda_test }, allow_nil: true
 
   attr_accessor :accessor_price_cents
   monetize :accessor_price_cents, disable_validation: true
