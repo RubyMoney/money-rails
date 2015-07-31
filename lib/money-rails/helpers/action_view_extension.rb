@@ -21,7 +21,7 @@ module MoneyRails
         value = value.to_d.round.to_money if options[:no_cents] == true && value.present?
         value.format(options)
       elsif value.respond_to?(:to_money)
-        value = value.round if options[:no_cents] == true && value.present?
+        value = value.to_d.round if options[:no_cents] == true && value.present?
         value.to_money.format(options)
       else
         ""
