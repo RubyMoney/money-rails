@@ -16,7 +16,7 @@ module MoneyRails
         :symbol => false
       }.merge(options)
       options.delete(:symbol) if options[:disambiguate]
-
+      value = value.round if options[:no_cents] == true && value.present?
       if value.is_a?(Money)
         value.format(options)
       elsif value.respond_to?(:to_money)
