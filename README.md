@@ -461,23 +461,23 @@ Just write `require "money-rails/test_helpers"` in spec_helper.rb.
 * the `monetize` matcher
 
 ```ruby
-is_expected.to monetize(:price_cents)
+is_expected.to monetize(:price)
 ```
 This will ensure that a column called `price_cents` is being monetized.
 
 ```ruby
-is_expected.to monetize(:price_cents).allow_nil
+is_expected.to monetize(:price).allow_nil
 ```
 By using `allow_nil` you can specify money attributes that accept nil values.
 
 ```ruby
-is_expected.to monetize(:price_cents).as(:discount_value)
+is_expected.to monetize(:price).as(:discount_value)
 ```
 By using `as` chain you can specify the exact name to which a monetized
 column is being mapped.
 
 ```ruby
-is_expected.to monetize(:price_cents).with_currency(:gbp)
+is_expected.to monetize(:price).with_currency(:gbp)
 ```
 
 By using the `with_currency` chain you can specify the expected currency
