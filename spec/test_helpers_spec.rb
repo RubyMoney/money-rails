@@ -18,7 +18,7 @@ if defined? ActiveRecord
       shared_context "monetize matcher" do
 
         it "matches model attribute without a '_cents' suffix by default" do
-          is_expected.to monetize(:price_cents)
+          is_expected.to monetize(:price)
         end
 
         it "matches model attribute specified by :as chain" do
@@ -34,7 +34,7 @@ if defined? ActiveRecord
         end
 
         it "matches model attribute with currency specified by :with_currency chain" do
-          is_expected.to monetize(:bonus_cents).with_currency(:gbp)
+          is_expected.to monetize(:bonus).with_currency(:gbp)
         end
 
         it "does not match non existed attribute" do
@@ -42,11 +42,11 @@ if defined? ActiveRecord
         end
 
         it "does not match wrong currency iso" do
-          is_expected.not_to monetize(:bonus_cents).with_currency(:usd)
+          is_expected.not_to monetize(:bonus).with_currency(:usd)
         end
 
         it "does not match wrong money attribute name" do
-          is_expected.not_to monetize(:bonus_cents).as(:bonussss)
+          is_expected.not_to monetize(:bonus).as(:bonussss)
         end
       end
 
