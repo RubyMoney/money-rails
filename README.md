@@ -317,8 +317,8 @@ class Transaction < ActiveRecord::Base
   # Use model level currency
   register_currency :gbp
 
-  monetize :amount_cents, with_model_currency: :amount_currency
-  monetize :tax_cents, with_model_currency: :tax_currency
+  monetize :amount_cents, with_model_currency: :currency
+  monetize :tax_cents, with_model_currency: :currency
 
 end
 
