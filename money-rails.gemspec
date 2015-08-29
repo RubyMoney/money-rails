@@ -27,7 +27,7 @@ Gem::Specification.new do |s|
   s.require_path = "lib"
 
   s.add_dependency "money",         "~> 6.5.0"
-  s.add_dependency "monetize",      "~> 1.1.0"
+  s.add_dependency "monetize",      "~> 1.2.0"
   s.add_dependency "activesupport", ">= 3.0"
   s.add_dependency "railties",      ">= 3.0"
 
