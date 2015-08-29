@@ -60,9 +60,10 @@ if defined?(Mongoid) && ::Mongoid::VERSION =~ /^2(.*)/
       subject { priceable.price }
       it { is_expected.to be_an_instance_of(Money) }
       it { is_expected.to eq(Money.new(100, 'EUR')) }
-      it "returns nil if a nil value was stored" do
-        nil_priceable = Priceable.create(:price => nil)
-        expect(nil_priceable.price).to be_nil
+      it "returns 0 cents in default_currency if a nil value was stored" do
+        nil_priceable = Priceable.create(price: nil)
+        expect(nil_priceable.price.cents).to eq(0)
+        expect(nil_priceable.price.currency).to eq(Money.default_currency)
       end
       it 'returns nil if an unknown value was stored' do
         zero_priceable = Priceable.create(:price => [])
