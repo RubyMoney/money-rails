@@ -96,6 +96,7 @@ if defined?(Mongoid) && ::Mongoid::VERSION =~ /^4(.*)/
       subject { Priceable.first.price }
       it { is_expected.to be_an_instance_of(Money) }
       it { is_expected.to eq(Money.new(100, 'EUR')) }
+
       it "returns 0 cents in default_currency if a nil value was stored" do
         nil_priceable = Priceable.create(price: nil)
         expect(nil_priceable.price.cents).to eq(0)
