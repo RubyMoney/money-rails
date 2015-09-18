@@ -1,7 +1,7 @@
 # coding: utf-8
-lib = File.expand_path('../lib', __FILE__)
+lib = File.expand_path("../lib", __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'gemstash/version'
+require "gemstash/version"
 
 Gem::Specification.new do |spec|
   spec.name          = "gemstash"
@@ -9,14 +9,18 @@ Gem::Specification.new do |spec|
   spec.authors       = ["Andre Arko"]
   spec.email         = ["andre@arko.net"]
 
-  spec.summary       = %q{A place to stash gems you'll need'}
-  spec.description   = %q{Gemstash acts as a local RubyGems server, caching copies of gems from RubyGems.org automatically, and eventually letting you push your own private gems as well.}
+  spec.summary       = "A place to stash gems you'll need"
+  spec.description   = "Gemstash acts as a local RubyGems server, caching \
+copies of gems from RubyGems.org automatically, and eventually letting \
+you push your own private gems as well."
   spec.homepage      = "https://github.com/bundler/gemstash"
   spec.license       = "MIT"
 
-  spec.files         = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }
+  spec.files         = `git ls-files -z`.split("\x0").reject {|f|
+    f.match(%r{^(test|spec|features)/})
+  }
   spec.bindir        = "exe"
-  spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
+  spec.executables   = spec.files.grep(%r{^exe/}) {|f| File.basename(f) }
   spec.require_paths = ["lib"]
 
   spec.add_runtime_dependency "dalli", "~> 2.7"

@@ -1,26 +1,31 @@
 require "gemstash/env"
 require "thor/error"
 
-class Gemstash::CLI::Setup
-  def initialize(cli)
-    @cli = cli
-  end
+module Gemstash
+  class CLI
+    #:nodoc:
+    class Setup
+      def initialize(cli)
+        @cli = cli
+      end
 
-  def run
-    check_memcached
-    success
-  end
+      def run
+        check_memcached
+        success
+      end
 
-  private
+    private
 
-  def check_memcached
-    @cli.say "Checking that memcached is available"
-    Gemstash::Env.memcached_client.alive!
-  rescue => e
-    raise Thor::Error, @cli.set_color("Memcached is not running", :red)
-  end
+      def check_memcached
+        @cli.say "Checking that memcached is available"
+        Gemstash::Env.memcached_client.alive!
+      rescue
+        raise Thor::Error, @cli.set_color("Memcached is not running", :red)
+      end
 
-  def success
-    @cli.say @cli.set_color("Gemstash is ready to be started!", :green)
+      def success
+        @cli.say @cli.set_color("Gemstash is ready to be started!", :green)
+      end
+    end
   end
 end

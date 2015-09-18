@@ -1,5 +1,5 @@
 require "gemstash/version"
 
+#:nodoc:
 module Gemstash
-  # Your code goes here...
 end
