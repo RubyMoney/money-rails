@@ -1,0 +1,3 @@
+#!/usr/bin/env ruby
+require "gemstash/cli"
+Gemstash::CLI.start
