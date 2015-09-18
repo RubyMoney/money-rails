@@ -15,6 +15,9 @@ class Gemstash::CLI < Thor
 
   desc "start", "Starts your gemstash server"
   def start
+    require "puma/cli"
+    puma_config = File.expand_path("../puma.rb", __FILE__)
+    Puma::CLI.new(["--config", puma_config]).run
   end
 
   desc "stop", "Stops your gemstash server"
