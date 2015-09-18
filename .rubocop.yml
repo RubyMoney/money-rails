@@ -1,0 +1,4 @@
+inherit_from: .rubocop-bundler.yml
+
+AllCops:
+  DisplayCopNames: true
