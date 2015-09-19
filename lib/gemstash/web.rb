@@ -58,6 +58,10 @@ module Gemstash
       halt 403, "Not yet supported"
     end
 
+    put "/api/v1/gems/unyank" do
+      halt 403, "Not yet supported"
+    end
+
     post "/api/v1/add_spec.json" do
       halt 403, "Not yet supported"
     end

@@ -1,4 +1,6 @@
 AllCops:
+  Exclude:
+    - tmp/**/*
   DisplayCopNames: true
 
 # Lint
