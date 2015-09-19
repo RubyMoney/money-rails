@@ -12,7 +12,7 @@ Run setup and resolve any requirements or issues:
 
     $ gemstash setup
     Checking that memcached is available
-    <span style="color: green">Gemstash is ready to be started!</span>
+    Gemstash is ready to be started!
 
 ## Usage
 
