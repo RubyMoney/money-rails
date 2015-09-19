@@ -49,8 +49,8 @@ module Gemstash
     end
 
     post "/api/v1/gems" do
-      # Gem: request.body.read
-      # Auth: request.env["HTTP_AUTHORIZATION"]
+      # TODO: Handle auth: request.env["HTTP_AUTHORIZATION"]
+      Gemstash::Gem.new(request.body.read).push
       halt 403, "Not yet supported"
     end
 
