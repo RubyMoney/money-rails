@@ -20,6 +20,14 @@ module Gemstash
       1
     end
 
+    def self.pidfile
+      File.join(config_dir, "puma.pid")
+    end
+
+    def self.config_dir
+      File.expand_path("~/.gemstash")
+    end
+
     def self.rackup
       File.expand_path("../config.ru", __FILE__)
     end

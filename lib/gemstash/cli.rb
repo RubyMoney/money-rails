@@ -5,6 +5,8 @@ module Gemstash
   #:nodoc:
   class CLI < Thor
     autoload :Setup, "gemstash/cli/setup"
+    autoload :Start, "gemstash/cli/start"
+    autoload :Stop,  "gemstash/cli/stop"
 
     def self.exit_on_failure?
       true
@@ -16,14 +18,15 @@ module Gemstash
     end
 
     desc "start", "Starts your gemstash server"
+    method_option :daemonize, :type => :boolean, :default => true, :desc =>
+      "Daemonize the server"
     def start
-      require "puma/cli"
-      puma_config = File.expand_path("../puma.rb", __FILE__)
-      Puma::CLI.new(["--config", puma_config]).run
+      Gemstash::CLI::Start.new(self).run
     end
 
     desc "stop", "Stops your gemstash server"
     def stop
+      Gemstash::CLI::Stop.new(self).run
     end
   end
 end
