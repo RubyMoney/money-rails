@@ -2,6 +2,7 @@ require "rubygems/package"
 require "stringio"
 
 module Gemstash
+  #:nodoc:
   class Gem
     def initialize(content)
       @content = content
