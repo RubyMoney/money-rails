@@ -24,6 +24,10 @@ module Gemstash
       File.expand_path("../config.ru", __FILE__)
     end
 
+    def self.cache
+      @cache ||= Gemstash::Cache.new(memcached_client)
+    end
+
     def self.memcached_client
       @memcached_client ||= Dalli::Client.new
     end

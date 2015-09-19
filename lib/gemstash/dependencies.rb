@@ -3,35 +3,31 @@ require "cgi"
 module Gemstash
   #:nodoc:
   class Dependencies
-    EXPIRY = 30 * 60
-
     def initialize(web_helper = nil)
       @web_helper = web_helper || Gemstash::RubygemsWebHelper.new
     end
 
     def fetch(gems)
+      gems = gems.dup
       dependencies = []
-      keys = gems.map {|g| "deps/v1/#{g}" }
 
-      Gemstash::Env.memcached_client.get_multi(keys) do |key, value|
-        keys.delete(key)
+      Gemstash::Env.cache.dependencies(gems) do |gem, value|
+        gems.delete(gem)
         dependencies += value
       end
 
-      unless keys.empty?
-        gems = keys.map {|g| g.gsub("deps/v1/", "") }
+      unless gems.empty?
         puts "Fetching dependencies: #{gems.join(", ")}"
         fetched = Marshal.load(external_fetch(gems)).group_by {|r| r[:name] }
 
         fetched.each do |gem, result|
-          key = "deps/v1/#{gem}"
-          keys.delete(key)
-          Gemstash::Env.memcached_client.set(key, result, EXPIRY)
+          gems.delete(gem)
+          Gemstash::Env.cache.set_dependency(gem, result)
           dependencies += result
         end
 
-        keys.each do |key|
-          Gemstash::Env.memcached_client.set(key, [], EXPIRY)
+        gems.each do |gem|
+          Gemstash::Env.cache.set_dependency(gem, [])
         end
       end
 
