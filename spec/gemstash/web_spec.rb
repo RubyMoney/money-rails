@@ -1,6 +1,5 @@
 require "spec_helper"
 require "rack/test"
-require "gemstash/web"
 
 describe Gemstash::Web do
   include Rack::Test::Methods

@@ -1,4 +1,4 @@
-require "gemstash/env"
+require "gemstash"
 
 threads Gemstash::Env.min_threads, Gemstash::Env.max_threads
 port Gemstash::Env.port

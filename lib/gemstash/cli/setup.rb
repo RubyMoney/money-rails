@@ -1,4 +1,4 @@
-require "gemstash/env"
+require "gemstash"
 require "thor/error"
 
 module Gemstash

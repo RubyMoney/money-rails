@@ -1,3 +1,3 @@
-require "gemstash/web"
+require "gemstash"
 use Rack::Deflater
 run Gemstash::Web.new
