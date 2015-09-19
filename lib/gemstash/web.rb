@@ -48,6 +48,16 @@ module Gemstash
       @dependencies.fetch(gems).to_json
     end
 
+    post "/api/v1/gems" do
+      # Gem: request.body.read
+      # Auth: request.env["HTTP_AUTHORIZATION"]
+      halt 403, "Not yet supported"
+    end
+
+    delete "/api/v1/gems/yank" do
+      halt 403, "Not yet supported"
+    end
+
     post "/api/v1/add_spec.json" do
       halt 403, "Not yet supported"
     end
