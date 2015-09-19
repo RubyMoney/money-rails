@@ -34,6 +34,18 @@ module Gemstash
       halt 403, "Not yet supported"
     end
 
+    get "/names" do
+      halt 403, "Not yet supported"
+    end
+
+    get "/versions" do
+      halt 403, "Not yet supported"
+    end
+
+    get "/info/:name" do
+      halt 403, "Not yet supported"
+    end
+
     get "/quick/Marshal.4.8/:id" do
       redirect "#{RUBYGEMS_URL}/quick/Marshal.4.8/#{params[:id]}"
     end
