@@ -10,6 +10,7 @@ module Gemstash
     def initialize
       @web_helper = Gemstash::RubygemsWebHelper.new
       @dependencies = Gemstash::Dependencies.new(@web_helper)
+      super()
     end
 
     not_found do
