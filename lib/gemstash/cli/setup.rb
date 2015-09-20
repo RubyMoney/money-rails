@@ -70,7 +70,8 @@ module Gemstash
 
       def store_config
         config_file = Gemstash::Env.config_file
-        FileUtils.mkpath(File.dirname(config_file))
+        config_dir = File.dirname(config_file)
+        FileUtils.mkpath(config_dir) unless Dir.exist?(config_dir)
         File.write(config_file, YAML.dump(@config))
       end
     end

@@ -1,5 +1,7 @@
 require "gemstash"
 require "dalli"
+require "fileutils"
+require "sequel"
 require "yaml"
 
 module Gemstash
@@ -8,6 +10,7 @@ module Gemstash
     DEFAULT_CONFIG = {
       :cache_type => "memory",
       :base_path => File.expand_path("~/.gemstash"),
+      :db_adapter => "sqlite3",
       :min_threads => 0,
       :max_threads => 16,
       :port => 9292,
@@ -40,6 +43,7 @@ module Gemstash
       @config = nil
       @cache = nil
       @cache_client = nil
+      @db = nil
     end
 
     def self.min_threads
@@ -72,6 +76,24 @@ module Gemstash
 
     def self.rackup
       File.expand_path("../config.ru", __FILE__)
+    end
+
+    def self.db
+      @db ||= begin
+        case config[:db_adapter]
+        when "sqlite3"
+          FileUtils.mkpath(base_dir) unless Dir.exist?(base_dir)
+          db_path = File.join(base_dir, "gemstash.db")
+          db = Sequel.connect("sqlite://#{db_path}")
+        else
+          raise "Unsupported DB adapter: '#{config[:db_adapter]}'"
+        end
+
+        Sequel.extension :migration
+        migrations_dir = File.expand_path("../migrations", __FILE__)
+        Sequel::Migrator.run(db, migrations_dir, :use_transactions => true)
+        db
+      end
     end
 
     def self.cache
