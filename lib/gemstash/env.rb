@@ -7,7 +7,12 @@ module Gemstash
   class Env
     DEFAULT_CONFIG = {
       :cache_type => "memory",
-      :base_path => File.expand_path("~/.gemstash")
+      :base_path => File.expand_path("~/.gemstash"),
+      :min_threads => 0,
+      :max_threads => 16,
+      :port => 9292,
+      :workers => 1,
+      :rubygems_url => "https://www.rubygems.org"
     }.freeze
 
     def self.config
@@ -38,19 +43,19 @@ module Gemstash
     end
 
     def self.min_threads
-      0
+      config[:min_threads]
     end
 
     def self.max_threads
-      16
+      config[:max_threads]
     end
 
     def self.port
-      9292
+      config[:port]
     end
 
     def self.workers
-      1
+      config[:workers]
     end
 
     def self.pidfile
@@ -58,7 +63,7 @@ module Gemstash
     end
 
     def self.base_dir
-      File.expand_path("~/.gemstash")
+      config[:base_path]
     end
 
     def self.config_file
@@ -87,7 +92,7 @@ module Gemstash
     end
 
     def self.rubygems_url
-      "https://www.rubygems.org"
+      config[:rubygems_url]
     end
   end
 end
