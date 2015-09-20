@@ -20,7 +20,9 @@ module Gemstash
 
         ask_storage
         ask_cache
+        ask_database
         check_cache
+        check_database
         store_config
         @cli.say @cli.set_color("You are all setup!", :green)
       end
@@ -58,12 +60,47 @@ module Gemstash
         @config[:cache_type] = cache
       end
 
+      def ask_database
+        say_current_config(:db_adapter, "Current database adapter")
+        options = %w(sqlite3 postgres)
+        database = nil
+
+        until database
+          database = @cli.ask "What database adapter? [SQLITE3, postgres]"
+          database = database.downcase
+          database = "sqlite3" if database.empty?
+          database = nil unless options.include?(database)
+        end
+
+        @config[:db_adapter] = database
+        ask_postgres_details if database == "postgres"
+      end
+
+      def ask_postgres_details
+        say_current_config(:db_url, "Current database url")
+        url = @cli.ask "Where is the database? [postgres:///gemstash]"
+        url = "postgres:///gemstash" if url.empty?
+        @config[:db_url] = url
+      end
+
       def check_cache
         @cli.say "Checking that cache is available"
         Gemstash::Env.config = @config
         Gemstash::Env.cache_client.alive!
-      rescue
+      rescue => e
+        say_error "Cache error", e
         raise Thor::Error, @cli.set_color("Cache is not available", :red)
+      ensure
+        Gemstash::Env.reset
+      end
+
+      def check_database
+        @cli.say "Checking that database is available"
+        Gemstash::Env.config = @config
+        Gemstash::Env.db.test_connection
+      rescue => e
+        say_error "Database error", e
+        raise Thor::Error, @cli.set_color("Database is not available", :red)
       ensure
         Gemstash::Env.reset
       end
@@ -73,6 +110,15 @@ module Gemstash
         config_dir = File.dirname(config_file)
         FileUtils.mkpath(config_dir) unless Dir.exist?(config_dir)
         File.write(config_file, YAML.dump(@config))
+      end
+
+      def say_error(title, error)
+        return unless @cli.options[:debug]
+        @cli.say @cli.set_color("#{title}: #{error}", :red)
+
+        error.backtrace.each do |line|
+          @cli.say @cli.set_color("  #{line}", :red)
+        end
       end
     end
   end

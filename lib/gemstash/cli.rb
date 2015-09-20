@@ -15,6 +15,8 @@ module Gemstash
     desc "setup", "Checks for dependencies and does initial setup"
     method_option :redo, :type => :boolean, :default => false, :desc =>
       "Redo configuration"
+    method_option :debug, :type => :boolean, :default => false, :desc =>
+      "Show detailed errors"
     def setup
       Gemstash::CLI::Setup.new(self).run
     end

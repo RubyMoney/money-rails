@@ -85,6 +85,8 @@ module Gemstash
           FileUtils.mkpath(base_dir) unless Dir.exist?(base_dir)
           db_path = File.join(base_dir, "gemstash.db")
           db = Sequel.connect("sqlite://#{db_path}")
+        when "postgres"
+          db = Sequel.connect(config[:db_url])
         else
           raise "Unsupported DB adapter: '#{config[:db_adapter]}'"
         end

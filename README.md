@@ -19,7 +19,9 @@ additional gems or software to be installed and available.
     $ gemstash setup
     Where should files go? [~/.gemstash]
     Cache with what? [MEMORY, memcached]
+    What database adapter? [SQLITE3, postgres]
     Checking that cache is available
+    Checking that database is available
     You are all setup!
 
 Starting your gemstash server is easy:
