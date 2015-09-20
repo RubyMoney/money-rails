@@ -24,6 +24,7 @@ you push your own private gems as well."
   spec.require_paths = ["lib"]
 
   spec.add_runtime_dependency "dalli", "~> 2.7"
+  spec.add_runtime_dependency "lru_redux", "~> 1.1"
   spec.add_runtime_dependency "puma", "~> 2.14"
   spec.add_runtime_dependency "sinatra", "~> 1.4"
   spec.add_runtime_dependency "thor", "~> 0.19"

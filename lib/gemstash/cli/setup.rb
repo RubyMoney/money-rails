@@ -17,8 +17,9 @@ module Gemstash
     private
 
       def check_memcached
-        @cli.say "Checking that memcached is available"
-        Gemstash::Env.memcached_client.alive!
+        # TODO: Resolve this
+        # @cli.say "Checking that memcached is available"
+        # Gemstash::Env.memcached_client.alive!
       rescue
         raise Thor::Error, @cli.set_color("Memcached is not running", :red)
       end

@@ -33,11 +33,11 @@ module Gemstash
     end
 
     def self.cache
-      @cache ||= Gemstash::Cache.new(memcached_client)
+      @cache ||= Gemstash::Cache.new(cache_client)
     end
 
-    def self.memcached_client
-      @memcached_client ||= Dalli::Client.new
+    def self.cache_client
+      @cache_client ||= Gemstash::LruReduxClient.new
     end
 
     def self.rubygems_url
