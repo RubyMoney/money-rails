@@ -8,15 +8,27 @@ Install the gem:
 
     $ gem install gemstash
 
-Run setup and resolve any requirements or issues:
-
-    $ gemstash setup
-    Checking that memcached is available
-    Gemstash is ready to be started!
+That's it! If you are happy with the default config, you are ready to go!
 
 ## Usage
 
-TODO: Write usage instructions here
+You may configure gemstash to use something other than the default setup. By
+default, there is no required setup, but some configuration options may require
+additional gems or software to be installed and available.
+
+    $ gemstash setup
+    Where should files go? [~/.gemstash]
+    Cache with what? [MEMORY, memcached]
+    Checking that cache is available
+    You are all setup!
+
+Starting your gemstash server is easy:
+
+    $ gemstash start
+
+As is stopping it:
+
+    $ gemstash stop
 
 ## Development
 

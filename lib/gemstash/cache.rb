@@ -31,6 +31,10 @@ module Gemstash
       @cache = LruRedux::TTL::ThreadSafeCache.new MAX_SIZE, EXPIRY
     end
 
+    def alive!
+      true
+    end
+
     def flush
       @cache.clear
     end
