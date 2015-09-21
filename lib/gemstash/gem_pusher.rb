@@ -3,7 +3,7 @@ require "stringio"
 
 module Gemstash
   #:nodoc:
-  class Gem
+  class GemPusher
     def initialize(content)
       @content = content
     end

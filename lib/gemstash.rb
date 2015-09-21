@@ -3,7 +3,7 @@ module Gemstash
   autoload :Cache,             "gemstash/cache"
   autoload :Dependencies,      "gemstash/dependencies"
   autoload :Env,               "gemstash/env"
-  autoload :Gem,               "gemstash/gem"
+  autoload :GemPusher,         "gemstash/gem_pusher"
   autoload :LruReduxClient,    "gemstash/cache"
   autoload :RubygemsWebHelper, "gemstash/web_helper"
   autoload :Web,               "gemstash/web"
