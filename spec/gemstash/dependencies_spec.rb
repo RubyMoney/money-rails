@@ -48,7 +48,7 @@ describe Gemstash::Dependencies do
           Marshal.dump(result)
         }
 
-        expect(deps.fetch(%w(foo bar))).to match_array(result)
+        expect(deps.fetch(%w(foo bar))).to match_dependencies(result)
       end
     end
 
@@ -71,7 +71,7 @@ describe Gemstash::Dependencies do
           Marshal.dump(result)
         }
 
-        expect(deps.fetch(%w(foo bar baz))).to match_array(result)
+        expect(deps.fetch(%w(foo bar baz))).to match_dependencies(result)
       end
     end
 
@@ -96,11 +96,11 @@ describe Gemstash::Dependencies do
           Marshal.dump([foo, bar])
         }.once
 
-        expect(deps.fetch(%w(foo bar baz))).to match_array([foo, bar])
-        expect(deps.fetch(%w(baz foo bar))).to match_array([foo, bar])
-        expect(deps.fetch(%w(foo))).to match_array([foo])
-        expect(deps.fetch(%w(bar))).to match_array([bar])
-        expect(deps.fetch(%w(baz))).to match_array([])
+        expect(deps.fetch(%w(foo bar baz))).to match_dependencies([foo, bar])
+        expect(deps.fetch(%w(baz foo bar))).to match_dependencies([foo, bar])
+        expect(deps.fetch(%w(foo))).to match_dependencies([foo])
+        expect(deps.fetch(%w(bar))).to match_dependencies([bar])
+        expect(deps.fetch(%w(baz))).to match_dependencies([])
       end
     end
 
@@ -139,7 +139,7 @@ describe Gemstash::Dependencies do
         }.once
 
         expect(deps.fetch(%w(foo bar baz custom))).
-          to match_array([foo, bar, custom])
+          to match_dependencies([foo, bar, custom])
       end
     end
 
@@ -182,14 +182,8 @@ describe Gemstash::Dependencies do
           :dependencies => []
         }
 
-        results = deps.fetch(%w(custom1 custom2))
-        expect(results.size).to eq(3)
-        expect(dependency_item(results, "custom2", "0.2.0")).to eq(custom2)
-        expect(dependency_item(results, "custom1", "0.2.1")).
-          to eq(custom1_0_2_1)
-        result = dependency_item(results, "custom1", "0.0.1")
-        expect(result[:dependencies]).
-          to match_array(custom1_0_0_1[:dependencies])
+        expect(deps.fetch(%w(custom1 custom2))).
+          to match_dependencies([custom1_0_0_1, custom1_0_2_1, custom2])
       end
     end
   end
