@@ -4,6 +4,7 @@ require "gemstash"
 require "dalli"
 require "fileutils"
 require "support/db_helpers"
+require "support/file_helpers"
 require "support/matchers"
 
 TEST_BASE_PATH = File.expand_path("../../tmp/test_base", __FILE__)
@@ -30,5 +31,6 @@ RSpec.configure do |config|
   end
 
   config.include DBHelpers
+  config.include FileHelpers
   config.raise_errors_for_deprecations!
 end
