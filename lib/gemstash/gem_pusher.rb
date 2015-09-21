@@ -4,8 +4,17 @@ require "stringio"
 module Gemstash
   #:nodoc:
   class GemPusher
-    def initialize(content)
+    #:nodoc:
+    class ExistingVersionError < StandardError
+    end
+
+    #:nodoc:
+    class YankedVersionError < ExistingVersionError
+    end
+
+    def initialize(content, db_helper = nil)
       @content = content
+      @db_helper = db_helper || Gemstash::DBHelper.new
     end
 
     def push
@@ -22,10 +31,20 @@ module Gemstash
       spec = gem.spec
 
       Gemstash::Env.db.transaction do
-        gem_id = Gemstash::Env.db[:rubygems].insert(
-          :name => spec.name,
-          :created_at => Sequel::SQL::Constants::CURRENT_TIMESTAMP,
-          :updated_at => Sequel::SQL::Constants::CURRENT_TIMESTAMP)
+        gem_id = @db_helper.find_or_insert_rubygem(spec.name)
+
+        existing = Gemstash::Env.db[:versions][
+          :rubygem_id => gem_id,
+          :number => spec.version.to_s,
+          :platform => spec.platform]
+
+        if existing
+          if existing[:indexed]
+            raise ExistingVersionError, "Cannot push to an existing version!"
+          else
+            raise YankedVersionError, "Cannot push to a yanked version!"
+          end
+        end
 
         version_id = Gemstash::Env.db[:versions].insert(
           :rubygem_id => gem_id,

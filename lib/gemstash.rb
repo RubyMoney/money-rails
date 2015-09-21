@@ -1,6 +1,7 @@
 #:nodoc:
 module Gemstash
   autoload :Cache,             "gemstash/cache"
+  autoload :DBHelper,          "gemstash/db_helper"
   autoload :Dependencies,      "gemstash/dependencies"
   autoload :Env,               "gemstash/env"
   autoload :GemPusher,         "gemstash/gem_pusher"
