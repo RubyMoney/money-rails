@@ -1,3 +1,6 @@
+inherit_from:
+  - .rubocop-relax.yml
+
 AllCops:
   Exclude:
     - tmp/**/*

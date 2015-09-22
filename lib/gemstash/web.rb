@@ -7,8 +7,9 @@ module Gemstash
   class Web < Sinatra::Base
     API_REQUEST_LIMIT = 200
 
-    def initialize
-      @web_helper = Gemstash::RubygemsWebHelper.new
+    def initialize(gem_strategy: nil, web_helper: nil)
+      @web_helper   = web_helper || Gemstash::RubygemsWebHelper.new
+      @strategy     = gem_strategy || Gemstash::RedirectionStrategy.new(web_helper: @web_helper)
       @dependencies = Gemstash::Dependencies.new(@web_helper)
       super()
     end
@@ -19,8 +20,7 @@ module Gemstash
     end
 
     get "/" do
-      cache_control :public, :max_age => 31_536_000
-      redirect @web_helper.url
+      @strategy.serve_root(self)
     end
 
     get "/api/v1/dependencies" do
@@ -83,27 +83,27 @@ module Gemstash
     end
 
     get "/quick/Marshal.4.8/:id" do
-      redirect @web_helper.url("/quick/Marshal.4.8/#{params[:id]}")
+      @strategy.serve_marshal(self, id: params[:id])
     end
 
     get "/fetch/actual/gem/:id" do
-      redirect @web_helper.url("/fetch/actual/gem/#{params[:id]}")
+      @strategy.serve_actual_gem(self, id: params[:id])
     end
 
     get "/gems/:id" do
-      redirect @web_helper.url("/gems/#{params[:id]}")
+      @strategy.serve_gem(self, id: params[:id])
     end
 
     get "/latest_specs.4.8.gz" do
-      redirect @web_helper.url("/latest_specs.4.8.gz")
+      @strategy.serve_latest_specs(self)
     end
 
     get "/specs.4.8.gz" do
-      redirect @web_helper.url("/specs.4.8.gz")
+      @strategy.serve_specs(self)
     end
 
     get "/prerelease_specs.4.8.gz" do
-      redirect @web_helper.url("/prerelease_specs.4.8.gz")
+      @strategy.serve_prerelease_specs(self)
     end
 
   private
