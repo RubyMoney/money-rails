@@ -97,5 +97,9 @@ module MoneyRails
     # is going to be converted to a Money object.
     mattr_accessor :raise_error_on_money_parsing
     @@raise_error_on_money_parsing = false
+
+    #Configure whether to maintain invalid user input after validations
+    mattr_accessor :preserve_user_input
+    @@preserve_user_input = false
   end
 end
