@@ -117,14 +117,27 @@ module MoneyRails
               memoized = instance_variable_get("@#{name}")
 
               # Dont create a new Money instance if the values haven't been changed.
-              return memoized if memoized && memoized.cents == amount &&
+              if memoized && memoized.cents == amount &&
                 memoized.currency == attr_currency
+                result =  memoized
+              else
+                # If amount is NOT nil (or empty string) load the amount in a Money
+                amount = Money.new(amount, attr_currency) unless amount.blank?
 
-              # If amount is NOT nil (or empty string) load the amount in a Money
-              amount = Money.new(amount, attr_currency) unless amount.blank?
+                # Cache the value (it may be nil)
+                result = instance_variable_set "@#{name}", amount
+              end
 
-              # Cache and return the value (it may be nil)
-              instance_variable_set "@#{name}", amount
+              if MoneyRails::Configuration.preserve_user_input
+                value_before_type_cast = instance_variable_get "@#{name}_money_before_type_cast"
+                if value_before_type_cast && value_before_type_cast.is_a?(String) &&
+                  result.respond_to?(:fractional) && result.fractional == 0.0
+                  result.define_singleton_method(:to_s) { value_before_type_cast }
+                  result.define_singleton_method(:format) { |_| value_before_type_cast }
+                end
+              end
+
+              result
             end
 
             define_method "#{name}=" do |value|
