@@ -32,6 +32,7 @@ module Gemstash
       File.open(content_path, "w") {|f| f.write(content) }
       @headers = headers
       @content = content
+      self
     end
 
     def exist?

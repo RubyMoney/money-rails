@@ -1,3 +1,7 @@
+require "faraday"
+require "faraday_middleware"
+
+#:nodoc:
 module Gemstash
   #
   # Basic web serving strategy that will just redirect the requested to rubygems
@@ -51,13 +55,17 @@ module Gemstash
     end
 
     def serve_gem(app, id:)
-      gem = @storage.get(id)
-      unless gem.exist?
-        headers, content = @gem_fetcher.fetch(id)
-        gem.save(headers, content)
-      end
+      gem = fetch_gem(id)
       app.headers.update(gem.headers)
       gem.content
+    rescue GemNotFoundError
+      app.halt 404
+    end
+
+    def fetch_gem(id)
+      gem = @storage.get(id)
+      fetched_gem = @gem_fetcher.fetch(id)
+      gem.save(fetched_gem.headers, fetched_gem.body)
     end
   end
 
@@ -65,8 +73,24 @@ module Gemstash
   # Simple client that knows how to fetch a gem file following redirections
   #
   class GemFetcher
+    def initialize(http_client: nil, server_url: nil)
+      @client = http_client
+      @client ||= Faraday.new(server_url || Gemstash::Env.rubygems_url) do |c|
+        c.use FaradayMiddleware::FollowRedirects
+        c.adapter :net_http
+      end
+    end
+
     def fetch(id)
-      [{ "CONTENT-TYPE" => "octet/stream" }, "zapatito"]
+      response = @client.get("/gems/#{id}") do |req|
+        req.options.open_timeout = 2
+      end
+      raise GemNotFoundError, id if response.status == 404
+      FetchedGem.new(response.headers, response.body)
     end
   end
+
+  FetchedGem = Struct.new(:headers, :body)
+
+  class GemNotFoundError < StandardError; end
 end

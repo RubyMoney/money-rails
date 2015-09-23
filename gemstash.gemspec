@@ -30,6 +30,8 @@ you push your own private gems as well."
   spec.add_runtime_dependency "sinatra", "~> 1.4"
   spec.add_runtime_dependency "sqlite3", "~> 1.3"
   spec.add_runtime_dependency "thor", "~> 0.19"
+  spec.add_runtime_dependency "faraday", "~> 0.9"
+  spec.add_runtime_dependency "faraday_middleware", "~> 0.10"
 
   spec.add_development_dependency "bundler", "~> 1.10"
   spec.add_development_dependency "rack-test", "~> 0.6"
