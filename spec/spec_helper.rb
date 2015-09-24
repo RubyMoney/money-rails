@@ -10,9 +10,9 @@ require "support/simple_server"
 
 TEST_BASE_PATH = File.expand_path("../../tmp/test_base", __FILE__)
 FileUtils.mkpath(TEST_BASE_PATH) unless Dir.exist?(TEST_BASE_PATH)
-TEST_CONFIG = Gemstash::Env::DEFAULT_CONFIG.merge(
-  :base_path => TEST_BASE_PATH
-).freeze
+TEST_CONFIG = Gemstash::Configuration.new(config: {
+                                            :base_path => TEST_BASE_PATH
+                                          })
 
 RSpec.configure do |config|
   config.around(:each) do |example|

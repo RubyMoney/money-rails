@@ -7,37 +7,13 @@ require "yaml"
 module Gemstash
   #:nodoc:
   class Env
-    DEFAULT_CONFIG = {
-      :cache_type => "memory",
-      :base_path => File.expand_path("~/.gemstash"),
-      :db_adapter => "sqlite3",
-      :min_threads => 0,
-      :max_threads => 16,
-      :port => 9292,
-      :workers => 1,
-      :rubygems_url => "https://www.rubygems.org",
-      :strategy => :redirection,
-    }.freeze
-
     def self.config
-      @config ||= begin
-        if File.exist?(config_file)
-          config = YAML.load_file(config_file)
-          config = DEFAULT_CONFIG.merge(config)
-          config.freeze
-        else
-          DEFAULT_CONFIG
-        end
-      end
+      @config ||= Gemstash::Configuration.new
     end
 
     def self.config=(value)
       reset
-      @config = DEFAULT_CONFIG.merge(value).freeze
-    end
-
-    def self.default_config?(option)
-      config[option] == DEFAULT_CONFIG[option]
+      @config = value
     end
 
     def self.reset

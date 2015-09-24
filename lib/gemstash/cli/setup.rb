@@ -40,7 +40,7 @@ module Gemstash
       end
 
       def say_current_config(option, label)
-        return if Gemstash::Env.default_config?(option)
+        return if Gemstash::Env.config.default?(option)
         @cli.say "#{label}: #{Gemstash::Env.config[option]}"
       end
 
@@ -52,7 +52,7 @@ module Gemstash
       end
 
       def ask_cache
-        say_current_config(:cache_type, "Current base path")
+        say_current_config(:cache_type, "Current cache")
         options = %w(memory memcached)
         cache = nil
 
@@ -90,18 +90,23 @@ module Gemstash
       end
 
       def ask_strategy
+        say_current_config(:strategy, "Current strategy")
+        options = %w(caching redirection)
         strategy = nil
+
         until strategy
           strategy = @cli.ask "What strategy? [CACHING, redirection]"
           strategy = strategy.downcase
           strategy = "caching" if strategy.empty?
+          strategy = nil unless options.include?(strategy)
         end
+
         @config[:strategy] = strategy
       end
 
       def check_cache
         @cli.say "Checking that cache is available"
-        Gemstash::Env.config = @config
+        Gemstash::Env.config = Gemstash::Configuration.new(config: @config)
         Gemstash::Env.cache_client.alive!
       rescue => e
         say_error "Cache error", e
@@ -112,7 +117,7 @@ module Gemstash
 
       def check_database
         @cli.say "Checking that database is available"
-        Gemstash::Env.config = @config
+        Gemstash::Env.config = Gemstash::Configuration.new(config: @config)
         Gemstash::Env.db.test_connection
       rescue => e
         say_error "Database error", e

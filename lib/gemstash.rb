@@ -3,6 +3,7 @@ module Gemstash
   autoload :Cache,               "gemstash/cache"
   autoload :CachedGemFile,       "gemstash/storage"
   autoload :CachingStrategy,     "gemstash/strategies"
+  autoload :Configuration,       "gemstash/configuration"
   autoload :DBHelper,            "gemstash/db_helper"
   autoload :Dependencies,        "gemstash/dependencies"
   autoload :Env,                 "gemstash/env"
