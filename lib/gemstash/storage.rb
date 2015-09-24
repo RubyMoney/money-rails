@@ -26,7 +26,7 @@ module Gemstash
   # and a way of saving it along with the GET headers
   class CachedGemFile
     def initialize(folder, name)
-      @folder = folder.join(File.basename(name))
+      @folder = folder.join(File.basename(name, ".gem"))
       @name = name
     end
 
