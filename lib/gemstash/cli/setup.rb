@@ -105,32 +105,28 @@ module Gemstash
       end
 
       def check_cache
-        @cli.say "Checking that cache is available"
-        Gemstash::Env.config = Gemstash::Configuration.new(config: @config)
-        Gemstash::Env.cache_client.alive!
+        @cli.say "Checking that the cache is available"
+        with_new_config { Gemstash::Env.cache_client.alive! }
       rescue => e
         say_error "Cache error", e
-        raise Thor::Error, @cli.set_color("Cache is not available", :red)
-      ensure
-        Gemstash::Env.reset
+        raise Thor::Error, @cli.set_color("The cache is not available", :red)
       end
 
       def check_database
-        @cli.say "Checking that database is available"
-        Gemstash::Env.config = Gemstash::Configuration.new(config: @config)
-        Gemstash::Env.db.test_connection
+        @cli.say "Checking that the database is available"
+        with_new_config { Gemstash::Env.db.test_connection }
       rescue => e
         say_error "Database error", e
-        raise Thor::Error, @cli.set_color("Database is not available", :red)
-      ensure
-        Gemstash::Env.reset
+        raise Thor::Error, @cli.set_color("The database is not available", :red)
       end
 
       def check_storage
-        gem_storage = Gemstash::Env.gem_cache_path
-        return unless Dir.exist?(gem_storage)
-        @cli.say "Creating the gem storage cache folder"
-        FileUtils.mkpath(gem_storage)
+        with_new_config do
+          dir = Gemstash::Env.config[:base_path]
+          break if Dir.exist?(dir)
+          @cli.say "Creating the file storage folder '#{dir}'"
+          FileUtils.mkpath(dir)
+        end
       end
 
       def store_config
@@ -146,6 +142,13 @@ module Gemstash
         error.backtrace.each do |line|
           @cli.say @cli.set_color("  #{line}", :red)
         end
+      end
+
+      def with_new_config
+        Gemstash::Env.config = Gemstash::Configuration.new(config: @config)
+        yield
+      ensure
+        Gemstash::Env.reset
       end
     end
   end
