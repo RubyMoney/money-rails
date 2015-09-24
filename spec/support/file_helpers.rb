@@ -1,7 +1,8 @@
 #:nodoc:
 module FileHelpers
-  def file_path(file)
-    dir = File.expand_path("../../data", __FILE__)
-    File.join(dir, file)
+  def gem_path(name, version)
+    gems_dir = File.expand_path("../../data/gems", __FILE__)
+    gem_dir = File.join(gems_dir, name)
+    File.join(gem_dir, "pkg/#{name}-#{version}.gem")
   end
 end

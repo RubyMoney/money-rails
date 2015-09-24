@@ -4,7 +4,7 @@ describe Gemstash::GemPusher do
   describe ".push" do
     let(:web_helper) { double }
     let(:deps) { Gemstash::Dependencies.new(web_helper) }
-    let(:gem_contents) { File.read(file_path("example-0.1.0.gem")) }
+    let(:gem_contents) { File.read(gem_path("example", "0.1.0")) }
 
     context "with an unknown gem name" do
       it "saves the dependency info" do
