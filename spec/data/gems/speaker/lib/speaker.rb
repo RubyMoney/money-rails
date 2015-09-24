@@ -8,9 +8,7 @@ module Speaker
   end
 
   def self.say(argv)
-    if argv.size != 1
-      usage
-    end
+    usage if argv.size != 1
 
     if argv.first == "hi"
       puts "Hello world"
