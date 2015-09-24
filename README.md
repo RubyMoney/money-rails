@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/bundler/gemstash.svg?branch=master)](https://travis-ci.org/bundler/gemstash)
+
 # Gemstash
 
 A gem server that lets you cache gems from rubygems.org and store private gems.
