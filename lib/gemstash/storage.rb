@@ -6,6 +6,10 @@ module Gemstash
   # given a folder, this class will provide a get method to return a CachedGemFile
   # which may exist or not
   class GemStorage
+    def self.from_config
+      GemStorage.new(Gemstash::Env.gem_cache_path)
+    end
+
     def initialize(folder)
       raise "Folder #{folder} does not exist or is not writable" unless File.writable?(folder)
       @folder = Pathname.new(folder)

@@ -21,8 +21,10 @@ module Gemstash
         ask_storage
         ask_cache
         ask_database
+        ask_strategy
         check_cache
         check_database
+        check_storage
         store_config
         @cli.say @cli.set_color("You are all setup!", :green)
       end
@@ -87,6 +89,16 @@ module Gemstash
         @config[:db_url] = url
       end
 
+      def ask_strategy
+        strategy = nil
+        until strategy
+          strategy = @cli.ask "What strategy? [CACHING, redirection]"
+          strategy = strategy.downcase
+          strategy = "caching" if strategy.empty?
+        end
+        @config[:strategy] = strategy
+      end
+
       def check_cache
         @cli.say "Checking that cache is available"
         Gemstash::Env.config = @config
@@ -107,6 +119,12 @@ module Gemstash
         raise Thor::Error, @cli.set_color("Database is not available", :red)
       ensure
         Gemstash::Env.reset
+      end
+
+      def check_storage
+        gem_storage = Gemstash::Env.gem_cache_path
+        @cli.say "Creating the gem storage cache folder" unless Dir.exist?(gem_storage)
+        FileUtils.mkpath(gem_storage)
       end
 
       def store_config

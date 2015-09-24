@@ -1,7 +1,7 @@
 require "sinatra/base"
 require "json"
 require "gemstash"
-require "gemstash/strategy"
+require "gemstash/strategies"
 
 module Gemstash
   #:nodoc:
@@ -10,7 +10,7 @@ module Gemstash
 
     def initialize(gem_strategy: nil, web_helper: nil)
       @web_helper   = web_helper || Gemstash::RubygemsWebHelper.new
-      @strategy     = gem_strategy || Gemstash::RedirectionStrategy.new(web_helper: @web_helper)
+      @strategy     = gem_strategy || Gemstash::Strategies.from_config
       @dependencies = Gemstash::Dependencies.new(@web_helper)
       super()
     end

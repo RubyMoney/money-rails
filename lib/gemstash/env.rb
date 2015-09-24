@@ -3,6 +3,7 @@ require "dalli"
 require "fileutils"
 require "sequel"
 require "yaml"
+require "pathname"
 
 module Gemstash
   #:nodoc:
@@ -15,7 +16,8 @@ module Gemstash
       :max_threads => 16,
       :port => 9292,
       :workers => 1,
-      :rubygems_url => "https://www.rubygems.org"
+      :rubygems_url => "https://www.rubygems.org",
+      :strategy => :redirection,
     }.freeze
 
     def self.config
@@ -121,6 +123,14 @@ module Gemstash
 
     def self.rubygems_url
       config[:rubygems_url]
+    end
+
+    def self.strategy
+      config[:strategy]
+    end
+
+    def self.gem_cache_path
+      Pathname.new(base_dir).join("gem_cache").to_s
     end
   end
 end

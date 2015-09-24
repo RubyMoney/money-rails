@@ -1,6 +1,6 @@
 require "spec_helper"
 require "rack/test"
-require "gemstash/strategy"
+require "gemstash/strategies"
 require "gemstash/storage"
 
 describe Gemstash::CachingStrategy do
@@ -57,5 +57,26 @@ describe Gemstash::GemFetcher do
     it "fails to find a gem that is not there" do
       expect { gem_fetcher.fetch("not_available") }.to raise_error(/not_available/)
     end
+  end
+end
+
+describe "Gemstash.strategy_from_config" do
+  before do
+    @gem_folder = Dir.mktmpdir
+  end
+
+  after do
+    FileUtils.remove_entry @gem_folder
+    Gemstash::Env.reset
+  end
+
+  it "Returns a redirection strategy by default" do
+    expect(Gemstash::Strategies.from_config).to be_kind_of(Gemstash::RedirectionStrategy)
+  end
+
+  it "Returns a caching strategy when configured so" do
+    Gemstash::Env.config = { base_path: File.expand_path(@gem_folder), strategy: "caching" }
+    FileUtils.mkpath(Gemstash::Env.gem_cache_path)
+    expect(Gemstash::Strategies.from_config).to be_kind_of(Gemstash::CachingStrategy)
   end
 end

@@ -1,8 +1,21 @@
 require "faraday"
 require "faraday_middleware"
+require_relative "storage"
 
 #:nodoc:
 module Gemstash
+  #:nodoc:
+  class Strategies
+    def self.from_config
+      # we will need to make this logic more complicated later when we have more complex
+      # strategies, for now we are good just returning
+      strategies = { redirection: Gemstash::RedirectionStrategy,
+                     caching:     Gemstash::CachingStrategy }
+
+      strategies.fetch(Gemstash::Env.strategy.to_sym).new
+    end
+  end
+
   #
   # Basic web serving strategy that will just redirect the requested to rubygems
   #
@@ -48,9 +61,9 @@ module Gemstash
   # to then return them to the requester, along with the original
   # headers
   class CachingStrategy < RedirectionStrategy
-    def initialize(storage:, web_helper: nil, gem_fetcher: nil)
+    def initialize(storage: nil, web_helper: nil, gem_fetcher: nil)
       super(web_helper: web_helper)
-      @storage = storage
+      @storage = storage || Gemstash::GemStorage.from_config
       @gem_fetcher = gem_fetcher || GemFetcher.new
     end
 
