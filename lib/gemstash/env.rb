@@ -70,8 +70,12 @@ module Gemstash
       config[:base_path]
     end
 
+    def self.config_file=(file)
+      @config_file = file
+    end
+
     def self.config_file
-      File.expand_path("~/.gemstash/config.yml")
+      @config_file || File.expand_path("~/.gemstash/config.yml")
     end
 
     def self.rackup

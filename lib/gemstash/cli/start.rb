@@ -11,11 +11,16 @@ module Gemstash
       end
 
       def run
+        store_config
         ensure_pidfile_path_exists if daemonize?
         Puma::CLI.new(args).run
       end
 
     private
+
+      def store_config
+        Gemstash::Env.config_file = @cli.options[:config_file]
+      end
 
       def daemonize?
         @cli.options[:daemonize]

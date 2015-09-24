@@ -29,8 +29,12 @@ module Gemstash
 
     private
 
+      def config_file
+        @cli.options[:config_file] || Gemstash::Env.config_file
+      end
+
       def setup?
-        File.exist?(Gemstash::Env.config_file)
+        File.exist?(config_file)
       end
 
       def say_current_config(option, label)
@@ -106,7 +110,6 @@ module Gemstash
       end
 
       def store_config
-        config_file = Gemstash::Env.config_file
         config_dir = File.dirname(config_file)
         FileUtils.mkpath(config_dir) unless Dir.exist?(config_dir)
         File.write(config_file, YAML.dump(@config))
