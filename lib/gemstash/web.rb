@@ -1,6 +1,7 @@
 require "sinatra/base"
 require "json"
 require "gemstash"
+require "gemstash/strategy"
 
 module Gemstash
   #:nodoc:
