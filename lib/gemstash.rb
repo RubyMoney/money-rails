@@ -8,6 +8,7 @@ module Gemstash
   autoload :LruReduxClient,    "gemstash/cache"
   autoload :RubygemsWebHelper, "gemstash/web_helper"
   autoload :Web,               "gemstash/web"
+  autoload :WebError,          "gemstash/web_helper"
   autoload :WebHelper,         "gemstash/web_helper"
   autoload :VERSION,           "gemstash/version"
 end
