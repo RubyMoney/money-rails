@@ -1,4 +1,7 @@
 inherit_from: .rubocop-bundler.yml
 
 AllCops:
+  Exclude:
+    - bin/**/*
+    - vendor/**/*
   DisplayCopNames: true
