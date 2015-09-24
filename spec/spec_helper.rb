@@ -6,6 +6,7 @@ require "fileutils"
 require "support/db_helpers"
 require "support/file_helpers"
 require "support/matchers"
+require "support/simple_server"
 
 TEST_BASE_PATH = File.expand_path("../../tmp/test_base", __FILE__)
 FileUtils.mkpath(TEST_BASE_PATH) unless Dir.exist?(TEST_BASE_PATH)
@@ -28,6 +29,10 @@ RSpec.configure do |config|
 
   config.before(:each) do
     Gemstash::Env.cache_client.flush
+  end
+
+  config.after(:suite) do
+    SimpleServer.join_all
   end
 
   config.include DBHelpers

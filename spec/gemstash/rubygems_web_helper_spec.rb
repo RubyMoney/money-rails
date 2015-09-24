@@ -1,5 +1,4 @@
 require "spec_helper"
-require "support/simple_server"
 
 describe Gemstash::RubygemsWebHelper do
   before(:all) do
@@ -18,8 +17,6 @@ describe Gemstash::RubygemsWebHelper do
   after(:all) do
     @server.stop
     @other_server.stop
-    @server.join
-    @other_server.join
   end
 
   describe ".get" do

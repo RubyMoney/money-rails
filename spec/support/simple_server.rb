@@ -10,6 +10,7 @@ class SimpleServer
     @hostname = hostname
     @port = @server.config[:Port]
     @routes = {}
+    SimpleServer.servers << self
   end
 
   def url
@@ -31,9 +32,21 @@ class SimpleServer
     @server.stop
   end
 
+  def stopped?
+    @stopped
+  end
+
   def join
     raise "Only join if stopping!" unless @stopped
     puts "WARNING: SimpleServer is not stopping!" unless @thread.join(10)
+  end
+
+  def self.join_all
+    servers.each(&:join)
+  end
+
+  def self.servers
+    @servers ||= []
   end
 
   def mount(path, &block)
