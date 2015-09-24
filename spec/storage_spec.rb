@@ -1,5 +1,4 @@
 require "spec_helper"
-require "gemstash/storage"
 
 describe Gemstash::GemStorage do
   it "Fails to build with an invalid path" do

@@ -3,7 +3,6 @@ require "dalli"
 require "fileutils"
 require "sequel"
 require "yaml"
-require "pathname"
 
 module Gemstash
   #:nodoc:
@@ -130,7 +129,7 @@ module Gemstash
     end
 
     def self.gem_cache_path
-      Pathname.new(base_dir).join("gem_cache").to_s
+      File.join(base_dir, "gem_cache")
     end
   end
 end

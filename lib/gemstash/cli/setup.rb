@@ -123,7 +123,8 @@ module Gemstash
 
       def check_storage
         gem_storage = Gemstash::Env.gem_cache_path
-        @cli.say "Creating the gem storage cache folder" unless Dir.exist?(gem_storage)
+        return unless Dir.exist?(gem_storage)
+        @cli.say "Creating the gem storage cache folder"
         FileUtils.mkpath(gem_storage)
       end
 

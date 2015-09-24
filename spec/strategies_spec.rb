@@ -1,7 +1,5 @@
 require "spec_helper"
 require "rack/test"
-require "gemstash/strategies"
-require "gemstash/storage"
 
 describe Gemstash::CachingStrategy do
   include Rack::Test::Methods

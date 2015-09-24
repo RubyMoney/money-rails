@@ -64,7 +64,7 @@ module Gemstash
   class CachingStrategy < RedirectionStrategy
     def initialize(storage: nil, web_helper: nil, gem_fetcher: nil)
       super(web_helper: web_helper)
-      @storage = storage || Gemstash::GemStorage.from_config
+      @storage = storage || Gemstash::GemStorage.new
       @gem_fetcher = gem_fetcher || GemFetcher.new
       puts "Using a caching strategy"
     end
