@@ -1,5 +1,6 @@
 require "faraday"
 require "faraday_middleware"
+require "logger"
 require_relative "storage"
 
 #:nodoc:
@@ -65,6 +66,7 @@ module Gemstash
       super(web_helper: web_helper)
       @storage = storage || Gemstash::GemStorage.from_config
       @gem_fetcher = gem_fetcher || GemFetcher.new
+      puts "Using a caching strategy"
     end
 
     def serve_gem(app, id:)
@@ -77,8 +79,14 @@ module Gemstash
 
     def fetch_gem(id)
       gem = @storage.get(id)
-      fetched_gem = @gem_fetcher.fetch(id)
-      gem.save(fetched_gem.headers, fetched_gem.body)
+      if gem.exist?
+        puts "Gem #{id} exists, returning cached"
+        gem
+      else
+        puts "Gem #{id} is not cached, fetching"
+        fetched_gem = @gem_fetcher.fetch(id)
+        gem.save(fetched_gem.headers, fetched_gem.body)
+      end
     end
   end
 
