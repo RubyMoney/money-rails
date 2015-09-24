@@ -1,5 +1,4 @@
 require "gemstash"
-require "fileutils"
 require "puma/cli"
 
 module Gemstash
@@ -12,7 +11,6 @@ module Gemstash
 
       def run
         store_config
-        ensure_pidfile_path_exists if daemonize?
         Puma::CLI.new(args).run
       end
 
@@ -30,22 +28,13 @@ module Gemstash
         File.expand_path("../../puma.rb", __FILE__)
       end
 
-      def pidfile_dir
-        File.dirname(Gemstash::Env.pidfile)
-      end
-
-      def ensure_pidfile_path_exists
-        return if Dir.exist?(pidfile_dir)
-        FileUtils.mkpath(pidfile_dir)
-      end
-
       def args
         ["--config", puma_config] + daemonize_args
       end
 
       def daemonize_args
         if daemonize?
-          ["--daemon", "--pidfile", Gemstash::Env.pidfile]
+          ["--daemon", "--pidfile", Gemstash::Env.base_file("puma.pid")]
         else
           []
         end

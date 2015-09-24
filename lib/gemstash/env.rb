@@ -23,8 +23,13 @@ module Gemstash
       @db = nil
     end
 
-    def self.pidfile
-      File.join(config[:base_path], "puma.pid")
+    def self.base_path
+      FileUtils.mkpath(config[:base_path]) unless Dir.exist?(config[:base_path])
+      config[:base_path]
+    end
+
+    def self.base_file(path)
+      File.join(base_path, path)
     end
 
     def self.config_file=(file)
@@ -43,9 +48,7 @@ module Gemstash
       @db ||= begin
         case config[:db_adapter]
         when "sqlite3"
-          base_dir = config[:base_path]
-          FileUtils.mkpath(base_dir) unless Dir.exist?(base_dir)
-          db_path = File.join(base_dir, "gemstash.db")
+          db_path = base_file("gemstash.db")
           db = Sequel.connect("sqlite://#{db_path}")
         when "postgres"
           db = Sequel.connect(config[:db_url])

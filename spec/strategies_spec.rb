@@ -73,7 +73,12 @@ describe "Gemstash.strategy_from_config" do
   end
 
   it "Returns a caching strategy when configured so" do
-    Gemstash::Env.config = { base_path: File.expand_path(@gem_folder), strategy: "caching" }
+    config = {
+      base_path: File.expand_path(@gem_folder),
+      strategy: "caching"
+    }
+
+    Gemstash::Env.config = Gemstash::Configuration.new(config: config)
     FileUtils.mkpath(Gemstash::Env.gem_cache_path)
     expect(Gemstash::Strategies.from_config).to be_kind_of(Gemstash::CachingStrategy)
   end

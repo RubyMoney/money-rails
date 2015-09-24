@@ -21,7 +21,7 @@ module Gemstash
       end
 
       def args
-        ["--pidfile", Gemstash::Env.pidfile, "stop"]
+        ["--pidfile", Gemstash::Env.base_file("puma.pid"), "stop"]
       end
     end
   end
