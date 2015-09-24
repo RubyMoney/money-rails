@@ -23,28 +23,8 @@ module Gemstash
       @db = nil
     end
 
-    def self.min_threads
-      config[:min_threads]
-    end
-
-    def self.max_threads
-      config[:max_threads]
-    end
-
-    def self.port
-      config[:port]
-    end
-
-    def self.workers
-      config[:workers]
-    end
-
     def self.pidfile
-      File.join(base_dir, "puma.pid")
-    end
-
-    def self.base_dir
-      config[:base_path]
+      File.join(config[:base_path], "puma.pid")
     end
 
     def self.config_file=(file)
@@ -63,6 +43,7 @@ module Gemstash
       @db ||= begin
         case config[:db_adapter]
         when "sqlite3"
+          base_dir = config[:base_path]
           FileUtils.mkpath(base_dir) unless Dir.exist?(base_dir)
           db_path = File.join(base_dir, "gemstash.db")
           db = Sequel.connect("sqlite://#{db_path}")
@@ -96,16 +77,8 @@ module Gemstash
       end
     end
 
-    def self.rubygems_url
-      config[:rubygems_url]
-    end
-
-    def self.strategy
-      config[:strategy]
-    end
-
     def self.gem_cache_path
-      File.join(base_dir, "gem_cache")
+      File.join(config[:base_path], "gem_cache")
     end
   end
 end

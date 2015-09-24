@@ -1,6 +1,6 @@
 require "gemstash"
 
-threads Gemstash::Env.min_threads, Gemstash::Env.max_threads
-port Gemstash::Env.port
-workers Gemstash::Env.workers
+threads Gemstash::Env.config[:min_threads], Gemstash::Env.config[:max_threads]
+port Gemstash::Env.config[:port]
+workers Gemstash::Env.config[:workers]
 rackup Gemstash::Env.rackup

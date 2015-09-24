@@ -22,7 +22,7 @@ module Gemstash
   #:nodoc:
   class RubygemsWebHelper < WebHelper
     def initialize(rubygems_url = nil)
-      @rubygems_url = rubygems_url || Gemstash::Env.rubygems_url
+      @rubygems_url = rubygems_url || Gemstash::Env.config[:rubygems_url]
     end
 
     def get(path)

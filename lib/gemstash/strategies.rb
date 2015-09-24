@@ -10,10 +10,10 @@ module Gemstash
     def self.from_config
       # we will need to make this logic more complicated later when we have more complex
       # strategies, for now we are good just returning
-      strategies = { redirection: Gemstash::RedirectionStrategy,
-                     caching:     Gemstash::CachingStrategy }
+      strategies = { "redirection" => Gemstash::RedirectionStrategy,
+                     "caching"     => Gemstash::CachingStrategy }
 
-      strategies.fetch(Gemstash::Env.strategy.to_sym).new
+      strategies.fetch(Gemstash::Env.config[:strategy]).new
     end
   end
 
@@ -96,7 +96,8 @@ module Gemstash
   class GemFetcher
     def initialize(http_client: nil, server_url: nil)
       @client = http_client
-      @client ||= Faraday.new(server_url || Gemstash::Env.rubygems_url) do |c|
+      server_url ||= Gemstash::Env.config[:rubygems_url]
+      @client ||= Faraday.new(server_url) do |c|
         c.use FaradayMiddleware::FollowRedirects
         c.adapter :net_http
       end
