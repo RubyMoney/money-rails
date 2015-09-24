@@ -3,5 +3,6 @@ inherit_from: .rubocop-bundler.yml
 AllCops:
   Exclude:
     - bin/**/*
+    - tmp/**/*
     - vendor/**/*
   DisplayCopNames: true
