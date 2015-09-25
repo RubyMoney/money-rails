@@ -68,18 +68,12 @@ describe "Gemstash.strategy_from_config" do
     Gemstash::Env.reset
   end
 
-  it "Returns a redirection strategy by default" do
-    expect(Gemstash::Strategies.from_config).to be_kind_of(Gemstash::RedirectionStrategy)
+  it "Returns a caching strategy by default" do
+    expect(Gemstash::Strategies.from_config).to be_an_instance_of(Gemstash::CachingStrategy)
   end
 
   it "Returns a caching strategy when configured so" do
-    config = {
-      base_path: File.expand_path(@gem_folder),
-      strategy: "caching"
-    }
-
-    Gemstash::Env.config = Gemstash::Configuration.new(config: config)
-    FileUtils.mkpath(Gemstash::Env.config[:base_path])
-    expect(Gemstash::Strategies.from_config).to be_kind_of(Gemstash::CachingStrategy)
+    Gemstash::Env.config = Gemstash::Configuration.new(config: { :strategy => "redirection" })
+    expect(Gemstash::Strategies.from_config).to be_an_instance_of(Gemstash::RedirectionStrategy)
   end
 end

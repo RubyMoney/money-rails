@@ -10,7 +10,7 @@ module Gemstash
       :port => 9292,
       :workers => 1,
       :rubygems_url => "https://www.rubygems.org",
-      :strategy => "redirection",
+      :strategy => "caching",
     }.freeze
 
     def initialize(file: nil, config: nil)
