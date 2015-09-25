@@ -24,8 +24,15 @@ module Gemstash
     end
 
     def self.base_path
-      FileUtils.mkpath(config[:base_path]) unless Dir.exist?(config[:base_path])
-      config[:base_path]
+      dir = config[:base_path]
+
+      if config.default?(:base_path)
+        FileUtils.mkpath(dir) unless Dir.exist?(dir)
+      else
+        raise "Base path '#{dir}' is not writable" unless File.writable?(dir)
+      end
+
+      dir
     end
 
     def self.base_file(path)
@@ -78,10 +85,6 @@ module Gemstash
           raise "Invalid cache client: '#{config[:cache_type]}'"
         end
       end
-    end
-
-    def self.gem_cache_path
-      File.join(config[:base_path], "gem_cache")
     end
   end
 end

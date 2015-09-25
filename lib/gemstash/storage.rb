@@ -7,8 +7,11 @@ module Gemstash
   # which may exist or not
   class GemStorage
     def initialize(folder = nil)
-      folder ||= Gemstash::Env.gem_cache_path
-      raise "Folder #{folder} does not exist or is not writable" unless File.writable?(folder)
+      if folder && !File.writable?(folder)
+        raise "Folder #{folder} does not exist or is not writable"
+      end
+
+      folder ||= Gemstash::Env.base_file("gem_cache")
       @folder = Pathname.new(folder)
     end
 

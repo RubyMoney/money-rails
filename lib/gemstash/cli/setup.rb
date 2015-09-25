@@ -124,7 +124,7 @@ module Gemstash
         with_new_config do
           dir = Gemstash::Env.config[:base_path]
           break if Dir.exist?(dir)
-          @cli.say "Creating the file storage folder '#{dir}'"
+          @cli.say "Creating the file storage path '#{dir}'"
           FileUtils.mkpath(dir)
         end
       end

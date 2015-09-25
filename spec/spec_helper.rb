@@ -20,11 +20,13 @@ RSpec.configure do |config|
       Gemstash::Env.config = TEST_CONFIG
     end
 
-    Gemstash::Env.db.transaction(:rollback => :always) do
+    db = Gemstash::Env.db
+
+    db.transaction(:rollback => :always) do
       example.run
     end
 
-    Gemstash::Env.db.disconnect
+    db.disconnect
   end
 
   config.before(:each) do

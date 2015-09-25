@@ -79,7 +79,7 @@ describe "Gemstash.strategy_from_config" do
     }
 
     Gemstash::Env.config = Gemstash::Configuration.new(config: config)
-    FileUtils.mkpath(Gemstash::Env.gem_cache_path)
+    FileUtils.mkpath(Gemstash::Env.config[:base_path])
     expect(Gemstash::Strategies.from_config).to be_kind_of(Gemstash::CachingStrategy)
   end
 end

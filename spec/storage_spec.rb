@@ -1,7 +1,7 @@
 require "spec_helper"
 
 describe Gemstash::GemStorage do
-  it "Fails to build with an invalid path" do
+  it "fails to build with an invalid path" do
     invalid_folder = Dir.mktmpdir
     FileUtils.remove_entry invalid_folder
     expect { Gemstash::GemStorage.new(invalid_folder) }.to(
