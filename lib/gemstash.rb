@@ -7,8 +7,6 @@ module Gemstash
   autoload :DBHelper,            "gemstash/db_helper"
   autoload :Dependencies,        "gemstash/dependencies"
   autoload :Env,                 "gemstash/env"
-  autoload :FetchedGem,          "gemstash/strategies"
-  autoload :GemFetcher,          "gemstash/strategies"
   autoload :GemPusher,           "gemstash/gem_pusher"
   autoload :GemStorage,          "gemstash/storage"
   autoload :LruReduxClient,      "gemstash/cache"

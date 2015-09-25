@@ -28,10 +28,12 @@ module Gemstash
         req.options.open_timeout = 2
       end
 
-      if response.success?
-        response.body
+      raise WebError.new(response.body, response.status) unless response.success?
+
+      if block_given?
+        yield(response.body, response.headers)
       else
-        raise WebError.new(response.body, response.status)
+        response.body
       end
     end
 

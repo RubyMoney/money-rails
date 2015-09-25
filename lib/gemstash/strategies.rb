@@ -62,10 +62,9 @@ module Gemstash
   # to then return them to the requester, along with the original
   # headers
   class CachingStrategy < RedirectionStrategy
-    def initialize(storage: nil, web_helper: nil, gem_fetcher: nil)
+    def initialize(storage: nil, web_helper: nil)
       super(web_helper: web_helper)
       @storage = storage || Gemstash::GemStorage.new
-      @gem_fetcher = gem_fetcher || GemFetcher.new
       puts "Using a caching strategy"
     end
 
@@ -73,8 +72,8 @@ module Gemstash
       gem = fetch_gem(id)
       app.headers.update(gem.headers)
       gem.content
-    rescue GemNotFoundError
-      app.halt 404
+    rescue Gemstash::WebError => e
+      app.halt e.code
     end
 
     def fetch_gem(id)
@@ -84,35 +83,10 @@ module Gemstash
         gem
       else
         puts "Gem #{id} is not cached, fetching"
-        fetched_gem = @gem_fetcher.fetch(id)
-        gem.save(fetched_gem.headers, fetched_gem.body)
+        @web_helper.get("/gems/#{id}") do |body, headers|
+          gem.save(headers, body)
+        end
       end
     end
   end
-
-  #
-  # Simple client that knows how to fetch a gem file following redirections
-  #
-  class GemFetcher
-    def initialize(http_client: nil, server_url: nil)
-      @client = http_client
-      server_url ||= Gemstash::Env.config[:rubygems_url]
-      @client ||= Faraday.new(server_url) do |c|
-        c.use FaradayMiddleware::FollowRedirects
-        c.adapter :net_http
-      end
-    end
-
-    def fetch(id)
-      response = @client.get("/gems/#{id}") do |req|
-        req.options.open_timeout = 2
-      end
-      raise GemNotFoundError, id if response.status == 404
-      FetchedGem.new(response.headers, response.body)
-    end
-  end
-
-  FetchedGem = Struct.new(:headers, :body)
-
-  class GemNotFoundError < StandardError; end
 end

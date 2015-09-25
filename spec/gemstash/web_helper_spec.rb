@@ -59,5 +59,29 @@ describe Gemstash::WebHelper do
         end
       end
     end
+
+    context "with a block to store the headers" do
+      let(:http_client) do
+        stubs = Faraday::Adapter::Test::Stubs.new do |stub|
+          stub.get("/gems/rack") { [200, { "CONTENT-TYPE" => "octet/stream" }, "zapatito"] }
+        end
+        Faraday.new {|builder| builder.adapter(:test, stubs) }
+      end
+
+      let(:helper) { Gemstash::WebHelper.new(http_client: http_client) }
+
+      it "throws an error" do
+        body_result = nil
+        headers_result = nil
+
+        helper.get("/gems/rack") do |body, headers|
+          body_result = body
+          headers_result = headers
+        end
+
+        expect(body_result).to eq("zapatito")
+        expect(headers_result).to eq("CONTENT-TYPE" => "octet/stream")
+      end
+    end
   end
 end
