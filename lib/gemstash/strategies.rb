@@ -1,7 +1,7 @@
+require "gemstash"
 require "faraday"
 require "faraday_middleware"
 require "logger"
-require_relative "storage"
 
 #:nodoc:
 module Gemstash

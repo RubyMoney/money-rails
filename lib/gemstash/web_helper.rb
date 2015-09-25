@@ -1,5 +1,6 @@
 require "gemstash"
-require "open-uri"
+require "faraday"
+require "faraday_middleware"
 
 module Gemstash
   #:nodoc:
@@ -14,18 +15,28 @@ module Gemstash
 
   #:nodoc:
   class WebHelper
-    def initialize(rubygems_url = nil)
-      @rubygems_url = rubygems_url || Gemstash::Env.config[:rubygems_url]
+    def initialize(http_client: nil, server_url: nil)
+      @server_url = server_url || Gemstash::Env.config[:rubygems_url]
+      @client = http_client || Faraday.new(@server_url) do |config|
+        config.use FaradayMiddleware::FollowRedirects
+        config.adapter :net_http
+      end
     end
 
     def get(path)
-      open(url(path), &:read)
-    rescue OpenURI::HTTPError => e
-      raise WebError.new(e.io.read, e.io.status.first.to_i)
+      response = @client.get(path) do |req|
+        req.options.open_timeout = 2
+      end
+
+      if response.success?
+        response.body
+      else
+        raise WebError.new(response.body, response.status)
+      end
     end
 
     def url(path = nil)
-      "#{@rubygems_url}#{path}"
+      "#{@server_url}#{path}"
     end
   end
 end

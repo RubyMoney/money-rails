@@ -20,7 +20,7 @@ describe Gemstash::WebHelper do
   end
 
   describe ".get" do
-    let(:helper) { Gemstash::WebHelper.new(@server.url) }
+    let(:helper) { Gemstash::WebHelper.new(server_url: @server.url) }
 
     context "with a valid url" do
       it "returns the body of the result" do
