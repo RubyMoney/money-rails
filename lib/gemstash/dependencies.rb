@@ -5,7 +5,7 @@ module Gemstash
   #:nodoc:
   class Dependencies
     def initialize(web_helper = nil, db_helper = nil)
-      @web_helper = web_helper || Gemstash::RubygemsWebHelper.new
+      @web_helper = web_helper || Gemstash::WebHelper.new
       @db_helper = db_helper || Gemstash::DBHelper.new
     end
 

@@ -8,7 +8,7 @@ module Gemstash
     API_REQUEST_LIMIT = 200
 
     def initialize(gem_strategy: nil, web_helper: nil)
-      @web_helper   = web_helper || Gemstash::RubygemsWebHelper.new
+      @web_helper   = web_helper || Gemstash::WebHelper.new
       @strategy     = gem_strategy || Gemstash::Strategies.from_config
       @dependencies = Gemstash::Dependencies.new(@web_helper)
       super()

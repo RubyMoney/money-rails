@@ -22,7 +22,7 @@ module Gemstash
   #
   class RedirectionStrategy
     def initialize(web_helper: nil)
-      @web_helper = web_helper || Gemstash::RubygemsWebHelper.new
+      @web_helper = web_helper || Gemstash::WebHelper.new
     end
 
     def serve_root(app)

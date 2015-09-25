@@ -1,6 +1,6 @@
 require "spec_helper"
 
-describe Gemstash::RubygemsWebHelper do
+describe Gemstash::WebHelper do
   before(:all) do
     @server = SimpleServer.new("localhost")
     @other_server = SimpleServer.new("127.0.0.1")
@@ -20,7 +20,7 @@ describe Gemstash::RubygemsWebHelper do
   end
 
   describe ".get" do
-    let(:helper) { Gemstash::RubygemsWebHelper.new(@server.url) }
+    let(:helper) { Gemstash::WebHelper.new(@server.url) }
 
     context "with a valid url" do
       it "returns the body of the result" do

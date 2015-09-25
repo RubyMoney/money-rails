@@ -14,19 +14,12 @@ module Gemstash
 
   #:nodoc:
   class WebHelper
-    def get(url)
-      open(url, &:read)
-    end
-  end
-
-  #:nodoc:
-  class RubygemsWebHelper < WebHelper
     def initialize(rubygems_url = nil)
       @rubygems_url = rubygems_url || Gemstash::Env.config[:rubygems_url]
     end
 
     def get(path)
-      super(url(path))
+      open(url(path), &:read)
     rescue OpenURI::HTTPError => e
       raise WebError.new(e.io.read, e.io.status.first.to_i)
     end

@@ -13,7 +13,6 @@ module Gemstash
   autoload :GemStorage,          "gemstash/storage"
   autoload :LruReduxClient,      "gemstash/cache"
   autoload :RedirectionStrategy, "gemstash/strategies"
-  autoload :RubygemsWebHelper,   "gemstash/web_helper"
   autoload :Strategies,          "gemstash/strategies"
   autoload :Web,                 "gemstash/web"
   autoload :WebError,            "gemstash/web_helper"
