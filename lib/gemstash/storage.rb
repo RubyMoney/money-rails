@@ -1,4 +1,5 @@
 require "pathname"
+require "fileutils"
 
 module Gemstash
   # Caching layer for gem files
@@ -31,7 +32,7 @@ module Gemstash
     end
 
     def save(headers, content)
-      Dir.mkdir(@folder) unless Dir.exist?(@folder)
+      FileUtils.mkpath(@folder) unless Dir.exist?(@folder)
       File.open(headers_path, "w") {|f| f.write(headers.to_yaml) }
       File.open(content_path, "w") {|f| f.write(content) }
       @headers = headers
