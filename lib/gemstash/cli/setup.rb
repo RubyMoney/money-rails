@@ -23,8 +23,8 @@ module Gemstash
         ask_database
         ask_strategy
         check_cache
-        check_database
         check_storage
+        check_database
         store_config
         @cli.say @cli.set_color("You are all setup!", :green)
       end
