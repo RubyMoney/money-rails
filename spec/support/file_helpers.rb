@@ -5,4 +5,9 @@ module FileHelpers
     gem_dir = File.join(gems_dir, name)
     File.join(gem_dir, "pkg/#{name}-#{version}.gem")
   end
+
+  def bundle_path(name)
+    bundles_dir = File.expand_path("../../data/bundles", __FILE__)
+    File.join(bundles_dir, name)
+  end
 end

@@ -4,6 +4,7 @@ require "gemstash"
 require "dalli"
 require "fileutils"
 require "support/db_helpers"
+require "support/exec_helpers"
 require "support/file_helpers"
 require "support/matchers"
 require "support/simple_server"
@@ -38,6 +39,7 @@ RSpec.configure do |config|
   end
 
   config.include DBHelpers
+  config.include ExecHelpers
   config.include FileHelpers
   config.raise_errors_for_deprecations!
 end

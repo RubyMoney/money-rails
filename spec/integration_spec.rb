@@ -1,8 +1,21 @@
 require "spec_helper"
 
-describe "bundle install against gemstash" do
+xdescribe "bundle install against gemstash" do
+  let(:dir) { bundle_path(bundle) }
+
+  after do
+    clean_bundle bundle
+  end
+
   context "with just cached gems" do
-    it "successfully bundles"
+    let(:bundle) { "speaker" }
+
+    it "successfully bundles" do
+      expect(execute("bundle", dir: dir).successful?).to be_truthy
+      result = execute("bundle exec speaker hi", dir: dir)
+      expect(result.successful?).to be_truthy
+      expect(result.output).to eq("Hello world\n")
+    end
   end
 
   context "with just private gems" do
