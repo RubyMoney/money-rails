@@ -18,8 +18,8 @@ module Gemstash
         "[#{formatted_date}] - #{severity} - #{msg}\n"
       end
 
-      @raw_logger = Logger.new(logfile, shift_age: 7, shift_size: 10_485_760)
-      @raw_logger.formatter = proc do
+      @raw_logger = Logger.new(logfile, shift_age: 1, shift_size: 10_485_760)
+      @raw_logger.formatter = proc do |_severity, _datetime, _progname, msg|
         msg
       end
     end
@@ -29,22 +29,11 @@ module Gemstash
     end
 
     def self.wrapped_logger
-      LoggerIOWrapper.new(@raw_logger)
+      @raw_logger
     end
 
     def log
       Gemstash::Logging.formatted_logger
-    end
-  end
-
-  #:nodoc:
-  class LoggerIOWrapper < IO
-    def initialize(logger)
-      @log = logger
-    end
-
-    def write(str)
-      @log.info str
     end
   end
 
