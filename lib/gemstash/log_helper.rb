@@ -13,6 +13,10 @@ module Gemstash
       $stdout.sync = true
 
       @formatted_logger = Logger.new(logfile)
+      @formatted_logger.formatter = proc do |severity, datetime, _progname, msg|
+        formatted_date = datetime.strftime("%d/%b/%Y:%H:%M:%S %z")
+        "[#{formatted_date}] - #{severity} - #{msg}\n"
+      end
 
       @raw_logger = Logger.new(logfile, shift_age: 7, shift_size: 10_485_760)
       @raw_logger.formatter = proc do

@@ -15,6 +15,8 @@ module Gemstash
 
     #:nodoc:
     class Fetcher
+      include Gemstash::Logging
+
       def initialize(gems, web_helper, db_helper)
         @gems = Set.new(gems)
         @web_helper = web_helper
@@ -45,7 +47,7 @@ module Gemstash
 
       def fetch_from_database
         return if done?
-        puts "Querying dependencies: #{@gems.to_a.join(", ")}"
+        log.info "Querying dependencies: #{@gems.to_a.join(", ")}"
 
         @db_helper.find_dependencies(@gems) do |gem, value|
           @gems.delete(gem)
@@ -56,7 +58,7 @@ module Gemstash
 
       def fetch_from_web
         return if done?
-        puts "Fetching dependencies: #{@gems.to_a.join(", ")}"
+        log.info "Fetching dependencies: #{@gems.to_a.join(", ")}"
         gems_param = @gems.map {|gem| CGI.escape(gem) }.join(",")
         fetched = @web_helper.get("/api/v1/dependencies?gems=#{gems_param}")
         fetched = Marshal.load(fetched).group_by {|r| r[:name] }
