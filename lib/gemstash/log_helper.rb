@@ -25,7 +25,7 @@ module Gemstash
     end
 
     def self.formatted_logger
-      @formatted_logger ||= Logger.new($stdout)
+      @formatted_logger || Logger.new("/dev/null")
     end
 
     def self.wrapped_logger
