@@ -11,10 +11,15 @@ module Gemstash
 
       def run
         store_config
+        setup_logging
         Puma::CLI.new(args).run
       end
 
     private
+
+      def setup_logging
+        Gemstash::Logging.setup_logger
+      end
 
       def store_config
         Gemstash::Env.config_file = @cli.options[:config_file]

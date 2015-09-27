@@ -11,6 +11,7 @@ module Gemstash
       :workers => 1,
       :rubygems_url => "https://www.rubygems.org",
       :strategy => "caching",
+      :logfile => "server.log"
     }.freeze
 
     def initialize(file: nil, config: nil)

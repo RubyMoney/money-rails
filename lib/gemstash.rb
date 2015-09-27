@@ -16,4 +16,6 @@ module Gemstash
   autoload :WebError,            "gemstash/web_helper"
   autoload :WebHelper,           "gemstash/web_helper"
   autoload :VERSION,             "gemstash/version"
+  autoload :Logging,             "gemstash/log_helper"
+  autoload :MyLoggerMiddleware,  "gemstash/log_helper"
 end
