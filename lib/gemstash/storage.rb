@@ -1,5 +1,6 @@
 require "pathname"
 require "fileutils"
+require "yaml"
 
 module Gemstash
   # Caching layer for gem files

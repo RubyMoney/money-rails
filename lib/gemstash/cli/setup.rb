@@ -32,7 +32,7 @@ module Gemstash
     private
 
       def config_file
-        @cli.options[:config_file] || Gemstash::Env.config_file
+        @cli.options[:config_file] || Gemstash::Configuration::DEFAULT_FILE
       end
 
       def setup?

@@ -1,3 +1,5 @@
+require "yaml"
+
 module Gemstash
   #:nodoc:
   class Configuration
@@ -13,13 +15,15 @@ module Gemstash
       :strategy => "caching",
     }.freeze
 
+    DEFAULT_FILE = File.expand_path("~/.gemstash/config.yml").freeze
+
     def initialize(file: nil, config: nil)
       if config
         @config = DEFAULTS.merge(config).freeze
         return
       end
 
-      file ||= File.expand_path("~/.gemstash/config.yml")
+      file ||= DEFAULT_FILE
 
       if File.exist?(file)
         @config = YAML.load_file(file)

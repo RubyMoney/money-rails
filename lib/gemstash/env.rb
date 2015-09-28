@@ -2,10 +2,9 @@ require "gemstash"
 require "dalli"
 require "fileutils"
 require "sequel"
-require "yaml"
 
 module Gemstash
-  #:nodoc:
+  # Storage for application-wide variables and configuration.
   class Env
     def self.config
       @config ||= Gemstash::Configuration.new
@@ -37,14 +36,6 @@ module Gemstash
 
     def self.base_file(path)
       File.join(base_path, path)
-    end
-
-    def self.config_file=(file)
-      @config_file = file
-    end
-
-    def self.config_file
-      @config_file || File.expand_path("~/.gemstash/config.yml")
     end
 
     def self.rackup

@@ -17,7 +17,8 @@ module Gemstash
     private
 
       def store_config
-        Gemstash::Env.config_file = @cli.options[:config_file]
+        config = Gemstash::Configuration.new(file: @cli.options[:config_file])
+        Gemstash::Env.config = config
       end
 
       def daemonize?
