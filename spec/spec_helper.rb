@@ -8,6 +8,7 @@ require "support/exec_helpers"
 require "support/file_helpers"
 require "support/matchers"
 require "support/simple_server"
+require "support/test_gemstash_server"
 
 TEST_BASE_PATH = File.expand_path("../../tmp/test_base", __FILE__)
 FileUtils.mkpath(TEST_BASE_PATH) unless Dir.exist?(TEST_BASE_PATH)
@@ -36,6 +37,7 @@ RSpec.configure do |config|
 
   config.after(:suite) do
     SimpleServer.join_all
+    TestGemstashServer.join_all
   end
 
   config.include DBHelpers

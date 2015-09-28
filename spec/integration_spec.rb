@@ -3,6 +3,15 @@ require "spec_helper"
 xdescribe "bundle install against gemstash" do
   let(:dir) { bundle_path(bundle) }
 
+  before(:all) do
+    @gemstash = TestGemstashServer.new(port: 9042)
+    @gemstash.start
+  end
+
+  after(:all) do
+    @gemstash.stop
+  end
+
   after do
     clean_bundle bundle
   end

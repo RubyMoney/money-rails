@@ -1,14 +1,15 @@
 require "webrick"
+require "support/server_check"
 
-#:nodoc:
+# A wrapper for a WEBrick server for a quick web server to test against.
 class SimpleServer
   attr_reader :routes
 
   def initialize(hostname)
-    @server = WEBrick::HTTPServer.new(:Port => 0)
+    @port = SimpleServer.next_port
+    @server = WEBrick::HTTPServer.new(:Port => @port)
     @server.mount("/", Servlet, self)
     @hostname = hostname
-    @port = @server.config[:Port]
     @routes = {}
     SimpleServer.servers << self
   end
@@ -24,6 +25,8 @@ class SimpleServer
     @thread = Thread.new do
       @server.start
     end
+
+    ServerCheck.new(@port).wait
   end
 
   def stop
@@ -39,6 +42,11 @@ class SimpleServer
   def join
     raise "Only join if stopping!" unless @stopped
     puts "WARNING: SimpleServer is not stopping!" unless @thread.join(10)
+  end
+
+  def self.next_port
+    @next_port ||= 10_000
+    @next_port += 1
   end
 
   def self.join_all
