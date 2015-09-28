@@ -1,8 +1,6 @@
 require "gemstash"
 
-logger = Gemstash::Logging.wrapped_logger
-
 use Rack::Deflater
-use Gemstash::MyLoggerMiddleware, logger
+use Rack::CommonLogger, Gemstash::Logging.raw_logger
 
 run Gemstash::Web.new
