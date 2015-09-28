@@ -5,7 +5,8 @@ require "yaml"
 
 module Gemstash
   class CLI
-    #:nodoc:
+    # This implements the command line setup task:
+    #  $ gemstash setup
     class Setup
       def initialize(cli)
         @cli = cli
