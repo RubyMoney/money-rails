@@ -1,6 +1,6 @@
 require "fileutils"
 
-#:nodoc:
+# Helper methods to easily find and manipulate test files.
 module FileHelpers
   def gem_path(name, version)
     gems_dir = File.expand_path("../../data/gems", __FILE__)

@@ -1,6 +1,6 @@
 require "open3"
 
-#:nodoc:
+# Helpers for executing commands and asserting the results.
 module ExecHelpers
   def execute(command, dir:)
     env = {
@@ -12,7 +12,7 @@ module ExecHelpers
     Result.new(env, command, dir)
   end
 
-  #:nodoc:
+  # Executes and stores the results for an external command.
   class Result
     attr_reader :command, :dir, :output
 

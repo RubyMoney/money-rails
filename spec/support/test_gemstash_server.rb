@@ -5,8 +5,6 @@ require "support/server_check"
 # Launches a test Gemstash server directly via Puma.
 class TestGemstashServer
   def initialize(port:)
-    # TODO: Set up env for gemstash server
-    # TODO: Probably clear test base directory
     @port = port
     args = %w(--config -)
     args += %w(--workers 0)
