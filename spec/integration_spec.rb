@@ -31,10 +31,8 @@ xdescribe "bundle install against gemstash" do
     let(:bundle) { "integration_spec/speaker" }
 
     it "successfully bundles" do
-      expect(execute("bundle", dir: dir).successful?).to be_truthy
-      result = execute("bundle exec speaker hi", dir: dir)
-      expect(result.successful?).to be_truthy
-      expect(result.output).to eq("Hello world\n")
+      expect(execute("bundle", dir: dir)).to exit_success
+      expect(execute("bundle exec speaker hi", dir: dir)).to exit_success.and_output("Hello world\n")
     end
   end
 
