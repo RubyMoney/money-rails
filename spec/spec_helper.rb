@@ -3,6 +3,7 @@ ENV["RACK_ENV"] = "test"
 require "gemstash"
 require "dalli"
 require "fileutils"
+require "pathname"
 require "support/db_helpers"
 require "support/exec_helpers"
 require "support/file_helpers"
@@ -33,6 +34,11 @@ RSpec.configure do |config|
 
   config.before(:each) do
     Gemstash::Env.cache_client.flush
+
+    Pathname.new(TEST_BASE_PATH).children.each do |path|
+      next if path.basename.to_s.end_with?(".db")
+      path.rmtree
+    end
   end
 
   config.after(:suite) do

@@ -70,8 +70,8 @@ describe "bundle install against gemstash" do
     clean_bundle bundle
   end
 
-  context "with just cached gems" do
-    let(:bundle) { "integration_spec/speaker" }
+  context "with just upstream gems" do
+    let(:bundle) { "integration_spec/just_upstream_gems" }
 
     it "successfully bundles" do
       expect(execute("bundle", dir: dir)).to exit_success
@@ -83,11 +83,11 @@ describe "bundle install against gemstash" do
     it "successfully bundles"
   end
 
-  context "with private and cached gems" do
+  context "with private and upstream gems" do
     it "successfully bundles"
   end
 
-  context "with private versions overriding public gems" do
+  context "with private versions overriding upstream gems" do
     it "successfully bundles"
   end
 end
