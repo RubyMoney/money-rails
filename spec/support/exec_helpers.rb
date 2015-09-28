@@ -3,7 +3,12 @@ require "open3"
 #:nodoc:
 module ExecHelpers
   def execute(command, dir:)
-    env = { "BUNDLE_GEMFILE" => nil }
+    env = {
+      "BUNDLE_GEMFILE" => nil,
+      "RUBYLIB" => nil,
+      "RUBYOPT" => nil,
+      "GEM_PATH" => ENV["_ORIGINAL_GEM_PATH"]
+    }
     Result.new(env, command, dir)
   end
 

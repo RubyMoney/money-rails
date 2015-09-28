@@ -1,13 +1,60 @@
 require "spec_helper"
 
-xdescribe "bundle install against gemstash" do
+describe "bundle install against gemstash" do
   let(:dir) { bundle_path(bundle) }
 
+  def gem_dependencies(gems_param)
+    results = []
+
+    gems_param.split(",").each do |gem|
+      case gem
+      when "speaker"
+        results << {
+          :name => "speaker",
+          :number => "0.1.0",
+          :platform => "ruby",
+          :dependencies => []
+        }
+      end
+    end
+
+    Marshal.dump results
+  end
+
   before(:all) do
+    @rubygems_server = SimpleServer.new("127.0.0.1")
+
+    @rubygems_server.mount("/api/v1/dependencies") do |request, response|
+      gems = request.query["gems"]
+
+      if gems.nil? || gems.empty?
+        response.status = 200
+      else
+        begin
+          response.body = gem_dependencies(gems)
+          response.content_type = "application/octet-stream"
+          response.status = 200
+        rescue
+          response.body = "Error getting gem dependencies in '#{__FILE__}'"
+          response.status = 500
+        end
+      end
+    end
+
+    @rubygems_server.mount("/gems/speaker-0.1.0.gem") do |_, response|
+      response.status = 200
+      response.content_type = "application/octet-stream"
+      response.body = File.read(gem_path("speaker", "0.1.0"))
+    end
+
+    @rubygems_server.start
+    @config = Gemstash::Configuration.new(config: {
+                                            :base_path => TEST_BASE_PATH,
+                                            :rubygems_url => @rubygems_server.url
+                                          })
+    Gemstash::Env.config = @config
     @gemstash = TestGemstashServer.new(port: 9042)
     @gemstash.start
-    @rubygems_server = SimpleServer.new("127.0.0.1")
-    @rubygems_server.start
   end
 
   after(:all) do
@@ -16,11 +63,7 @@ xdescribe "bundle install against gemstash" do
   end
 
   before do
-    config = Gemstash::Configuration.new(config: {
-                                           :base_path => TEST_BASE_PATH,
-                                           :rubygems_url => @rubygems_server.url
-                                         })
-    Gemstash::Env.config = config
+    Gemstash::Env.config = @config
   end
 
   after do
