@@ -80,14 +80,20 @@ describe "bundle install against gemstash" do
   end
 
   context "with just private gems" do
+    let(:bundle) { "integration_spec/just_private_gems" }
+
     it "successfully bundles"
   end
 
   context "with private and upstream gems" do
+    let(:bundle) { "integration_spec/private_and_upstream_gems" }
+
     it "successfully bundles"
   end
 
   context "with private versions overriding upstream gems" do
+    let(:bundle) { "integration_spec/private_overriding_upstream_gems" }
+
     it "successfully bundles"
   end
 end
