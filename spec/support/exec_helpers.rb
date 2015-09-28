@@ -3,7 +3,8 @@ require "open3"
 #:nodoc:
 module ExecHelpers
   def execute(command, dir:)
-    Result.new(*Open3.capture2e(command, chdir: dir))
+    env = { "BUNDLE_GEMFILE" => nil }
+    Result.new(*Open3.capture2e(env, command, chdir: dir))
   end
 
   #:nodoc:

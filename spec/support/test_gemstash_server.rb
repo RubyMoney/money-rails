@@ -9,7 +9,7 @@ class TestGemstashServer
     # TODO: Probably clear test base directory
     @port = port
     args = %w(--config -)
-    args += %w(--workers 1)
+    args += %w(--workers 0)
     args += %w(--threads 0:4)
     args += %w(--environment test)
     args += ["--port", port.to_s]
@@ -32,14 +32,13 @@ class TestGemstashServer
   def stop
     return if @stopped
     @stopped = true
-    @puma_cli.stop
+    @puma_cli.halt
   end
 
   def join
     raise "Only join if stopping!" unless @stopped
     return if @thread.join(10)
     puts "WARNING: TestGemstashServer is not stopping!"
-    @puma_cli.halt
   end
 
   def self.join_all

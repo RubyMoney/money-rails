@@ -6,10 +6,21 @@ xdescribe "bundle install against gemstash" do
   before(:all) do
     @gemstash = TestGemstashServer.new(port: 9042)
     @gemstash.start
+    @rubygems_server = SimpleServer.new("127.0.0.1")
+    @rubygems_server.start
   end
 
   after(:all) do
     @gemstash.stop
+    @rubygems_server.stop
+  end
+
+  before do
+    config = Gemstash::Configuration.new(config: {
+                                           :base_path => TEST_BASE_PATH,
+                                           :rubygems_url => @rubygems_server.url
+                                         })
+    Gemstash::Env.config = config
   end
 
   after do
@@ -17,7 +28,7 @@ xdescribe "bundle install against gemstash" do
   end
 
   context "with just cached gems" do
-    let(:bundle) { "speaker" }
+    let(:bundle) { "integration_spec/speaker" }
 
     it "successfully bundles" do
       expect(execute("bundle", dir: dir).successful?).to be_truthy
