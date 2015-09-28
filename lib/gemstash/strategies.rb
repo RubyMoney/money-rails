@@ -1,6 +1,4 @@
 require "gemstash"
-require "faraday"
-require "faraday_middleware"
 require "logger"
 
 #:nodoc:
