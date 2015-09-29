@@ -8,7 +8,7 @@ describe Gemstash::Logging do
   end
   after do
     Gemstash::Logging.reset
-    # FileUtils.remove(@logfile)
+    FileUtils.remove(@logfile)
   end
 
   it "Builds a logger in the right place" do
