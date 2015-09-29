@@ -27,7 +27,7 @@ module Gemstash
     end
 
     #:nodoc:
-    module LoggerMixin
+    module LoggerPatch
       def log_device
         @logdev
       end
@@ -45,7 +45,7 @@ module Gemstash
 
     #:nodoc:
     class LoggingSink
-      Logger.include(Gemstash::Logging::LoggerMixin)
+      Logger.include(Gemstash::Logging::LoggerPatch)
       Logger::LogDevice.include(Gemstash::Logging::IOCompatible)
 
       attr_accessor :logger
