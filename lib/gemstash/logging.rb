@@ -23,7 +23,7 @@ module Gemstash
 
     def self.reset
       @logging_sink.close if @logging_sink
-      @loggingasink = nil
+      @logging_sink = nil
     end
 
     #:nodoc:
