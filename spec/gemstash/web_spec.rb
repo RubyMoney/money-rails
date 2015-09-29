@@ -3,7 +3,7 @@ require "rack/test"
 
 describe Gemstash::Web do
   include Rack::Test::Methods
-  let(:app) { Gemstash::Web.new }
+  let(:app) { Gemstash::Web.new(gemstash_env: test_env) }
 
   let(:rack) do
     {

@@ -11,6 +11,7 @@ module Gemstash
       include Gemstash::Env::Helper
 
       def initialize(cli)
+        Gemstash::Env.current = Gemstash::Env.new
         @cli = cli
         @config = {}
       end

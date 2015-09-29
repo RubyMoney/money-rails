@@ -6,6 +6,11 @@ require "sequel"
 module Gemstash
   # Storage for application-wide variables and configuration.
   class Env
+    # The Gemstash::Env must be set before being retreived via
+    # Gemstash::Env.current. This error is thrown when that is not honored.
+    class EnvNotSetError < StandardError
+    end
+
     # Little module to provide easy access to the current Gemstash::Env.
     module Helper
     private
@@ -15,12 +20,17 @@ module Gemstash
       end
     end
 
+    def initialize(config = nil)
+      @config = config
+    end
+
     def self.current
-      @current ||= Gemstash::Env.new
+      raise EnvNotSetError unless Thread.current[:gemstash_env]
+      Thread.current[:gemstash_env]
     end
 
     def self.current=(value)
-      @current = value
+      Thread.current[:gemstash_env] = value
     end
 
     def config

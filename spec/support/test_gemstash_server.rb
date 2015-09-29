@@ -4,14 +4,18 @@ require "support/server_check"
 
 # Launches a test Gemstash server directly via Puma.
 class TestGemstashServer
-  def initialize(port:)
+  def initialize(port:, config:)
     @port = port
     args = %w(--config -)
     args += %w(--workers 0)
     args += %w(--threads 0:4)
     args += %w(--environment test)
     args += ["--port", port.to_s]
-    args << File.expand_path("../../../lib/gemstash/config.ru", __FILE__)
+    args << File.expand_path("../test_gemstash_server.ru", __FILE__)
+    config = Gemstash::Configuration.new(config: config)
+    # rubocop:disable Style/GlobalVars
+    $test_gemstash_server_env = Gemstash::Env.new(config)
+    # rubocop:enable Style/GlobalVars
     @puma_cli = Puma::CLI.new(args)
     TestGemstashServer.servers << self
   end

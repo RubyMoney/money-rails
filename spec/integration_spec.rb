@@ -48,22 +48,17 @@ describe "bundle install against gemstash" do
     end
 
     @rubygems_server.start
-    @config = Gemstash::Configuration.new(config: {
-                                            :base_path => TEST_BASE_PATH,
-                                            :rubygems_url => @rubygems_server.url
-                                          })
-    Gemstash::Env.current.config = @config
-    @gemstash = TestGemstashServer.new(port: 9042)
+    @gemstash = TestGemstashServer.new(port: 9042,
+                                       config: {
+                                         :base_path => TEST_BASE_PATH,
+                                         :rubygems_url => @rubygems_server.url
+                                       })
     @gemstash.start
   end
 
   after(:all) do
     @gemstash.stop
     @rubygems_server.stop
-  end
-
-  before do
-    Gemstash::Env.current.config = @config
   end
 
   after do
