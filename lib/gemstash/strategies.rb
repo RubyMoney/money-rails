@@ -5,13 +5,13 @@ require "logger"
 module Gemstash
   #:nodoc:
   class Strategies
-    def self.from_config
+    def self.from_config(config)
       # we will need to make this logic more complicated later when we have more complex
       # strategies, for now we are good just returning
       strategies = { "redirection" => Gemstash::RedirectionStrategy,
                      "caching"     => Gemstash::CachingStrategy }
 
-      strategies.fetch(Gemstash::Env.current.config[:strategy]).new
+      strategies.fetch(config[:strategy]).new
     end
   end
 

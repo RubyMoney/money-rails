@@ -44,11 +44,12 @@ describe "Gemstash.strategy_from_config" do
   end
 
   it "Returns a caching strategy by default" do
-    expect(Gemstash::Strategies.from_config).to be_an_instance_of(Gemstash::CachingStrategy)
+    config = Gemstash::Env.current.config
+    expect(Gemstash::Strategies.from_config(config)).to be_an_instance_of(Gemstash::CachingStrategy)
   end
 
   it "Returns a caching strategy when configured so" do
-    Gemstash::Env.current.config = Gemstash::Configuration.new(config: { :strategy => "redirection" })
-    expect(Gemstash::Strategies.from_config).to be_an_instance_of(Gemstash::RedirectionStrategy)
+    config = Gemstash::Configuration.new(config: { :strategy => "redirection" })
+    expect(Gemstash::Strategies.from_config(config)).to be_an_instance_of(Gemstash::RedirectionStrategy)
   end
 end

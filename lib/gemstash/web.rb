@@ -7,9 +7,10 @@ module Gemstash
   class Web < Sinatra::Base
     API_REQUEST_LIMIT = 200
 
-    def initialize(gem_strategy: nil, web_helper: nil)
+    def initialize(gem_strategy: nil, web_helper: nil, env: nil)
+      @env          = env || Gemstash::Env.new
       @web_helper   = web_helper || Gemstash::WebHelper.new
-      @strategy     = gem_strategy || Gemstash::Strategies.from_config
+      @strategy     = gem_strategy || Gemstash::Strategies.from_config(@env.config)
       @dependencies = Gemstash::Dependencies.new(@web_helper)
       super()
     end
