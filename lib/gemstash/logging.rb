@@ -1,4 +1,5 @@
 require "logger"
+require "puma/events"
 
 module Gemstash
   #:nodoc:
@@ -24,6 +25,36 @@ module Gemstash
     def self.reset
       @logging_sink.close if @logging_sink
       @logging_sink = nil
+    end
+
+    #:nodoc:
+    class PumaLogger
+      def self.puma_events
+        Puma::Events.new(for_stdout, for_stderr)
+      end
+
+      def self.for_stdout
+        new(Logger::INFO)
+      end
+
+      def self.for_stderr
+        new(Logger::ERROR)
+      end
+
+      def initialize(level)
+        @level = level
+      end
+
+      def sync=(_value)
+      end
+
+      def write(message)
+        Gemstash::Logging.logger.add(@level, message)
+      end
+
+      def puts(message)
+        Gemstash::Logging.logger.add(@level, message)
+      end
     end
 
     #:nodoc:

@@ -16,8 +16,7 @@ module Gemstash
       def run
         store_config
         setup_logging
-        logger = Gemstash::Logging.raw_logger
-        Puma::CLI.new(args, Puma::Events.new(logger, logger)).run
+        Puma::CLI.new(args, Gemstash::Logging::PumaLogger.puma_events).run
       end
 
     private
