@@ -1,8 +1,10 @@
 require "webrick"
+require "support/file_helpers"
 require "support/server_check"
 
 # A wrapper for a WEBrick server for a quick web server to test against.
 class SimpleServer
+  include FileHelpers
   attr_reader :routes
 
   def initialize(hostname)
@@ -73,6 +75,39 @@ class SimpleServer
       response.content_type = "text/plain"
       response.body = message
     end
+  end
+
+  def mount_gem(name, version)
+    mount("/gems/#{name}-#{version}.gem") do |_, response|
+      response.status = 200
+      response.content_type = "application/octet-stream"
+      response.body = File.read(gem_path(name, version))
+    end
+  end
+
+  def mount_gem_deps(name, deps)
+    unless @gem_deps
+      @gem_deps = {}
+
+      mount("/api/v1/dependencies") do |request, response|
+        gems = request.query["gems"]
+        response.status = 200
+
+        if gems && !gems.empty?
+          response.content_type = "application/octet-stream"
+          results = []
+
+          gems.split(",").each do |gem|
+            results += @gem_deps[gem] if @gem_deps.include?(gem)
+          end
+
+          response.body = Marshal.dump(results)
+        end
+      end
+    end
+
+    raise "Gem dependencies for '#{name}' already mounted!" if @gem_deps.include?(name)
+    @gem_deps[name] = deps
   end
 
   #:nodoc:
