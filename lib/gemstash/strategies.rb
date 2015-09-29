@@ -60,10 +60,12 @@ module Gemstash
   # to then return them to the requester, along with the original
   # headers
   class CachingStrategy < RedirectionStrategy
+    include Gemstash::Logging
+
     def initialize(storage: nil, web_helper: nil)
       super(web_helper: web_helper)
       @storage = storage || Gemstash::GemStorage.new
-      puts "Using a caching strategy"
+      log.info "Using a caching strategy"
     end
 
     def serve_gem(app, id:)
@@ -77,10 +79,10 @@ module Gemstash
     def fetch_gem(id)
       gem = @storage.get(id)
       if gem.exist?
-        puts "Gem #{id} exists, returning cached"
+        log.info "Gem #{id} exists, returning cached"
         gem
       else
-        puts "Gem #{id} is not cached, fetching"
+        log.info "Gem #{id} is not cached, fetching"
         @web_helper.get("/gems/#{id}") do |body, headers|
           gem.save(headers, body)
         end

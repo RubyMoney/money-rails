@@ -10,6 +10,7 @@ module Gemstash
       :port => 9292,
       :rubygems_url => "https://www.rubygems.org",
       :strategy => "caching",
+      :logfile => "server.log"
     }.freeze
 
     DEFAULT_FILE = File.expand_path("~/.gemstash/config.yml").freeze
