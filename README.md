@@ -299,8 +299,8 @@ currency, whereas ```product.discount.currency_as_string # => EUR ```
 #### Instance Currencies
 
 All the previous options do not require any extra model fields to hold
-the currency values. If the currency of a field with vary from
-once model instance to another, then you should add a column called ```currency```
+the currency values. If the currency of a field will vary from
+one model instance to another, then you should add a column called ```currency```
 to your database table and pass the option ```with_model_currency```
 to the ```monetize``` macro.
 
