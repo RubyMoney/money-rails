@@ -19,11 +19,11 @@ TEST_CONFIG = Gemstash::Configuration.new(config: {
 
 RSpec.configure do |config|
   config.around(:each) do |example|
-    unless Gemstash::Env.config == TEST_CONFIG
-      Gemstash::Env.config = TEST_CONFIG
+    unless Gemstash::Env.current.config == TEST_CONFIG
+      Gemstash::Env.current.config = TEST_CONFIG
     end
 
-    db = Gemstash::Env.db
+    db = Gemstash::Env.current.db
 
     db.transaction(:rollback => :always) do
       example.run
@@ -33,7 +33,7 @@ RSpec.configure do |config|
   end
 
   config.before(:each) do
-    Gemstash::Env.cache_client.flush
+    Gemstash::Env.current.cache_client.flush
 
     Pathname.new(TEST_BASE_PATH).children.each do |path|
       next if path.basename.to_s.end_with?(".db")

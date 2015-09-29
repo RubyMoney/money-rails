@@ -8,6 +8,8 @@ module Gemstash
     # This implements the command line setup task:
     #  $ gemstash setup
     class Setup
+      include Gemstash::Env::Helper
+
       def initialize(cli)
         @cli = cli
         @config = {}
@@ -41,8 +43,8 @@ module Gemstash
       end
 
       def say_current_config(option, label)
-        return if Gemstash::Env.config.default?(option)
-        @cli.say "#{label}: #{Gemstash::Env.config[option]}"
+        return if env.config.default?(option)
+        @cli.say "#{label}: #{env.config[option]}"
       end
 
       def ask_storage
@@ -107,7 +109,7 @@ module Gemstash
 
       def check_cache
         @cli.say "Checking that the cache is available"
-        with_new_config { Gemstash::Env.cache_client.alive! }
+        with_new_config { env.cache_client.alive! }
       rescue => e
         say_error "Cache error", e
         raise Thor::Error, @cli.set_color("The cache is not available", :red)
@@ -115,7 +117,7 @@ module Gemstash
 
       def check_database
         @cli.say "Checking that the database is available"
-        with_new_config { Gemstash::Env.db.test_connection }
+        with_new_config { env.db.test_connection }
       rescue => e
         say_error "Database error", e
         raise Thor::Error, @cli.set_color("The database is not available", :red)
@@ -123,7 +125,7 @@ module Gemstash
 
       def check_storage
         with_new_config do
-          dir = Gemstash::Env.config[:base_path]
+          dir = env.config[:base_path]
           break if Dir.exist?(dir)
           @cli.say "Creating the file storage path '#{dir}'"
           FileUtils.mkpath(dir)
@@ -146,10 +148,10 @@ module Gemstash
       end
 
       def with_new_config
-        Gemstash::Env.config = Gemstash::Configuration.new(config: @config)
+        env.config = Gemstash::Configuration.new(config: @config)
         yield
       ensure
-        Gemstash::Env.reset
+        env.reset
       end
     end
   end

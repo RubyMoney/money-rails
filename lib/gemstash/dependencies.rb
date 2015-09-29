@@ -15,6 +15,8 @@ module Gemstash
 
     #:nodoc:
     class Fetcher
+      include Gemstash::Env::Helper
+
       def initialize(gems, web_helper, db_helper)
         @gems = Set.new(gems)
         @web_helper = web_helper
@@ -37,7 +39,7 @@ module Gemstash
       end
 
       def fetch_from_cache
-        Gemstash::Env.cache.dependencies(@gems) do |gem, value|
+        env.cache.dependencies(@gems) do |gem, value|
           @gems.delete(gem)
           @dependencies += value
         end
@@ -49,7 +51,7 @@ module Gemstash
 
         @db_helper.find_dependencies(@gems) do |gem, value|
           @gems.delete(gem)
-          Gemstash::Env.cache.set_dependency(gem, value)
+          env.cache.set_dependency(gem, value)
           @dependencies += value
         end
       end
@@ -63,14 +65,14 @@ module Gemstash
 
         fetched.each do |gem, result|
           @gems.delete(gem)
-          Gemstash::Env.cache.set_dependency(gem, result)
+          env.cache.set_dependency(gem, result)
           @dependencies += result
         end
       end
 
       def cache_missing
         @gems.each do |gem|
-          Gemstash::Env.cache.set_dependency(gem, [])
+          env.cache.set_dependency(gem, [])
         end
       end
     end

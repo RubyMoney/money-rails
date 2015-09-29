@@ -6,23 +6,40 @@ require "sequel"
 module Gemstash
   # Storage for application-wide variables and configuration.
   class Env
-    def self.config
+    # Little module to provide easy access to the current Gemstash::Env.
+    module Helper
+    private
+
+      def env
+        Gemstash::Env.current
+      end
+    end
+
+    def self.current
+      @current ||= Gemstash::Env.new
+    end
+
+    def self.current=(value)
+      @current = value
+    end
+
+    def config
       @config ||= Gemstash::Configuration.new
     end
 
-    def self.config=(value)
+    def config=(value)
       reset
       @config = value
     end
 
-    def self.reset
+    def reset
       @config = nil
       @cache = nil
       @cache_client = nil
       @db = nil
     end
 
-    def self.base_path
+    def base_path
       dir = config[:base_path]
 
       if config.default?(:base_path)
@@ -34,15 +51,15 @@ module Gemstash
       dir
     end
 
-    def self.base_file(path)
+    def base_file(path)
       File.join(base_path, path)
     end
 
-    def self.rackup
+    def rackup
       File.expand_path("../config.ru", __FILE__)
     end
 
-    def self.db
+    def db
       @db ||= begin
         case config[:db_adapter]
         when "sqlite3"
@@ -61,11 +78,11 @@ module Gemstash
       end
     end
 
-    def self.cache
+    def cache
       @cache ||= Gemstash::Cache.new(cache_client)
     end
 
-    def self.cache_client
+    def cache_client
       @cache_client ||= begin
         case config[:cache_type]
         when "memory"

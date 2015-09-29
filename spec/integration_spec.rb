@@ -52,7 +52,7 @@ describe "bundle install against gemstash" do
                                             :base_path => TEST_BASE_PATH,
                                             :rubygems_url => @rubygems_server.url
                                           })
-    Gemstash::Env.config = @config
+    Gemstash::Env.current.config = @config
     @gemstash = TestGemstashServer.new(port: 9042)
     @gemstash.start
   end
@@ -63,7 +63,7 @@ describe "bundle install against gemstash" do
   end
 
   before do
-    Gemstash::Env.config = @config
+    Gemstash::Env.current.config = @config
   end
 
   after do

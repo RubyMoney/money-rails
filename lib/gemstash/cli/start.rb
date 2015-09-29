@@ -3,8 +3,11 @@ require "puma/cli"
 
 module Gemstash
   class CLI
-    #:nodoc:
+    # This implements the command line start task to start the Gemstash server:
+    #  $ gemstash start
     class Start
+      include Gemstash::Env::Helper
+
       def initialize(cli)
         @cli = cli
       end
@@ -18,7 +21,7 @@ module Gemstash
 
       def store_config
         config = Gemstash::Configuration.new(file: @cli.options[:config_file])
-        Gemstash::Env.config = config
+        env.config = config
       end
 
       def daemonize?
@@ -35,7 +38,7 @@ module Gemstash
 
       def daemonize_args
         if daemonize?
-          ["--daemon", "--pidfile", Gemstash::Env.base_file("puma.pid")]
+          ["--daemon", "--pidfile", env.base_file("puma.pid")]
         else
           []
         end

@@ -11,7 +11,7 @@ module Gemstash
       strategies = { "redirection" => Gemstash::RedirectionStrategy,
                      "caching"     => Gemstash::CachingStrategy }
 
-      strategies.fetch(Gemstash::Env.config[:strategy]).new
+      strategies.fetch(Gemstash::Env.current.config[:strategy]).new
     end
   end
 

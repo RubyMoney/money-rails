@@ -15,7 +15,9 @@ module FileHelpers
 
   def clean_bundle(name)
     dir = bundle_path(name)
-    File.delete File.join(dir, "Gemfile.lock")
-    FileUtils.remove_entry File.join(dir, "installed_gems")
+    lock_file = File.join(dir, "Gemfile.lock")
+    File.delete lock_file if File.exist?(lock_file)
+    installed_dir = File.join(dir, "installed_gems")
+    FileUtils.remove_entry installed_dir if Dir.exist?(installed_dir)
   end
 end

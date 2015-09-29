@@ -38,7 +38,7 @@ describe Gemstash::Web do
 
     context "there are gems" do
       before do
-        Gemstash::Env.cache.set_dependency("rack", [rack])
+        Gemstash::Env.current.cache.set_dependency("rack", [rack])
       end
 
       it "returns a marshal dump" do
@@ -85,7 +85,7 @@ describe Gemstash::Web do
       end
 
       before do
-        Gemstash::Env.cache.set_dependency("rack", [rack])
+        Gemstash::Env.current.cache.set_dependency("rack", [rack])
       end
 
       it "returns a marshal dump" do

@@ -15,8 +15,10 @@ module Gemstash
 
   #:nodoc:
   class WebHelper
+    include Gemstash::Env::Helper
+
     def initialize(http_client: nil, server_url: nil)
-      @server_url = server_url || Gemstash::Env.config[:rubygems_url]
+      @server_url = server_url || env.config[:rubygems_url]
       @client = http_client || Faraday.new(@server_url) do |config|
         config.use FaradayMiddleware::FollowRedirects
         config.adapter :net_http

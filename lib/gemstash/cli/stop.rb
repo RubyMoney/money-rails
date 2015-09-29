@@ -3,8 +3,11 @@ require "puma/control_cli"
 
 module Gemstash
   class CLI
-    #:nodoc:
+    # This implements the command line stop task to stop the Gemstash server:
+    #  $ gemstash stop
     class Stop
+      include Gemstash::Env::Helper
+
       def initialize(cli)
         @cli = cli
       end
@@ -18,11 +21,11 @@ module Gemstash
 
       def store_config
         config = Gemstash::Configuration.new(file: @cli.options[:config_file])
-        Gemstash::Env.config = config
+        env.config = config
       end
 
       def args
-        ["--pidfile", Gemstash::Env.base_file("puma.pid"), "stop"]
+        ["--pidfile", env.base_file("puma.pid"), "stop"]
       end
     end
   end

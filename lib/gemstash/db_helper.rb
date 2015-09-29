@@ -1,24 +1,28 @@
+require "gemstash"
+
 module Gemstash
   #:nodoc:
   class DBHelper
+    include Gemstash::Env::Helper
+
     def find_or_insert_rubygem(spec)
-      row = Gemstash::Env.db[:rubygems][:name => spec.name]
+      row = env.db[:rubygems][:name => spec.name]
       return row[:id] if row
-      Gemstash::Env.db[:rubygems].insert(
+      env.db[:rubygems].insert(
         :name => spec.name,
         :created_at => Sequel::SQL::Constants::CURRENT_TIMESTAMP,
         :updated_at => Sequel::SQL::Constants::CURRENT_TIMESTAMP)
     end
 
     def find_version(gem_id, spec)
-      Gemstash::Env.db[:versions][
+      env.db[:versions][
         :rubygem_id => gem_id,
         :number => spec.version.to_s,
         :platform => spec.platform]
     end
 
     def insert_version(gem_id, spec, indexed = true)
-      Gemstash::Env.db[:versions].insert(
+      env.db[:versions].insert(
         :rubygem_id => gem_id,
         :number => spec.version.to_s,
         :platform => spec.platform,
@@ -32,7 +36,7 @@ module Gemstash
         requirements = dep.requirement.requirements
         requirements = requirements.map {|r| "#{r.first} #{r.last}" }
         requirements = requirements.join(", ")
-        Gemstash::Env.db[:dependencies].insert(
+        env.db[:dependencies].insert(
           :version_id => version_id,
           :rubygem_name => dep.name,
           :requirements => requirements,
@@ -42,7 +46,7 @@ module Gemstash
     end
 
     def find_dependencies(gems)
-      results = Gemstash::Env.db["
+      results = env.db["
         SELECT rubygem.name,
                version.number, version.platform,
                dependency.rubygem_name, dependency.requirements

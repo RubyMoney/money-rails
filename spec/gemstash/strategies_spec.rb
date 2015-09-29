@@ -40,7 +40,7 @@ describe "Gemstash.strategy_from_config" do
 
   after do
     FileUtils.remove_entry @gem_folder
-    Gemstash::Env.reset
+    Gemstash::Env.current.reset
   end
 
   it "Returns a caching strategy by default" do
@@ -48,7 +48,7 @@ describe "Gemstash.strategy_from_config" do
   end
 
   it "Returns a caching strategy when configured so" do
-    Gemstash::Env.config = Gemstash::Configuration.new(config: { :strategy => "redirection" })
+    Gemstash::Env.current.config = Gemstash::Configuration.new(config: { :strategy => "redirection" })
     expect(Gemstash::Strategies.from_config).to be_an_instance_of(Gemstash::RedirectionStrategy)
   end
 end

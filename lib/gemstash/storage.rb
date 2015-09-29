@@ -8,12 +8,14 @@ module Gemstash
   # given a folder, this class will provide a get method to return a CachedGemFile
   # which may exist or not
   class GemStorage
+    include Gemstash::Env::Helper
+
     def initialize(folder = nil)
       if folder && !File.writable?(folder)
         raise "Folder #{folder} does not exist or is not writable"
       end
 
-      folder ||= Gemstash::Env.base_file("gem_cache")
+      folder ||= env.base_file("gem_cache")
       @folder = Pathname.new(folder)
     end
 
