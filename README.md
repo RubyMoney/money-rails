@@ -268,7 +268,7 @@ end
 Now ```product.discount``` and ```product.bonus``` will return a `Money`
 object using EUR as their currency, instead of the default USD.
 
-(This is not availabe in  Mongoid).
+(This is not available in  Mongoid).
 
 #### Attribute Currency (:with_currency)
 
