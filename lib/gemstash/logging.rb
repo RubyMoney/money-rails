@@ -70,8 +70,11 @@ module Gemstash
     end
   end
 
-  #:nodoc:
-  class MyLoggerMiddleware
+  #
+  # Unused for now, this is how a rack middleware looks like.
+  # This should be used later to normalize logging message format
+  #
+  class LoggerMiddleware
     def initialize(app, logger)
       @app = app
       @logger = logger
