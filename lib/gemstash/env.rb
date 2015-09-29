@@ -47,10 +47,6 @@ module Gemstash
       @config_file || File.expand_path("~/.gemstash/config.yml")
     end
 
-    def self.log_file
-      File.join(base_path, config[:logfile])
-    end
-
     def self.rackup
       File.expand_path("../config.ru", __FILE__)
     end

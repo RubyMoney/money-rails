@@ -19,7 +19,7 @@ module Gemstash
     private
 
       def setup_logging
-        Gemstash::Logging.setup_logger(Gemstash::Env.log_file)
+        Gemstash::Logging.setup_logger(Gemstash::Env.base_file("server.log"))
       end
 
       def store_config
