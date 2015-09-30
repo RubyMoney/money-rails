@@ -3,75 +3,87 @@ require "fileutils"
 require "yaml"
 
 module Gemstash
-  # Caching layer for gem files
-  #
-  # given a folder, this class will provide a get method to return a CachedGemFile
-  # which may exist or not
-  class GemStorage
-    include Gemstash::Env::Helper
-
-    def initialize(folder = nil)
-      if folder && !File.writable?(folder)
-        raise "Folder #{folder} does not exist or is not writable"
-      end
-
-      folder ||= env.base_file("gem_cache")
-      @folder = Pathname.new(folder)
-    end
-
-    def get(name)
-      CachedGemFile.new(@folder, name)
-    end
-  end
-
-  # A Gem File that may exist or not
-  #
-  # Provides both a way or reading the file (if it exists)
-  # and a way of saving it along with the GET headers
-  class CachedGemFile
-    def initialize(folder, name)
-      @folder = folder.join(File.basename(name, ".gem"))
-      @name = name
-    end
-
-    def save(headers, content)
+  #:nodoc:
+  class Storage
+    def initialize(folder)
+      @folder = folder
       FileUtils.mkpath(@folder) unless Dir.exist?(@folder)
-      File.open(headers_path, "w") {|f| f.write(headers.to_yaml) }
-      File.open(content_path, "w") {|f| f.write(content) }
-      @headers = headers
-      @content = content
-      self
     end
 
-    def exist?
-      content_path.exist? && headers_path.exist?
+    def resource(id)
+      Resource.new(@folder, id)
     end
 
-    def content
-      load
-      @content
-    end
-
-    def headers
-      load
-      @headers
+    def for(child)
+      Storage.new(File.join(@folder, child))
     end
 
   private
 
+    def path_valid?(path)
+      return false if path.nil?
+      return false unless File.writable?(path)
+      true
+    end
+  end
+
+  #:nodoc:
+  class Resource
+    def initialize(folder, name)
+      @base_path = folder
+      @name = name
+      @folder = File.join(@base_path, @name)
+    end
+
+    def exist?
+      File.exist?(content_filename) && File.exist?(properties_filename)
+    end
+
+    def save(content, properties: nil)
+      @content = content
+      @properties = properties
+      store
+    end
+
+    def content
+      @content
+    end
+
+    def properties
+      @properties
+    end
+
     def load
-      return unless @content.nil? && @headers.nil?
-      raise "#{@name} does not exiat" unless exist?
-      @headers = File.open(headers_path) {|f| YAML.load(f.read) }
-      @content = File.open(content_path, &:read)
+      raise "Resource #{@name} has no content to load" unless exist?
+      @content = read_file(content_filename)
+      @properties = read_file(properties_filename)
+      self
     end
 
-    def content_path
-      @folder.join(@name)
+  private
+
+    def store
+      FileUtils.mkpath(@folder) unless Dir.exist?(@folder)
+      save_file(content_filename) { @content }
+      save_file(properties_filename) { @properties.to_yaml }
+      self
     end
 
-    def headers_path
-      @folder.join("headers.yaml")
+    def save_file(filename)
+      content = yield
+      File.open(filename, "w") {|f| f.write(content) }
+    end
+
+    def read_file(filename)
+      File.open(filename, &:read)
+    end
+
+    def content_filename
+      File.join(@folder, "content")
+    end
+
+    def properties_filename
+      File.join(@folder, "properties.yaml")
     end
   end
 end
