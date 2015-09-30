@@ -16,18 +16,24 @@ module Gemstash
       def run
         store_config
         setup_logging
-        Puma::CLI.new(args, Gemstash::Logging::PumaLogger.puma_events).run
+        store_daemonized
+        Puma::CLI.new(args, Gemstash::Logging::StreamLogger.puma_events).run
       end
 
     private
 
       def setup_logging
+        return unless daemonize?
         Gemstash::Logging.setup_logger(env.base_file("server.log"))
       end
 
       def store_config
         config = Gemstash::Configuration.new(file: @cli.options[:config_file])
         env.config = config
+      end
+
+      def store_daemonized
+        Gemstash::Env.daemonized = daemonize?
       end
 
       def daemonize?

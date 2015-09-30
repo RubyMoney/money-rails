@@ -1,4 +1,5 @@
 require "spec_helper"
+require "fileutils"
 require "tempfile"
 
 describe Gemstash::Logging do
@@ -6,34 +7,71 @@ describe Gemstash::Logging do
     @logfile = Tempfile.create("logfile")
     Gemstash::Logging.setup_logger(@logfile)
   end
+
   after do
     Gemstash::Logging.reset
     FileUtils.remove(@logfile)
   end
 
-  it "Builds a logger in the right place" do
+  it "builds a logger in the right place" do
     expect(File.exist?(@logfile)).to be_truthy
   end
 
-  it "Has a valid raw logger that is not stdout" do
-    expect(Gemstash::Logging.raw_logger).not_to eq($stdout)
-  end
-
-  it "Can write using the formatted logger" do
+  it "can write using the formatted logger" do
     Gemstash::Logging.logger.error("a formatted message")
     Gemstash::Logging.reset # Close the logger so it flushes the content in
-    expect(File.new(@logfile, "r").read).to include("ERROR - a formatted message")
+    expect(File.read(@logfile)).to include("ERROR - a formatted message")
   end
 
-  it "Can write using the raw logger" do
-    Gemstash::Logging.raw_logger.write("an unformatted message")
+  it "won't add multiple lines when logging with newlines" do
+    Gemstash::Logging.logger.info("a message with a newline\n")
     Gemstash::Logging.reset # Close the logger so it flushes the content in
-    expect(File.new(@logfile, "r").read).to match(/^an unformatted message$/)
+    log_contents = File.read(@logfile)
+    expect(log_contents).to include("a message with a newline\n")
+    expect(log_contents).to_not include("a formatted message\n\n")
+  end
+end
+
+describe Gemstash::Logging::StreamLogger do
+  before do
+    @logfile = Tempfile.create("logfile")
+    Gemstash::Logging.setup_logger(@logfile)
   end
 
-  it "Can puts using the raw logger" do
-    Gemstash::Logging.raw_logger.puts("another unformatted message")
+  after do
+    Gemstash::Logging.reset
+    FileUtils.remove(@logfile)
+  end
+
+  let(:logger) { Gemstash::Logging::StreamLogger.new(Logger::INFO) }
+  let(:error_logger) { Gemstash::Logging::StreamLogger.new(Logger::ERROR) }
+
+  it "responds to flush" do
+    expect(logger).to respond_to(:flush)
+  end
+
+  it "response to sync=" do
+    expect(logger).to respond_to(:sync=)
+  end
+
+  it "logs with write" do
+    logger.write("a message with write")
     Gemstash::Logging.reset # Close the logger so it flushes the content in
-    expect(File.new(@logfile, "r").read).to match(/^another unformatted message$/)
+    expect(File.read(@logfile)).to include("a message with write")
+  end
+
+  it "logs with puts" do
+    logger.puts("a message with puts")
+    Gemstash::Logging.reset # Close the logger so it flushes the content in
+    expect(File.read(@logfile)).to include("a message with puts")
+  end
+
+  it "logs with the level provided" do
+    logger.puts("an info message")
+    error_logger.puts("an error message")
+    Gemstash::Logging.reset # Close the logger so it flushes the content in
+    log_contents = File.read(@logfile)
+    expect(log_contents).to include("INFO - an info message")
+    expect(log_contents).to include("ERROR - an error message")
   end
 end
