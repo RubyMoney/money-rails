@@ -21,6 +21,17 @@ module Gemstash
       true
     end
 
+    desc "authorize [PERMISSIONS...]", "Add authorizations to push/yank/unyank private gems"
+    method_option :remove, :type => :boolean, :default => false, :desc =>
+      "Remove an authorization key"
+    method_option :config_file, :type => :string, :desc =>
+      "Config file to save to"
+    method_option :key, :type => :string, :desc =>
+      "Authorization key to create/update/delete (optional unless deleting)"
+    def authorize(*args)
+      Gemstash::CLI::Authorize.new(self, *args).run
+    end
+
     desc "setup", "Checks for dependencies and does initial setup"
     method_option :redo, :type => :boolean, :default => false, :desc =>
       "Redo configuration"

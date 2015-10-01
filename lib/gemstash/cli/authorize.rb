@@ -66,7 +66,7 @@ Instead just authorize with the new set of permissions") unless @args.empty?
           @cli.say "Your new key is: #{key}"
           key
         else
-          raise Gemstash::CLI::Error.new(@cli, "The --key option is required")
+          raise Gemstash::CLI::Error.new(@cli, "The --key option is required to remove an authorization key")
         end
       end
 
