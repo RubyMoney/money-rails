@@ -5,14 +5,13 @@ describe Gemstash::Authorization do
     context "with invalid permissions" do
       it "raises an error" do
         expect { Gemstash::Authorization.authorize("abc", nil) }.to raise_error(RuntimeError)
-        expect { Gemstash::Authorization.authorize("abc", "") }.to raise_error(RuntimeError)
-        expect { Gemstash::Authorization.authorize("abc", "invalid") }.to raise_error(RuntimeError)
+        expect { Gemstash::Authorization.authorize("abc", %w(invalid)) }.to raise_error(RuntimeError)
       end
     end
 
     context "with 'all' permission along with other permissions" do
       it "raises an error" do
-        expect { Gemstash::Authorization.authorize("abc", "all,yank") }.to raise_error(RuntimeError)
+        expect { Gemstash::Authorization.authorize("abc", %w(all yank)) }.to raise_error(RuntimeError)
       end
     end
 
@@ -28,7 +27,7 @@ describe Gemstash::Authorization do
       it "inserts or updates the database" do
         Gemstash::Authorization.authorize("abc", "all")
         expect(Gemstash::Authorization["abc"].all?).to be_truthy
-        Gemstash::Authorization.authorize("abc", "push,yank")
+        Gemstash::Authorization.authorize("abc", %w(push yank))
         expect(Gemstash::Authorization["abc"].all?).to be_falsey
         expect(Gemstash::Authorization["abc"].push?).to be_truthy
         expect(Gemstash::Authorization["abc"].yank?).to be_truthy
@@ -76,14 +75,14 @@ describe Gemstash::Authorization do
 
     context "a mix of permissions" do
       it "has authorization for given auths" do
-        Gemstash::Authorization.authorize("abc", "push,yank")
+        Gemstash::Authorization.authorize("abc", %w(push yank))
         auth = Gemstash::Authorization["abc"]
         expect(auth.all?).to be_falsey
         expect(auth.push?).to be_truthy
         expect(auth.yank?).to be_truthy
         expect(auth.unyank?).to be_falsey
 
-        Gemstash::Authorization.authorize("abc", "yank,unyank")
+        Gemstash::Authorization.authorize("abc", %w(yank unyank))
         auth = Gemstash::Authorization["abc"]
         expect(auth.all?).to be_falsey
         expect(auth.push?).to be_falsey

@@ -4,9 +4,10 @@ require "thor"
 module Gemstash
   #:nodoc:
   class CLI < Thor
-    autoload :Setup, "gemstash/cli/setup"
-    autoload :Start, "gemstash/cli/start"
-    autoload :Stop,  "gemstash/cli/stop"
+    autoload :Authorize, "gemstash/cli/authorize"
+    autoload :Setup,     "gemstash/cli/setup"
+    autoload :Start,     "gemstash/cli/start"
+    autoload :Stop,      "gemstash/cli/stop"
 
     def self.exit_on_failure?
       true

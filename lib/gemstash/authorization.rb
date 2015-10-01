@@ -8,14 +8,16 @@ module Gemstash
 
     def self.authorize(auth_key, permissions, db_helper = nil)
       raise "Authorization key is required!" if !auth_key || auth_key.strip.empty?
-      raise "Permissions are required!" if !permissions || permissions.strip.empty?
+      raise "Permissions are required!" if !permissions || permissions.empty?
 
-      if permissions != "all"
-        permissions.split(",").each do |permission|
+      unless permissions == "all"
+        permissions.each do |permission|
           unless VALID_PERMISSIONS.include?(permission)
             raise "Invalid permission '#{permission}'"
           end
         end
+
+        permissions = permissions.join(",")
       end
 
       db_helper ||= Gemstash::DBHelper.new

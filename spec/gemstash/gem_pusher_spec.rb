@@ -7,11 +7,10 @@ describe Gemstash::GemPusher do
 
   before do
     Gemstash::Authorization.authorize(auth_key, "all")
-    Gemstash::Authorization.authorize(auth_key_without_permission, invalid_permission)
+    Gemstash::Authorization.authorize(auth_key_without_permission, ["yank"])
   end
 
   describe ".push" do
-    let(:invalid_permission) { "yank" }
     let(:web_helper) { double }
     let(:deps) { Gemstash::Dependencies.new(web_helper) }
     let(:gem_contents) { File.read(gem_path("example", "0.1.0")) }
