@@ -66,7 +66,16 @@ describe Gemstash::CLI::Authorize do
   end
 
   context "with the --remove option" do
-    it "removes the authorization"
+    let(:cli_options) { { :key => "auth-key", :remove => true } }
+
+    before do
+      Gemstash::Authorization.authorize("auth-key", %w(yank unyank))
+    end
+
+    it "removes the authorization" do
+      Gemstash::CLI::Authorize.new(cli).run
+      expect(Gemstash::Authorization["auth-key"]).to be_nil
+    end
   end
 
   context "with invalid permissions" do

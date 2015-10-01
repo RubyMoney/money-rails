@@ -1,6 +1,37 @@
 require "spec_helper"
 
 describe Gemstash::Authorization do
+  describe "#remove" do
+    context "with an existing authoriation" do
+      before do
+        Gemstash::Authorization.authorize("abc", "all")
+      end
+
+      it "removes the authorization" do
+        # Fetch it first so caching invalidation is tested
+        expect(Gemstash::Authorization["abc"]).to be
+        Gemstash::Authorization.remove("abc")
+        expect(Gemstash::Authorization["abc"]).to be_nil
+        expect(the_log).to include("Authorization 'abc' with access to 'all' removed")
+      end
+    end
+
+    context "with a non-existent authorization" do
+      it "doesn't log the lack of removal" do
+        Gemstash::Authorization.remove("non-existent")
+        expect(the_log).to_not include("non-existent")
+      end
+    end
+
+    context "with an invalid authorization" do
+      it "raises an error" do
+        expect { Gemstash::Authorization.authorize(nil, "all") }.to raise_error(RuntimeError)
+        expect { Gemstash::Authorization.authorize("", "all") }.to raise_error(RuntimeError)
+        expect { Gemstash::Authorization.authorize("  \t \n", "all") }.to raise_error(RuntimeError)
+      end
+    end
+  end
+
   describe "#authorize" do
     context "with invalid permissions" do
       it "raises an error" do
@@ -27,10 +58,12 @@ describe Gemstash::Authorization do
       it "inserts or updates the database" do
         Gemstash::Authorization.authorize("abc", "all")
         expect(Gemstash::Authorization["abc"].all?).to be_truthy
+        expect(the_log).to include("Authorization 'abc' updated with access to 'all'")
         Gemstash::Authorization.authorize("abc", %w(push yank))
         expect(Gemstash::Authorization["abc"].all?).to be_falsey
         expect(Gemstash::Authorization["abc"].push?).to be_truthy
         expect(Gemstash::Authorization["abc"].yank?).to be_truthy
+        expect(the_log).to include("Authorization 'abc' updated with access to 'push,yank'")
       end
     end
   end

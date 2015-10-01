@@ -27,6 +27,10 @@ module Gemstash
       env.db[:authorizations][:auth_key => auth_key]
     end
 
+    def delete_authorization(auth_key)
+      env.db[:authorizations].where(:auth_key => auth_key).delete
+    end
+
     def find_or_insert_rubygem(spec)
       row = env.db[:rubygems][:name => spec.name]
       return row[:id] if row

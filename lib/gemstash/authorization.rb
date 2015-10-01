@@ -4,6 +4,7 @@ module Gemstash
   # Authorization mechanism to manipulate private gems.
   class Authorization
     extend Gemstash::Env::Helper
+    extend Gemstash::Logging
     VALID_PERMISSIONS = %w(push yank unyank).freeze
 
     def self.authorize(auth_key, permissions, db_helper = nil)
@@ -23,6 +24,16 @@ module Gemstash
       db_helper ||= Gemstash::DBHelper.new
       db_helper.insert_or_update_authorization(auth_key, permissions)
       env.cache.invalidate_authorization(auth_key)
+      log.info "Authorization '#{auth_key}' updated with access to '#{permissions}'"
+    end
+
+    def self.remove(auth_key, db_helper = nil)
+      db_helper ||= Gemstash::DBHelper.new
+      auth_row = db_helper.find_authorization(auth_key)
+      return unless auth_row
+      db_helper.delete_authorization(auth_key)
+      env.cache.invalidate_authorization(auth_key)
+      log.info "Authorization '#{auth_key}' with access to '#{auth_row[:permissions]}' removed"
     end
 
     def self.[](auth_key, db_helper = nil)

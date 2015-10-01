@@ -16,7 +16,12 @@ module Gemstash
       def run
         store_config
         setup_logging
-        save_authorization
+
+        if @cli.options[:remove]
+          remove_authorization
+        else
+          save_authorization
+        end
       end
 
     private
@@ -28,6 +33,10 @@ module Gemstash
 
       def setup_logging
         Gemstash::Logging.setup_logger(env.base_file("server.log"))
+      end
+
+      def remove_authorization
+        Gemstash::Authorization.remove(auth_key)
       end
 
       def save_authorization
