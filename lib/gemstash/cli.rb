@@ -1,13 +1,21 @@
 require "gemstash"
 require "thor"
+require "thor/error"
 
 module Gemstash
-  #:nodoc:
+  # Base Command Line Interface class.
   class CLI < Thor
     autoload :Authorize, "gemstash/cli/authorize"
     autoload :Setup,     "gemstash/cli/setup"
     autoload :Start,     "gemstash/cli/start"
     autoload :Stop,      "gemstash/cli/stop"
+
+    # Thor::Error for the CLI, which colors the message red.
+    class Error < Thor::Error
+      def initialize(cli, message)
+        super(cli.set_color(message, :red))
+      end
+    end
 
     def self.exit_on_failure?
       true

@@ -79,10 +79,25 @@ describe Gemstash::CLI::Authorize do
   end
 
   context "with invalid permissions" do
-    it "gives the user an error"
+    let(:cli_options) { { :key => "auth-key" } }
+
+    it "gives the user an error" do
+      expect { Gemstash::CLI::Authorize.new(cli, "all").run }.to raise_error(Gemstash::CLI::Error)
+      expect { Gemstash::CLI::Authorize.new(cli, "invalid").run }.to raise_error(Gemstash::CLI::Error)
+      expect(Gemstash::Authorization["auth-key"]).to be_nil
+    end
   end
 
   context "with --remove option and permissions" do
-    it "gives the user an error"
+    let(:cli_options) { { :key => "auth-key", :remove => true } }
+
+    before do
+      Gemstash::Authorization.authorize("auth-key", %w(yank unyank))
+    end
+
+    it "gives the user an error" do
+      expect { Gemstash::CLI::Authorize.new(cli, "push").run }.to raise_error(Gemstash::CLI::Error)
+      expect(Gemstash::Authorization["auth-key"]).to be
+    end
   end
 end

@@ -36,10 +36,23 @@ module Gemstash
       end
 
       def remove_authorization
+        raise Gemstash::CLI::Error.new(@cli, "To remove individual permissions, you do not need --remove
+Instead just authorize with the new set of permissions") unless @args.empty?
         Gemstash::Authorization.remove(auth_key)
       end
 
       def save_authorization
+        if @args.include?("all")
+          raise Gemstash::CLI::Error.new(@cli, "Don't specify permissions to authorize for all")
+        end
+
+        @args.each do |arg|
+          unless Gemstash::Authorization::VALID_PERMISSIONS.include?(arg)
+            valid = Gemstash::Authorization::VALID_PERMISSIONS.join(", ")
+            raise Gemstash::CLI::Error.new(@cli, "Invalid permission '#{arg}'\nValid permissions include: #{valid}")
+          end
+        end
+
         Gemstash::Authorization.authorize(auth_key, permissions)
       end
 

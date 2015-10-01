@@ -1,6 +1,5 @@
 require "gemstash"
 require "fileutils"
-require "thor/error"
 require "yaml"
 
 module Gemstash
@@ -113,7 +112,7 @@ module Gemstash
         with_new_config { env.cache_client.alive! }
       rescue => e
         say_error "Cache error", e
-        raise Thor::Error, @cli.set_color("The cache is not available", :red)
+        raise Gemstash::CLI::Error.new(@cli, "The cache is not available")
       end
 
       def check_database
@@ -121,7 +120,7 @@ module Gemstash
         with_new_config { env.db.test_connection }
       rescue => e
         say_error "Database error", e
-        raise Thor::Error, @cli.set_color("The database is not available", :red)
+        raise Gemstash::CLI::Error.new(@cli, "The database is not available")
       end
 
       def check_storage
