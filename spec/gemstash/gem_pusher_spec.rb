@@ -45,6 +45,8 @@ describe Gemstash::GemPusher do
 
     context "with an unknown gem name" do
       it "saves the dependency info" do
+        allow(web_helper).to receive(:get).and_return(Marshal.dump([]))
+
         results = [{
           :name => "example",
           :number => "0.1.0",
@@ -53,6 +55,8 @@ describe Gemstash::GemPusher do
                             ["thor", "~> 0.19"]]
         }]
 
+        # Fetch before, asserting cache will be invalidated
+        expect(deps.fetch(%w(example))).to eq([])
         Gemstash::GemPusher.new(auth_key, gem_contents).push
         expect(deps.fetch(%w(example))).to match_dependencies(results)
       end

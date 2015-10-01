@@ -24,6 +24,7 @@ module Gemstash
       check_auth
       store_gem
       save_to_database
+      invalidate_cache
     end
 
   private
@@ -60,6 +61,10 @@ module Gemstash
         version_id = @db_helper.insert_version(gem_id, spec)
         @db_helper.insert_dependencies(version_id, spec)
       end
+    end
+
+    def invalidate_cache
+      env.cache.invalidate_gem(gem.spec.name)
     end
   end
 end
