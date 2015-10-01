@@ -5,6 +5,28 @@ module Gemstash
   class DBHelper
     include Gemstash::Env::Helper
 
+    def insert_or_update_authorization(auth_key, permissions)
+      env.db.transaction do
+        row = find_authorization(auth_key)
+
+        if row
+          env.db[:authorizations].where(:id => row[:id]).update(
+            :permissions => permissions,
+            :updated_at => Sequel::SQL::Constants::CURRENT_TIMESTAMP)
+        else
+          env.db[:authorizations].insert(
+            :auth_key => auth_key,
+            :permissions => permissions,
+            :created_at => Sequel::SQL::Constants::CURRENT_TIMESTAMP,
+            :updated_at => Sequel::SQL::Constants::CURRENT_TIMESTAMP)
+        end
+      end
+    end
+
+    def find_authorization(auth_key)
+      env.db[:authorizations][:auth_key => auth_key]
+    end
+
     def find_or_insert_rubygem(spec)
       row = env.db[:rubygems][:name => spec.name]
       return row[:id] if row
