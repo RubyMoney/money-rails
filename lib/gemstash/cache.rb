@@ -1,12 +1,26 @@
 require "lru_redux"
 
 module Gemstash
-  #:nodoc:
+  # Cache object which knows about what things are cached and what keys to use
+  # for them. Under the hood is either a Memcached client via the dalli gem, or
+  # an in memory client via the lru_redux gem.
   class Cache
     EXPIRY = 30 * 60
 
     def initialize(client)
       @client = client
+    end
+
+    def authorization(auth_key)
+      @client.get("auths/#{auth_key}")
+    end
+
+    def set_authorization(auth_key, value)
+      @client.set("auths/#{auth_key}", value, EXPIRY)
+    end
+
+    def invalidate_authorization(auth_key)
+      @client.delete("auths/#{auth_key}")
     end
 
     def dependencies(gems)
@@ -20,9 +34,13 @@ module Gemstash
     def set_dependency(gem, value)
       @client.set("deps/v1/#{gem}", value, EXPIRY)
     end
+
+    def invalidate_gem(gem)
+      @client.delete("deps/v1/#{gem}")
+    end
   end
 
-  #:nodoc:
+  # Wrapper around the lru_redux gem to behave like a dalli Memcached client.
   class LruReduxClient
     MAX_SIZE = 500
     EXPIRY = Gemstash::Cache::EXPIRY
@@ -37,6 +55,14 @@ module Gemstash
 
     def flush
       @cache.clear
+    end
+
+    def delete(key)
+      @cache.delete(key)
+    end
+
+    def get(key)
+      @cache[key]
     end
 
     def get_multi(keys)
