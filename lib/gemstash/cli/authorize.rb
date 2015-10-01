@@ -1,4 +1,5 @@
 require "gemstash"
+require "securerandom"
 
 module Gemstash
   class CLI
@@ -38,7 +39,7 @@ module Gemstash
       def remove_authorization
         raise Gemstash::CLI::Error.new(@cli, "To remove individual permissions, you do not need --remove
 Instead just authorize with the new set of permissions") unless @args.empty?
-        Gemstash::Authorization.remove(auth_key)
+        Gemstash::Authorization.remove(auth_key(false))
       end
 
       def save_authorization
@@ -56,8 +57,17 @@ Instead just authorize with the new set of permissions") unless @args.empty?
         Gemstash::Authorization.authorize(auth_key, permissions)
       end
 
-      def auth_key
-        @cli.options[:key]
+      def auth_key(allow_generate = true)
+        if @cli.options[:key]
+          @cli.options[:key]
+        elsif allow_generate
+          key = SecureRandom.hex(16)
+          key = SecureRandom.hex(16) while Gemstash::Authorization[key]
+          @cli.say "Your new key is: #{key}"
+          key
+        else
+          raise Gemstash::CLI::Error.new(@cli, "The --key option is required")
+        end
       end
 
       def permissions
