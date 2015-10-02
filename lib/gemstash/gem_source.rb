@@ -53,6 +53,7 @@ module Gemstash
       sinatra_method :halt
       sinatra_method :headers
       sinatra_method :redirect
+      sinatra_method :request
     end
   end
 end

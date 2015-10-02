@@ -17,6 +17,10 @@ module Gemstash
         redirect web_helper.url
       end
 
+      def serve_add_gem
+        halt 403, "Cannot add gem to an upstream server!"
+      end
+
       def serve_yank
         halt 403, "Cannot yank from an upstream server!"
       end
@@ -25,11 +29,11 @@ module Gemstash
         halt 403, "Cannot unyank from an upstream server!"
       end
 
-      def serve_add_spec
+      def serve_add_spec_json
         halt 403, "Cannot add spec to an upstream server!"
       end
 
-      def serve_remove_spec
+      def serve_remove_spec_json
         halt 403, "Cannot remove spec from an upstream server!"
       end
 

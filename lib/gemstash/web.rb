@@ -55,12 +55,7 @@ module Gemstash
     end
 
     post "/api/v1/gems" do
-      authenticated("Gemstash Private Gems") do
-        halt 403, "Not yet supported"
-        auth = request.env["HTTP_AUTHORIZATION"]
-        gem = request.body.read
-        Gemstash::GemPusher.new(auth, gem).push
-      end
+      @gem_source.serve_add_gem
     end
 
     delete "/api/v1/gems/yank" do
@@ -72,11 +67,11 @@ module Gemstash
     end
 
     post "/api/v1/add_spec.json" do
-      @gem_source.serve_add_spec
+      @gem_source.serve_add_spec_json
     end
 
     post "/api/v1/remove_spec.json" do
-      @gem_source.serve_remove_spec
+      @gem_source.serve_remove_spec_json
     end
 
     get "/names" do
@@ -116,13 +111,6 @@ module Gemstash
     end
 
   private
-
-    def authenticated(realm)
-      yield
-    rescue Gemstash::NotAuthorizedError => e
-      headers["WWW-Authenticate"] = "Basic realm=\"#{realm}\""
-      halt 401, e.message
-    end
 
     def gems_from_params
       halt(200) if params[:gems].nil? || params[:gems].empty?
