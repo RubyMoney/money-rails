@@ -1,3 +1,5 @@
+require "gemstash"
+
 module Gemstash
   module GemSource
     # GemSource for privately stored gems.

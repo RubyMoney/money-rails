@@ -1,3 +1,6 @@
+require "gemstash"
+require "cgi"
+
 module Gemstash
   module GemSource
     # GemSource for gems in an upstream server.
@@ -5,7 +8,7 @@ module Gemstash
       def self.matches?(env)
         match = chomp_path(env, %r{\A/upstream/([^/]+)})
         return false unless match
-        env["gemstash.upstream"] = match[1]
+        env["gemstash.upstream"] = CGI.unescape(match[1])
         true
       end
     end

@@ -1,3 +1,5 @@
+require "gemstash"
+
 module Gemstash
   module GemSource
     # Rack middleware to detect the gem source from the URL.

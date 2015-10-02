@@ -1,3 +1,5 @@
+require "gemstash"
+
 module Gemstash
   #:nodoc:
   module GemSource
@@ -16,6 +18,8 @@ module Gemstash
 
     # Base GemSource for some common utilities.
     class Base
+      extend Gemstash::Logging
+
       # Chomps the matching prefix against path variables in the Rack env. If it
       # matches all path variables, the prefix is stripped and the match results
       # from env["PATH_INFO"] are returned, otherwise a falsey value is
@@ -26,8 +30,10 @@ module Gemstash
         return unless request_uri_match
         path_info_match = env["PATH_INFO"].match(matcher)
         return unless path_info_match
+        log_start = "Rewriting '#{env["REQUEST_URI"]}'"
         env["REQUEST_URI"][request_uri_match.begin(0)...request_uri_match.end(0)] = ""
         env["PATH_INFO"][path_info_match.begin(0)...path_info_match.end(0)] = ""
+        log.info "#{log_start} to '#{env["REQUEST_URI"]}'"
         path_info_match
       end
     end
