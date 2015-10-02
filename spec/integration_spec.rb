@@ -11,7 +11,7 @@ describe "bundle install against gemstash" do
       :dependencies => []
     }
 
-    @rubygems_server = SimpleServer.new("127.0.0.1")
+    @rubygems_server = SimpleServer.new("127.0.0.1", port: 9043)
     @rubygems_server.mount_gem_deps("speaker", [speaker_deps])
     @rubygems_server.mount_gem("speaker", "0.1.0")
     @rubygems_server.start

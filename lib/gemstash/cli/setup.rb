@@ -24,7 +24,6 @@ module Gemstash
         ask_storage
         ask_cache
         ask_database
-        ask_strategy
         check_cache
         check_storage
         check_database
@@ -90,21 +89,6 @@ module Gemstash
         url = @cli.ask "Where is the database? [postgres:///gemstash]"
         url = "postgres:///gemstash" if url.empty?
         @config[:db_url] = url
-      end
-
-      def ask_strategy
-        say_current_config(:strategy, "Current strategy")
-        options = %w(caching redirection)
-        strategy = nil
-
-        until strategy
-          strategy = @cli.ask "What strategy? [CACHING, redirection]"
-          strategy = strategy.downcase
-          strategy = "caching" if strategy.empty?
-          strategy = nil unless options.include?(strategy)
-        end
-
-        @config[:strategy] = strategy
       end
 
       def check_cache

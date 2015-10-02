@@ -19,6 +19,7 @@ module Gemstash
     # Base GemSource for some common utilities.
     class Base
       extend Gemstash::Logging
+      include Gemstash::Logging
 
       # Chomps the matching prefix against path variables in the Rack env. If it
       # matches all path variables, the prefix is stripped and the match results
@@ -36,6 +37,22 @@ module Gemstash
         log.info "#{log_start} to '#{env["REQUEST_URI"]}'"
         path_info_match
       end
+
+      def initialize(app)
+        @app = app
+      end
+
+      def self.sinatra_method(method)
+        define_method(method) do |*args, &block|
+          @app.send(method, *args, &block)
+        end
+      end
+
+      sinatra_method :cache_control
+      sinatra_method :env
+      sinatra_method :halt
+      sinatra_method :headers
+      sinatra_method :redirect
     end
   end
 end

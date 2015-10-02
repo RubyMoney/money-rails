@@ -7,17 +7,17 @@ module Gemstash
   class Web < Sinatra::Base
     API_REQUEST_LIMIT = 200
 
-    def initialize(gem_strategy: nil, web_helper: nil, gemstash_env: nil)
+    def initialize(web_helper: nil, gemstash_env: nil)
       @gemstash_env = gemstash_env || Gemstash::Env.new
       Gemstash::Env.current = @gemstash_env
       @web_helper   = web_helper || Gemstash::WebHelper.new
-      @strategy     = gem_strategy || Gemstash::Strategies.from_config(@gemstash_env.config)
       @dependencies = Gemstash::Dependencies.new(@web_helper)
       super()
     end
 
     before do
       Gemstash::Env.current = @gemstash_env
+      @gem_source = env["gemstash.gem_source"].new(self)
     end
 
     not_found do
@@ -26,7 +26,7 @@ module Gemstash
     end
 
     get "/" do
-      @strategy.serve_root(self)
+      @gem_source.serve_root
     end
 
     get "/api/v1/dependencies" do
@@ -92,27 +92,27 @@ module Gemstash
     end
 
     get "/quick/Marshal.4.8/:id" do
-      @strategy.serve_marshal(self, id: params[:id])
+      @gem_source.serve_marshal(params[:id])
     end
 
     get "/fetch/actual/gem/:id" do
-      @strategy.serve_actual_gem(self, id: params[:id])
+      @gem_source.serve_actual_gem(params[:id])
     end
 
     get "/gems/:id" do
-      @strategy.serve_gem(self, id: params[:id])
+      @gem_source.serve_gem(params[:id])
     end
 
     get "/latest_specs.4.8.gz" do
-      @strategy.serve_latest_specs(self)
+      @gem_source.serve_latest_specs
     end
 
     get "/specs.4.8.gz" do
-      @strategy.serve_specs(self)
+      @gem_source.serve_specs
     end
 
     get "/prerelease_specs.4.8.gz" do
-      @strategy.serve_prerelease_specs(self)
+      @gem_source.serve_prerelease_specs
     end
 
   private

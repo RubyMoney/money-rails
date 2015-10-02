@@ -1,9 +1,17 @@
 require "spec_helper"
 require "rack/test"
+require "fileutils"
 
 describe Gemstash::Web do
   include Rack::Test::Methods
   let(:app) { Gemstash::Web.new(gemstash_env: test_env) }
+
+  let(:rack_env) do
+    {
+      "gemstash.gem_source" => Gemstash::GemSource::RubygemsSource,
+      "gemstash.upstream" => "https://www.rubygems.org"
+    }
+  end
 
   let(:rack) do
     {
@@ -18,7 +26,7 @@ describe Gemstash::Web do
     let(:request) { "/" }
 
     it "redirects to rubygems.org" do
-      get request
+      get request, {}, rack_env
 
       expect(last_response).to redirect_to("https://www.rubygems.org")
     end
@@ -29,7 +37,7 @@ describe Gemstash::Web do
 
     context "there are no gems" do
       it "returns an empty string" do
-        get request
+        get request, {}, rack_env
 
         expect(last_response).to be_ok
         expect(last_response.body).to eq("")
@@ -42,7 +50,7 @@ describe Gemstash::Web do
       end
 
       it "returns a marshal dump" do
-        get "#{request}?gems=rack"
+        get "#{request}?gems=rack", {}, rack_env
 
         expect(last_response).to be_ok
         expect(Marshal.load(last_response.body)).to eq([rack])
@@ -53,7 +61,7 @@ describe Gemstash::Web do
       let(:gems) { 201.times.map {|i| "gem-#{i}" }.join(",") }
 
       it "returns a 422" do
-        get "#{request}?gems=#{gems}"
+        get "#{request}?gems=#{gems}", {}, rack_env
 
         expect(last_response).not_to be_ok
         expect(last_response.body).
@@ -67,7 +75,7 @@ describe Gemstash::Web do
 
     context "there are no gems" do
       it "returns an empty string" do
-        get request
+        get request, {}, rack_env
 
         expect(last_response).to be_ok
         expect(last_response.body).to eq("")
@@ -96,7 +104,7 @@ describe Gemstash::Web do
           "dependencies" => []
         }]
 
-        get "#{request}?gems=rack"
+        get "#{request}?gems=rack", {}, rack_env
 
         expect(last_response).to be_ok
         expect(JSON.parse(last_response.body)).to eq(result)
@@ -112,11 +120,39 @@ describe Gemstash::Web do
           "code"  => 422
         }.to_json
 
-        get "#{request}?gems=#{gems}"
+        get "#{request}?gems=#{gems}", {}, rack_env
 
         expect(last_response).not_to be_ok
         expect(last_response.body).to eq(error)
       end
+    end
+  end
+
+  context "GET /gems/:id" do
+    before do
+      @gem_folder = Dir.mktmpdir
+    end
+
+    after do
+      FileUtils.remove_entry @gem_folder
+    end
+
+    let(:web_helper) do
+      stubs = Faraday::Adapter::Test::Stubs.new do |stub|
+        stub.get("/gems/rack") { [200, { "CONTENT-TYPE" => "octet/stream" }, "zapatito"] }
+      end
+      Gemstash::WebHelper.new(http_client: Faraday.new {|builder| builder.adapter(:test, stubs) })
+    end
+
+    let(:storage) { Gemstash::GemStorage.new(@gem_folder) }
+
+    it "fetchs the gem file, stores, and serves it" do
+      allow_any_instance_of(Gemstash::GemSource::RubygemsSource).to receive(:web_helper).and_return(web_helper)
+      allow_any_instance_of(Gemstash::GemSource::RubygemsSource).to receive(:storage).and_return(storage)
+      get "/gems/rack", {}, rack_env
+      expect(last_response.body).to eq("zapatito")
+      expect(last_response.header["CONTENT-TYPE"]).to eq("octet/stream")
+      expect(storage.get("rack")).to exist
     end
   end
 end

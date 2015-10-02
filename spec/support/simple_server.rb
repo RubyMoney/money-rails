@@ -7,8 +7,8 @@ class SimpleServer
   include FileHelpers
   attr_reader :routes
 
-  def initialize(hostname)
-    @port = SimpleServer.next_port
+  def initialize(hostname, port: nil)
+    @port = port || SimpleServer.next_port
     @server = WEBrick::HTTPServer.new(:Port => @port)
     @server.mount("/", Servlet, self)
     @hostname = hostname

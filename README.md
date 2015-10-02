@@ -22,7 +22,6 @@ additional gems or software to be installed and available.
     Where should files go? [~/.gemstash]
     Cache with what? [MEMORY, memcached]
     What database adapter? [SQLITE3, postgres]
-    What strategy? [CACHING, redirection]
     Checking that the cache is available
     Checking that the database is available
     You are all setup!

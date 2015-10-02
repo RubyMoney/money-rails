@@ -9,7 +9,6 @@ module Gemstash
       :db_adapter => "sqlite3",
       :port => 9292,
       :rubygems_url => "https://www.rubygems.org",
-      :strategy => "caching",
       :logfile => "server.log"
     }.freeze
 
