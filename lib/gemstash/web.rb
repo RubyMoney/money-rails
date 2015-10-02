@@ -64,31 +64,31 @@ module Gemstash
     end
 
     delete "/api/v1/gems/yank" do
-      halt 403, "Not yet supported"
+      @gem_source.serve_yank
     end
 
     put "/api/v1/gems/unyank" do
-      halt 403, "Not yet supported"
+      @gem_source.serve_unyank
     end
 
     post "/api/v1/add_spec.json" do
-      halt 403, "Not yet supported"
+      @gem_source.serve_add_spec
     end
 
     post "/api/v1/remove_spec.json" do
-      halt 403, "Not yet supported"
+      @gem_source.serve_remove_spec
     end
 
     get "/names" do
-      halt 403, "Not yet supported"
+      @gem_source.serve_names
     end
 
     get "/versions" do
-      halt 403, "Not yet supported"
+      @gem_source.serve_versions
     end
 
     get "/info/:name" do
-      halt 403, "Not yet supported"
+      @gem_source.serve_info(params[:name])
     end
 
     get "/quick/Marshal.4.8/:id" do

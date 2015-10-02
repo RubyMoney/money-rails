@@ -17,6 +17,34 @@ module Gemstash
         redirect web_helper.url
       end
 
+      def serve_yank
+        halt 403, "Cannot yank from an upstream server!"
+      end
+
+      def serve_unyank
+        halt 403, "Cannot unyank from an upstream server!"
+      end
+
+      def serve_add_spec
+        halt 403, "Cannot add spec to an upstream server!"
+      end
+
+      def serve_remove_spec
+        halt 403, "Cannot remove spec from an upstream server!"
+      end
+
+      def serve_names
+        redirect web_helper.url("/names")
+      end
+
+      def serve_versions
+        redirect web_helper.url("/versions")
+      end
+
+      def serve_info(name)
+        redirect web_helper.url("/info/#{name}")
+      end
+
       def serve_marshal(id)
         redirect web_helper.url("/quick/Marshal.4.8/#{id}")
       end
