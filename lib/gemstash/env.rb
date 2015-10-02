@@ -20,6 +20,19 @@ module Gemstash
       end
     end
 
+    # Rack middleware to set the Gemstash::Env for the app.
+    class RackMiddleware
+      def initialize(app, gemstash_env)
+        @app = app
+        @gemstash_env = gemstash_env
+      end
+
+      def call(env)
+        env["gemstash.env"] = @gemstash_env
+        @app.call(env)
+      end
+    end
+
     def initialize(config = nil)
       @config = config
     end

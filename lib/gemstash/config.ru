@@ -8,4 +8,6 @@ if Gemstash::Env.daemonized?
   use Puma::CommonLogger, Gemstash::Logging::StreamLogger.for_stdout
 end
 
-run Gemstash::Web.new
+use Gemstash::Env::RackMiddleware, Gemstash::Env.current
+use Gemstash::GemSource::RackMiddleware
+run Gemstash::Web.new(gemstash_env: Gemstash::Env.current)

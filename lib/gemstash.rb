@@ -10,6 +10,7 @@ module Gemstash
   autoload :Dependencies,        "gemstash/dependencies"
   autoload :Env,                 "gemstash/env"
   autoload :GemPusher,           "gemstash/gem_pusher"
+  autoload :GemSource,           "gemstash/gem_source"
   autoload :GemStorage,          "gemstash/storage"
   autoload :Logging,             "gemstash/logging"
   autoload :LruReduxClient,      "gemstash/cache"
