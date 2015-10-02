@@ -1,4 +1,5 @@
 require "gemstash"
+require "forwardable"
 
 module Gemstash
   #:nodoc:
@@ -20,6 +21,7 @@ module Gemstash
 
     # Base GemSource for some common utilities.
     class Base
+      extend Forwardable
       extend Gemstash::Logging
       include Gemstash::Logging
 
@@ -39,6 +41,8 @@ module Gemstash
         log.info "#{log_start} to '#{env["REQUEST_URI"]}'"
         path_info_match
       end
+
+      def_delegators :@app, :cache_control, :content_type, :env, :halt, :headers, :params, :redirect, :request
 
       def initialize(app)
         @app = app
@@ -68,21 +72,6 @@ module Gemstash
         content_type "application/json;charset=UTF-8"
         dependencies.fetch(gems).to_json
       end
-
-      def self.sinatra_method(method)
-        define_method(method) do |*args, &block|
-          @app.send(method, *args, &block)
-        end
-      end
-
-      sinatra_method :cache_control
-      sinatra_method :content_type
-      sinatra_method :env
-      sinatra_method :halt
-      sinatra_method :headers
-      sinatra_method :params
-      sinatra_method :redirect
-      sinatra_method :request
 
     private
 
