@@ -8,6 +8,8 @@ module Gemstash
     autoload :RubygemsSource, "gemstash/gem_source/upstream_source"
     autoload :UpstreamSource, "gemstash/gem_source/upstream_source"
 
+    API_REQUEST_LIMIT = 200
+
     def self.sources
       @sources ||= [
         Gemstash::GemSource::PrivateSource,
@@ -42,6 +44,31 @@ module Gemstash
         @app = app
       end
 
+      def serve_dependencies
+        gems = gems_from_params
+
+        if gems.length > API_REQUEST_LIMIT
+          halt 422, "Too many gems (use --full-index instead)"
+        end
+
+        content_type "application/octet-stream"
+        Marshal.dump dependencies.fetch(gems)
+      end
+
+      def serve_dependencies_json
+        gems = gems_from_params
+
+        if gems.length > API_REQUEST_LIMIT
+          halt 422, {
+            "error" => "Too many gems (use --full-index instead)",
+            "code"  => 422
+          }.to_json
+        end
+
+        content_type "application/json;charset=UTF-8"
+        dependencies.fetch(gems).to_json
+      end
+
       def self.sinatra_method(method)
         define_method(method) do |*args, &block|
           @app.send(method, *args, &block)
@@ -49,11 +76,20 @@ module Gemstash
       end
 
       sinatra_method :cache_control
+      sinatra_method :content_type
       sinatra_method :env
       sinatra_method :halt
       sinatra_method :headers
+      sinatra_method :params
       sinatra_method :redirect
       sinatra_method :request
+
+    private
+
+      def gems_from_params
+        halt(200) if params[:gems].nil? || params[:gems].empty?
+        params[:gems].split(",").uniq
+      end
     end
   end
 end

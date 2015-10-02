@@ -11,13 +11,11 @@ describe Gemstash::GemPusher do
   end
 
   describe ".push" do
-    let(:web_helper) { double }
-    let(:deps) { Gemstash::Dependencies.new(web_helper) }
+    let(:deps) { Gemstash::Dependencies.for_private }
     let(:gem_contents) { File.read(gem_path("example", "0.1.0")) }
 
     context "without authorization" do
       it "prevents pushing" do
-        allow(web_helper).to receive(:get).and_return(Marshal.dump([]))
         expect { Gemstash::GemPusher.new(nil, gem_contents).push }.to raise_error(Gemstash::NotAuthorizedError)
         expect { Gemstash::GemPusher.new("", gem_contents).push }.to raise_error(Gemstash::NotAuthorizedError)
         expect(deps.fetch(%w(example))).to eq([])
@@ -26,7 +24,6 @@ describe Gemstash::GemPusher do
 
     context "with invalid authorization" do
       it "prevents pushing" do
-        allow(web_helper).to receive(:get).and_return(Marshal.dump([]))
         expect { Gemstash::GemPusher.new(invalid_auth_key, gem_contents).push }.
           to raise_error(Gemstash::NotAuthorizedError)
         expect(deps.fetch(%w(example))).to eq([])
@@ -35,7 +32,6 @@ describe Gemstash::GemPusher do
 
     context "with invalid permission" do
       it "prevents pushing" do
-        allow(web_helper).to receive(:get).and_return(Marshal.dump([]))
         expect { Gemstash::GemPusher.new(auth_key_without_permission, gem_contents).push }.
           to raise_error(Gemstash::NotAuthorizedError)
         expect(deps.fetch(%w(example))).to eq([])
@@ -44,8 +40,6 @@ describe Gemstash::GemPusher do
 
     context "with an unknown gem name" do
       it "saves the dependency info" do
-        allow(web_helper).to receive(:get).and_return(Marshal.dump([]))
-
         results = [{
           :name => "example",
           :number => "0.1.0",

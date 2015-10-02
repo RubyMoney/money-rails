@@ -81,6 +81,10 @@ module Gemstash
         headers["WWW-Authenticate"] = "Basic realm=\"#{realm}\""
         halt 401, e.message
       end
+
+      def dependencies
+        @dependencies ||= Gemstash::Dependencies.for_private
+      end
     end
   end
 end

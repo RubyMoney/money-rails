@@ -79,6 +79,10 @@ module Gemstash
 
     private
 
+      def dependencies
+        @dependencies ||= Gemstash::Dependencies.for_upstream(web_helper)
+      end
+
       def web_helper
         @web_helper ||= Gemstash::WebHelper.new(server_url: env["gemstash.upstream"])
       end

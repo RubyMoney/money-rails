@@ -23,20 +23,21 @@ module Gemstash
       @client.delete("auths/#{auth_key}")
     end
 
-    def dependencies(gems)
-      keys = gems.map {|g| "deps/v1/#{g}" }
+    def dependencies(scope, gems)
+      key_prefix = "deps/v1/#{scope}/"
+      keys = gems.map {|g| "#{key_prefix}#{g}" }
 
       @client.get_multi(keys) do |key, value|
-        yield(key.sub("deps/v1/", ""), value)
+        yield(key.sub(key_prefix, ""), value)
       end
     end
 
-    def set_dependency(gem, value)
-      @client.set("deps/v1/#{gem}", value, EXPIRY)
+    def set_dependency(scope, gem, value)
+      @client.set("deps/v1/#{scope}/#{gem}", value, EXPIRY)
     end
 
-    def invalidate_gem(gem)
-      @client.delete("deps/v1/#{gem}")
+    def invalidate_gem(scope, gem)
+      @client.delete("deps/v1/#{scope}/#{gem}")
     end
   end
 

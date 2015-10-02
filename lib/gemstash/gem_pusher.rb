@@ -64,7 +64,7 @@ module Gemstash
     end
 
     def invalidate_cache
-      env.cache.invalidate_gem(gem.spec.name)
+      env.cache.invalidate_gem("private", gem.spec.name)
     end
   end
 end

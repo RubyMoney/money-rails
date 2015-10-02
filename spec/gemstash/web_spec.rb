@@ -5,11 +5,12 @@ require "fileutils"
 describe Gemstash::Web do
   include Rack::Test::Methods
   let(:app) { Gemstash::Web.new(gemstash_env: test_env) }
+  let(:upstream) { "https://www.rubygems.org" }
 
   let(:rack_env) do
     {
       "gemstash.gem_source" => Gemstash::GemSource::RubygemsSource,
-      "gemstash.upstream" => "https://www.rubygems.org"
+      "gemstash.upstream" => upstream
     }
   end
 
@@ -46,7 +47,7 @@ describe Gemstash::Web do
 
     context "there are gems" do
       before do
-        Gemstash::Env.current.cache.set_dependency("rack", [rack])
+        Gemstash::Env.current.cache.set_dependency("upstream/#{upstream}", "rack", [rack])
       end
 
       it "returns a marshal dump" do
@@ -93,7 +94,7 @@ describe Gemstash::Web do
       end
 
       before do
-        Gemstash::Env.current.cache.set_dependency("rack", [rack])
+        Gemstash::Env.current.cache.set_dependency("upstream/#{upstream}", "rack", [rack])
       end
 
       it "returns a marshal dump" do

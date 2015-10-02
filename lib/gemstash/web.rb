@@ -5,13 +5,9 @@ require "gemstash"
 module Gemstash
   #:nodoc:
   class Web < Sinatra::Base
-    API_REQUEST_LIMIT = 200
-
-    def initialize(web_helper: nil, gemstash_env: nil)
+    def initialize(gemstash_env: nil)
       @gemstash_env = gemstash_env || Gemstash::Env.new
       Gemstash::Env.current = @gemstash_env
-      @web_helper   = web_helper || Gemstash::WebHelper.new
-      @dependencies = Gemstash::Dependencies.new(@web_helper)
       super()
     end
 
@@ -30,28 +26,11 @@ module Gemstash
     end
 
     get "/api/v1/dependencies" do
-      gems = gems_from_params
-
-      if gems.length > API_REQUEST_LIMIT
-        halt 422, "Too many gems (use --full-index instead)"
-      end
-
-      content_type "application/octet-stream"
-      Marshal.dump @dependencies.fetch(gems)
+      @gem_source.serve_dependencies
     end
 
     get "/api/v1/dependencies.json" do
-      gems = gems_from_params
-
-      if gems.length > API_REQUEST_LIMIT
-        halt 422, {
-          "error" => "Too many gems (use --full-index instead)",
-          "code"  => 422
-        }.to_json
-      end
-
-      content_type "application/json;charset=UTF-8"
-      @dependencies.fetch(gems).to_json
+      @gem_source.serve_dependencies_json
     end
 
     post "/api/v1/gems" do
@@ -108,13 +87,6 @@ module Gemstash
 
     get "/prerelease_specs.4.8.gz" do
       @gem_source.serve_prerelease_specs
-    end
-
-  private
-
-    def gems_from_params
-      halt(200) if params[:gems].nil? || params[:gems].empty?
-      params[:gems].split(",").uniq
     end
   end
 end
