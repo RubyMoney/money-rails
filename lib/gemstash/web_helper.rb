@@ -39,8 +39,9 @@ module Gemstash
       end
     end
 
-    def url(path = nil)
-      "#{@server_url}#{path}"
+    def url(path = nil, params = nil)
+      params = "?#{params}" if !params.nil? && !params.empty?
+      "#{@server_url}#{path}#{params}"
     end
   end
 end

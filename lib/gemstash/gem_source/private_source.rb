@@ -4,6 +4,8 @@ module Gemstash
   module GemSource
     # GemSource for privately stored gems.
     class PrivateSource < Gemstash::GemSource::Base
+      include Gemstash::GemSource::DependencyCaching
+
       def self.matches?(env)
         chomp_path(env, "/private")
       end

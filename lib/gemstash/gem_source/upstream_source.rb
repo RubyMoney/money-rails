@@ -3,10 +3,10 @@ require "cgi"
 
 module Gemstash
   module GemSource
-    # GemSource for gems in an upstream server.
-    class UpstreamSource < Gemstash::GemSource::Base
+    # GemSource that purely redirects to the upstream server.
+    class RedirectSource < Gemstash::GemSource::Base
       def self.matches?(env)
-        match = chomp_path(env, %r{\A/upstream/([^/]+)})
+        match = chomp_path(env, %r{\A/redirect/([^/]+)})
         return false unless match
         env["gemstash.upstream"] = CGI.unescape(match[1])
         true
@@ -14,7 +14,7 @@ module Gemstash
 
       def serve_root
         cache_control :public, :max_age => 31_536_000
-        redirect web_helper.url
+        redirect web_helper.url(nil, request.query_string)
       end
 
       def serve_add_gem
@@ -37,24 +37,66 @@ module Gemstash
         halt 403, "Cannot remove spec from an upstream server!"
       end
 
+      def serve_dependencies
+        redirect web_helper.url("/api/v1/dependencies", request.query_string)
+      end
+
+      def serve_dependencies_json
+        redirect web_helper.url("/api/v1/dependencies.json", request.query_string)
+      end
+
       def serve_names
-        redirect web_helper.url("/names")
+        redirect web_helper.url("/names", request.query_string)
       end
 
       def serve_versions
-        redirect web_helper.url("/versions")
+        redirect web_helper.url("/versions", request.query_string)
       end
 
       def serve_info(name)
-        redirect web_helper.url("/info/#{name}")
+        redirect web_helper.url("/info/#{name}", request.query_string)
       end
 
       def serve_marshal(id)
-        redirect web_helper.url("/quick/Marshal.4.8/#{id}")
+        redirect web_helper.url("/quick/Marshal.4.8/#{id}", request.query_string)
       end
 
       def serve_actual_gem(id)
-        redirect web_helper.url("/fetch/actual/gem/#{id}")
+        redirect web_helper.url("/fetch/actual/gem/#{id}", request.query_string)
+      end
+
+      def serve_gem(id)
+        redirect web_helper.url("/gems/#{id}", request.query_string)
+      end
+
+      def serve_latest_specs
+        redirect web_helper.url("/latest_specs.4.8.gz", request.query_string)
+      end
+
+      def serve_specs
+        redirect web_helper.url("/specs.4.8.gz", request.query_string)
+      end
+
+      def serve_prerelease_specs
+        redirect web_helper.url("/prerelease_specs.4.8.gz", request.query_string)
+      end
+
+    private
+
+      def web_helper
+        @web_helper ||= Gemstash::WebHelper.new(server_url: env["gemstash.upstream"])
+      end
+    end
+
+    # GemSource for gems in an upstream server.
+    class UpstreamSource < Gemstash::GemSource::RedirectSource
+      include Gemstash::GemSource::DependencyCaching
+
+      def self.matches?(env)
+        match = chomp_path(env, %r{\A/upstream/([^/]+)})
+        return false unless match
+        env["gemstash.upstream"] = CGI.unescape(match[1])
+        true
       end
 
       def serve_gem(id)
@@ -65,26 +107,10 @@ module Gemstash
         halt e.code
       end
 
-      def serve_latest_specs
-        redirect web_helper.url("/latest_specs.4.8.gz")
-      end
-
-      def serve_specs
-        redirect web_helper.url("/specs.4.8.gz")
-      end
-
-      def serve_prerelease_specs
-        redirect web_helper.url("/prerelease_specs.4.8.gz")
-      end
-
     private
 
       def dependencies
         @dependencies ||= Gemstash::Dependencies.for_upstream(web_helper)
-      end
-
-      def web_helper
-        @web_helper ||= Gemstash::WebHelper.new(server_url: env["gemstash.upstream"])
       end
 
       def storage
