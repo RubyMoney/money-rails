@@ -145,7 +145,7 @@ describe Gemstash::Web do
       Gemstash::WebHelper.new(http_client: Faraday.new {|builder| builder.adapter(:test, stubs) })
     end
 
-    let(:storage) { Gemstash::GemStorage.new(@gem_folder) }
+    let(:storage) { Gemstash::Storage.new(@gem_folder) }
 
     it "fetchs the gem file, stores, and serves it" do
       allow_any_instance_of(Gemstash::GemSource::RubygemsSource).to receive(:web_helper).and_return(web_helper)
@@ -153,7 +153,7 @@ describe Gemstash::Web do
       get "/gems/rack", {}, rack_env
       expect(last_response.body).to eq("zapatito")
       expect(last_response.header["CONTENT-TYPE"]).to eq("octet/stream")
-      expect(storage.get("rack")).to exist
+      expect(storage.resource("rack")).to exist
     end
   end
 end

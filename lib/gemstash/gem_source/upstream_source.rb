@@ -101,7 +101,7 @@ module Gemstash
 
       def serve_gem(id)
         gem = fetch_gem(id)
-        headers.update(gem.headers)
+        headers.update(gem.properties)
         gem.content
       rescue Gemstash::WebError => e
         halt e.code
@@ -114,18 +114,18 @@ module Gemstash
       end
 
       def storage
-        @storage ||= Gemstash::GemStorage.new
+        @storage ||= Gemstash::Storage.new(Gemstash::Env.current.base_file("gem_cache"))
       end
 
       def fetch_gem(id)
-        gem = storage.get(id)
+        gem = storage.resource(id)
         if gem.exist?
           log.info "Gem #{id} exists, returning cached"
           gem
         else
           log.info "Gem #{id} is not cached, fetching"
           web_helper.get("/gems/#{id}") do |body, headers|
-            gem.save(headers, body)
+            gem.save(body, properties: headers)
           end
         end
       end
