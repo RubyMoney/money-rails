@@ -84,7 +84,10 @@ module Gemstash
     private
 
       def web_helper
-        @web_helper ||= Gemstash::WebHelper.new(server_url: env["gemstash.upstream"])
+        server_url = env["gemstash.upstream"]
+        @web_helper ||= Gemstash::WebHelper.new(
+          http_client: @app.http_client_for(server_url),
+          server_url: server_url)
       end
     end
 

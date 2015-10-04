@@ -20,7 +20,9 @@ describe Gemstash::WebHelper do
   end
 
   describe ".url" do
-    let(:helper) { Gemstash::WebHelper.new(server_url: "https://www.rubygems.org") }
+    let(:server_url) { "https://www.rubygems.org" }
+    let(:http_client) { Gemstash::HTTPClientBuilder.new.for(server_url) }
+    let(:helper) { Gemstash::WebHelper.new(http_client: http_client, server_url: server_url) }
 
     context "with nothing provided" do
       it "returns the server url" do
@@ -50,7 +52,11 @@ describe Gemstash::WebHelper do
   end
 
   describe ".get" do
-    let(:helper) { Gemstash::WebHelper.new(server_url: @server.url) }
+    let(:helper) do
+      Gemstash::WebHelper.new(
+        http_client: Gemstash::HTTPClientBuilder.new.for(@server.url),
+        server_url: @server.url)
+    end
 
     context "with a valid url" do
       it "returns the body of the result" do

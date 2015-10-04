@@ -4,7 +4,22 @@ require "fileutils"
 
 describe Gemstash::Web do
   include Rack::Test::Methods
-  let(:app) { Gemstash::Web.new(gemstash_env: test_env) }
+
+  let(:http_client_builder) do
+    class StubHttpBuilder
+      def for(server_url)
+        stubs = Faraday::Adapter::Test::Stubs.new do |stub|
+          stub.get("/gems/rack") { [200, { "CONTENT-TYPE" => "octet/stream" }, "zapatito"] }
+        end
+        Faraday.new {|builder| builder.adapter(:test, stubs) }
+      end
+    end
+    StubHttpBuilder.new
+  end
+  let(:app) do
+    Gemstash::Web.new(http_client_builder: http_client_builder,
+                      gemstash_env: test_env)
+  end
   let(:upstream) { "https://www.rubygems.org" }
 
   let(:rack_env) do
@@ -130,30 +145,11 @@ describe Gemstash::Web do
   end
 
   context "GET /gems/:id" do
-    before do
-      @gem_folder = Dir.mktmpdir
-    end
-
-    after do
-      FileUtils.remove_entry @gem_folder
-    end
-
-    let(:web_helper) do
-      stubs = Faraday::Adapter::Test::Stubs.new do |stub|
-        stub.get("/gems/rack") { [200, { "CONTENT-TYPE" => "octet/stream" }, "zapatito"] }
-      end
-      Gemstash::WebHelper.new(http_client: Faraday.new {|builder| builder.adapter(:test, stubs) })
-    end
-
-    let(:storage) { Gemstash::Storage.new(@gem_folder) }
-
     it "fetchs the gem file, stores, and serves it" do
-      allow_any_instance_of(Gemstash::GemSource::RubygemsSource).to receive(:web_helper).and_return(web_helper)
-      allow_any_instance_of(Gemstash::GemSource::RubygemsSource).to receive(:storage).and_return(storage)
       get "/gems/rack", {}, rack_env
       expect(last_response.body).to eq("zapatito")
       expect(last_response.header["CONTENT-TYPE"]).to eq("octet/stream")
-      expect(storage.resource("rack")).to exist
+      expect(Gemstash::Storage.new(Gemstash::Env.current.base_file("gem_cache")).resource("rack")).to exist
     end
   end
 end

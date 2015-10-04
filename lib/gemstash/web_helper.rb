@@ -17,12 +17,9 @@ module Gemstash
   class WebHelper
     include Gemstash::Env::Helper
 
-    def initialize(http_client: nil, server_url: nil)
+    def initialize(http_client:, server_url: nil)
+      @client = http_client
       @server_url = server_url || env.config[:rubygems_url]
-      @client = http_client || Faraday.new(@server_url) do |config|
-        config.use FaradayMiddleware::FollowRedirects
-        config.adapter :net_http
-      end
     end
 
     def get(path)
@@ -42,6 +39,16 @@ module Gemstash
     def url(path = nil, params = nil)
       params = "?#{params}" if !params.nil? && !params.empty?
       "#{@server_url}#{path}#{params}"
+    end
+  end
+
+  #:nodoc:
+  class HTTPClientBuilder
+    def for(server_url)
+      Faraday.new(server_url) do |config|
+        config.use FaradayMiddleware::FollowRedirects
+        config.adapter :net_http
+      end
     end
   end
 end

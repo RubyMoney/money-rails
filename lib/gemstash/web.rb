@@ -5,8 +5,9 @@ require "gemstash"
 module Gemstash
   #:nodoc:
   class Web < Sinatra::Base
-    def initialize(gemstash_env: nil)
+    def initialize(gemstash_env: nil, http_client_builder: nil)
       @gemstash_env = gemstash_env || Gemstash::Env.new
+      @http_client_builder = http_client_builder || HTTPClientBuilder.new
       Gemstash::Env.current = @gemstash_env
       super()
     end
@@ -14,6 +15,10 @@ module Gemstash
     before do
       Gemstash::Env.current = @gemstash_env
       @gem_source = env["gemstash.gem_source"].new(self)
+    end
+
+    def http_client_for(server_url)
+      @http_client_builder.for(server_url)
     end
 
     not_found do
