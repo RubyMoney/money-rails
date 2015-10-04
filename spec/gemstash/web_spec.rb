@@ -6,6 +6,7 @@ describe Gemstash::Web do
   include Rack::Test::Methods
 
   let(:http_client_builder) do
+    #:nodoc:
     class StubHttpBuilder
       def for(server_url)
         stubs = Faraday::Adapter::Test::Stubs.new do |stub|

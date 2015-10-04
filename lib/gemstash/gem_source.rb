@@ -4,13 +4,12 @@ require "forwardable"
 module Gemstash
   #:nodoc:
   module GemSource
-    autoload :PrivateSource,  "gemstash/gem_source/private_source"
-    autoload :RackMiddleware, "gemstash/gem_source/rack_middleware"
-    autoload :RedirectSource, "gemstash/gem_source/upstream_source"
-    autoload :RubygemsSource, "gemstash/gem_source/upstream_source"
-    autoload :UpstreamSource, "gemstash/gem_source/upstream_source"
-
-    API_REQUEST_LIMIT = 200
+    autoload :DependencyCaching, "gemstash/gem_source/dependency_caching"
+    autoload :PrivateSource,     "gemstash/gem_source/private_source"
+    autoload :RackMiddleware,    "gemstash/gem_source/rack_middleware"
+    autoload :RedirectSource,    "gemstash/gem_source/upstream_source"
+    autoload :RubygemsSource,    "gemstash/gem_source/upstream_source"
+    autoload :UpstreamSource,    "gemstash/gem_source/upstream_source"
 
     def self.sources
       @sources ||= [
@@ -19,41 +18,6 @@ module Gemstash
         Gemstash::GemSource::UpstreamSource,
         Gemstash::GemSource::RubygemsSource
       ]
-    end
-
-    # Module for caching dependencies in a GemSource.
-    module DependencyCaching
-      def serve_dependencies
-        gems = gems_from_params
-
-        if gems.length > API_REQUEST_LIMIT
-          halt 422, "Too many gems (use --full-index instead)"
-        end
-
-        content_type "application/octet-stream"
-        Marshal.dump dependencies.fetch(gems)
-      end
-
-      def serve_dependencies_json
-        gems = gems_from_params
-
-        if gems.length > API_REQUEST_LIMIT
-          halt 422, {
-            "error" => "Too many gems (use --full-index instead)",
-            "code"  => 422
-          }.to_json
-        end
-
-        content_type "application/json;charset=UTF-8"
-        dependencies.fetch(gems).to_json
-      end
-
-    private
-
-      def gems_from_params
-        halt(200) if params[:gems].nil? || params[:gems].empty?
-        params[:gems].split(",").uniq
-      end
     end
 
     # Base GemSource for some common utilities.
