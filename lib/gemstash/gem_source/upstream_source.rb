@@ -99,6 +99,7 @@ module Gemstash
     # GemSource for gems in an upstream server.
     class UpstreamSource < Gemstash::GemSource::RedirectSource
       include Gemstash::GemSource::DependencyCaching
+      include Gemstash::Env::Helper
 
       def self.rack_env_rewriter
         @rack_env_rewriter ||= Gemstash::GemSource::RackEnvRewriter.new(%r{\A/upstream/([^/]+)})
@@ -119,7 +120,7 @@ module Gemstash
       end
 
       def storage
-        @storage ||= Gemstash::Storage.new(Gemstash::Env.current.base_file("gem_cache"))
+        @storage ||= Gemstash::Storage.new(gemstash_env.base_file("gem_cache"))
       end
 
       def fetch_gem(id)
