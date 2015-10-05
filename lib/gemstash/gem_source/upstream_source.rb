@@ -5,10 +5,15 @@ module Gemstash
   module GemSource
     # GemSource that purely redirects to the upstream server.
     class RedirectSource < Gemstash::GemSource::Base
+      def self.rack_env_rewriter
+        @rack_env_rewriter ||= Gemstash::GemSource::RackEnvRewriter.new(%r{\A/redirect/([^/]+)})
+      end
+
       def self.matches?(env)
-        match = chomp_path(env, %r{\A/redirect/([^/]+)})
-        return false unless match
-        env["gemstash.upstream"] = CGI.unescape(match[1])
+        rewriter = rack_env_rewriter.for(env)
+        return false unless rewriter.matches?
+        rewriter.rewrite
+        env["gemstash.upstream"] = CGI.unescape(rewriter.params.first)
         true
       end
 
@@ -95,11 +100,8 @@ module Gemstash
     class UpstreamSource < Gemstash::GemSource::RedirectSource
       include Gemstash::GemSource::DependencyCaching
 
-      def self.matches?(env)
-        match = chomp_path(env, %r{\A/upstream/([^/]+)})
-        return false unless match
-        env["gemstash.upstream"] = CGI.unescape(match[1])
-        true
+      def self.rack_env_rewriter
+        @rack_env_rewriter ||= Gemstash::GemSource::RackEnvRewriter.new(%r{\A/upstream/([^/]+)})
       end
 
       def serve_gem(id)

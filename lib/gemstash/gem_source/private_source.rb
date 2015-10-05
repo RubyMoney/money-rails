@@ -6,8 +6,15 @@ module Gemstash
     class PrivateSource < Gemstash::GemSource::Base
       include Gemstash::GemSource::DependencyCaching
 
+      def self.rack_env_rewriter
+        @rack_env_rewriter ||= Gemstash::GemSource::RackEnvRewriter.new(%r{\A/private})
+      end
+
       def self.matches?(env)
-        chomp_path(env, "/private")
+        rewriter = rack_env_rewriter.for(env)
+        return false unless rewriter.matches?
+        rewriter.rewrite
+        true
       end
 
       def serve_root
