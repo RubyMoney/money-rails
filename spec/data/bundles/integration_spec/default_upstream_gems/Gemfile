@@ -1,0 +1,3 @@
+require "cgi"
+source "http://localhost:9042"
+gem "speaker"

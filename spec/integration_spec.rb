@@ -32,8 +32,8 @@ describe "bundle install against gemstash" do
     clean_bundle bundle
   end
 
-  context "with just upstream gems" do
-    let(:bundle) { "integration_spec/just_upstream_gems" }
+  context "with default upstream gems" do
+    let(:bundle) { "integration_spec/default_upstream_gems" }
 
     it "successfully bundles" do
       expect(execute("bundle", dir: dir)).to exit_success
@@ -41,21 +41,34 @@ describe "bundle install against gemstash" do
     end
   end
 
-  context "with just private gems" do
-    let(:bundle) { "integration_spec/just_private_gems" }
+  context "with upstream gems" do
+    let(:bundle) { "integration_spec/upstream_gems" }
 
-    it "successfully bundles"
+    it "successfully bundles" do
+      expect(execute("bundle", dir: dir)).to exit_success
+      expect(execute("bundle exec speaker hi", dir: dir)).to exit_success.and_output("Hello world\n")
+    end
   end
 
-  context "with private and upstream gems" do
-    let(:bundle) { "integration_spec/private_and_upstream_gems" }
+  context "with redirecting gems" do
+    let(:bundle) { "integration_spec/redirecting_gems" }
 
-    it "successfully bundles"
+    it "successfully bundles" do
+      expect(execute("bundle", dir: dir)).to exit_success
+      expect(execute("bundle exec speaker hi", dir: dir)).to exit_success.and_output("Hello world\n")
+    end
   end
 
-  context "with private versions overriding upstream gems" do
-    let(:bundle) { "integration_spec/private_overriding_upstream_gems" }
+  context "with private gems" do
+    before do
+      # TODO: Push the speaker gem to the test gemstash server
+    end
 
-    it "successfully bundles"
+    let(:bundle) { "integration_spec/private_gems" }
+
+    xit "successfully bundles" do
+      expect(execute("bundle", dir: dir)).to exit_success
+      expect(execute("bundle exec speaker hi", dir: dir)).to exit_success.and_output("Hello world\n")
+    end
   end
 end
