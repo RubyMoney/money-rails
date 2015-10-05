@@ -4,6 +4,7 @@ describe Gemstash::GemPusher do
   let(:auth_key) { "auth-key" }
   let(:invalid_auth_key) { "invalid-auth-key" }
   let(:auth_key_without_permission) { "auth-key-without-permission" }
+  let(:storage) { Gemstash::Storage.new(Gemstash::Env.current.base_file("private")).for("gems") }
 
   before do
     Gemstash::Authorization.authorize(auth_key, "all")
@@ -39,7 +40,7 @@ describe Gemstash::GemPusher do
     end
 
     context "with an unknown gem name" do
-      it "saves the dependency info" do
+      it "saves the dependency info and stores the gem" do
         results = [{
           :name => "example",
           :number => "0.1.0",
@@ -52,6 +53,7 @@ describe Gemstash::GemPusher do
         expect(deps.fetch(%w(example))).to eq([])
         Gemstash::GemPusher.new(auth_key, gem_contents).push
         expect(deps.fetch(%w(example))).to match_dependencies(results)
+        expect(storage.resource("example-0.1.0").load.content).to eq(gem_contents)
       end
     end
 
@@ -61,7 +63,7 @@ describe Gemstash::GemPusher do
         insert_version gem_id, "0.0.1"
       end
 
-      it "saves the new version dependency info" do
+      it "saves the new version dependency info and stores the gem" do
         results = [{
           :name => "example",
           :number => "0.0.1",
@@ -77,6 +79,7 @@ describe Gemstash::GemPusher do
 
         Gemstash::GemPusher.new(auth_key, gem_contents).push
         expect(deps.fetch(%w(example))).to match_dependencies(results)
+        expect(storage.resource("example-0.1.0").load.content).to eq(gem_contents)
       end
     end
 

@@ -33,6 +33,10 @@ module Gemstash
       @gem ||= ::Gem::Package.new(StringIO.new(@content))
     end
 
+    def storage
+      @storage ||= Gemstash::Storage.new(gemstash_env.base_file("private")).for("gems")
+    end
+
     def check_auth
       raise Gemstash::NotAuthorizedError, "Authorization key required" if @auth_key.nil? || @auth_key.strip.empty?
       auth = Authorization[@auth_key]
@@ -41,6 +45,7 @@ module Gemstash
     end
 
     def store_gem
+      storage.resource(gem.spec.full_name).save(@content)
     end
 
     def save_to_database
