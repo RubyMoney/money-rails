@@ -5,6 +5,7 @@ module Gemstash
     # GemSource for privately stored gems.
     class PrivateSource < Gemstash::GemSource::Base
       include Gemstash::GemSource::DependencyCaching
+      include Gemstash::Env::Helper
 
       def self.rack_env_rewriter
         @rack_env_rewriter ||= Gemstash::GemSource::RackEnvRewriter.new(%r{\A/private})
@@ -67,7 +68,10 @@ module Gemstash
       end
 
       def serve_gem(id)
-        halt 403, "Not yet supported"
+        gem = storage.resource(id)
+        halt 404 unless gem.exist?
+        content_type "application/octet-stream"
+        gem.load.content
       end
 
       def serve_latest_specs
@@ -93,6 +97,10 @@ module Gemstash
 
       def dependencies
         @dependencies ||= Gemstash::Dependencies.for_private
+      end
+
+      def storage
+        @storage ||= Gemstash::Storage.new(gemstash_env.base_file("private")).for("gems")
       end
     end
   end

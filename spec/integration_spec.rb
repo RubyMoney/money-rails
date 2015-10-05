@@ -69,14 +69,16 @@ describe "bundle install against gemstash" do
     end
   end
 
-  context "with private gems" do
+  context "with private gems", :db_transaction => false do
     before do
-      # TODO: Push the speaker gem to the test gemstash server
+      Gemstash::Authorization.authorize("test-key", "all")
+      gem_contents = File.read(gem_path("speaker", "0.1.0"))
+      Gemstash::GemPusher.new("test-key", gem_contents).push
     end
 
     let(:bundle) { "integration_spec/private_gems" }
 
-    xit "successfully bundles" do
+    it "successfully bundles" do
       expect(execute("bundle", dir: dir)).to exit_success
       expect(execute("bundle exec speaker hi", dir: dir)).to exit_success.and_output("Hello world\n")
     end

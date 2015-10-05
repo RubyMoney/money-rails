@@ -26,11 +26,21 @@ RSpec.configure do |config|
     test_env.config = TEST_CONFIG unless test_env.config == TEST_CONFIG
     db = test_env.db
 
-    db.transaction(:rollback => :always) do
+    # Some integration specs will fail in a transaction, so allow disabling
+    if example.metadata[:db_transaction] == false
       example.run
+    else
+      db.transaction(:rollback => :always) do
+        example.run
+      end
     end
 
     db.disconnect
+
+    # If a spec has no transaction, delete the DB to ensure it is clean
+    if example.metadata[:db_transaction] == false
+      File.delete(File.join(TEST_BASE_PATH, "gemstash.db"))
+    end
   end
 
   config.before(:each) do
