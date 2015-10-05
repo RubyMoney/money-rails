@@ -53,7 +53,7 @@ describe Gemstash::GemPusher do
         expect(deps.fetch(%w(example))).to eq([])
         Gemstash::GemPusher.new(auth_key, gem_contents).push
         expect(deps.fetch(%w(example))).to match_dependencies(results)
-        expect(storage.resource("example-0.1.0").load.content).to eq(gem_contents)
+        expect(storage.resource("example-0.1.0.gem").load.content).to eq(gem_contents)
       end
     end
 
@@ -79,7 +79,7 @@ describe Gemstash::GemPusher do
 
         Gemstash::GemPusher.new(auth_key, gem_contents).push
         expect(deps.fetch(%w(example))).to match_dependencies(results)
-        expect(storage.resource("example-0.1.0").load.content).to eq(gem_contents)
+        expect(storage.resource("example-0.1.0.gem").load.content).to eq(gem_contents)
       end
     end
 

@@ -45,7 +45,7 @@ module Gemstash
     end
 
     def store_gem
-      storage.resource(gem.spec.full_name).save(@content)
+      storage.resource("#{gem.spec.full_name}.gem").save(@content)
     end
 
     def save_to_database
