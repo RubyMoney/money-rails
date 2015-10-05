@@ -2,7 +2,6 @@
 module Gemstash
   autoload :Authorization,       "gemstash/authorization"
   autoload :Cache,               "gemstash/cache"
-  autoload :CachedGemFile,       "gemstash/storage"
   autoload :CLI,                 "gemstash/cli"
   autoload :Configuration,       "gemstash/configuration"
   autoload :DBHelper,            "gemstash/db_helper"
@@ -10,13 +9,13 @@ module Gemstash
   autoload :Env,                 "gemstash/env"
   autoload :GemPusher,           "gemstash/gem_pusher"
   autoload :GemSource,           "gemstash/gem_source"
+  autoload :HTTPClientBuilder,   "gemstash/web_helper"
   autoload :Logging,             "gemstash/logging"
-  autoload :Storage,             "gemstash/storage"
   autoload :LruReduxClient,      "gemstash/cache"
   autoload :NotAuthorizedError,  "gemstash/not_authorized_error"
+  autoload :Storage,             "gemstash/storage"
   autoload :Web,                 "gemstash/web"
   autoload :WebError,            "gemstash/web_helper"
   autoload :WebHelper,           "gemstash/web_helper"
-  autoload :HTTPClientBuilder,   "gemstash/web_helper"
   autoload :VERSION,             "gemstash/version"
 end
