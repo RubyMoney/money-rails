@@ -15,7 +15,7 @@ module Gemstash
     module Helper
     private
 
-      def env
+      def gemstash_env
         Gemstash::Env.current
       end
     end

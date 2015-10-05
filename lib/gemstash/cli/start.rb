@@ -24,12 +24,12 @@ module Gemstash
 
       def setup_logging
         return unless daemonize?
-        Gemstash::Logging.setup_logger(env.base_file("server.log"))
+        Gemstash::Logging.setup_logger(gemstash_env.base_file("server.log"))
       end
 
       def store_config
         config = Gemstash::Configuration.new(file: @cli.options[:config_file])
-        env.config = config
+        gemstash_env.config = config
       end
 
       def store_daemonized
@@ -50,7 +50,7 @@ module Gemstash
 
       def daemonize_args
         if daemonize?
-          ["--daemon", "--pidfile", env.base_file("puma.pid")]
+          ["--daemon", "--pidfile", gemstash_env.base_file("puma.pid")]
         else
           []
         end

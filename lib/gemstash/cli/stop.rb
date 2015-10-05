@@ -22,11 +22,11 @@ module Gemstash
 
       def store_config
         config = Gemstash::Configuration.new(file: @cli.options[:config_file])
-        env.config = config
+        gemstash_env.config = config
       end
 
       def args
-        ["--pidfile", env.base_file("puma.pid"), "stop"]
+        ["--pidfile", gemstash_env.base_file("puma.pid"), "stop"]
       end
     end
   end

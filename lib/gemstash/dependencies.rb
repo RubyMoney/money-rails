@@ -51,7 +51,7 @@ module Gemstash
       end
 
       def fetch_from_cache
-        env.cache.dependencies(@scope, @gems) do |gem, value|
+        gemstash_env.cache.dependencies(@scope, @gems) do |gem, value|
           @gems.delete(gem)
           @dependencies += value
         end
@@ -64,7 +64,7 @@ module Gemstash
 
         @db_helper.find_dependencies(@gems) do |gem, value|
           @gems.delete(gem)
-          env.cache.set_dependency(@scope, gem, value)
+          gemstash_env.cache.set_dependency(@scope, gem, value)
           @dependencies += value
         end
       end
@@ -79,14 +79,14 @@ module Gemstash
 
         fetched.each do |gem, result|
           @gems.delete(gem)
-          env.cache.set_dependency(@scope, gem, result)
+          gemstash_env.cache.set_dependency(@scope, gem, result)
           @dependencies += result
         end
       end
 
       def cache_missing
         @gems.each do |gem|
-          env.cache.set_dependency(@scope, gem, [])
+          gemstash_env.cache.set_dependency(@scope, gem, [])
         end
       end
     end

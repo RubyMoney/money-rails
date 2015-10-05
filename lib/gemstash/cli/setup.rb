@@ -42,8 +42,8 @@ module Gemstash
       end
 
       def say_current_config(option, label)
-        return if env.config.default?(option)
-        @cli.say "#{label}: #{env.config[option]}"
+        return if gemstash_env.config.default?(option)
+        @cli.say "#{label}: #{gemstash_env.config[option]}"
       end
 
       def ask_storage
@@ -93,7 +93,7 @@ module Gemstash
 
       def check_cache
         @cli.say "Checking that the cache is available"
-        with_new_config { env.cache_client.alive! }
+        with_new_config { gemstash_env.cache_client.alive! }
       rescue => e
         say_error "Cache error", e
         raise Gemstash::CLI::Error.new(@cli, "The cache is not available")
@@ -101,7 +101,7 @@ module Gemstash
 
       def check_database
         @cli.say "Checking that the database is available"
-        with_new_config { env.db.test_connection }
+        with_new_config { gemstash_env.db.test_connection }
       rescue => e
         say_error "Database error", e
         raise Gemstash::CLI::Error.new(@cli, "The database is not available")
@@ -109,7 +109,7 @@ module Gemstash
 
       def check_storage
         with_new_config do
-          dir = env.config[:base_path]
+          dir = gemstash_env.config[:base_path]
           break if Dir.exist?(dir)
           @cli.say "Creating the file storage path '#{dir}'"
           FileUtils.mkpath(dir)
@@ -132,10 +132,10 @@ module Gemstash
       end
 
       def with_new_config
-        env.config = Gemstash::Configuration.new(config: @config)
+        gemstash_env.config = Gemstash::Configuration.new(config: @config)
         yield
       ensure
-        env.reset
+        gemstash_env.reset
       end
     end
   end

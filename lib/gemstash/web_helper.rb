@@ -19,7 +19,7 @@ module Gemstash
 
     def initialize(http_client:, server_url: nil)
       @client = http_client
-      @server_url = server_url || env.config[:rubygems_url]
+      @server_url = server_url || gemstash_env.config[:rubygems_url]
     end
 
     def get(path)

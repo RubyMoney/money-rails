@@ -46,7 +46,7 @@ module Gemstash
     def save_to_database
       spec = gem.spec
 
-      env.db.transaction do
+      gemstash_env.db.transaction do
         gem_id = @db_helper.find_or_insert_rubygem(spec)
         existing = @db_helper.find_version(gem_id, spec)
 
@@ -64,7 +64,7 @@ module Gemstash
     end
 
     def invalidate_cache
-      env.cache.invalidate_gem("private", gem.spec.name)
+      gemstash_env.cache.invalidate_gem("private", gem.spec.name)
     end
   end
 end

@@ -23,7 +23,7 @@ module Gemstash
 
       db_helper ||= Gemstash::DBHelper.new
       db_helper.insert_or_update_authorization(auth_key, permissions)
-      env.cache.invalidate_authorization(auth_key)
+      gemstash_env.cache.invalidate_authorization(auth_key)
       log.info "Authorization '#{auth_key}' updated with access to '#{permissions}'"
     end
 
@@ -32,19 +32,19 @@ module Gemstash
       auth_row = db_helper.find_authorization(auth_key)
       return unless auth_row
       db_helper.delete_authorization(auth_key)
-      env.cache.invalidate_authorization(auth_key)
+      gemstash_env.cache.invalidate_authorization(auth_key)
       log.info "Authorization '#{auth_key}' with access to '#{auth_row[:permissions]}' removed"
     end
 
     def self.[](auth_key, db_helper = nil)
-      cached_auth = env.cache.authorization(auth_key)
+      cached_auth = gemstash_env.cache.authorization(auth_key)
       return cached_auth if cached_auth
       db_helper ||= Gemstash::DBHelper.new
       auth_row = db_helper.find_authorization(auth_key)
 
       if auth_row
         auth = new(auth_row[:auth_key], auth_row[:permissions])
-        env.cache.set_authorization(auth_row[:auth_key], auth)
+        gemstash_env.cache.set_authorization(auth_row[:auth_key], auth)
         auth
       end
     end

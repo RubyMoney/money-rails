@@ -6,15 +6,15 @@ module Gemstash
     include Gemstash::Env::Helper
 
     def insert_or_update_authorization(auth_key, permissions)
-      env.db.transaction do
+      gemstash_env.db.transaction do
         row = find_authorization(auth_key)
 
         if row
-          env.db[:authorizations].where(:id => row[:id]).update(
+          gemstash_env.db[:authorizations].where(:id => row[:id]).update(
             :permissions => permissions,
             :updated_at => Sequel::SQL::Constants::CURRENT_TIMESTAMP)
         else
-          env.db[:authorizations].insert(
+          gemstash_env.db[:authorizations].insert(
             :auth_key => auth_key,
             :permissions => permissions,
             :created_at => Sequel::SQL::Constants::CURRENT_TIMESTAMP,
@@ -24,31 +24,31 @@ module Gemstash
     end
 
     def find_authorization(auth_key)
-      env.db[:authorizations][:auth_key => auth_key]
+      gemstash_env.db[:authorizations][:auth_key => auth_key]
     end
 
     def delete_authorization(auth_key)
-      env.db[:authorizations].where(:auth_key => auth_key).delete
+      gemstash_env.db[:authorizations].where(:auth_key => auth_key).delete
     end
 
     def find_or_insert_rubygem(spec)
-      row = env.db[:rubygems][:name => spec.name]
+      row = gemstash_env.db[:rubygems][:name => spec.name]
       return row[:id] if row
-      env.db[:rubygems].insert(
+      gemstash_env.db[:rubygems].insert(
         :name => spec.name,
         :created_at => Sequel::SQL::Constants::CURRENT_TIMESTAMP,
         :updated_at => Sequel::SQL::Constants::CURRENT_TIMESTAMP)
     end
 
     def find_version(gem_id, spec)
-      env.db[:versions][
+      gemstash_env.db[:versions][
         :rubygem_id => gem_id,
         :number => spec.version.to_s,
         :platform => spec.platform]
     end
 
     def insert_version(gem_id, spec, indexed = true)
-      env.db[:versions].insert(
+      gemstash_env.db[:versions].insert(
         :rubygem_id => gem_id,
         :number => spec.version.to_s,
         :platform => spec.platform,
@@ -62,7 +62,7 @@ module Gemstash
         requirements = dep.requirement.requirements
         requirements = requirements.map {|r| "#{r.first} #{r.last}" }
         requirements = requirements.join(", ")
-        env.db[:dependencies].insert(
+        gemstash_env.db[:dependencies].insert(
           :version_id => version_id,
           :rubygem_name => dep.name,
           :requirements => requirements,
@@ -72,7 +72,7 @@ module Gemstash
     end
 
     def find_dependencies(gems)
-      results = env.db["
+      results = gemstash_env.db["
         SELECT rubygem.name,
                version.number, version.platform,
                dependency.rubygem_name, dependency.requirements
