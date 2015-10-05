@@ -33,8 +33,9 @@ module Gemstash
       end
     end
 
-    def initialize(config = nil)
+    def initialize(config = nil, cache: nil)
       @config = config
+      @cache = cache
     end
 
     def self.current
