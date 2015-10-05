@@ -56,7 +56,7 @@ module Gemstash
     def load
       raise "Resource #{@name} has no content to load" unless exist?
       @content = read_file(content_filename)
-      @properties = read_file(properties_filename)
+      @properties = YAML.load_file(properties_filename)
       self
     end
 

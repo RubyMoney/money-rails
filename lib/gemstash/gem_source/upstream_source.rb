@@ -127,7 +127,7 @@ module Gemstash
         gem = storage.resource(id)
         if gem.exist?
           log.info "Gem #{id} exists, returning cached"
-          gem
+          gem.load
         else
           log.info "Gem #{id} is not cached, fetching"
           web_helper.get("/gems/#{id}") do |body, headers|

@@ -48,6 +48,16 @@ describe "bundle install against gemstash" do
       expect(execute("bundle", dir: dir)).to exit_success
       expect(execute("bundle exec speaker hi", dir: dir)).to exit_success.and_output("Hello world\n")
     end
+
+    it "can successfully bundle twice" do
+      expect(execute("bundle", dir: dir)).to exit_success
+      expect(execute("bundle exec speaker hi", dir: dir)).to exit_success.and_output("Hello world\n")
+
+      clean_bundle bundle
+
+      expect(execute("bundle", dir: dir)).to exit_success
+      expect(execute("bundle exec speaker hi", dir: dir)).to exit_success.and_output("Hello world\n")
+    end
   end
 
   context "with redirecting gems" do
