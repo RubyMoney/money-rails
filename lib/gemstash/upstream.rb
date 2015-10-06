@@ -15,24 +15,36 @@ module Gemstash
 
     def url(path = nil, params = nil)
       params = "?#{params}" if !params.nil? && !params.empty?
-        "#{self}#{path}#{params}"
+      "#{self}#{path}#{params}"
     end
 
     def auth?
-      ! user.to_s.empty? && ! password.to_s.empty?
+      !user.to_s.empty? && !password.to_s.empty?
     end
   end
 
   #:nodoc:
   class UpstreamGemName
-    def initialize(upstream, name)
+    def initialize(upstream, gem_name)
       @upstream = upstream
-      @name = name.gsub(%r{\.gem$}i, "")
+      @id = gem_name
     end
 
     def to_s
-      return "#{@name}_#{hashed_auth}" if @upstream.auth?
-      @name
+      unique_name
+    end
+
+    def id
+      @id
+    end
+
+    def name
+      @id.gsub(/\.gem$/i, "")
+    end
+
+    def unique_name
+      return "#{name}_#{hashed_auth}" if @upstream.auth?
+      name
     end
 
   private

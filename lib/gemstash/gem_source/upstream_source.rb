@@ -97,7 +97,6 @@ module Gemstash
       def upstream
         Gemstash::Upstream.new(env["gemstash.upstream"])
       end
-
     end
 
     # GemSource for gems in an upstream server.
@@ -129,22 +128,23 @@ module Gemstash
       end
 
       def fetch_gem(id)
-        gem = storage.resource(id)
+        gem_name = Gemstash::UpstreamGemName.new(upstream, id)
+        gem = storage.resource(gem_name.unique_name)
         if gem.exist?
+          log.info "Gem #{gem_name.name} exists, returning cached"
           fetch_local_gem(gem)
         else
-          fetch_remote_gem(gem)
+          log.info "Gem #{gem_name.name} is not cached, fetching"
+          fetch_remote_gem(gem_name, gem)
         end
       end
 
       def fetch_local_gem(gem)
-        log.info "Gem #{gem.name} exists, returning cached"
         gem.load
       end
 
-      def fetch_remote_gem(gem)
-        log.info "Gem #{gem.name} is not cached, fetching"
-        web_helper.get("/gems/#{gem.name}") do |body, headers|
+      def fetch_remote_gem(gem_name, gem)
+        web_helper.get("/gems/#{gem_name.id}") do |body, headers|
           gem.save(body, properties: headers)
         end
       end

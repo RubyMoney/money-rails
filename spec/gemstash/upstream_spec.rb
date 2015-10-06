@@ -47,7 +47,10 @@ describe Gemstash::UpstreamGemName do
     end
 
     it "removes the trailing .gem from the name" do
-      expect(Gemstash::UpstreamGemName.new(upstream, "mygemname-1.0.1.gem").to_s).to eq("mygemname-1.0.1")
+      gem_name = Gemstash::UpstreamGemName.new(upstream, "mygemname-1.0.1.gem")
+      expect(gem_name.id).to eq("mygemname-1.0.1.gem")
+      expect(gem_name.name).to eq("mygemname-1.0.1")
+      expect(gem_name.unique_name).to eq("mygemname-1.0.1")
     end
   end
 
@@ -55,7 +58,11 @@ describe Gemstash::UpstreamGemName do
     let(:upstream) { Gemstash::Upstream.new("https://user:pass1@rubygems.org/") }
 
     it "resolves the gem name to a hashed name" do
-      expect(Gemstash::UpstreamGemName.new(upstream, "mygemname").to_s).to eq("mygemname_438cecd9768256dcb439ddc610ce4b72")
+      gem_name = Gemstash::UpstreamGemName.new(upstream, "mygemname.gem")
+      expect(gem_name.id).to eq("mygemname.gem")
+      expect(gem_name.name).to eq("mygemname")
+      expect(gem_name.unique_name).to eq("mygemname_438cecd9768256dcb439ddc610ce4b72")
+      expect(gem_name.to_s).to eq("mygemname_438cecd9768256dcb439ddc610ce4b72")
     end
   end
 end
