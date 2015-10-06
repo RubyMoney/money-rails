@@ -4,7 +4,6 @@ module Gemstash
   #:nodoc:
   class Upstream
     extend Forwardable
-    include Gemstash::Env::Helper
 
     def_delegators :@uri, :scheme, :host, :user, :password, :to_s
 

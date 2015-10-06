@@ -91,12 +91,12 @@ module Gemstash
 
       def web_helper
         @web_helper ||= Gemstash::WebHelper.new(
-          http_client: @app.http_client_for(upstream.to_s),
+          http_client: http_client_for(upstream.to_s),
           server_url: upstream.to_s)
       end
 
       def upstream
-        Gemstash::Upstream.new(env["gemstash.upstream"])
+        @upstream ||= Gemstash::Upstream.new(env["gemstash.upstream"])
       end
     end
 
