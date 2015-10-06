@@ -39,14 +39,18 @@ module Gemstash
           log.info "#{log_start} to '#{@rack_env["REQUEST_URI"]}'"
         end
 
+        def upstream_url
+          params.first.to_s
+        end
+
+      private
+
         def params
           @params ||= begin
             check_match
             @path_info_match[1, @path_info_match.size - 1]
           end
         end
-
-      private
 
         def matches_request_uri?
           @request_uri_match ||= @rack_env["REQUEST_URI"].match(regexp)
