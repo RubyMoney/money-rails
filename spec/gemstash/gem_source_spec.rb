@@ -15,7 +15,7 @@ describe Gemstash::GemSource::RackEnvRewriter do
       context = rewriter.for(env)
       expect(context.matches?).to be_truthy
       context.rewrite
-      expect(context.upstream_url).to eq("")
+      expect(context.params).to be_empty
       expect(env["REQUEST_URI"]).to eq("/some/path?arg=abc")
       expect(env["PATH_INFO"]).to eq("/some/path")
     end
@@ -25,7 +25,7 @@ describe Gemstash::GemSource::RackEnvRewriter do
       context = rewriter.for(env)
       expect(context.matches?).to be_falsey
       expect { context.rewrite }.to raise_error(RuntimeError)
-      expect { context.upstream_url }.to raise_error(RuntimeError)
+      expect { context.params }.to raise_error(RuntimeError)
       expect(env["REQUEST_URI"]).to eq("/private/some/path?arg=abc")
       expect(env["PATH_INFO"]).to eq("/private/some/path")
     end
@@ -43,21 +43,21 @@ describe Gemstash::GemSource::RackEnvRewriter do
     end
 
     it "captures the parameter and rewrites the URI" do
-      rewriter = Gemstash::GemSource::RackEnvRewriter.new(%r{\A/upstream/([^/]+)})
+      rewriter = Gemstash::GemSource::RackEnvRewriter.new(%r{\A/upstream/(?<upstream_url>[^/]+)})
       context = rewriter.for(env)
       expect(context.matches?).to be_truthy
       context.rewrite
-      expect(context.upstream_url).to eq(escaped_upstream_url)
+      expect(context.params["upstream_url"]).to eq(escaped_upstream_url)
       expect(env["REQUEST_URI"]).to eq("/some/path?arg=abc")
       expect(env["PATH_INFO"]).to eq("/some/path")
     end
 
     it "doesn't do anything if there is no match" do
-      rewriter = Gemstash::GemSource::RackEnvRewriter.new(%r{\A/redirect/([^/]+)})
+      rewriter = Gemstash::GemSource::RackEnvRewriter.new(%r{\A/redirect/(?<upstream_url>[^/]+)})
       context = rewriter.for(env)
       expect(context.matches?).to be_falsey
       expect { context.rewrite }.to raise_error(RuntimeError)
-      expect { context.upstream_url }.to raise_error(RuntimeError)
+      expect { context.params }.to raise_error(RuntimeError)
       expect(env["REQUEST_URI"]).to eq("/upstream/#{escaped_upstream_url}/some/path?arg=abc")
       expect(env["PATH_INFO"]).to eq("/upstream/#{escaped_upstream_url}/some/path")
     end
