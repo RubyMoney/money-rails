@@ -29,6 +29,7 @@ module Gemstash
 
   #:nodoc:
   class Resource
+    attr_accessor :name
     def initialize(folder, name)
       @base_path = folder
       @name = name

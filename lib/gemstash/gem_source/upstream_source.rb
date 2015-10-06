@@ -13,13 +13,13 @@ module Gemstash
         rewriter = rack_env_rewriter.for(env)
         return false unless rewriter.matches?
         rewriter.rewrite
-        env["gemstash.upstream"] = CGI.unescape(rewriter.upstream_url)
+        env["gemstash.upstream"] = rewriter.upstream_url
         true
       end
 
       def serve_root
         cache_control :public, :max_age => 31_536_000
-        redirect web_helper.url(nil, request.query_string)
+        redirect upstream.url(nil, request.query_string)
       end
 
       def serve_add_gem
@@ -43,56 +43,59 @@ module Gemstash
       end
 
       def serve_dependencies
-        redirect web_helper.url("/api/v1/dependencies", request.query_string)
+        redirect upstream.url("/api/v1/dependencies", request.query_string)
       end
 
       def serve_dependencies_json
-        redirect web_helper.url("/api/v1/dependencies.json", request.query_string)
+        redirect upstream.url("/api/v1/dependencies.json", request.query_string)
       end
 
       def serve_names
-        redirect web_helper.url("/names", request.query_string)
+        redirect upstream.url("/names", request.query_string)
       end
 
       def serve_versions
-        redirect web_helper.url("/versions", request.query_string)
+        redirect upstream.url("/versions", request.query_string)
       end
 
       def serve_info(name)
-        redirect web_helper.url("/info/#{name}", request.query_string)
+        redirect upstream.url("/info/#{name}", request.query_string)
       end
 
       def serve_marshal(id)
-        redirect web_helper.url("/quick/Marshal.4.8/#{id}", request.query_string)
+        redirect upstream.url("/quick/Marshal.4.8/#{id}", request.query_string)
       end
 
       def serve_actual_gem(id)
-        redirect web_helper.url("/fetch/actual/gem/#{id}", request.query_string)
+        redirect upstream.url("/fetch/actual/gem/#{id}", request.query_string)
       end
 
       def serve_gem(id)
-        redirect web_helper.url("/gems/#{id}", request.query_string)
+        redirect upstream.url("/gems/#{id}", request.query_string)
       end
 
       def serve_latest_specs
-        redirect web_helper.url("/latest_specs.4.8.gz", request.query_string)
+        redirect upstream.url("/latest_specs.4.8.gz", request.query_string)
       end
 
       def serve_specs
-        redirect web_helper.url("/specs.4.8.gz", request.query_string)
+        redirect upstream.url("/specs.4.8.gz", request.query_string)
       end
 
       def serve_prerelease_specs
-        redirect web_helper.url("/prerelease_specs.4.8.gz", request.query_string)
+        redirect upstream.url("/prerelease_specs.4.8.gz", request.query_string)
       end
 
     private
 
       def web_helper
-        server_url = env["gemstash.upstream"]
         @web_helper ||= Gemstash::WebHelper.new(
-          http_client: @app.http_client_for(server_url),
-          server_url: server_url)
+          http_client: @app.http_client_for(upstream.to_s),
+          server_url: upstream.to_s)
+      end
+
+      def upstream
+        Gemstash::Upstream.new(env["gemstash.upstream"])
       end
     end
 
@@ -126,13 +129,21 @@ module Gemstash
       def fetch_gem(id)
         gem = storage.resource(id)
         if gem.exist?
-          log.info "Gem #{id} exists, returning cached"
-          gem.load
+          fetch_local_gem(gem)
         else
-          log.info "Gem #{id} is not cached, fetching"
-          web_helper.get("/gems/#{id}") do |body, headers|
-            gem.save(body, properties: headers)
-          end
+          fetch_remote_gem(gem)
+        end
+      end
+
+      def fetch_local_gem(gem)
+        log.info "Gem #{gem.name} exists, returning cached"
+        gem.load
+      end
+
+      def fetch_remote_gem(gem)
+        log.info "Gem #{gem.name} is not cached, fetching"
+        web_helper.get("/gems/#{gem.name}") do |body, headers|
+          gem.save(body, properties: headers)
         end
       end
     end

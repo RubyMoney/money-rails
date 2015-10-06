@@ -106,7 +106,6 @@ describe Gemstash::GemSource do
       expect(app).to receive(:call).with(env).and_return(result)
       expect(middleware.call(env)).to eq(result)
       expect(env["gemstash.gem_source"]).to eq(Gemstash::GemSource::UpstreamSource)
-      expect(env["gemstash.upstream"]).to eq(upstream_url)
       expect(env["REQUEST_URI"]).to eq("/some/path?arg=abc")
       expect(env["PATH_INFO"]).to eq("/some/path")
       expect(the_log).to include("Rewriting '/upstream/#{escaped_upstream_url}\
