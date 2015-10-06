@@ -146,11 +146,14 @@ describe Gemstash::Web do
   end
 
   context "GET /gems/:id" do
+    let(:current_env) { Gemstash::Env.current }
+    let(:upstream) { Gemstash::Upstream.new(current_env.config[:rubygems_url]) }
+    let(:storage) { Gemstash::Storage.new(current_env.base_file("gem_cache")).for(upstream.host) }
     it "fetchs the gem file, stores, and serves it" do
       get "/gems/rack", {}, rack_env
       expect(last_response.body).to eq("zapatito")
       expect(last_response.header["CONTENT-TYPE"]).to eq("octet/stream")
-      expect(Gemstash::Storage.new(Gemstash::Env.current.base_file("gem_cache")).resource("rack")).to exist
+      expect(storage.resource("rack")).to exist
     end
   end
 end

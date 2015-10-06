@@ -15,6 +15,7 @@ module Gemstash
   autoload :NotAuthorizedError,  "gemstash/not_authorized_error"
   autoload :Storage,             "gemstash/storage"
   autoload :Upstream,            "gemstash/upstream"
+  autoload :UpstreamGemName,     "gemstash/upstream"
   autoload :Web,                 "gemstash/web"
   autoload :WebError,            "gemstash/web_helper"
   autoload :WebHelper,           "gemstash/web_helper"

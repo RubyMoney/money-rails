@@ -37,3 +37,25 @@ describe Gemstash::Upstream do
       /URL 'something_that_is_not_an_uri' is not valid/)
   end
 end
+
+describe Gemstash::UpstreamGemName do
+  context "With a simple upstream" do
+    let(:upstream) { Gemstash::Upstream.new("https://rubygems.org/") }
+
+    it "resolves to the gem name" do
+      expect(Gemstash::UpstreamGemName.new(upstream, "mygemname").to_s).to eq("mygemname")
+    end
+
+    it "removes the trailing .gem from the name" do
+      expect(Gemstash::UpstreamGemName.new(upstream, "mygemname-1.0.1.gem").to_s).to eq("mygemname-1.0.1")
+    end
+  end
+
+  context "With an authed upstream" do
+    let(:upstream) { Gemstash::Upstream.new("https://user:pass1@rubygems.org/") }
+
+    it "resolves the gem name to a hashed name" do
+      expect(Gemstash::UpstreamGemName.new(upstream, "mygemname").to_s).to eq("mygemname_438cecd9768256dcb439ddc610ce4b72")
+    end
+  end
+end

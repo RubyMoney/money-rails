@@ -97,6 +97,7 @@ module Gemstash
       def upstream
         Gemstash::Upstream.new(env["gemstash.upstream"])
       end
+
     end
 
     # GemSource for gems in an upstream server.
@@ -124,6 +125,7 @@ module Gemstash
 
       def storage
         @storage ||= Gemstash::Storage.new(gemstash_env.base_file("gem_cache"))
+        @storage.for(upstream.host)
       end
 
       def fetch_gem(id)
