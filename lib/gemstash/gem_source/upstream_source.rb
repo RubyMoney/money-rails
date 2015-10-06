@@ -14,7 +14,7 @@ module Gemstash
         rewriter = rack_env_rewriter.for(env)
         return false unless rewriter.matches?
         rewriter.rewrite
-        env["gemstash.upstream"] = rewriter.params["upstream_url"]
+        env["gemstash.upstream"] = rewriter.captures["upstream_url"]
         true
       end
 

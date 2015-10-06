@@ -38,7 +38,7 @@ module Gemstash
         log.info "#{log_start} to '#{@rack_env["REQUEST_URI"]}'"
       end
 
-      def params
+      def captures
         @params ||= begin
           check_match
           @path_info_match.names.inject({}) do |result, name|
