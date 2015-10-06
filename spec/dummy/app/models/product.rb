@@ -28,7 +28,7 @@ class Product < ActiveRecord::Base
   :numericality => {
     :greater_than => 0,
     :less_than_or_equal_to => 100,
-    :message => "Must be greater than zero and less than $100"
+    :message => "must be greater than zero and less than $100"
   }
 
   # Skip validations separately from each other
@@ -45,7 +45,7 @@ class Product < ActiveRecord::Base
   validates :validates_method_amount, :money => {
     :greater_than => 0,
     :less_than_or_equal_to => ->(product) { product.optional_price.to_f },
-    :message => 'Must be greater than zero and less than $100',
+    :message => 'must be greater than zero and less than $100',
   }, allow_nil: true
 
   alias_attribute :renamed_cents, :aliased_cents

@@ -80,7 +80,7 @@ module MoneyRails
             #     :numericality => {
             #       :greater_than_or_equal_to => 0,
             #       :less_than_or_equal_to => 100,
-            #       :message => "Must be greater than zero and less than $100"
+            #       :message => "must be greater than zero and less than $100"
             #     }
             #
             # To disable validation entirely, use :disable_validation, E.g:
