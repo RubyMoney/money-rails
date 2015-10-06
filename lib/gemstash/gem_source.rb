@@ -5,7 +5,6 @@ module Gemstash
   #:nodoc:
   module GemSource
     autoload :DependencyCaching, "gemstash/gem_source/dependency_caching"
-    autoload :RackEnvRewriter,   "gemstash/gem_source/rack_env_rewriter"
     autoload :PrivateSource,     "gemstash/gem_source/private_source"
     autoload :RackMiddleware,    "gemstash/gem_source/rack_middleware"
     autoload :RedirectSource,    "gemstash/gem_source/upstream_source"

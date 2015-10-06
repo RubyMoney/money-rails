@@ -8,7 +8,7 @@ module Gemstash
       include Gemstash::Env::Helper
 
       def self.rack_env_rewriter
-        @rack_env_rewriter ||= Gemstash::GemSource::RackEnvRewriter.new(%r{\A/private})
+        @rack_env_rewriter ||= Gemstash::RackEnvRewriter.new(%r{\A/private})
       end
 
       def self.matches?(env)

@@ -13,6 +13,7 @@ module Gemstash
   autoload :Logging,             "gemstash/logging"
   autoload :LruReduxClient,      "gemstash/cache"
   autoload :NotAuthorizedError,  "gemstash/not_authorized_error"
+  autoload :RackEnvRewriter,     "gemstash/rack_env_rewriter"
   autoload :Storage,             "gemstash/storage"
   autoload :Upstream,            "gemstash/upstream"
   autoload :UpstreamGemName,     "gemstash/upstream"
