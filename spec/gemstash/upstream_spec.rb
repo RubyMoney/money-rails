@@ -27,6 +27,19 @@ describe Gemstash::Upstream do
     expect(upstream_uri.password).to eq("mypassword")
   end
 
+  it "distinguishes between ports, auths, and paths" do
+    upstream_uri = Gemstash::Upstream.new("https://rubygems.org/")
+    auth_upstream_uri = Gemstash::Upstream.new("https://myuser:mypassword@rubygems.org/")
+    port_upstream_uri = Gemstash::Upstream.new("https://rubygems.org:4321/")
+    path_upstream_uri = Gemstash::Upstream.new("https://rubygems.org/custom/path")
+    expect(upstream_uri.host_id).to_not eq(auth_upstream_uri.host_id)
+    expect(upstream_uri.host_id).to_not eq(port_upstream_uri.host_id)
+    expect(upstream_uri.host_id).to_not eq(path_upstream_uri.host_id)
+    expect(auth_upstream_uri.host_id).to_not eq(port_upstream_uri.host_id)
+    expect(auth_upstream_uri.host_id).to_not eq(path_upstream_uri.host_id)
+    expect(port_upstream_uri.host_id).to_not eq(path_upstream_uri.host_id)
+  end
+
   it "supports building urls with parameters" do
     upstream_uri = Gemstash::Upstream.new("https://rubygems.org/")
     expect(upstream_uri.url("gems", "key=value")).to eq("https://rubygems.org/gems?key=value")
@@ -50,19 +63,6 @@ describe Gemstash::UpstreamGemName do
       gem_name = Gemstash::UpstreamGemName.new(upstream, "mygemname-1.0.1.gem")
       expect(gem_name.id).to eq("mygemname-1.0.1.gem")
       expect(gem_name.name).to eq("mygemname-1.0.1")
-      expect(gem_name.unique_name).to eq("mygemname-1.0.1")
-    end
-  end
-
-  context "With an authed upstream" do
-    let(:upstream) { Gemstash::Upstream.new("https://user:pass1@rubygems.org/") }
-
-    it "resolves the gem name to a hashed name" do
-      gem_name = Gemstash::UpstreamGemName.new(upstream, "mygemname.gem")
-      expect(gem_name.id).to eq("mygemname.gem")
-      expect(gem_name.name).to eq("mygemname")
-      expect(gem_name.unique_name).to eq("mygemname_438cecd9768256dcb439ddc610ce4b72")
-      expect(gem_name.to_s).to eq("mygemname_438cecd9768256dcb439ddc610ce4b72")
     end
   end
 end

@@ -125,12 +125,12 @@ module Gemstash
 
       def storage
         @storage ||= Gemstash::Storage.new(gemstash_env.base_file("gem_cache"))
-        @storage.for(upstream.host)
+        @storage.for(upstream.host_id)
       end
 
       def fetch_gem(id)
         gem_name = Gemstash::UpstreamGemName.new(upstream, id)
-        gem_resource = storage.resource(gem_name.unique_name)
+        gem_resource = storage.resource(gem_name.name)
         if gem_resource.exist?
           fetch_local_gem(gem_name, gem_resource)
         else

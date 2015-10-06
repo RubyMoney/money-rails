@@ -20,6 +20,17 @@ module Gemstash
     def auth?
       !user.to_s.empty? && !password.to_s.empty?
     end
+
+    # Utilized as the parent directory for cached gems
+    def host_id
+      @host_id ||= "#{host}_#{hash}"
+    end
+
+  private
+
+    def hash
+      Digest::MD5.hexdigest(to_s)
+    end
   end
 
   #:nodoc:
@@ -30,7 +41,7 @@ module Gemstash
     end
 
     def to_s
-      unique_name
+      name
     end
 
     def id
@@ -38,20 +49,7 @@ module Gemstash
     end
 
     def name
-      @id.gsub(/\.gem$/i, "")
-    end
-
-    def unique_name
-      return "#{name}_#{hashed_auth}" if @upstream.auth?
-      name
-    end
-
-  private
-
-    # Quite naive for now, but it is really easy to change this and add some
-    # salt later
-    def hashed_auth
-      Digest::MD5.hexdigest("#{@upstream.user}#{@upstream.password}")
+      @name ||= @id.gsub(/\.gem$/i, "")
     end
   end
 end
