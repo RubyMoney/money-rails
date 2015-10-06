@@ -1,5 +1,6 @@
 require "gemstash"
 require "cgi"
+require "set"
 
 module Gemstash
   module GemSource
@@ -129,23 +130,25 @@ module Gemstash
 
       def fetch_gem(id)
         gem_name = Gemstash::UpstreamGemName.new(upstream, id)
-        gem = storage.resource(gem_name.unique_name)
-        if gem.exist?
-          log.info "Gem #{gem_name.name} exists, returning cached"
-          fetch_local_gem(gem)
+        gem_resource = storage.resource(gem_name.unique_name)
+        if gem_resource.exist?
+          fetch_local_gem(gem_name, gem_resource)
         else
-          log.info "Gem #{gem_name.name} is not cached, fetching"
-          fetch_remote_gem(gem_name, gem)
+          fetch_remote_gem(gem_name, gem_resource)
         end
       end
 
-      def fetch_local_gem(gem)
-        gem.load
+      def fetch_local_gem(gem_name, gem_resource)
+        log.info "Gem #{gem_name.name} exists, returning cached"
+        gem_resource.load
       end
 
-      def fetch_remote_gem(gem_name, gem)
+      def fetch_remote_gem(gem_name, gem_resource)
+        log.info "Gem #{gem_name.name} is not cached, fetching"
+        valid_headers = Set.new(["etag", "content-type", "content-length", "last-modified"])
         web_helper.get("/gems/#{gem_name.id}") do |body, headers|
-          gem.save(body, properties: headers)
+          properties = headers.select {|key, _value| valid_headers.include?(key.downcase) }
+          gem_resource.save(body, properties: properties)
         end
       end
     end
