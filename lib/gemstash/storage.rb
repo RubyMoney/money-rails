@@ -50,7 +50,7 @@ module Gemstash
     end
 
     def properties
-      @properties
+      @properties || Hash.new
     end
 
     def load

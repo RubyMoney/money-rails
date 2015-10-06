@@ -34,6 +34,12 @@ describe Gemstash::Storage do
       expect(resource).not_to exist
     end
 
+    it "returns empty properties when they are not saved" do
+      resource = storage.resource("something")
+      resource = resource.save("some content").load
+      expect(resource.properties).to eq({})
+    end
+
     context "with a simple resource" do
       let(:resource) { storage.resource("an_id") }
 
