@@ -68,7 +68,8 @@ module Gemstash
       end
 
       def serve_gem(id)
-        gem = storage.resource(id)
+        gem_name = id.sub(/\.gem\z/, "")
+        gem = storage.resource(gem_name)
         halt 404 unless gem.exist?
         content_type "application/octet-stream"
         gem.load.content
