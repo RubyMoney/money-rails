@@ -1,6 +1,5 @@
 require "gemstash"
 require "cgi"
-require "set"
 
 module Gemstash
   module GemSource
@@ -89,12 +88,6 @@ module Gemstash
 
     private
 
-      def web_helper
-        @web_helper ||= Gemstash::WebHelper.new(
-          http_client: http_client_for(upstream.to_s),
-          server_url: upstream.to_s)
-      end
-
       def upstream
         @upstream ||= Gemstash::Upstream.new(env["gemstash.upstream"])
       end
@@ -128,6 +121,16 @@ module Gemstash
         @storage.for(upstream.host_id)
       end
 
+      def web_helper
+        @web_helper ||= Gemstash::WebHelper.new(
+          http_client: http_client_for(upstream.to_s),
+          server_url: upstream.to_s)
+      end
+
+      def gem_fetcher
+        @gem_fetcher ||= GemFetcher.new(HTTPClient.new(http_client_for(upstream.to_s)))
+      end
+
       def fetch_gem(id)
         gem_name = Gemstash::UpstreamGemName.new(upstream, id)
         gem_resource = storage.resource(gem_name.name)
@@ -145,10 +148,8 @@ module Gemstash
 
       def fetch_remote_gem(gem_name, gem_resource)
         log.info "Gem #{gem_name.name} is not cached, fetching"
-        valid_headers = Set.new(["etag", "content-type", "content-length", "last-modified"])
-        web_helper.get("/gems/#{gem_name.id}") do |body, headers|
-          properties = headers.select {|key, _value| valid_headers.include?(key.downcase) }
-          gem_resource.save(body, properties: properties)
+        gem_fetcher.fetch(gem_name.id) do |content, properties|
+          gem_resource.save(content, properties: properties)
         end
       end
     end
