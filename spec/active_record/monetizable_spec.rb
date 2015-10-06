@@ -367,11 +367,19 @@ if defined? ActiveRecord
         expect(product.save).to be_truthy
       end
 
-      it "preserves user input if validation fails" do
-        MoneyRails::Configuration.preserve_user_input = true
-        product.price = "text"
-        expect(product.save).to be_falsy
-        expect(product.price.to_s).to eq("text")
+      describe "with preserve_user_input set" do
+        around(:each) do |example|
+          old_value = MoneyRails::Configuration.preserve_user_input
+          MoneyRails::Configuration.preserve_user_input = true
+          example.run
+          MoneyRails::Configuration.preserve_user_input = false
+        end
+
+        it "preserves user input if validation fails" do
+          product.price = "14,0"
+          expect(product.save).to be_falsy
+          expect(product.price.to_s).to eq("14,0")
+        end
       end
 
       it "respects numericality validation when using update_attributes on money attribute" do
