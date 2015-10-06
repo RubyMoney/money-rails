@@ -1,8 +1,6 @@
 require "spec_helper"
 
-describe "bundle install against gemstash" do
-  let(:dir) { bundle_path(bundle) }
-
+describe "gemstash integration tests" do
   before(:all) do
     speaker_deps = {
       :name => "speaker",
@@ -39,69 +37,73 @@ describe "bundle install against gemstash" do
     @empty_server.stop
   end
 
-  after do
-    clean_bundle bundle
-  end
+  describe "bundling install against gemstash" do
+    let(:dir) { bundle_path(bundle) }
 
-  context "with default upstream gems" do
-    let(:bundle) { "integration_spec/default_upstream_gems" }
-
-    it "successfully bundles" do
-      expect(execute("bundle", dir: dir)).to exit_success
-      expect(execute("bundle exec speaker hi", dir: dir)).to exit_success.and_output("Hello world\n")
-    end
-  end
-
-  context "with upstream gems via a header mirror" do
-    let(:bundle) { "integration_spec/header_mirror_gems" }
-
-    # This should stay skipped until bundler sends the X-Gemfile-Source header
-    xit "successfully bundles" do
-      expect(execute("bundle", dir: dir)).to exit_success
-      expect(execute("bundle exec speaker hi", dir: dir)).to exit_success.and_output("Hello world\n")
-    end
-  end
-
-  context "with upstream gems" do
-    let(:bundle) { "integration_spec/upstream_gems" }
-
-    it "successfully bundles" do
-      expect(execute("bundle", dir: dir)).to exit_success
-      expect(execute("bundle exec speaker hi", dir: dir)).to exit_success.and_output("Hello world\n")
-    end
-
-    it "can successfully bundle twice" do
-      expect(execute("bundle", dir: dir)).to exit_success
-      expect(execute("bundle exec speaker hi", dir: dir)).to exit_success.and_output("Hello world\n")
-
+    after do
       clean_bundle bundle
-
-      expect(execute("bundle", dir: dir)).to exit_success
-      expect(execute("bundle exec speaker hi", dir: dir)).to exit_success.and_output("Hello world\n")
-    end
-  end
-
-  context "with redirecting gems" do
-    let(:bundle) { "integration_spec/redirecting_gems" }
-
-    it "successfully bundles" do
-      expect(execute("bundle", dir: dir)).to exit_success
-      expect(execute("bundle exec speaker hi", dir: dir)).to exit_success.and_output("Hello world\n")
-    end
-  end
-
-  context "with private gems", :db_transaction => false do
-    before do
-      Gemstash::Authorization.authorize("test-key", "all")
-      gem_contents = File.read(gem_path("speaker", "0.1.0"))
-      Gemstash::GemPusher.new("test-key", gem_contents).push
     end
 
-    let(:bundle) { "integration_spec/private_gems" }
+    context "with default upstream gems" do
+      let(:bundle) { "integration_spec/default_upstream_gems" }
 
-    it "successfully bundles" do
-      expect(execute("bundle", dir: dir)).to exit_success
-      expect(execute("bundle exec speaker hi", dir: dir)).to exit_success.and_output("Hello world\n")
+      it "successfully bundles" do
+        expect(execute("bundle", dir: dir)).to exit_success
+        expect(execute("bundle exec speaker hi", dir: dir)).to exit_success.and_output("Hello world\n")
+      end
+    end
+
+    context "with upstream gems via a header mirror" do
+      let(:bundle) { "integration_spec/header_mirror_gems" }
+
+      # This should stay skipped until bundler sends the X-Gemfile-Source header
+      xit "successfully bundles" do
+        expect(execute("bundle", dir: dir)).to exit_success
+        expect(execute("bundle exec speaker hi", dir: dir)).to exit_success.and_output("Hello world\n")
+      end
+    end
+
+    context "with upstream gems" do
+      let(:bundle) { "integration_spec/upstream_gems" }
+
+      it "successfully bundles" do
+        expect(execute("bundle", dir: dir)).to exit_success
+        expect(execute("bundle exec speaker hi", dir: dir)).to exit_success.and_output("Hello world\n")
+      end
+
+      it "can successfully bundle twice" do
+        expect(execute("bundle", dir: dir)).to exit_success
+        expect(execute("bundle exec speaker hi", dir: dir)).to exit_success.and_output("Hello world\n")
+
+        clean_bundle bundle
+
+        expect(execute("bundle", dir: dir)).to exit_success
+        expect(execute("bundle exec speaker hi", dir: dir)).to exit_success.and_output("Hello world\n")
+      end
+    end
+
+    context "with redirecting gems" do
+      let(:bundle) { "integration_spec/redirecting_gems" }
+
+      it "successfully bundles" do
+        expect(execute("bundle", dir: dir)).to exit_success
+        expect(execute("bundle exec speaker hi", dir: dir)).to exit_success.and_output("Hello world\n")
+      end
+    end
+
+    context "with private gems", :db_transaction => false do
+      before do
+        Gemstash::Authorization.authorize("test-key", "all")
+        gem_contents = File.read(gem_path("speaker", "0.1.0"))
+        Gemstash::GemPusher.new("test-key", gem_contents).push
+      end
+
+      let(:bundle) { "integration_spec/private_gems" }
+
+      it "successfully bundles" do
+        expect(execute("bundle", dir: dir)).to exit_success
+        expect(execute("bundle exec speaker hi", dir: dir)).to exit_success.and_output("Hello world\n")
+      end
     end
   end
 end
