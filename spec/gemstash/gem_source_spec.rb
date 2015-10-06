@@ -50,6 +50,30 @@ describe Gemstash::GemSource do
     end
   end
 
+  context "using an upstream defined in a header" do
+    let(:env) do
+      {
+        "gemstash.env" => Gemstash::Env.current,
+        "REQUEST_URI" => "/some/path?arg=abc",
+        "PATH_INFO" => "/some/path",
+        "HTTP_X_GEMFILE_SOURCE" => upstream_url
+      }
+    end
+
+    let(:upstream_url) { "https://some.gemsite.com" }
+    let(:result) { double }
+
+    it "sets the source to RubygemsSource" do
+      expect(app).to receive(:call).with(env).and_return(result)
+      expect(middleware.call(env)).to eq(result)
+      expect(env["gemstash.gem_source"]).to eq(Gemstash::GemSource::RubygemsSource)
+      expect(env["gemstash.upstream"]).to eq(upstream_url)
+      expect(env["REQUEST_URI"]).to eq("/some/path?arg=abc")
+      expect(env["PATH_INFO"]).to eq("/some/path")
+      expect(the_log).to_not include("Rewriting ")
+    end
+  end
+
   context "using the default upstream" do
     let(:env) do
       {

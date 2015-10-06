@@ -85,7 +85,7 @@ class SimpleServer
     end
   end
 
-  def mount_gem_deps(name, deps)
+  def mount_gem_deps(name = nil, deps = nil)
     unless @gem_deps
       @gem_deps = {}
 
@@ -106,6 +106,7 @@ class SimpleServer
       end
     end
 
+    return if name.nil?
     raise "Gem dependencies for '#{name}' already mounted!" if @gem_deps.include?(name)
     @gem_deps[name] = deps
   end

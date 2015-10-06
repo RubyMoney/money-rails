@@ -1,0 +1,6 @@
+# This points to @rubygems_server
+# The mirror points to @gemstash_empty_rubygems
+# If the header is present, @gemstash_empty_rubygems will serve the right thing
+# If the header is missing, it will go to @empty_server and fail
+source "http://localhost:9043"
+gem "speaker"
