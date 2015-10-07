@@ -53,9 +53,17 @@ describe "gemstash integration tests" do
         }
       end
 
-      xit "pushes valid gems to the server", :db_transaction => false do
+      before do
+        Gemstash::Authorization.authorize("test-key", "all")
+        expect(deps.fetch(%w(speaker))).to match_dependencies([])
+        expect { storage.resource("speaker-0.1.0").load }.to raise_error(RuntimeError)
+        Gemstash::Env.current.cache_client.flush
+      end
+
+      it "pushes valid gems to the server", :db_transaction => false do
         host = "#{@gemstash.url}/private"
-        expect(execute("gem push --host '#{host}' '#{gem}'")).to exit_success
+        env = { "HOME" => env_path("integration_spec/push_gem") }
+        expect(execute("gem push --key test --host '#{host}' '#{gem}'", env: env)).to exit_success
         expect(deps.fetch(%w(speaker))).to match_dependencies([speaker_deps])
         expect(storage.resource("speaker-0.1.0").load.content).to eq(gem_contents)
       end

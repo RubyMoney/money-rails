@@ -24,7 +24,6 @@ module Gemstash
 
       def serve_add_gem
         authenticated("Gemstash Private Gems") do
-          halt 403, "Not yet supported"
           auth = request.env["HTTP_AUTHORIZATION"]
           gem = request.body.read
           Gemstash::GemPusher.new(auth, gem).push

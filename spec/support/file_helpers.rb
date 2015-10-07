@@ -8,6 +8,11 @@ module FileHelpers
     File.join(gem_dir, "pkg/#{name}-#{version}.gem")
   end
 
+  def env_path(name)
+    envs_dir = File.expand_path("../../data/environments", __FILE__)
+    File.join(envs_dir, name)
+  end
+
   def bundle_path(name)
     bundles_dir = File.expand_path("../../data/bundles", __FILE__)
     File.join(bundles_dir, name)

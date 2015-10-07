@@ -37,9 +37,10 @@ RSpec.configure do |config|
 
     db.disconnect
 
-    # If a spec has no transaction, delete the DB to ensure it is clean
+    # If a spec has no transaction, delete the DB, and force recrate/migrate to ensure it is clean
     if example.metadata[:db_transaction] == false
       File.delete(File.join(TEST_BASE_PATH, "gemstash.db"))
+      test_env.reset
     end
   end
 
