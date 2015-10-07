@@ -1,38 +1,5 @@
 require "spec_helper"
 
-describe Gemstash::WebHelper do
-  describe ".url" do
-    let(:server_url) { "https://www.rubygems.org" }
-    let(:helper) { Gemstash::WebHelper.new(server_url: server_url) }
-
-    context "with nothing provided" do
-      it "returns the server url" do
-        expect(helper.url).to eq("https://www.rubygems.org")
-        expect(helper.url(nil, "")).to eq("https://www.rubygems.org")
-        expect(helper.url("", "")).to eq("https://www.rubygems.org")
-      end
-    end
-
-    context "with just a query string provided" do
-      it "returns the url" do
-        expect(helper.url(nil, "abc=123")).to eq("https://www.rubygems.org?abc=123")
-      end
-    end
-
-    context "with just a path provided" do
-      it "returns the url" do
-        expect(helper.url("/path/somewhere")).to eq("https://www.rubygems.org/path/somewhere")
-      end
-    end
-
-    context "with just a path and query string provided" do
-      it "returns the url" do
-        expect(helper.url("/path/somewhere", "abc=123")).to eq("https://www.rubygems.org/path/somewhere?abc=123")
-      end
-    end
-  end
-end
-
 describe Gemstash::HTTPClient do
   before(:all) do
     @server = SimpleServer.new("localhost")

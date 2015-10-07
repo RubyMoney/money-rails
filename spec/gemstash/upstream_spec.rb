@@ -49,6 +49,37 @@ describe Gemstash::Upstream do
     expect { Gemstash::Upstream.new("something_that_is_not_an_uri") }.to raise_error(
       /URL 'something_that_is_not_an_uri' is not valid/)
   end
+
+  describe ".url" do
+    let(:server_url) { "https://www.rubygems.org" }
+    let(:upstream) { Gemstash::Upstream.new(server_url) }
+
+    context "with nothing provided" do
+      it "returns the server url" do
+        expect(upstream.url).to eq("https://www.rubygems.org")
+        expect(upstream.url(nil, "")).to eq("https://www.rubygems.org")
+        expect(upstream.url("", "")).to eq("https://www.rubygems.org")
+      end
+    end
+
+    context "with just a query string provided" do
+      it "returns the url" do
+        expect(upstream.url(nil, "abc=123")).to eq("https://www.rubygems.org?abc=123")
+      end
+    end
+
+    context "with just a path provided" do
+      it "returns the url" do
+        expect(upstream.url("/path/somewhere")).to eq("https://www.rubygems.org/path/somewhere")
+      end
+    end
+
+    context "with just a path and query string provided" do
+      it "returns the url" do
+        expect(upstream.url("/path/somewhere", "abc=123")).to eq("https://www.rubygems.org/path/somewhere?abc=123")
+      end
+    end
+  end
 end
 
 describe Gemstash::UpstreamGemName do

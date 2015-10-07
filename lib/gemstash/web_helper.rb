@@ -15,20 +15,6 @@ module Gemstash
   end
 
   #:nodoc:
-  class WebHelper
-    include Gemstash::Env::Helper
-
-    def initialize(server_url: nil)
-      @server_url = server_url || gemstash_env.config[:rubygems_url]
-    end
-
-    def url(path = nil, params = nil)
-      params = "?#{params}" if !params.nil? && !params.empty?
-      "#{@server_url}#{path}#{params}"
-    end
-  end
-
-  #:nodoc:
   class GemFetcher
     def initialize(http_client)
       @http_client = http_client
