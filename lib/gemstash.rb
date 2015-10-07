@@ -9,7 +9,7 @@ module Gemstash
   autoload :Env,                 "gemstash/env"
   autoload :GemPusher,           "gemstash/gem_pusher"
   autoload :GemSource,           "gemstash/gem_source"
-  autoload :HTTPClient,          "gemstash/web_helper"
+  autoload :HTTPClient,          "gemstash/http_client"
   autoload :Logging,             "gemstash/logging"
   autoload :LruReduxClient,      "gemstash/cache"
   autoload :NotAuthorizedError,  "gemstash/not_authorized_error"
@@ -18,6 +18,6 @@ module Gemstash
   autoload :Upstream,            "gemstash/upstream"
   autoload :UpstreamGemName,     "gemstash/upstream"
   autoload :Web,                 "gemstash/web"
-  autoload :WebError,            "gemstash/web_helper"
+  autoload :WebError,            "gemstash/http_client"
   autoload :VERSION,             "gemstash/version"
 end
