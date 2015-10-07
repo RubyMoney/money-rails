@@ -30,6 +30,7 @@ module Gemstash
 
     def get(path)
       response = @client.get(path) do |req|
+        req.headers["User-Agent"] = "Gemstash"
         req.options.open_timeout = 2
       end
 
