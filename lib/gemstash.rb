@@ -7,6 +7,7 @@ module Gemstash
   autoload :DBHelper,            "gemstash/db_helper"
   autoload :Dependencies,        "gemstash/dependencies"
   autoload :Env,                 "gemstash/env"
+  autoload :GemFetcher,          "gemstash/gem_fetcher"
   autoload :GemPusher,           "gemstash/gem_pusher"
   autoload :GemSource,           "gemstash/gem_source"
   autoload :HTTPClient,          "gemstash/http_client"
