@@ -9,18 +9,18 @@ module Gemstash
       new(scope: "private", db_helper: db_helper)
     end
 
-    def self.for_upstream(web_helper)
-      new(scope: "upstream/#{web_helper.url}", web_helper: web_helper)
+    def self.for_upstream(upstream, http_client)
+      new(scope: "upstream/#{upstream}", http_client: http_client)
     end
 
-    def initialize(scope: nil, web_helper: nil, db_helper: nil)
+    def initialize(scope: nil, http_client: nil, db_helper: nil)
       @scope = scope
-      @web_helper = web_helper
+      @http_client = http_client
       @db_helper = db_helper
     end
 
     def fetch(gems)
-      Fetcher.new(gems, @scope, @web_helper, @db_helper).fetch
+      Fetcher.new(gems, @scope, @http_client, @db_helper).fetch
     end
 
     #:nodoc:
@@ -28,10 +28,10 @@ module Gemstash
       include Gemstash::Env::Helper
       include Gemstash::Logging
 
-      def initialize(gems, scope, web_helper, db_helper)
+      def initialize(gems, scope, http_client, db_helper)
         @gems = Set.new(gems)
         @scope = scope
-        @web_helper = web_helper
+        @http_client = http_client
         @db_helper = db_helper
         @dependencies = []
       end
@@ -71,10 +71,10 @@ module Gemstash
 
       def fetch_from_web
         return if done?
-        return unless @web_helper
+        return unless @http_client
         log.info "Fetching dependencies: #{@gems.to_a.join(", ")}"
         gems_param = @gems.map {|gem| CGI.escape(gem) }.join(",")
-        fetched = @web_helper.get("/api/v1/dependencies?gems=#{gems_param}")
+        fetched = @http_client.get("/api/v1/dependencies?gems=#{gems_param}")
         fetched = Marshal.load(fetched).group_by {|r| r[:name] }
 
         fetched.each do |gem, result|

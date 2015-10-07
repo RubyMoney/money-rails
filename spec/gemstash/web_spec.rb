@@ -12,7 +12,8 @@ describe Gemstash::Web do
         stubs = Faraday::Adapter::Test::Stubs.new do |stub|
           stub.get("/gems/rack") { [200, { "CONTENT-TYPE" => "octet/stream" }, "zapatito"] }
         end
-        Faraday.new {|builder| builder.adapter(:test, stubs) }
+        client = Faraday.new {|builder| builder.adapter(:test, stubs) }
+        Gemstash::HTTPClient.new(client)
       end
     end
     StubHttpBuilder.new

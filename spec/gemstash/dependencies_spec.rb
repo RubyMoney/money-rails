@@ -1,8 +1,9 @@
 require "spec_helper"
 
 describe Gemstash::Dependencies do
-  let(:web_helper) { double(url: "https://www.rubygems.org") }
-  let(:web_deps) { Gemstash::Dependencies.for_upstream(web_helper) }
+  let(:upstream) { "https://www.rubygems.org" }
+  let(:http_client) { double }
+  let(:web_deps) { Gemstash::Dependencies.for_upstream(upstream, http_client) }
   let(:db_deps) { Gemstash::Dependencies.for_private }
 
   def valid_url(url, expected_gems)
@@ -21,7 +22,7 @@ describe Gemstash::Dependencies do
           :dependencies => []
         }]
 
-        expect(web_helper).to receive(:get) {|url|
+        expect(http_client).to receive(:get) {|url|
           valid_url(url, %w(foo))
           Marshal.dump(result)
         }
@@ -44,7 +45,7 @@ describe Gemstash::Dependencies do
           :dependencies => []
         }]
 
-        expect(web_helper).to receive(:get) {|url|
+        expect(http_client).to receive(:get) {|url|
           valid_url(url, %w(foo bar))
           Marshal.dump(result)
         }
@@ -67,7 +68,7 @@ describe Gemstash::Dependencies do
           :dependencies => []
         }]
 
-        expect(web_helper).to receive(:get) {|url|
+        expect(http_client).to receive(:get) {|url|
           valid_url(url, %w(foo bar baz))
           Marshal.dump(result)
         }
@@ -92,7 +93,7 @@ describe Gemstash::Dependencies do
           :dependencies => []
         }
 
-        expect(web_helper).to receive(:get) {|url|
+        expect(http_client).to receive(:get) {|url|
           valid_url(url, %w(foo bar baz))
           Marshal.dump([foo, bar])
         }.once

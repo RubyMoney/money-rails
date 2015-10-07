@@ -113,7 +113,10 @@ module Gemstash
     private
 
       def dependencies
-        @dependencies ||= Gemstash::Dependencies.for_upstream(web_helper)
+        @dependencies ||= begin
+          http_client = http_client_for(upstream.to_s)
+          Gemstash::Dependencies.for_upstream(upstream, http_client)
+        end
       end
 
       def storage
@@ -121,14 +124,8 @@ module Gemstash
         @storage.for(upstream.host_id)
       end
 
-      def web_helper
-        @web_helper ||= Gemstash::WebHelper.new(
-          http_client: http_client_for(upstream.to_s),
-          server_url: upstream.to_s)
-      end
-
       def gem_fetcher
-        @gem_fetcher ||= GemFetcher.new(HTTPClient.new(http_client_for(upstream.to_s)))
+        @gem_fetcher ||= Gemstash::GemFetcher.new(http_client_for(upstream.to_s))
       end
 
       def fetch_gem(id)

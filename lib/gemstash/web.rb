@@ -7,7 +7,7 @@ module Gemstash
   class Web < Sinatra::Base
     def initialize(gemstash_env: nil, http_client_builder: nil)
       @gemstash_env = gemstash_env || Gemstash::Env.new
-      @http_client_builder = http_client_builder || HTTPClientBuilder.new
+      @http_client_builder = http_client_builder || Gemstash::HTTPClient
       Gemstash::Env.current = @gemstash_env
       super()
     end
