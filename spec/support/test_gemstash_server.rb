@@ -22,6 +22,10 @@ class TestGemstashServer
     TestGemstashServer.servers << self
   end
 
+  def url
+    "http://127.0.0.1:#{@port}"
+  end
+
   def start
     raise "Already started!" if @started
     @started = true

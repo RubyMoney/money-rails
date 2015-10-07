@@ -2,13 +2,14 @@ require "open3"
 
 # Helpers for executing commands and asserting the results.
 module ExecHelpers
-  def execute(command, dir:)
+  def execute(command, dir: nil)
     env = {
       "BUNDLE_GEMFILE" => nil,
       "RUBYLIB" => nil,
       "RUBYOPT" => nil,
       "GEM_PATH" => ENV["_ORIGINAL_GEM_PATH"]
     }
+    dir ||= File.expand_path(".")
     Result.new(env, command, dir)
   end
 

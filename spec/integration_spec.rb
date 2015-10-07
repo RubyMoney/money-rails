@@ -37,6 +37,31 @@ describe "gemstash integration tests" do
     @empty_server.stop
   end
 
+  describe "interacting with private gems" do
+    context "pushing a gem" do
+      let(:storage) { Gemstash::Storage.new(Gemstash::Env.current.base_file("private")).for("gems") }
+      let(:deps) { Gemstash::Dependencies.for_private }
+      let(:gem) { gem_path("speaker", "0.1.0") }
+      let(:gem_contents) { File.read(gem) }
+
+      let(:speaker_deps) do
+        {
+          :name => "speaker",
+          :number => "0.1.0",
+          :platform => "ruby",
+          :dependencies => []
+        }
+      end
+
+      xit "pushes valid gems to the server", :db_transaction => false do
+        host = "#{@gemstash.url}/private"
+        expect(execute("gem push --host '#{host}' '#{gem}'")).to exit_success
+        expect(deps.fetch(%w(speaker))).to match_dependencies([speaker_deps])
+        expect(storage.resource("speaker-0.1.0").load.content).to eq(gem_contents)
+      end
+    end
+  end
+
   describe "bundling install against gemstash" do
     let(:dir) { bundle_path(bundle) }
 
