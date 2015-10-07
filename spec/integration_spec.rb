@@ -1,4 +1,5 @@
 require "spec_helper"
+require "fileutils"
 
 describe "gemstash integration tests" do
   before(:all) do
@@ -43,6 +44,7 @@ describe "gemstash integration tests" do
       let(:deps) { Gemstash::Dependencies.for_private }
       let(:gem) { gem_path("speaker", "0.1.0") }
       let(:gem_contents) { File.read(gem) }
+      let(:env_dir) { env_path("integration_spec/push_gem") }
 
       let(:speaker_deps) do
         {
@@ -58,11 +60,12 @@ describe "gemstash integration tests" do
         expect(deps.fetch(%w(speaker))).to match_dependencies([])
         expect { storage.resource("speaker-0.1.0").load }.to raise_error(RuntimeError)
         Gemstash::Env.current.cache_client.flush
+        FileUtils.chmod(0600, File.join(env_dir, ".gem/credentials"))
       end
 
       it "pushes valid gems to the server", :db_transaction => false do
         host = "#{@gemstash.url}/private"
-        env = { "HOME" => env_path("integration_spec/push_gem") }
+        env = { "HOME" => env_dir }
         expect(execute("gem push --key test --host '#{host}' '#{gem}'", env: env)).to exit_success
         expect(deps.fetch(%w(speaker))).to match_dependencies([speaker_deps])
         expect(storage.resource("speaker-0.1.0").load.content).to eq(gem_contents)
