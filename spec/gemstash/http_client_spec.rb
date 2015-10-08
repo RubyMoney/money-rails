@@ -21,7 +21,7 @@ describe Gemstash::HTTPClient do
 
   describe ".get" do
     let(:http_client) do
-      Gemstash::HTTPClient.for(@server.url)
+      Gemstash::HTTPClient.for(Gemstash::Upstream.new(@server.url))
     end
 
     context "with a valid url" do

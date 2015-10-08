@@ -114,7 +114,7 @@ module Gemstash
 
       def dependencies
         @dependencies ||= begin
-          http_client = http_client_for(upstream.to_s)
+          http_client = http_client_for(upstream)
           Gemstash::Dependencies.for_upstream(upstream, http_client)
         end
       end
@@ -125,7 +125,7 @@ module Gemstash
       end
 
       def gem_fetcher
-        @gem_fetcher ||= Gemstash::GemFetcher.new(http_client_for(upstream.to_s))
+        @gem_fetcher ||= Gemstash::GemFetcher.new(http_client_for(upstream))
       end
 
       def fetch_gem(id)

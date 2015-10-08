@@ -15,8 +15,8 @@ module Gemstash
 
   #:nodoc:
   class HTTPClient
-    def self.for(server_url)
-      client = Faraday.new(server_url) do |config|
+    def self.for(upstream)
+      client = Faraday.new(upstream.url) do |config|
         config.use FaradayMiddleware::FollowRedirects
         config.adapter :net_http
       end
