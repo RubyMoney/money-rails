@@ -46,6 +46,7 @@ will run the server in the background by default. The server runs on port 9292.
 With the server running, you can bundle against it. Create a simple `Gemfile`
 like the following:
 ```ruby
+# ./Gemfile
 source "http://localhost:9292"
 gem "rubywarrior"
 ```

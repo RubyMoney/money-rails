@@ -46,6 +46,7 @@ $ chmod 0600 ~/.gem/credentials
 Add your new key to credentials such that it looks something like this (but make
 sure not to remove any existing keys):
 ```yaml
+# ~/.gem/credentials
 ---
 :test_key: e374e237fdf5fa5718d2a21bd63dc911
 ```
@@ -94,6 +95,7 @@ Create a `Gemfile` and specify the gem. You will probably want to wrap the
 private gem in a source block, and let the rest of Gemstash handle all other
 gems:
 ```ruby
+# ./Gemfile
 source "http://localhost:9292"
 gem "rubywarrior"
 
