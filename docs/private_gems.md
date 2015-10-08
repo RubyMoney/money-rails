@@ -2,7 +2,7 @@
 
 Stashing private gems in your Gemstash server requires a bit of additional
 setup. If you haven't read through the [Quickstart
-Guide](../README.md#Quickstart-Guide), you should do that first.
+Guide](../README.md#quickstart-guide), you should do that first.
 
 ## Authorizing
 

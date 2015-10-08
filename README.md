@@ -83,16 +83,16 @@ You might wonder where the gems are stored. After running the commands above,
 you will find a new directory at `~/.gemstash`. This directory holds all the
 cached and private gems. It also has a server log, the database, and
 configuration for Gemstash. If you prefer, you can [point to a different
-directory](docs/config.md#Files).
+directory](docs/config.md#files).
 
 Gemstash uses [SQLite](https://www.sqlite.org/) to store details about private
 gems. The database will be located in `~/.gemstash`, however you won't see the
 database appear until you start using private gems. If you prefer, you can [use
-a different database](docs/config.md#Database).
+a different database](docs/config.md#database).
 
 Gemstash temporarily caches things like gem dependencies in memory. Anything
 cached will last for 30 minutes before being retrieved again. You can [use
-memcached[(docs/config.md#Cache) instead of caching in memory.
+memcached[(docs/config.md#cache) instead of caching in memory.
 
 The server you ran is provided via [Puma](http://puma.io/) and
 [Rack](http://rack.github.io/), however they are not customizable at this point.
