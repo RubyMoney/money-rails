@@ -14,7 +14,12 @@ module Gemstash
         return false unless rewriter.matches?
         rewriter.rewrite
         env["gemstash.upstream"] = rewriter.captures["upstream_url"]
+        capture_user_agent(env)
         true
+      end
+
+      def self.capture_user_agent(env)
+        env["gemstash.user-agent"] = env["HTTP_USER_AGENT"]
       end
 
       def serve_root
@@ -89,7 +94,8 @@ module Gemstash
     private
 
       def upstream
-        @upstream ||= Gemstash::Upstream.new(env["gemstash.upstream"])
+        @upstream ||= Gemstash::Upstream.new(env["gemstash.upstream"],
+          user_agent: env["gemstash.user-agent"])
       end
     end
 
@@ -160,6 +166,7 @@ module Gemstash
         else
           env["gemstash.upstream"] = env["HTTP_X_GEMFILE_SOURCE"]
         end
+        capture_user_agent(env)
 
         true
       end
