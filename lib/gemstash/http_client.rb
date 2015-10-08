@@ -18,7 +18,7 @@ module Gemstash
     DEFAULT_USER_AGENT = "Gemstash #{Gemstash::VERSION}"
 
     def self.for(upstream)
-      client = Faraday.new(upstream.url) do |config|
+      client = Faraday.new(upstream.to_s) do |config|
         config.use FaradayMiddleware::FollowRedirects
         config.adapter :net_http
       end
