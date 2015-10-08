@@ -77,11 +77,11 @@ module MoneyRails
         attr_name = @attr.to_s.tr('.', '_').humanize
         attr_name = @record.class.human_attribute_name(@attr, default: attr_name)
 
-        @record.errors.add(@attr, I18n.t('errors.messages.invalid_currency',
-                                       { :thousands => thousands_separator,
-                                         :decimal => decimal_mark,
-                                         :currency => abs_raw_value,
-                                         :attribute => attr_name }))
+        @record.errors.add(@attr, :invalid_currency,
+                           { :thousands => thousands_separator,
+                             :decimal => decimal_mark,
+                             :currency => abs_raw_value,
+                             :attribute => attr_name })
       end
 
       def decimal_pieces
