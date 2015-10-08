@@ -66,6 +66,14 @@ module Gemstash
         end
 
         @config[:cache_type] = cache
+        ask_memcached_details if cache == "memcached"
+      end
+
+      def ask_memcached_details
+        say_current_config(:memcached_servers, "Current Memcached servers")
+        servers = @cli.ask "What is the comma separated Memcached servers? [localhost:11211]"
+        servers = "localhost:11211" if servers.empty?
+        @config[:memcached_servers] = servers
       end
 
       def ask_database
