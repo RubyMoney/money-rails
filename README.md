@@ -24,8 +24,8 @@ gems frequently? Well, maybe you don't need Gemstash... yet.
 ### Setup
 
 Gemstash is designed to be quick and painless to get set up. By the end of this
-section, you will be able to bundle against a Gemstash server running on your
-machine.
+Quickstart Guide, you will be able to bundle stashed gems from public sources
+against a Gemstash server running on your machine.
 
 Install Gemstash to get started:
 ```

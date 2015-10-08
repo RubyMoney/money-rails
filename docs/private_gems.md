@@ -1,0 +1,119 @@
+# Private Gems
+
+Stashing private gems in your Gemstash server requires a bit of additional
+setup. If you haven't read through the [Quickstart
+Guide](../README.md#Quickstart-Guide), you should do that first.
+
+## Authorizing
+
+**IMPORTANT NOTE:** Do not use the actual key value in this document, otherwise
+your Gemstash server will be vulnerable to anyone who wants to try to use the
+key against your server. Instead of the key value here, use whatever key is
+generated from running the commands.
+
+In order to push a gem to your Gemstash server, you need to first create an API
+key. Utilize the `gemstash` command to create the API key:
+```
+$ gemstash authorize
+Your new key is: e374e237fdf5fa5718d2a21bd63dc911
+```
+
+This new key can `push`, `yank`, and `unyank` gems from your Gemstash server.
+Run `gemstash authorize` with just the permissions you want to limit what the
+key will be allowed to do. You can similarly update a specific key by providing
+it via the `--key` option:
+```
+$ gemstash authorize push yank --key e374e237fdf5fa5718d2a21bd63dc911
+```
+
+When no permissions are provided (like the first example), the key will be
+authorized for all permissions. Leave the key authorized with everything if you
+want to use it to try all private gem interactions:
+```
+$ gemstash authorize --key e374e237fdf5fa5718d2a21bd63dc911
+```
+
+With the key generated, you'll need to tell Rubygems about your new key. If
+you've pushed a gem to https://www.rubygems.org, then you will already have a
+credentials file to add the key to. If not, run the following commands before
+modifying the credentials file:
+```
+$ mkdir -p ~/.gem
+$ touch ~/.gem/credentials
+$ chmod 0600 ~/.gem/credentials
+```
+
+Add your new key to credentials such that it looks something like this (but make
+sure not to remove any existing keys):
+```yaml
+---
+:test_key: e374e237fdf5fa5718d2a21bd63dc911
+```
+
+The `test_key` symbol for your key will be used later in this guide.
+
+## Creating a Test Gem
+
+You'll need a test gem before you can play with private gems on your Gemstash
+server. If you have a gem you can use, move along to the next section. You can
+start by instantiating a test gem via Bundler:
+```
+$ bundle gem private-example
+```
+
+You'll need to add a summary and description to the new gem's gemspec file in
+order to successfully build it. Once you've built the gem, you will be ready to
+push the new gem.
+```
+$ cd private-example
+$ rake build
+```
+
+You will now have a gem at `private-example/pkg/private-example-0.1.0.gem`.
+
+## Pushing
+
+If your Gemstash server isn't running, go ahead and start it:
+```
+$ gemstash start
+```
+
+Push your test gem using Rubygems:
+```
+$ gem push --key test_key --host http://localhost:9292/private pkg/private-example-0.1.0.gem
+```
+
+The `/private` portion of the `--host` option tells Gemstash you are interacting
+with the private gems. Gemstash will not let you push, yank, or unyank from
+anything except `/private`.
+
+## Bundling
+
+Once your gem is pushed to your Gemstash server, you are ready to bundle it.
+Create a `Gemfile` and specify the gem. You will probably want to wrap the
+private gem in a source block, and let the rest of Gemstash handle all other
+gems:
+```ruby
+source "http://localhost:9292"
+gem "rubywarrior"
+
+source "http://localhost:9292/private" do
+  gem "private-example"
+end
+```
+
+Notice that the Gemstash server points to `/private` again when installing your
+private gem. Go ahead and bundle to install your new private gem:
+```
+$ bundle
+```
+
+## Yanking
+
+Yanking gems is not yet supported in Gemstash, but will be featured in a future
+release.
+
+## Unyanking
+
+Unyanking gems is not yet supported in Gemstash, but will be featured in a
+future release.
