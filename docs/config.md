@@ -16,7 +16,7 @@ $ gemstash setup
 Where should files go? [~/.gemstash]
 Cache with what? [MEMORY, memcached] <strong>memcached</strong>
 What is the comma separated Memcached servers? [localhost:11211]
-What database adapter? [SQLITE3, postgres] <strong>postgres<strong>
+What database adapter? [SQLITE3, postgres] <strong>postgres</strong>
 Where is the database? [postgres:///gemstash]
 Checking that the cache is available
 Checking that the database is available
@@ -37,7 +37,7 @@ What database adapter? [SQLITE3, postgres]
 Checking that the cache is available
 Checking that the database is available
 You are all setup!
-<pre>
+</pre>
 
 Once all checks have passed, Gemstash will store your answers in the
 configuration file located at `~/.gemstash/config.yml`.
