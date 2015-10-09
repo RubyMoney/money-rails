@@ -19,8 +19,20 @@ Table of Contents
         * [--key](#--key)
         * [--remove](#--remove)
     * [Start](#start)
+      * [Usage](#usage-1)
+      * [Options](#options-1)
+        * [--config-file](#--config-file-1)
+        * [--no-daemonize](#--no-daemonize)
     * [Stop](#stop)
+      * [Usage](#usage-2)
+      * [Options](#options-2)
+        * [--config-file](#--config-file-2)
     * [Setup](#setup)
+      * [Usage](#usage-3)
+      * [Options](#options-3)
+        * [--redo](#--redo)
+        * [--debug](#--debug)
+        * [--config-file](#--config-file-3)
 
 
 
@@ -176,9 +188,95 @@ values are not allowed. The `--key <secure-key>` option is required.
 
 ## Start
 
+Starts the Gemstash server.
+
+### Usage
+
+```
+gemstash start
+gemstash start --no-daemonize
+```
+
+### Options
+
+#### --config-file
+
+**Usage:** `--config-file <file>`
+
+**Description**<br />
+Specify the config file to use. If you aren't using the default config file at
+`~/.gemstash/config.yml`, then you must specify the config file via this option.
+
+#### --no-daemonize
+
+**Usage:** `--no-daemonize`
+
+**Description**<br />
+The Gemstash server daemonizes itself by default. Provide this option to instead
+run the server until `Ctrl-C` is typed. When not daemonized, the log will be
+output to standard out.
+
 ## Stop
 
+Stops the Gemstash server. This will only work for a daemonized sever.
+
+### Usage
+
+```
+gemstash stop
+```
+
+### Options
+
+#### --config-file
+
+**Usage:** `--config-file <file>`
+
+**Description**<br />
+Specify the config file to use. If you aren't using the default config file at
+`~/.gemstash/config.yml`, then you must specify the config file via this option.
+
 ## Setup
+
+Customize your Gemstash configuration interactively. This will save your config
+file, but only if a few checks pass after you've provided your answers.
+
+### Usage
+
+```
+gemstash setup
+gemstash setup --redo
+gemstash setup --config-file <file>
+```
+
+### Options
+
+#### --redo
+
+**Usage:** `--redo`
+
+**Description**<br />
+Redo the configuration. This does nothing the first time `gemstash setup` is
+run. If you want to change your configuration using `gemstash setup` after
+you've run it before, you must provide this option, otherwise Gemstash will
+simply indicate your setup is complete.
+
+#### --debug
+
+**Usage:** `--debug`
+
+**Description**<br />
+Output additional information if one of the checks at the end of setup fails.
+This will do nothing if all checks pass.
+
+#### --config-file
+
+**Usage:** `--config-file <file>`
+
+**Description**<br />
+Specify the config file to write to. Without this option, your configuration
+will be written to `~/.gemstash/config.yml`. If you write to a custom location,
+you will need to pass the `--config-file` option to all Gemstash commands.
 
 ---
 
