@@ -8,8 +8,7 @@ module Gemstash
       :base_path => File.expand_path("~/.gemstash"),
       :db_adapter => "sqlite3",
       :port => 9292,
-      :rubygems_url => "https://www.rubygems.org",
-      :logfile => "server.log"
+      :rubygems_url => "https://www.rubygems.org"
     }.freeze
 
     DEFAULT_FILE = File.expand_path("~/.gemstash/config.yml").freeze

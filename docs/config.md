@@ -104,6 +104,14 @@ server. Alternate server configurations are not currently supported, but you can
 take a look at the [Puma configuration](../lib/gemstash/puma.rb) and the [rackup
 file](../lib/gemstash/config.ru) for inspiration.
 
+While the server is not customizable, the port which Gemstash opens can be
+changed. To change the port, update the `:port` configuration key:
+```yaml
+# ~/.gemstash/config.yml
+---
+:port: 4242
+```
+
 ## Config File Location
 
 By default, configuration for Gemstash will be at `~/.gemstash/config.yml`. This
