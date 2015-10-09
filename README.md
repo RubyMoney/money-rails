@@ -55,7 +55,7 @@ The first line is important, as it will tell Bundler to use your new Gemstash
 server. The gems you include should be gems you don't yet have installed,
 otherwise Gemstash will have nothing to stash. Now bundle:
 ```
-$ bundle
+$ bundle install --path .bundle
 ```
 
 Your Gemstash server has fetched the gems from https://www.rubygems.org and
@@ -65,8 +65,7 @@ minutes, so if you bundle again before that, you can successfully bundle without
 an Internet connection:
 ```
 $ # Disable your Internet first!
-$ rm Gemfile.lock
-$ gem uninstall rubywarrior
+$ rm -rf Gemfile.lock .bundle
 $ bundle
 ```
 
@@ -92,8 +91,10 @@ database appear until you start using private gems. If you prefer, you can [use
 a different database](docs/config.md#database).
 
 Gemstash temporarily caches things like gem dependencies in memory. Anything
-cached will last for 30 minutes before being retrieved again. You can [use
-memcached[(docs/config.md#cache) instead of caching in memory.
+cached in memory will last for 30 minutes before being retrieved again. You can
+[use memcached](docs/config.md#cache) instead of caching in memory. Gem files
+are always cached permanently, so bundling with a `Gemfile.lock` with all gems
+cached will never call out to https://www.rubygems.org.
 
 The server you ran is provided via [Puma](http://puma.io/) and
 [Rack](http://rack.github.io/), however they are not customizable at this point.
@@ -110,8 +111,9 @@ For a deep dive into the following subjects, follow the links:
 
 ## Development
 
-After checking out the repo, run `bundle` to install dependencies. Then, run
-`rake` to run RuboCop and the tests. You can also run `bin/console` for an
+After checking out the repo, run `bin/setup` to install dependencies. Then, run
+`rake` to run RuboCop and the tests. While developing, you can run
+`bin/gemstash` to run Gemstash. You can also run `bin/console` for an
 interactive prompt that will allow you to experiment.
 
 ## Contributing
