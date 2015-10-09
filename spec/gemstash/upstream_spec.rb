@@ -50,6 +50,15 @@ describe Gemstash::Upstream do
       /URL 'something_that_is_not_an_uri' is not valid/)
   end
 
+  it "has a nil user agent if not provided" do
+    expect(Gemstash::Upstream.new("https://rubygems.org/").user_agent).to be_nil
+  end
+
+  it "supports getting user agent" do
+    expect(Gemstash::Upstream.new("https://rubygems.org/",
+      user_agent: "my_user_agent").user_agent).to eq("my_user_agent")
+  end
+
   describe ".url" do
     let(:server_url) { "https://www.rubygems.org" }
     let(:upstream) { Gemstash::Upstream.new(server_url) }

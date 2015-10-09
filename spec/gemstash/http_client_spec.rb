@@ -21,7 +21,7 @@ describe Gemstash::HTTPClient do
 
   describe ".get" do
     let(:http_client) do
-      Gemstash::HTTPClient.for(@server.url)
+      Gemstash::HTTPClient.for(Gemstash::Upstream.new(@server.url))
     end
 
     context "with a valid url" do
@@ -62,27 +62,52 @@ describe Gemstash::HTTPClient do
       end
     end
 
-    context "with a block to store the headers" do
-      let(:faraday_client) do
-        stubs = Faraday::Adapter::Test::Stubs.new do |stub|
-          stub.get("/gems/rack") { [200, { "CONTENT-TYPE" => "octet/stream" }, "zapatito"] }
+    context "with a stubbed faraday client" do
+      let(:stubs) { Faraday::Adapter::Test::Stubs.new }
+      let(:faraday_client) { Faraday.new {|builder| builder.adapter(:test, stubs) } }
+
+      context "with a client that specifies a user agent" do
+        let(:http_client) do
+          Gemstash::HTTPClient.new(faraday_client,
+            user_agent: "my-agent 6.6.6")
         end
-        Faraday.new {|builder| builder.adapter(:test, stubs) }
+
+        it "forwards the user agent to the remote server" do
+          stubs.get("/gems/rack", "User-Agent" => "my-agent 6.6.6") do
+            [200, { "CONTENT-TYPE" => "octet/stream" }, "zapatito"]
+          end
+          http_client.get("/gems/rack")
+          stubs.verify_stubbed_calls
+        end
       end
 
-      let(:http_client) { Gemstash::HTTPClient.new(faraday_client) }
+      context "with a simple client" do
+        let(:http_client) { Gemstash::HTTPClient.new(faraday_client) }
 
-      it "throws an error" do
-        body_result = nil
-        headers_result = nil
-
-        http_client.get("/gems/rack") do |body, headers|
-          body_result = body
-          headers_result = headers
+        it "forwards the default user agent to the remote server" do
+          stubs.get("/gems/rack", "User-Agent" => "Gemstash/#{Gemstash::VERSION}") do
+            [200, { "CONTENT-TYPE" => "octet/stream" }, "zapatito"]
+          end
+          http_client.get("/gems/rack")
+          stubs.verify_stubbed_calls
         end
 
-        expect(body_result).to eq("zapatito")
-        expect(headers_result).to eq("CONTENT-TYPE" => "octet/stream")
+        context "with a block to store the headers" do
+          it "throws an error" do
+            stubs.get("/gems/rack") { [200, { "CONTENT-TYPE" => "octet/stream" }, "zapatito"] }
+
+            body_result = nil
+            headers_result = nil
+
+            http_client.get("/gems/rack") do |body, headers|
+              body_result = body
+              headers_result = headers
+            end
+
+            expect(body_result).to eq("zapatito")
+            expect(headers_result).to eq("CONTENT-TYPE" => "octet/stream")
+          end
+        end
       end
     end
   end
