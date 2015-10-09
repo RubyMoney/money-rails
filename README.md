@@ -109,6 +109,15 @@ For a deep dive into the following subjects, follow the links:
 * [Upgrading Gemstash](docs/upgrade.md)
 * [Debugging Gemstash](docs/debug.md)
 
+## Reference
+
+For an anatomy of various configuration and commands, follow the links:
+* [Configuration](docs/reference.md#configuration)
+* [Authorize](docs/reference.md#authorize)
+* [Start](docs/reference.md#start)
+* [Stop](docs/reference.md#stop)
+* [Setup](docs/reference.md#setup)
+
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run
