@@ -85,7 +85,7 @@ describe Gemstash::HTTPClient do
         let(:http_client) { Gemstash::HTTPClient.new(faraday_client) }
 
         it "forwards the default user agent to the remote server" do
-          stubs.get("/gems/rack", "User-Agent" => "Gemstash #{Gemstash::VERSION}") do
+          stubs.get("/gems/rack", "User-Agent" => "Gemstash/#{Gemstash::VERSION}") do
             [200, { "CONTENT-TYPE" => "octet/stream" }, "zapatito"]
           end
           http_client.get("/gems/rack")

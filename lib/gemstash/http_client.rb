@@ -15,15 +15,15 @@ module Gemstash
 
   #:nodoc:
   class HTTPClient
-    DEFAULT_USER_AGENT = "Gemstash #{Gemstash::VERSION}"
+    DEFAULT_USER_AGENT = "Gemstash/#{Gemstash::VERSION}"
 
     def self.for(upstream)
       client = Faraday.new(upstream.to_s) do |config|
         config.use FaradayMiddleware::FollowRedirects
         config.adapter :net_http
       end
-      user_agent = DEFAULT_USER_AGENT
-      user_agent << " - #{upstream.user_agent}" unless upstream.user_agent.to_s.empty?
+      user_agent = "#{upstream.user_agent} " unless upstream.user_agent.to_s.empty?
+      user_agent = user_agent.to_s + DEFAULT_USER_AGENT
 
       new(client, user_agent: user_agent)
     end
