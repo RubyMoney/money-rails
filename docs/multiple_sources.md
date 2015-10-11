@@ -25,7 +25,7 @@ $ gemstash start
 Once restarted, bundling against `http://localhost:9292` will fetch gems from
 `https://my.gem-source.local`. If you had bundled before making these changes,
 fear not; bundling with a different default gem source will store gems in a
-separate location, ensuring different sources won't leak between eachother.
+separate location, ensuring different sources won't leak between each other.
 
 ## Bundling with Multiple Sources
 
