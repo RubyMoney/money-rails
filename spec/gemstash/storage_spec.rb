@@ -75,20 +75,33 @@ describe Gemstash::Storage do
     end
 
     context "with resource name that is unique by case only" do
-      let(:first_resource) { "SomeResource" }
-      let(:second_resource) { "someresource" }
+      let(:first_resource_id) { "SomeResource" }
+      let(:second_resource_id) { "someresource" }
 
       it "stores the content separately" do
-        storage.resource(first_resource).save("first content")
-        storage.resource(second_resource).save("second content")
-        expect(storage.resource(first_resource).load.content).to eq("first content")
-        expect(storage.resource(second_resource).load.content).to eq("second content")
+        storage.resource(first_resource_id).save("first content")
+        storage.resource(second_resource_id).save("second content")
+        expect(storage.resource(first_resource_id).load.content).to eq("first content")
+        expect(storage.resource(second_resource_id).load.content).to eq("second content")
       end
 
       it "uses different downcased paths to avoid issues with case insensitive file systems" do
-        first = storage.resource(first_resource)
-        second = storage.resource(second_resource)
-        expect(first.folder.downcase).to_not eq(second.folder.downcase)
+        first_resource = storage.resource(first_resource_id)
+        second_resource = storage.resource(second_resource_id)
+        expect(first_resource.folder.downcase).to_not eq(second_resource.folder.downcase)
+      end
+    end
+
+    context "with resource name that includes odd characters" do
+      let(:resource_id) { ".=$&resource" }
+
+      it "stores and retrieves the data" do
+        storage.resource(resource_id).save("odd name content")
+        expect(storage.resource(resource_id).load.content).to eq("odd name content")
+      end
+
+      it "doesn't include the odd characters in the path" do
+        expect(storage.resource(resource_id).folder).to_not match(/[.=$&]/)
       end
     end
   end

@@ -41,11 +41,15 @@ module Gemstash
     def initialize(folder, name)
       @base_path = folder
       @name = name
-      trie_parents = @name[0...3].split("")
+      # Avoid odd characters in paths, in case of issues with the file system
+      safe_name = @name.gsub(/[^a-zA-Z0-9_]/, "_")
+      # Use a trie structure to avoid file system limits causing too many files in 1 folder
+      # Downcase to avoid issues with case insensitive file systems
+      trie_parents = safe_name[0...3].downcase.split("")
       # The digest is included in case the name differs only by case
       # Some file systems are case insensitive, so such collisions will be a problem
       digest = Digest::MD5.hexdigest(@name)
-      child_folder = "#{@name}-#{digest}"
+      child_folder = "#{safe_name}-#{digest}"
       @folder = File.join(@base_path, *trie_parents, child_folder)
     end
 
