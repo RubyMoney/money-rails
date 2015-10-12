@@ -40,7 +40,8 @@ module Gemstash
     def initialize(folder, name)
       @base_path = folder
       @name = name
-      @folder = File.join(@base_path, @name)
+      trie_parents = @name[0...3].split("")
+      @folder = File.join(@base_path, *trie_parents, @name)
     end
 
     def exist?
