@@ -1,4 +1,5 @@
 require "gemstash"
+require "digest"
 require "pathname"
 require "fileutils"
 require "yaml"
@@ -36,12 +37,16 @@ module Gemstash
 
   #:nodoc:
   class Resource
-    attr_accessor :name
+    attr_accessor :name, :folder
     def initialize(folder, name)
       @base_path = folder
       @name = name
       trie_parents = @name[0...3].split("")
-      @folder = File.join(@base_path, *trie_parents, @name)
+      # The digest is included in case the name differs only by case
+      # Some file systems are case insensitive, so such collisions will be a problem
+      digest = Digest::MD5.hexdigest(@name)
+      child_folder = "#{@name}-#{digest}"
+      @folder = File.join(@base_path, *trie_parents, child_folder)
     end
 
     def exist?

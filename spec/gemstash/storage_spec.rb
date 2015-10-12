@@ -73,5 +73,23 @@ describe Gemstash::Storage do
         expect(resource.content).to eq(content)
       end
     end
+
+    context "with resource name that is unique by case only" do
+      let(:first_resource) { "SomeResource" }
+      let(:second_resource) { "someresource" }
+
+      it "stores the content separately" do
+        storage.resource(first_resource).save("first content")
+        storage.resource(second_resource).save("second content")
+        expect(storage.resource(first_resource).load.content).to eq("first content")
+        expect(storage.resource(second_resource).load.content).to eq("second content")
+      end
+
+      it "uses different downcased paths to avoid issues with case insensitive file systems" do
+        first = storage.resource(first_resource)
+        second = storage.resource(second_resource)
+        expect(first.folder.downcase).to_not eq(second.folder.downcase)
+      end
+    end
   end
 end
