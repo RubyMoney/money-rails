@@ -4,7 +4,7 @@ describe Gemstash::GemPusher do
   let(:auth_key) { "auth-key" }
   let(:invalid_auth_key) { "invalid-auth-key" }
   let(:auth_key_without_permission) { "auth-key-without-permission" }
-  let(:storage) { Gemstash::Storage.new(Gemstash::Env.current.base_file("private")).for("gems") }
+  let(:storage) { Gemstash::Storage.for("private").for("gems") }
 
   before do
     Gemstash::Authorization.authorize(auth_key, "all")

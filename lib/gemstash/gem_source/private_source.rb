@@ -100,7 +100,7 @@ module Gemstash
       end
 
       def storage
-        @storage ||= Gemstash::Storage.new(gemstash_env.base_file("private")).for("gems")
+        @storage ||= Gemstash::Storage.for("private").for("gems")
       end
     end
   end

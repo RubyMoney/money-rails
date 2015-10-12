@@ -1,3 +1,4 @@
+require "gemstash"
 require "pathname"
 require "fileutils"
 require "yaml"
@@ -5,6 +6,8 @@ require "yaml"
 module Gemstash
   #:nodoc:
   class Storage
+    extend Gemstash::Env::Helper
+
     def initialize(folder)
       @folder = folder
       FileUtils.mkpath(@folder) unless Dir.exist?(@folder)
@@ -16,6 +19,10 @@ module Gemstash
 
     def for(child)
       Storage.new(File.join(@folder, child))
+    end
+
+    def self.for(name)
+      new(gemstash_env.base_file(name))
     end
 
   private

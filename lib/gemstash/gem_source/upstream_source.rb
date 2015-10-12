@@ -126,7 +126,7 @@ module Gemstash
       end
 
       def storage
-        @storage ||= Gemstash::Storage.new(gemstash_env.base_file("gem_cache"))
+        @storage ||= Gemstash::Storage.for("gem_cache")
         @storage.for(upstream.host_id)
       end
 
