@@ -5,7 +5,7 @@ module Gemstash
   class Upstream
     extend Forwardable
 
-    attr_accessor :user_agent
+    attr_reader :user_agent
 
     def_delegators :@uri, :scheme, :host, :user, :password, :to_s
 
