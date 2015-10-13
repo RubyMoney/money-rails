@@ -14,7 +14,13 @@ module Gemstash
   end
 
   #:nodoc:
+  class ConnectionError < StandardError
+  end
+
+  #:nodoc:
   class HTTPClient
+    include Gemstash::Logging
+
     DEFAULT_USER_AGENT = "Gemstash/#{Gemstash::VERSION}"
 
     def self.for(upstream)
@@ -34,9 +40,11 @@ module Gemstash
     end
 
     def get(path)
-      response = @client.get(path) do |req|
-        req.headers["User-Agent"] = @user_agent
-        req.options.open_timeout = 2
+      response = with_retries do
+        @client.get(path) do |req|
+          req.headers["User-Agent"] = @user_agent
+          req.options.open_timeout = 2
+        end
       end
 
       raise Gemstash::WebError.new(response.body, response.status) unless response.success?
@@ -45,6 +53,21 @@ module Gemstash
         yield(response.body, response.headers)
       else
         response.body
+      end
+    end
+
+  private
+
+    def with_retries(times: 3, &block)
+      loop do
+        times -= 1
+        begin
+          return block.call
+        rescue Faraday::ConnectionFailed => e
+          log.error("#{e.message} - #{e.backtrace.join('\n')}")
+          raise(ConnectionError, e.message) unless times > 0
+          log.info "retrying... #{times} more times"
+        end
       end
     end
   end

@@ -83,13 +83,36 @@ describe Gemstash::HTTPClient do
 
       context "with a simple client" do
         let(:http_client) { Gemstash::HTTPClient.new(faraday_client) }
+        let(:default_user_agent) { "Gemstash/#{Gemstash::VERSION}" }
 
         it "forwards the default user agent to the remote server" do
-          stubs.get("/gems/rack", "User-Agent" => "Gemstash/#{Gemstash::VERSION}") do
+          stubs.get("/gems/rack", "User-Agent" => default_user_agent) do
             [200, { "CONTENT-TYPE" => "octet/stream" }, "zapatito"]
           end
           http_client.get("/gems/rack")
           stubs.verify_stubbed_calls
+        end
+
+        it "handles a connection failed error correctly" do
+          stubs.get("/gems/rack", "User-Agent" => default_user_agent) do
+            raise Faraday::ConnectionFailed, "I don't like your DNS query!"
+          end
+          expect { http_client.get("/gems/rack") }.to raise_error do |error|
+            expect(error).to be_a(Gemstash::ConnectionError)
+          end
+        end
+
+        it "retries 3 times on connection error" do
+          exceptions = [Faraday::ConnectionFailed, Faraday::ConnectionFailed]
+          stubs.get("/gems/rack", "User-Agent" => default_user_agent) do
+            if exceptions.empty?
+              [200, { "CONTENT-TYPE" => "octet/stream" }, "zapatito"]
+            else
+              raise exceptions.pop, "I don't like your DNS query!"
+            end
+          end
+          expect(http_client.get("/gems/rack")).to eq("zapatito")
+          expect(exceptions).to be_empty
         end
 
         context "with a block to store the headers" do
