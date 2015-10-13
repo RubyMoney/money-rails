@@ -40,7 +40,7 @@ describe "gemstash integration tests" do
 
   describe "interacting with private gems" do
     context "pushing a gem" do
-      let(:storage) { Gemstash::Storage.new(Gemstash::Env.current.base_file("private")).for("gems") }
+      let(:storage) { Gemstash::Storage.for("private").for("gems") }
       let(:deps) { Gemstash::Dependencies.for_private }
       let(:gem) { gem_path("speaker", "0.1.0") }
       let(:gem_contents) { File.read(gem) }

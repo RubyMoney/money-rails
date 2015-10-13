@@ -5,10 +5,13 @@ module Gemstash
   class Upstream
     extend Forwardable
 
+    attr_reader :user_agent
+
     def_delegators :@uri, :scheme, :host, :user, :password, :to_s
 
-    def initialize(upstream)
+    def initialize(upstream, user_agent: nil)
       @uri = URI(URI.decode(upstream.to_s))
+      @user_agent = user_agent
       raise "URL '#{@uri}' is not valid!" unless @uri.to_s =~ URI.regexp
     end
 

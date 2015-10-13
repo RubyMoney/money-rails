@@ -14,7 +14,12 @@ module Gemstash
         return false unless rewriter.matches?
         rewriter.rewrite
         env["gemstash.upstream"] = rewriter.captures["upstream_url"]
+        capture_user_agent(env)
         true
+      end
+
+      def self.capture_user_agent(env)
+        env["gemstash.user-agent"] = env["HTTP_USER_AGENT"]
       end
 
       def serve_root
@@ -89,7 +94,8 @@ module Gemstash
     private
 
       def upstream
-        @upstream ||= Gemstash::Upstream.new(env["gemstash.upstream"])
+        @upstream ||= Gemstash::Upstream.new(env["gemstash.upstream"],
+          user_agent: env["gemstash.user-agent"])
       end
     end
 
@@ -114,18 +120,18 @@ module Gemstash
 
       def dependencies
         @dependencies ||= begin
-          http_client = http_client_for(upstream.to_s)
+          http_client = http_client_for(upstream)
           Gemstash::Dependencies.for_upstream(upstream, http_client)
         end
       end
 
       def storage
-        @storage ||= Gemstash::Storage.new(gemstash_env.base_file("gem_cache"))
+        @storage ||= Gemstash::Storage.for("gem_cache")
         @storage.for(upstream.host_id)
       end
 
       def gem_fetcher
-        @gem_fetcher ||= Gemstash::GemFetcher.new(http_client_for(upstream.to_s))
+        @gem_fetcher ||= Gemstash::GemFetcher.new(http_client_for(upstream))
       end
 
       def fetch_gem(id)
@@ -160,6 +166,7 @@ module Gemstash
         else
           env["gemstash.upstream"] = env["HTTP_X_GEMFILE_SOURCE"]
         end
+        capture_user_agent(env)
 
         true
       end
