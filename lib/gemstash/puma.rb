@@ -1,6 +1,6 @@
 require "gemstash"
 
 threads 0, 16
-bind "tcp://#{Gemstash::Env.current.config[:host]}:#{Gemstash::Env.current.config[:port]}"
+bind "#{Gemstash::Env.current.config[:bind]}"
 workers 1
 rackup Gemstash::Env.current.rackup

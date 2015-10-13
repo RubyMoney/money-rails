@@ -7,8 +7,7 @@ module Gemstash
       :cache_type => "memory",
       :base_path => File.expand_path("~/.gemstash"),
       :db_adapter => "sqlite3",
-      :host => "0.0.0.0",
-      :port => 9292,
+      :bind => "tcp://0.0.0.0:9292",
       :rubygems_url => "https://www.rubygems.org",
       :logfile => "server.log"
     }.freeze
