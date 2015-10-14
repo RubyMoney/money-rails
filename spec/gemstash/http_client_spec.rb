@@ -99,6 +99,8 @@ describe Gemstash::HTTPClient do
           end
           expect { http_client.get("/gems/rack") }.to raise_error do |error|
             expect(error).to be_a(Gemstash::ConnectionError)
+            expect(error.message).to eq("I don't like your DNS query!")
+            expect(error.code).to eq(502)
           end
         end
 

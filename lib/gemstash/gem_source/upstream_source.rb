@@ -114,8 +114,6 @@ module Gemstash
         gem.content
       rescue Gemstash::WebError => e
         halt e.code
-      rescue Gemstash::ConnectionError
-        halt 502 # Bad Gateway
       end
 
     private

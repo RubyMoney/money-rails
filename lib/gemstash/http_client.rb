@@ -14,7 +14,10 @@ module Gemstash
   end
 
   #:nodoc:
-  class ConnectionError < StandardError
+  class ConnectionError < WebError
+    def initialize(message)
+      super(message, 502) # Bad Gateway
+    end
   end
 
   #:nodoc:
