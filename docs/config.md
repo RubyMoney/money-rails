@@ -104,13 +104,17 @@ server. Alternate server configurations are not currently supported, but you can
 take a look at the [Puma configuration](../lib/gemstash/puma.rb) and the [rackup
 file](../lib/gemstash/config.ru) for inspiration.
 
-While the server is not customizable, the port which Gemstash opens can be
-changed. To change the port, update the `:port` configuration key:
+While the server is not customizable, the way Gemstash binds the port can be
+changed. To change the binding, update the `:bind` configuration key:
 ```yaml
 # ~/.gemstash/config.yml
 ---
-:port: 4242
+:bind: tcp://0.0.0.0:4242
 ```
+
+This maps directly to the [Puma bind
+flag](https://github.com/puma/puma#binding-tcp--sockets), and will support
+anything valid for that flag.
 
 ## Config File Location
 

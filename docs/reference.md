@@ -10,7 +10,7 @@ Table of Contents
       * [:db_adapter](#db_adapter)
       * [:db_url](#db_url)
       * [:rubygems_url](#rubygems_url)
-      * [:port](#port)
+      * [:bind](#bind)
     * [Authorize](#authorize)
       * [Usage](#usage)
       * [Arguments](#arguments)
@@ -52,7 +52,7 @@ Table of Contents
 :db_adapter: postgres
 :db_url: postgres:///gemstash
 :rubygems_url: https://my.gem-source.local
-:port: 4242
+:bind: tcp://0.0.0.0:4242
 ```
 
 ### :base_path
@@ -127,16 +127,17 @@ Specifies the default gem source URL. When any API endpoint is called without a
 result. This value can be safely changed even if there are already gems stashed
 for the previous value.
 
-### :port
+### :bind
 
-**Default value:** `9292`
+**Default value:** `tcp://0.0.0.0:9292`
 
-**Valid values:** Any valid port that Gemstash can open
+**Valid values:** Any valid binding that [is supported by
+Puma](https://github.com/puma/puma#binding-tcp--sockets)
 
 **Description**<br />
-Specifies the port to open when Gemstash starts. Keep in mind the user starting
-Gemstash needs to have access to open this port. If you use a value below 1024,
-you will need to run Gemstash as the root user.
+Specifies the binding used to start the Gemstash server. Keep in mind the user
+starting Gemstash needs to have access to bind in this manner. For example, if
+you use a port below 1024, you will need to run Gemstash as the root user.
 
 ## Authorize
 
