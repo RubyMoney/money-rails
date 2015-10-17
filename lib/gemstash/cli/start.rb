@@ -14,6 +14,7 @@ module Gemstash
       end
 
       def run
+        check_rubygems_version
         store_config
         setup_logging
         store_daemonized
@@ -34,6 +35,12 @@ module Gemstash
 
       def store_daemonized
         Gemstash::Env.daemonized = daemonize?
+      end
+
+      def check_rubygems_version
+        raise "Rubygems version is too old, please update rubygems by running: " \
+              "gem install rubygems-update && update_rubygems && gem update system" unless
+               Gem::Requirement.new("~> 2.4").satisfied_by?(Gem::Version.new(Gem::VERSION))
       end
 
       def daemonize?
