@@ -39,7 +39,7 @@ module Gemstash
 
       def check_rubygems_version
         raise "Rubygems version is too old, please update rubygems by running: " \
-              "gem install rubygems-update && update_rubygems && gem update system" unless
+              "gem update --system" unless
                Gem::Requirement.new("~> 2.4").satisfied_by?(Gem::Version.new(Gem::VERSION))
       end
 
