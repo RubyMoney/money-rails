@@ -125,7 +125,7 @@ module Gemstash
         when "memory"
           Gemstash::LruReduxClient.new
         when "memcached"
-          Dalli::Client.new
+          Dalli::Client.new(config[:memcached_servers])
         else
           raise "Invalid cache client: '#{config[:cache_type]}'"
         end

@@ -1,0 +1,3 @@
+#!/usr/bin/env ruby
+require "bundler/setup"
+exec "exe/gemstash", *ARGV
