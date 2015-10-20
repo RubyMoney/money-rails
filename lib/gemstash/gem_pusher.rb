@@ -1,5 +1,6 @@
 require "rubygems/package"
 require "stringio"
+require "tempfile"
 
 module Gemstash
   # Class that supports pushing a new gem to the private repository of gems.
@@ -25,12 +26,29 @@ module Gemstash
       store_gem
       save_to_database
       invalidate_cache
+    ensure
+      cleanup
     end
 
   private
 
+    def cleanup
+      return unless @tempfile
+      @tempfile.close
+      @tempfile.unlink
+    end
+
     def gem
-      @gem ||= ::Gem::Package.new(StringIO.new(@content))
+      @gem ||= begin
+        if Gem::Requirement.new("~> 2.4").satisfied_by?(Gem::Version.new(Gem::VERSION))
+          Gem::Package.new(StringIO.new(@content))
+        else
+          @tempfile = Tempfile.new("gemstash-gem")
+          @tempfile.write(@content)
+          @tempfile.flush
+          Gem::Package.new(@tempfile.path)
+        end
+      end
     end
 
     def storage
