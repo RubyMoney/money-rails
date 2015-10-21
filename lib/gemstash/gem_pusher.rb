@@ -74,7 +74,7 @@ module Gemstash
     end
   end
 
-  unless Gem::Requirement.new("~> 2.4").satisfied_by?(Gem::Version.new(Gem::VERSION))
+  unless Gem::Requirement.new(">= 2.4").satisfied_by?(Gem::Version.new(Gem::VERSION))
     require "tempfile"
 
     # Adds support for legacy versions of RubyGems
