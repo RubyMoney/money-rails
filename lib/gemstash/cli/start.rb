@@ -38,9 +38,9 @@ module Gemstash
       end
 
       def check_rubygems_version
-        raise "Rubygems version is too old, please update rubygems by running: " \
-              "gem update --system" unless
-               Gem::Requirement.new("~> 2.4").satisfied_by?(Gem::Version.new(Gem::VERSION))
+        STDERR.puts("Rubygems version is too old, please update rubygems by running: " \
+                    "gem update --system") unless
+                    Gem::Requirement.new("~> 2.4").satisfied_by?(Gem::Version.new(Gem::VERSION))
       end
 
       def daemonize?
