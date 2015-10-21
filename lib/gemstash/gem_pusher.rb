@@ -1,7 +1,7 @@
 require "rubygems/package"
 require "stringio"
-require "tempfile"
 
+#:nodoc:
 module Gemstash
   # Class that supports pushing a new gem to the private repository of gems.
   class GemPusher
@@ -26,29 +26,12 @@ module Gemstash
       store_gem
       save_to_database
       invalidate_cache
-    ensure
-      cleanup
     end
 
   private
 
-    def cleanup
-      return unless @tempfile
-      @tempfile.close
-      @tempfile.unlink
-    end
-
     def gem
-      @gem ||= begin
-        if Gem::Requirement.new("~> 2.4").satisfied_by?(Gem::Version.new(Gem::VERSION))
-          Gem::Package.new(StringIO.new(@content))
-        else
-          @tempfile = Tempfile.new("gemstash-gem")
-          @tempfile.write(@content)
-          @tempfile.flush
-          Gem::Package.new(@tempfile.path)
-        end
-      end
+      @gem ||= Gem::Package.new(StringIO.new(@content))
     end
 
     def storage
@@ -89,5 +72,45 @@ module Gemstash
     def invalidate_cache
       gemstash_env.cache.invalidate_gem("private", gem.spec.name)
     end
+  end
+
+  unless Gem::Requirement.new("~> 2.4").satisfied_by?(Gem::Version.new(Gem::VERSION))
+    require "tempfile"
+
+    # Adds support for legacy versions of RubyGems
+    module LegacyRubyGemsSupport
+      def self.included(base)
+        base.class_eval do
+          alias_method :push_without_cleanup, :push
+          remove_method :push
+          remove_method :gem
+        end
+      end
+
+      def push
+        push_without_cleanup
+      ensure
+        cleanup
+      end
+
+    private
+
+      def gem
+        @gem ||= begin
+          @tempfile = Tempfile.new("gemstash-gem")
+          @tempfile.write(@content)
+          @tempfile.flush
+          Gem::Package.new(@tempfile.path)
+        end
+      end
+
+      def cleanup
+        return unless @tempfile
+        @tempfile.close
+        @tempfile.unlink
+      end
+    end
+
+    GemPusher.send(:include, LegacyRubyGemsSupport)
   end
 end
