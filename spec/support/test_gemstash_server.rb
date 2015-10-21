@@ -4,7 +4,9 @@ require "support/server_check"
 
 # Launches a test Gemstash server directly via Puma.
 class TestGemstashServer
-  def initialize(port:, config:)
+  def initialize(port: nil, config: nil)
+    raise "Port is required" unless port
+    raise "Config is required" unless config
     @port = port
     args = %w(--config -)
     args += %w(--workers 0)
