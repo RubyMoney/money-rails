@@ -10,7 +10,7 @@ module Gemstash
     end
 
     def fetch(gem_id, &block)
-      @http_client.get("/gems/#{gem_id}") do |body, headers|
+      @http_client.get("gems/#{gem_id}") do |body, headers|
         properties = filter_headers(headers)
         validate_download(body, properties)
         yield body, properties
