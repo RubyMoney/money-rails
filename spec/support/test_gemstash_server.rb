@@ -28,6 +28,14 @@ class TestGemstashServer
     "http://127.0.0.1:#{@port}"
   end
 
+  def upstream
+    @upstream ||= Gemstash::Upstream.new(url)
+  end
+
+  def private_upstream
+    @private_upstream ||= Gemstash::Upstream.new(upstream.url("private"))
+  end
+
   def start
     raise "Already started!" if @started
     @started = true

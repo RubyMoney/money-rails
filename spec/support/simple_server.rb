@@ -81,7 +81,7 @@ class SimpleServer
     mount("/gems/#{name}-#{version}.gem") do |_, response|
       response.status = 200
       response.content_type = "application/octet-stream"
-      response.body = File.open(gem_path(name, version), "rb", &:read)
+      response.body = read_gem(name, version)
     end
   end
 
