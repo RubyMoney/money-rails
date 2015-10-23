@@ -5,6 +5,7 @@ describe Gemstash::HTTPClient do
     @server = SimpleServer.new("localhost")
     @other_server = SimpleServer.new("127.0.0.1")
     @server.mount_message("/simple_fetch", "Simple fetch results")
+    @server.mount_message("/nested/fetch", "Nested fetch results")
     @server.mount_message("/error", "Error result", 500)
     @server.mount_message("/missing", "Missing value", 404)
     @server.mount_redirect("/redirect", "/simple_fetch")
@@ -26,25 +27,35 @@ describe Gemstash::HTTPClient do
 
     context "with a valid url" do
       it "returns the body of the result" do
-        expect(http_client.get("/simple_fetch")).to eq("Simple fetch results")
+        expect(http_client.get("simple_fetch")).to eq("Simple fetch results")
+      end
+    end
+
+    context "with an upstream that includes a path" do
+      let(:http_client) do
+        Gemstash::HTTPClient.for(Gemstash::Upstream.new("#{@server.url}/nested"))
+      end
+
+      it "returns the body of the result" do
+        expect(http_client.get("fetch")).to eq("Nested fetch results")
       end
     end
 
     context "with a valid redirect" do
       it "returns the body of the result after the redirect" do
-        expect(http_client.get("/redirect")).to eq("Simple fetch results")
+        expect(http_client.get("redirect")).to eq("Simple fetch results")
       end
     end
 
     context "with a redirect to a different server" do
       it "returns the body of the result after the redirects" do
-        expect(http_client.get("/other_redirect")).to eq("Simple fetch results")
+        expect(http_client.get("other_redirect")).to eq("Simple fetch results")
       end
     end
 
     context "with a url that returns a 500" do
       it "throws an error" do
-        expect { http_client.get("/error") }.to raise_error do |error|
+        expect { http_client.get("error") }.to raise_error do |error|
           expect(error).to be_a(Gemstash::WebError)
           expect(error.message).to eq("Error result")
           expect(error.code).to eq(500)
@@ -54,7 +65,7 @@ describe Gemstash::HTTPClient do
 
     context "with a url that returns a 404" do
       it "throws an error" do
-        expect { http_client.get("/missing") }.to raise_error do |error|
+        expect { http_client.get("missing") }.to raise_error do |error|
           expect(error).to be_a(Gemstash::WebError)
           expect(error.message).to eq("Missing value")
           expect(error.code).to eq(404)
@@ -76,7 +87,7 @@ describe Gemstash::HTTPClient do
           stubs.get("/gems/rack", "User-Agent" => "my-agent 6.6.6") do
             [200, { "CONTENT-TYPE" => "octet/stream" }, "zapatito"]
           end
-          http_client.get("/gems/rack")
+          http_client.get("gems/rack")
           stubs.verify_stubbed_calls
         end
       end
@@ -89,7 +100,7 @@ describe Gemstash::HTTPClient do
           stubs.get("/gems/rack", "User-Agent" => default_user_agent) do
             [200, { "CONTENT-TYPE" => "octet/stream" }, "zapatito"]
           end
-          http_client.get("/gems/rack")
+          http_client.get("gems/rack")
           stubs.verify_stubbed_calls
         end
 
@@ -124,7 +135,7 @@ describe Gemstash::HTTPClient do
             body_result = nil
             headers_result = nil
 
-            http_client.get("/gems/rack") do |body, headers|
+            http_client.get("gems/rack") do |body, headers|
               body_result = body
               headers_result = headers
             end

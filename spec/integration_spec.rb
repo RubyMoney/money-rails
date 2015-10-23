@@ -43,7 +43,7 @@ describe "gemstash integration tests" do
       let(:storage) { Gemstash::Storage.for("private").for("gems") }
       let(:deps) { Gemstash::Dependencies.for_private }
       let(:gem) { gem_path("speaker", "0.1.0") }
-      let(:gem_contents) { File.read(gem) }
+      let(:gem_contents) { File.open(gem, "rb", &:read) }
       let(:env_dir) { env_path("integration_spec/push_gem") }
 
       let(:speaker_deps) do
@@ -130,7 +130,7 @@ describe "gemstash integration tests" do
     context "with private gems", :db_transaction => false do
       before do
         Gemstash::Authorization.authorize("test-key", "all")
-        gem_contents = File.read(gem_path("speaker", "0.1.0"))
+        gem_contents = File.open(gem_path("speaker", "0.1.0"), "rb", &:read)
         Gemstash::GemPusher.new("test-key", gem_contents).push
       end
 

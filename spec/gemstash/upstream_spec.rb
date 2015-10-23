@@ -79,13 +79,13 @@ describe Gemstash::Upstream do
 
     context "with just a path provided" do
       it "returns the url" do
-        expect(upstream.url("/path/somewhere")).to eq("https://www.rubygems.org/path/somewhere")
+        expect(upstream.url("path/somewhere")).to eq("https://www.rubygems.org/path/somewhere")
       end
     end
 
     context "with just a path and query string provided" do
       it "returns the url" do
-        expect(upstream.url("/path/somewhere", "abc=123")).to eq("https://www.rubygems.org/path/somewhere?abc=123")
+        expect(upstream.url("path/somewhere", "abc=123")).to eq("https://www.rubygems.org/path/somewhere?abc=123")
       end
     end
   end

@@ -48,47 +48,47 @@ module Gemstash
       end
 
       def serve_dependencies
-        redirect upstream.url("/api/v1/dependencies", request.query_string)
+        redirect upstream.url("api/v1/dependencies", request.query_string)
       end
 
       def serve_dependencies_json
-        redirect upstream.url("/api/v1/dependencies.json", request.query_string)
+        redirect upstream.url("api/v1/dependencies.json", request.query_string)
       end
 
       def serve_names
-        redirect upstream.url("/names", request.query_string)
+        redirect upstream.url("names", request.query_string)
       end
 
       def serve_versions
-        redirect upstream.url("/versions", request.query_string)
+        redirect upstream.url("versions", request.query_string)
       end
 
       def serve_info(name)
-        redirect upstream.url("/info/#{name}", request.query_string)
+        redirect upstream.url("info/#{name}", request.query_string)
       end
 
       def serve_marshal(id)
-        redirect upstream.url("/quick/Marshal.4.8/#{id}", request.query_string)
+        redirect upstream.url("quick/Marshal.4.8/#{id}", request.query_string)
       end
 
       def serve_actual_gem(id)
-        redirect upstream.url("/fetch/actual/gem/#{id}", request.query_string)
+        redirect upstream.url("fetch/actual/gem/#{id}", request.query_string)
       end
 
       def serve_gem(id)
-        redirect upstream.url("/gems/#{id}", request.query_string)
+        redirect upstream.url("gems/#{id}", request.query_string)
       end
 
       def serve_latest_specs
-        redirect upstream.url("/latest_specs.4.8.gz", request.query_string)
+        redirect upstream.url("latest_specs.4.8.gz", request.query_string)
       end
 
       def serve_specs
-        redirect upstream.url("/specs.4.8.gz", request.query_string)
+        redirect upstream.url("specs.4.8.gz", request.query_string)
       end
 
       def serve_prerelease_specs
-        redirect upstream.url("/prerelease_specs.4.8.gz", request.query_string)
+        redirect upstream.url("prerelease_specs.4.8.gz", request.query_string)
       end
 
     private
@@ -110,7 +110,7 @@ module Gemstash
 
       def serve_gem(id)
         gem = fetch_gem(id)
-        headers.update(gem.properties)
+        headers.update(gem.properties[:headers] || {})
         gem.content
       rescue Gemstash::WebError => e
         halt e.code
@@ -152,7 +152,7 @@ module Gemstash
       def fetch_remote_gem(gem_name, gem_resource)
         log.info "Gem #{gem_name.name} is not cached, fetching"
         gem_fetcher.fetch(gem_name.id) do |content, properties|
-          gem_resource.save(content, properties: properties)
+          gem_resource.save(content, headers: properties)
         end
       end
     end

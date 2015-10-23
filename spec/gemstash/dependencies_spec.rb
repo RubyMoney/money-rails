@@ -7,8 +7,8 @@ describe Gemstash::Dependencies do
   let(:db_deps) { Gemstash::Dependencies.for_private }
 
   def valid_url(url, expected_gems)
-    expect(url).to start_with("/api/v1/dependencies?gems=")
-    params = url.sub("/api/v1/dependencies?gems=", "")
+    expect(url).to start_with("api/v1/dependencies?gems=")
+    params = url.sub("api/v1/dependencies?gems=", "")
     expect(params.split(",")).to match_array(expected_gems)
   end
 

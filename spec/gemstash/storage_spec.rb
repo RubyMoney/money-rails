@@ -54,9 +54,15 @@ describe Gemstash::Storage do
       end
 
       it "can also save properties" do
-        resource.save("some other content", properties: { "content-type" => "octet/stream" })
+        resource.save("some other content", "content-type" => "octet/stream")
         expect(resource.content).to eq("some other content")
         expect(resource.properties).to eq("content-type" => "octet/stream")
+      end
+
+      it "can save nested properties" do
+        resource.save("some other content", headers: { "content-type" => "octet/stream" })
+        expect(resource.content).to eq("some other content")
+        expect(resource.properties).to eq(headers: { "content-type" => "octet/stream" })
       end
     end
 
