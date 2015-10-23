@@ -57,7 +57,7 @@ module Gemstash
       File.exist?(content_filename) && File.exist?(properties_filename)
     end
 
-    def save(content, properties: nil)
+    def save(content, properties = nil)
       @content = content
       @properties = properties
       store
@@ -89,11 +89,11 @@ module Gemstash
 
     def save_file(filename)
       content = yield
-      File.open(filename, "w") {|f| f.write(content) }
+      File.open(filename, "wb") {|f| f.write(content) }
     end
 
     def read_file(filename)
-      File.open(filename, &:read)
+      File.open(filename, "rb", &:read)
     end
 
     def content_filename

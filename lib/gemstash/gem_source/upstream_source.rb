@@ -110,7 +110,7 @@ module Gemstash
 
       def serve_gem(id)
         gem = fetch_gem(id)
-        headers.update(gem.properties)
+        headers.update(gem.properties[:headers] || {})
         gem.content
       rescue Gemstash::WebError => e
         halt e.code
@@ -152,7 +152,7 @@ module Gemstash
       def fetch_remote_gem(gem_name, gem_resource)
         log.info "Gem #{gem_name.name} is not cached, fetching"
         gem_fetcher.fetch(gem_name.id) do |content, properties|
-          gem_resource.save(content, properties: properties)
+          gem_resource.save(content, headers: properties)
         end
       end
     end

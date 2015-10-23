@@ -13,7 +13,7 @@ describe Gemstash::GemPusher do
 
   describe ".push" do
     let(:deps) { Gemstash::Dependencies.for_private }
-    let(:gem_contents) { File.read(gem_path("example", "0.1.0")) }
+    let(:gem_contents) { File.open(gem_path("example", "0.1.0"), "rb", &:read) }
 
     context "without authorization" do
       it "prevents pushing" do
