@@ -31,7 +31,12 @@ module Gemstash
       end
 
       def serve_yank
-        halt 403, "Not yet supported"
+        authenticated("Gemstash Private Gems") do
+          auth = request.env["HTTP_AUTHORIZATION"]
+          gem_name = params[:gem_name]
+          version = params[:version]
+          Gemstash::GemYanker.new(auth, gem_name, version).yank
+        end
       end
 
       def serve_unyank

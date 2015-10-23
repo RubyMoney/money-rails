@@ -1,3 +1,4 @@
+require "gemstash"
 require "rubygems/package"
 require "stringio"
 
@@ -15,10 +16,10 @@ module Gemstash
     class YankedVersionError < ExistingVersionError
     end
 
-    def initialize(auth_key, content, db_helper = nil)
+    def initialize(auth_key, content)
       @auth_key = auth_key
       @content = content
-      @db_helper = db_helper || Gemstash::DBHelper.new
+      @db_helper = Gemstash::DBHelper.new
     end
 
     def push
@@ -39,7 +40,7 @@ module Gemstash
     end
 
     def check_auth
-      raise Gemstash::NotAuthorizedError, "Authorization key required" if @auth_key.nil? || @auth_key.strip.empty?
+      raise Gemstash::NotAuthorizedError, "Authorization key required" if @auth_key.to_s.strip.empty?
       auth = Authorization[@auth_key]
       raise Gemstash::NotAuthorizedError, "Authorization key is invalid" unless auth
       raise Gemstash::NotAuthorizedError, "Authorization key doesn't have push access" unless auth.push?

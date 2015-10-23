@@ -10,6 +10,7 @@ module Gemstash
   autoload :GemFetcher,          "gemstash/gem_fetcher"
   autoload :GemPusher,           "gemstash/gem_pusher"
   autoload :GemSource,           "gemstash/gem_source"
+  autoload :GemYanker,           "gemstash/gem_yanker"
   autoload :HTTPClient,          "gemstash/http_client"
   autoload :Logging,             "gemstash/logging"
   autoload :LruReduxClient,      "gemstash/cache"
