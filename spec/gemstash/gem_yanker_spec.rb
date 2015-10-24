@@ -4,12 +4,10 @@ describe Gemstash::GemYanker do
   let(:auth_key) { "auth-key" }
   let(:invalid_auth_key) { "invalid-auth-key" }
   let(:auth_key_without_permission) { "auth-key-without-permission" }
-  let(:storage) { Gemstash::Storage.for("private").for("gems") }
   let(:deps) { Gemstash::Dependencies.for_private }
   let(:gem_name) { "example" }
   let(:gem_version) { "0.1.0" }
   let(:gem_slug) { "#{gem_version}-ruby" }
-  let(:gem_contents) { read_gem(gem_name, gem_version) }
 
   let(:gem_dependencies) do
     {
@@ -81,6 +79,9 @@ describe Gemstash::GemYanker do
     end
 
     context "with an existing gem version" do
+      let(:storage) { Gemstash::Storage.for("private").for("gems") }
+      let(:gem_contents) { read_gem(gem_name, gem_version) }
+
       it "yanks the gem" do
         expect(deps.fetch(%w(example))).to eq([gem_dependencies])
         Gemstash::GemYanker.new(auth_key, gem_name, gem_slug).yank
@@ -91,15 +92,57 @@ describe Gemstash::GemYanker do
     end
 
     context "with an existing gem version with other versions" do
-      it "yanks just the specified gem version"
+      let(:alternate_deps) do
+        {
+          :name => "example",
+          :number => "0.0.1",
+          :platform => "ruby",
+          :dependencies => []
+        }
+      end
+
+      before do
+        gem_id = find_rubygem_id(gem_name)
+        insert_version gem_id, "0.0.1"
+      end
+
+      it "yanks just the specified gem version" do
+        Gemstash::GemYanker.new(auth_key, gem_name, gem_slug).yank
+        expect(deps.fetch(%w(example))).to eq([alternate_deps])
+      end
     end
 
     context "with an existing gem version with other platforms" do
-      it "yanks just the specified gem version"
+      let(:alternate_deps) do
+        {
+          :name => "example",
+          :number => "0.1.0",
+          :platform => "jruby",
+          :dependencies => []
+        }
+      end
+
+      before do
+        gem_id = find_rubygem_id(gem_name)
+        insert_version gem_id, "0.1.0", "jruby"
+      end
+
+      it "yanks just the specified gem version" do
+        Gemstash::GemYanker.new(auth_key, gem_name, gem_slug).yank
+        expect(deps.fetch(%w(example))).to eq([alternate_deps])
+      end
     end
 
     context "with an existing gem version and explicit platform with other platforms" do
-      it "yanks just the specified gem version"
+      before do
+        gem_id = find_rubygem_id(gem_name)
+        insert_version gem_id, "0.1.0", "jruby"
+      end
+
+      it "yanks just the specified gem version" do
+        Gemstash::GemYanker.new(auth_key, gem_name, "0.1.0-jruby").yank
+        expect(deps.fetch(%w(example))).to eq([gem_dependencies])
+      end
     end
   end
 end
