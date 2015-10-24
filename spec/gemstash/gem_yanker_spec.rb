@@ -91,6 +91,14 @@ describe Gemstash::GemYanker do
       end
     end
 
+    context "with an implicit platform" do
+      it "yanks the gem" do
+        expect(deps.fetch(%w(example))).to eq([gem_dependencies])
+        Gemstash::GemYanker.new(auth_key, gem_name, gem_version).yank
+        expect(deps.fetch(%w(example))).to eq([])
+      end
+    end
+
     context "with an existing gem version with other versions" do
       let(:alternate_deps) do
         {
