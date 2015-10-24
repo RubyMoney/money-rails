@@ -47,10 +47,12 @@ module Gemstash
         version = @db_helper.find_version(gem_id, full_name: full_name)
         raise UnknownVersionError, "Cannot yank an unknown version!" unless version
         raise YankedVersionError, "Cannot yank an already yanked version!" unless version[:indexed]
+        @db_helper.deindex_version(version[:id])
       end
     end
 
     def invalidate_cache
+      gemstash_env.cache.invalidate_gem("private", @gem_name)
     end
   end
 end

@@ -70,6 +70,12 @@ module Gemstash
         :updated_at => Sequel::SQL::Constants::CURRENT_TIMESTAMP)
     end
 
+    def deindex_version(version_id)
+      gemstash_env.db[:versions].where(:id => version_id).update(
+        :indexed => false,
+        :updated_at => Sequel::SQL::Constants::CURRENT_TIMESTAMP)
+    end
+
     def insert_dependencies(version_id, spec)
       spec.runtime_dependencies.each do |dep|
         requirements = dep.requirement.requirements

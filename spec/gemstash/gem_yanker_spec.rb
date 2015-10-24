@@ -9,6 +9,7 @@ describe Gemstash::GemYanker do
   let(:gem_name) { "example" }
   let(:gem_version) { "0.1.0" }
   let(:gem_slug) { "#{gem_version}-ruby" }
+  let(:gem_contents) { read_gem(gem_name, gem_version) }
 
   let(:gem_dependencies) do
     {
@@ -80,7 +81,13 @@ describe Gemstash::GemYanker do
     end
 
     context "with an existing gem version" do
-      it "yanks the gem"
+      it "yanks the gem" do
+        expect(deps.fetch(%w(example))).to eq([gem_dependencies])
+        Gemstash::GemYanker.new(auth_key, gem_name, gem_slug).yank
+        expect(deps.fetch(%w(example))).to eq([])
+        # It doesn't actually delete
+        expect(storage.resource("#{gem_name}-#{gem_version}").load.content).to eq(gem_contents)
+      end
     end
 
     context "with an existing gem version with other versions" do
