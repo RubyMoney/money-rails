@@ -11,6 +11,10 @@ module Gemstash
       @client = client
     end
 
+    def flush
+      @client.flush
+    end
+
     def authorization(auth_key)
       @client.get("auths/#{auth_key}")
     end

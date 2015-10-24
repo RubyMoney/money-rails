@@ -68,6 +68,8 @@ describe "gemstash integration tests" do
         expect(deps.fetch(%w(speaker))).to match_dependencies([])
         expect { storage.resource("speaker-0.1.0").load }.to raise_error(RuntimeError)
         Gemstash::Env.current.cache_client.flush
+        @gemstash.env.db.disconnect
+        @gemstash.env.cache.flush
       end
 
       it "pushes valid gems to the server", :db_transaction => false do
@@ -84,6 +86,8 @@ describe "gemstash integration tests" do
         Gemstash::GemPusher.new("test-key", gem_contents).push
         expect(deps.fetch(%w(speaker))).to match_dependencies([speaker_deps])
         Gemstash::Env.current.cache_client.flush
+        @gemstash.env.db.disconnect
+        @gemstash.env.cache.flush
       end
 
       xit "removes valid gems from the server", :db_transaction => false do
@@ -156,6 +160,8 @@ describe "gemstash integration tests" do
       before do
         Gemstash::Authorization.authorize("test-key", "all")
         Gemstash::GemPusher.new("test-key", read_gem("speaker", "0.1.0")).push
+        @gemstash.env.db.disconnect
+        @gemstash.env.cache.flush
       end
 
       let(:bundle) { "integration_spec/private_gems" }
