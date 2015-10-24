@@ -1,5 +1,9 @@
 #:nodoc:
 module DBHelpers
+  def find_rubygem(name)
+    Gemstash::Env.current.db[:rubygems][:name => name][:id]
+  end
+
   def insert_rubygem(name)
     Gemstash::Env.current.db[:rubygems].insert(
       :name => name,

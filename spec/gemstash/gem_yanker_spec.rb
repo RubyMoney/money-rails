@@ -49,5 +49,41 @@ describe Gemstash::GemYanker do
         expect(deps.fetch(%w(example))).to eq([gem_dependencies])
       end
     end
+
+    context "with an unknown gem name" do
+      it "rejects the yank" do
+        expect { Gemstash::GemYanker.new(auth_key, "unknown", "0.4.2").yank }.
+          to raise_error(Gemstash::GemYanker::UnknownGemError)
+      end
+    end
+
+    context "with an unknown gem version" do
+      xit "rejects the yank" do
+        expect { Gemstash::GemYanker.new(auth_key, gem_name, "0.4.2").yank }.
+          to raise_error(Gemstash::GemYanker::UnknownVersionError)
+        expect(deps.fetch(%w(example))).to eq([gem_dependencies])
+      end
+    end
+
+    context "with a yanked gem version" do
+      before do
+        gem_id = find_rubygem gem_name
+        insert_version gem_id, "0.4.2", "ruby", false
+      end
+
+      xit "rejects the yank" do
+        expect { Gemstash::GemYanker.new(auth_key, gem_name, "0.4.2").yank }.
+          to raise_error(Gemstash::GemYanker::YankedVersionError)
+        expect(deps.fetch(%w(example))).to eq([gem_dependencies])
+      end
+    end
+
+    context "with an existing gem version" do
+      it "yanks the gem"
+    end
+
+    context "with an existing gem version with other versions" do
+      it "yanks just the specified gem version"
+    end
   end
 end

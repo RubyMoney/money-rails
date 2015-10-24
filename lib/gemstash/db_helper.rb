@@ -31,9 +31,14 @@ module Gemstash
       gemstash_env.db[:authorizations].where(:auth_key => auth_key).delete
     end
 
+    def find_rubygem(name)
+      row = gemstash_env.db[:rubygems][:name => name]
+      row[:id] if row
+    end
+
     def find_or_insert_rubygem(spec)
-      row = gemstash_env.db[:rubygems][:name => spec.name]
-      return row[:id] if row
+      gem_id = find_rubygem(spec.name)
+      return gem_id if gem_id
       gemstash_env.db[:rubygems].insert(
         :name => spec.name,
         :created_at => Sequel::SQL::Constants::CURRENT_TIMESTAMP,
