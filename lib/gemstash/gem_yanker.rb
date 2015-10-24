@@ -17,10 +17,10 @@ module Gemstash
     class YankedVersionError < StandardError
     end
 
-    def initialize(auth_key, gem_name, version)
+    def initialize(auth_key, gem_name, slug)
       @auth_key = auth_key
       @gem_name = gem_name
-      @version = version
+      @slug = slug
       @db_helper = Gemstash::DBHelper.new
     end
 
@@ -43,6 +43,10 @@ module Gemstash
       gemstash_env.db.transaction do
         gem_id = @db_helper.find_rubygem_id(@gem_name)
         raise UnknownGemError, "Cannot yank an unknown gem!" unless gem_id
+        full_name = "#{@gem_name}-#{@slug}"
+        version = @db_helper.find_version(gem_id, full_name: full_name)
+        raise UnknownVersionError, "Cannot yank an unknown version!" unless version
+        raise YankedVersionError, "Cannot yank an already yanked version!" unless version[:indexed]
       end
     end
 

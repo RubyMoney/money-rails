@@ -35,7 +35,13 @@ module Gemstash
           auth = request.env["HTTP_AUTHORIZATION"]
           gem_name = params[:gem_name]
           version = params[:version]
-          Gemstash::GemYanker.new(auth, gem_name, version).yank
+          platform = params[:platform]
+          slug = if platform.to_s.empty?
+            version
+          else
+            "#{version}-#{platform}"
+          end
+          Gemstash::GemYanker.new(auth, gem_name, slug).yank
         end
       end
 

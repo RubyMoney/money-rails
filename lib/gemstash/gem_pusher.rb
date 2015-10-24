@@ -55,7 +55,7 @@ module Gemstash
 
       gemstash_env.db.transaction do
         gem_id = @db_helper.find_or_insert_rubygem(spec)
-        existing = @db_helper.find_version(gem_id, spec)
+        existing = @db_helper.find_version(gem_id, spec: spec)
 
         if existing
           if existing[:indexed]
