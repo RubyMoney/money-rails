@@ -31,13 +31,13 @@ module Gemstash
       gemstash_env.db[:authorizations].where(:auth_key => auth_key).delete
     end
 
-    def find_rubygem(name)
+    def find_rubygem_id(name)
       row = gemstash_env.db[:rubygems][:name => name]
       row[:id] if row
     end
 
     def find_or_insert_rubygem(spec)
-      gem_id = find_rubygem(spec.name)
+      gem_id = find_rubygem_id(spec.name)
       return gem_id if gem_id
       gemstash_env.db[:rubygems].insert(
         :name => spec.name,
@@ -53,10 +53,12 @@ module Gemstash
     end
 
     def insert_version(gem_id, spec, indexed = true)
+      gem_name = gemstash_env.db[:rubygems][:id => gem_id][:name]
       gemstash_env.db[:versions].insert(
         :rubygem_id => gem_id,
         :number => spec.version.to_s,
         :platform => spec.platform,
+        :full_name => "#{gem_name}-#{spec.version}-#{spec.platform}",
         :indexed => indexed,
         :created_at => Sequel::SQL::Constants::CURRENT_TIMESTAMP,
         :updated_at => Sequel::SQL::Constants::CURRENT_TIMESTAMP)

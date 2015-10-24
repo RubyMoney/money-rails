@@ -67,7 +67,7 @@ describe Gemstash::GemYanker do
 
     context "with a yanked gem version" do
       before do
-        gem_id = find_rubygem gem_name
+        gem_id = find_rubygem_id(gem_name)
         insert_version gem_id, "0.4.2", "ruby", false
       end
 
@@ -83,6 +83,14 @@ describe Gemstash::GemYanker do
     end
 
     context "with an existing gem version with other versions" do
+      it "yanks just the specified gem version"
+    end
+
+    context "with an existing gem version with other platforms" do
+      it "yanks just the specified gem version"
+    end
+
+    context "with an existing gem version and explicit platform with other platforms" do
       it "yanks just the specified gem version"
     end
   end
