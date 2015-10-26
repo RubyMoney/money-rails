@@ -38,6 +38,10 @@ module Gemstash
       @cache = cache
     end
 
+    def self.available?
+      !Thread.current[:gemstash_env].nil?
+    end
+
     def self.current
       raise EnvNotSetError unless Thread.current[:gemstash_env]
       Thread.current[:gemstash_env]
