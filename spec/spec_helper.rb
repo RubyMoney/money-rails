@@ -14,8 +14,8 @@ require "support/simple_server"
 require "support/test_gemstash_server"
 
 TEST_BASE_PATH = File.expand_path("../../tmp/test_base", __FILE__)
-Pathname.new(TEST_BASE_PATH).children.each(&:rmtree)
 FileUtils.mkpath(TEST_BASE_PATH) unless Dir.exist?(TEST_BASE_PATH)
+Pathname.new(TEST_BASE_PATH).children.each(&:rmtree)
 TEST_LOG_FILE = File.join(TEST_BASE_PATH, "server.log")
 TEST_CONFIG = Gemstash::Configuration.new(config: {
                                             :base_path => TEST_BASE_PATH
