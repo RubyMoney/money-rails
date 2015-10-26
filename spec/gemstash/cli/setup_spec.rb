@@ -15,6 +15,15 @@ describe Gemstash::CLI::Setup do
     }
   end
 
+  before do
+    @test_env = test_env
+    Gemstash::Env.current = Gemstash::Env.new(TEST_CONFIG)
+  end
+
+  after do
+    Gemstash::Env.current = @test_env
+  end
+
   context "accepting all defaults" do
     it "saves the config with defaults" do
       allow(cli).to receive(:ask).and_return("")

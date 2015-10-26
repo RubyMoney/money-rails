@@ -18,7 +18,8 @@ class TestGemstashServer
     args << File.expand_path("../test_gemstash_server.ru", __FILE__)
     config = Gemstash::Configuration.new(config: config)
     cache = Gemstash::Env.current.cache
-    @env = Gemstash::Env.new(config, cache: cache)
+    db = Gemstash::Env.current.db
+    @env = Gemstash::Env.new(config, cache: cache, db: db)
     # rubocop:disable Style/GlobalVars
     $test_gemstash_server_env = @env
     # rubocop:enable Style/GlobalVars
