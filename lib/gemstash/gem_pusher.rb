@@ -54,7 +54,7 @@ module Gemstash
       spec = gem.spec
 
       gemstash_env.db.transaction do
-        gem_id = @db_helper.find_or_insert_rubygem(spec)
+        gem_id = Gemstash::DB::Rubygem.find_or_insert(spec)
         existing = @db_helper.find_version_by_spec(gem_id, spec)
 
         if existing

@@ -41,7 +41,7 @@ module Gemstash
 
     def update_database
       gemstash_env.db.transaction do
-        gem_id = @db_helper.find_rubygem_id(@gem_name)
+        gem_id = Gemstash::DB::Rubygem.find_id(@gem_name)
         raise UnknownGemError, "Cannot yank an unknown gem!" unless gem_id
         full_name = "#{@gem_name}-#{@slug}"
         version = @db_helper.find_version_by_full_name(full_name)
