@@ -33,9 +33,14 @@ module Gemstash
       end
     end
 
-    def initialize(config = nil, cache: nil)
+    def initialize(config = nil, cache: nil, db: nil)
       @config = config
       @cache = cache
+      @db = db
+    end
+
+    def self.available?
+      !Thread.current[:gemstash_env].nil?
     end
 
     def self.current
@@ -108,11 +113,15 @@ module Gemstash
           raise "Unsupported DB adapter: '#{config[:db_adapter]}'"
         end
 
-        Sequel.extension :migration
-        migrations_dir = File.expand_path("../migrations", __FILE__)
-        Sequel::Migrator.run(db, migrations_dir, :use_transactions => true)
+        Gemstash::Env.migrate(db)
         db
       end
+    end
+
+    def self.migrate(db)
+      Sequel.extension :migration
+      migrations_dir = File.expand_path("../migrations", __FILE__)
+      Sequel::Migrator.run(db, migrations_dir, :use_transactions => true)
     end
 
     def cache

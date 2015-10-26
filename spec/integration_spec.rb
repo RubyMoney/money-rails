@@ -39,41 +39,70 @@ describe "gemstash integration tests" do
   end
 
   describe "interacting with private gems" do
+    let(:env_dir) { env_path("integration_spec/private_gems") }
+    let(:host) { "#{@gemstash.url}/private" }
+    let(:gem_name) { "speaker" }
+    let(:gem) { gem_path(gem_name, gem_version) }
+    let(:gem_version) { "0.1.0" }
+    let(:gem_contents) { read_gem(gem_name, gem_version) }
+    let(:deps) { Gemstash::Dependencies.for_private }
+    let(:storage) { Gemstash::Storage.for("private").for("gems") }
+    let(:http_client) { Gemstash::HTTPClient.for(@gemstash.private_upstream) }
+
+    let(:speaker_deps) do
+      {
+        :name => "speaker",
+        :number => "0.1.0",
+        :platform => "ruby",
+        :dependencies => []
+      }
+    end
+
+    before do
+      FileUtils.chmod(0600, File.join(env_dir, ".gem/credentials"))
+      Gemstash::Authorization.authorize("test-key", "all")
+    end
+
     context "pushing a gem" do
-      let(:storage) { Gemstash::Storage.for("private").for("gems") }
-      let(:deps) { Gemstash::Dependencies.for_private }
-      let(:gem) { gem_path("speaker", "0.1.0") }
-      let(:gem_contents) { File.open(gem, "rb", &:read) }
-      let(:env_dir) { env_path("integration_spec/push_gem") }
-
-      let(:speaker_deps) do
-        {
-          :name => "speaker",
-          :number => "0.1.0",
-          :platform => "ruby",
-          :dependencies => []
-        }
-      end
-
       before do
-        Gemstash::Authorization.authorize("test-key", "all")
         expect(deps.fetch(%w(speaker))).to match_dependencies([])
         expect { storage.resource("speaker-0.1.0").load }.to raise_error(RuntimeError)
         Gemstash::Env.current.cache_client.flush
-        FileUtils.chmod(0600, File.join(env_dir, ".gem/credentials"))
+        @gemstash.env.db.disconnect
+        @gemstash.env.cache.flush
       end
 
       it "pushes valid gems to the server", :db_transaction => false do
-        host = "#{@gemstash.url}/private"
         env = { "HOME" => env_dir }
         expect(execute("gem push --key test --host '#{host}' '#{gem}'", env: env)).to exit_success
         expect(deps.fetch(%w(speaker))).to match_dependencies([speaker_deps])
         expect(storage.resource("speaker-0.1.0").load.content).to eq(gem_contents)
+        expect(http_client.get("gems/speaker-0.1.0")).to eq(gem_contents)
+      end
+    end
+
+    context "yanking a gem" do
+      before do
+        Gemstash::GemPusher.new("test-key", gem_contents).push
+        expect(deps.fetch(%w(speaker))).to match_dependencies([speaker_deps])
+        Gemstash::Env.current.cache_client.flush
+        @gemstash.env.db.disconnect
+        @gemstash.env.cache.flush
+      end
+
+      it "removes valid gems from the server", :db_transaction => false do
+        env = { "HOME" => env_dir, "RUBYGEMS_HOST" => host }
+        expect(execute("gem yank --key test '#{gem_name}' --version #{gem_version}", env: env)).to exit_success
+        expect(deps.fetch(%w(speaker))).to match_dependencies([])
+        # It shouldn't actually delete the gem, to support unyank
+        expect(storage.resource("speaker-0.1.0").load.content).to eq(gem_contents)
+        # But it should block downloading the yanked gem
+        expect { http_client.get("gems/speaker-0.1.0") }.to raise_error(Gemstash::WebError)
       end
     end
   end
 
-  describe "bundling install against gemstash" do
+  describe "bundle install against gemstash" do
     let(:dir) { bundle_path(bundle) }
 
     after do
@@ -130,8 +159,9 @@ describe "gemstash integration tests" do
     context "with private gems", :db_transaction => false do
       before do
         Gemstash::Authorization.authorize("test-key", "all")
-        gem_contents = File.open(gem_path("speaker", "0.1.0"), "rb", &:read)
-        Gemstash::GemPusher.new("test-key", gem_contents).push
+        Gemstash::GemPusher.new("test-key", read_gem("speaker", "0.1.0")).push
+        @gemstash.env.db.disconnect
+        @gemstash.env.cache.flush
       end
 
       let(:bundle) { "integration_spec/private_gems" }

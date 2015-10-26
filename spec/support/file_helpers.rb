@@ -8,6 +8,10 @@ module FileHelpers
     File.join(gem_dir, "pkg/#{name}-#{version}.gem")
   end
 
+  def read_gem(name, version)
+    File.open(gem_path(name, version), "rb", &:read)
+  end
+
   def env_path(name)
     envs_dir = File.expand_path("../../data/environments", __FILE__)
     File.join(envs_dir, name)

@@ -1,4 +1,5 @@
 require "lru_redux"
+require "forwardable"
 
 module Gemstash
   # Cache object which knows about what things are cached and what keys to use
@@ -6,6 +7,8 @@ module Gemstash
   # an in memory client via the lru_redux gem.
   class Cache
     EXPIRY = 30 * 60
+    extend Forwardable
+    def_delegators :@client, :flush
 
     def initialize(client)
       @client = client
@@ -45,6 +48,10 @@ module Gemstash
   class LruReduxClient
     MAX_SIZE = 500
     EXPIRY = Gemstash::Cache::EXPIRY
+    extend Forwardable
+    def_delegators :@cache, :delete
+    def_delegator :@cache, :[], :get
+    def_delegator :@cache, :clear, :flush
 
     def initialize
       @cache = LruRedux::TTL::ThreadSafeCache.new MAX_SIZE, EXPIRY
@@ -52,18 +59,6 @@ module Gemstash
 
     def alive!
       true
-    end
-
-    def flush
-      @cache.clear
-    end
-
-    def delete(key)
-      @cache.delete(key)
-    end
-
-    def get(key)
-      @cache[key]
     end
 
     def get_multi(keys)

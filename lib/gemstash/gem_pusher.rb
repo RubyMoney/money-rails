@@ -1,3 +1,4 @@
+require "gemstash"
 require "rubygems/package"
 require "stringio"
 
@@ -15,10 +16,9 @@ module Gemstash
     class YankedVersionError < ExistingVersionError
     end
 
-    def initialize(auth_key, content, db_helper = nil)
+    def initialize(auth_key, content)
       @auth_key = auth_key
       @content = content
-      @db_helper = db_helper || Gemstash::DBHelper.new
     end
 
     def push
@@ -39,10 +39,7 @@ module Gemstash
     end
 
     def check_auth
-      raise Gemstash::NotAuthorizedError, "Authorization key required" if @auth_key.nil? || @auth_key.strip.empty?
-      auth = Authorization[@auth_key]
-      raise Gemstash::NotAuthorizedError, "Authorization key is invalid" unless auth
-      raise Gemstash::NotAuthorizedError, "Authorization key doesn't have push access" unless auth.push?
+      Gemstash::Authorization.check(@auth_key, "push")
     end
 
     def store_gem
@@ -53,19 +50,19 @@ module Gemstash
       spec = gem.spec
 
       gemstash_env.db.transaction do
-        gem_id = @db_helper.find_or_insert_rubygem(spec)
-        existing = @db_helper.find_version(gem_id, spec)
+        gem_id = Gemstash::DB::Rubygem.find_or_insert(spec)
+        existing = Gemstash::DB::Version.find_by_spec(gem_id, spec)
 
         if existing
-          if existing[:indexed]
+          if existing.indexed
             raise ExistingVersionError, "Cannot push to an existing version!"
           else
             raise YankedVersionError, "Cannot push to a yanked version!"
           end
         end
 
-        version_id = @db_helper.insert_version(gem_id, spec)
-        @db_helper.insert_dependencies(version_id, spec)
+        version_id = Gemstash::DB::Version.insert_by_spec(gem_id, spec)
+        Gemstash::DB::Dependency.insert_by_spec(version_id, spec)
       end
     end
 

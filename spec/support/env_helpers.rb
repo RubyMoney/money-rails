@@ -7,7 +7,7 @@ module EnvHelpers
       Gemstash::Env.current
     else
       Thread.current[:test_gemstash_env_set] = true
-      Gemstash::Env.current = Gemstash::Env.new(TEST_CONFIG)
+      Gemstash::Env.current = Gemstash::Env.new(TEST_CONFIG, db: TEST_DB)
     end
   end
 end

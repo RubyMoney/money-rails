@@ -68,6 +68,67 @@ describe Gemstash::Authorization do
     end
   end
 
+  describe "#check" do
+    context "with an invalid permission" do
+      before do
+        Gemstash::Authorization.authorize("abc", "all")
+      end
+
+      it "raises an error" do
+        expect { Gemstash::Authorization.check("abc", "invalid") }.to raise_error(RuntimeError)
+      end
+    end
+
+    context "with an empty authorization" do
+      it "raises a Gemstash::NotAuthorizedError" do
+        expect { Gemstash::Authorization.check(nil, "push") }.to raise_error(Gemstash::NotAuthorizedError, /key required/)
+        expect { Gemstash::Authorization.check("", "push") }.to raise_error(Gemstash::NotAuthorizedError, /key required/)
+        expect { Gemstash::Authorization.check("  \t\n ", "push") }.
+          to raise_error(Gemstash::NotAuthorizedError, /key required/)
+      end
+    end
+
+    context "with an invalid auth key" do
+      it "raises a Gemstash::NotAuthorizedError" do
+        expect { Gemstash::Authorization.check("invalid", "push") }.
+          to raise_error(Gemstash::NotAuthorizedError, /key is invalid/)
+      end
+    end
+
+    context "with an auth key without permission" do
+      before do
+        Gemstash::Authorization.authorize("abc", %w(yank))
+      end
+
+      it "raises a Gemstash::NotAuthorizedError" do
+        expect { Gemstash::Authorization.check("abc", "push") }.
+          to raise_error(Gemstash::NotAuthorizedError, /key doesn't have push access/)
+        expect { Gemstash::Authorization.check("abc", "unyank") }.
+          to raise_error(Gemstash::NotAuthorizedError, /key doesn't have unyank access/)
+      end
+    end
+
+    context "with an auth key with permission" do
+      before do
+        Gemstash::Authorization.authorize("abc", %w(push))
+      end
+
+      it "doesn't raise an error" do
+        Gemstash::Authorization.check("abc", "push")
+      end
+    end
+
+    context "with an auth key with all permissions" do
+      before do
+        Gemstash::Authorization.authorize("abc", "all")
+      end
+
+      it "doesn't raise an error" do
+        Gemstash::Authorization.check("abc", "push")
+      end
+    end
+  end
+
   describe "#[]" do
     context "an invalid authorization key" do
       it "returns nil" do
