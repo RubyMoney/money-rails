@@ -53,7 +53,8 @@ sure not to remove any existing keys):
 :test_key: e374e237fdf5fa5718d2a21bd63dc911
 ```
 
-The `test_key` symbol for your key will be used later in this guide.
+The name `test_key` can be anything you want, but you will need to remember it
+and use it again later in this guide for the `--key` option.
 
 ## Creating a Test Gem
 

@@ -1,4 +1,4 @@
-# Upgrading Gemstash
+# Deploying Gemstash
 
 Bundler is here for the rescue to keep Gemstash up to date! Create a `Gemfile`
 pointing to Gemstash:

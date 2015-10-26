@@ -106,7 +106,7 @@ For a deep dive into the following subjects, follow the links:
 * [Multiple gem sources](docs/multiple_sources.md)
 * [Using Gemstash as a mirror](docs/mirror.md)
 * [Customizing the server (database, storage, caching, and more)](docs/config.md)
-* [Upgrading Gemstash](docs/upgrade.md)
+* [Deploying Gemstash](docs/deploy.md)
 * [Debugging Gemstash](docs/debug.md)
 
 ## Reference
