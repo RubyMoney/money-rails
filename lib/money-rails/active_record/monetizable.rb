@@ -185,7 +185,7 @@ module MoneyRails
               money_currency = money.try(:currency)
 
               # Update currency iso value if there is an instance currency attribute
-              if instance_currency_name.present? && respond_to?("#{instance_currency_name}=")
+              if instance_currency_name.present? && respond_to?("#{instance_currency_name}=") && money_currency
                 public_send("#{instance_currency_name}=", money_currency.try(:iso_code))
               else
                 current_currency = public_send("currency_for_#{name}")
