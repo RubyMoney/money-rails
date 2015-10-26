@@ -4,23 +4,22 @@ require "set"
 module Gemstash
   #:nodoc:
   class Dependencies
-    def self.for_private(db_helper: nil)
-      db_helper ||= Gemstash::DBHelper.new
-      new(scope: "private", db_helper: db_helper)
+    def self.for_private
+      new(scope: "private", db_model: Gemstash::DB::Dependency)
     end
 
     def self.for_upstream(upstream, http_client)
       new(scope: "upstream/#{upstream}", http_client: http_client)
     end
 
-    def initialize(scope: nil, http_client: nil, db_helper: nil)
+    def initialize(scope: nil, http_client: nil, db_model: nil)
       @scope = scope
       @http_client = http_client
-      @db_helper = db_helper
+      @db_model = db_model
     end
 
     def fetch(gems)
-      Fetcher.new(gems, @scope, @http_client, @db_helper).fetch
+      Fetcher.new(gems, @scope, @http_client, @db_model).fetch
     end
 
     #:nodoc:
@@ -28,11 +27,11 @@ module Gemstash
       include Gemstash::Env::Helper
       include Gemstash::Logging
 
-      def initialize(gems, scope, http_client, db_helper)
+      def initialize(gems, scope, http_client, db_model)
         @gems = Set.new(gems)
         @scope = scope
         @http_client = http_client
-        @db_helper = db_helper
+        @db_model = db_model
         @dependencies = []
       end
 
@@ -59,10 +58,10 @@ module Gemstash
 
       def fetch_from_database
         return if done?
-        return unless @db_helper
+        return unless @db_model
         log.info "Querying dependencies: #{@gems.to_a.join(", ")}"
 
-        @db_helper.find_dependencies(@gems) do |gem, value|
+        @db_model.fetch(@gems) do |gem, value|
           @gems.delete(gem)
           gemstash_env.cache.set_dependency(@scope, gem, value)
           @dependencies += value

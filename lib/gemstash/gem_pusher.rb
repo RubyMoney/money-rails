@@ -65,7 +65,7 @@ module Gemstash
         end
 
         version_id = Gemstash::DB::Version.insert_by_spec(gem_id, spec)
-        Gemstash::DBHelper.new.insert_dependencies(version_id, spec)
+        Gemstash::DB::Dependency.insert_by_spec(version_id, spec)
       end
     end
 

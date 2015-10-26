@@ -5,7 +5,6 @@ module Gemstash
   autoload :Cache,               "gemstash/cache"
   autoload :CLI,                 "gemstash/cli"
   autoload :Configuration,       "gemstash/configuration"
-  autoload :DBHelper,            "gemstash/db_helper"
   autoload :Dependencies,        "gemstash/dependencies"
   autoload :Env,                 "gemstash/env"
   autoload :GemFetcher,          "gemstash/gem_fetcher"
