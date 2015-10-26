@@ -39,10 +39,7 @@ module Gemstash
     end
 
     def check_auth
-      raise Gemstash::NotAuthorizedError, "Authorization key required" if @auth_key.to_s.strip.empty?
-      auth = Authorization[@auth_key]
-      raise Gemstash::NotAuthorizedError, "Authorization key is invalid" unless auth
-      raise Gemstash::NotAuthorizedError, "Authorization key doesn't have push access" unless auth.push?
+      Gemstash::Authorization.check(@auth_key, "push")
     end
 
     def store_gem

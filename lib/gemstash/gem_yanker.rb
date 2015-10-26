@@ -31,18 +31,17 @@ module Gemstash
 
   private
 
+    def full_name
+      @full_name ||= "#{@gem_name}-#{@slug}"
+    end
+
     def check_auth
-      raise Gemstash::NotAuthorizedError, "Authorization key required" if @auth_key.to_s.strip.empty?
-      auth = Authorization[@auth_key]
-      raise Gemstash::NotAuthorizedError, "Authorization key is invalid" unless auth
-      raise Gemstash::NotAuthorizedError, "Authorization key doesn't have yank access" unless auth.yank?
+      Gemstash::Authorization.check(@auth_key, "yank")
     end
 
     def update_database
       gemstash_env.db.transaction do
-        gem_id = Gemstash::DB::Rubygem.find_id(@gem_name)
-        raise UnknownGemError, "Cannot yank an unknown gem!" unless gem_id
-        full_name = "#{@gem_name}-#{@slug}"
+        raise UnknownGemError, "Cannot yank an unknown gem!" unless Gemstash::DB::Rubygem[name: @gem_name]
         version = Gemstash::DB::Version.find_by_full_name(full_name)
         raise UnknownVersionError, "Cannot yank an unknown version!" unless version
         raise YankedVersionError, "Cannot yank an already yanked version!" unless version.indexed
