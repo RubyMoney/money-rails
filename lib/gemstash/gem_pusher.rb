@@ -19,7 +19,6 @@ module Gemstash
     def initialize(auth_key, content)
       @auth_key = auth_key
       @content = content
-      @db_helper = Gemstash::DBHelper.new
     end
 
     def push
@@ -55,18 +54,18 @@ module Gemstash
 
       gemstash_env.db.transaction do
         gem_id = Gemstash::DB::Rubygem.find_or_insert(spec)
-        existing = @db_helper.find_version_by_spec(gem_id, spec)
+        existing = Gemstash::DB::Version.find_by_spec(gem_id, spec)
 
         if existing
-          if existing[:indexed]
+          if existing.indexed
             raise ExistingVersionError, "Cannot push to an existing version!"
           else
             raise YankedVersionError, "Cannot push to a yanked version!"
           end
         end
 
-        version_id = @db_helper.insert_version(gem_id, spec)
-        @db_helper.insert_dependencies(version_id, spec)
+        version_id = Gemstash::DB::Version.insert_by_spec(gem_id, spec)
+        Gemstash::DBHelper.new.insert_dependencies(version_id, spec)
       end
     end
 

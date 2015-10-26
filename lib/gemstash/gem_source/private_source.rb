@@ -108,7 +108,7 @@ module Gemstash
       end
 
       def gem_indexed?(gem_full_name)
-        Gemstash::DBHelper.new.find_version_by_full_name(gem_full_name)[:indexed]
+        Gemstash::DB::Version.find_by_full_name(gem_full_name).indexed
       end
 
       def dependencies

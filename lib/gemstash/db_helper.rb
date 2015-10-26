@@ -5,38 +5,6 @@ module Gemstash
   class DBHelper
     include Gemstash::Env::Helper
 
-    def find_version_by_spec(gem_id, spec)
-      gemstash_env.db[:versions][
-        :rubygem_id => gem_id,
-        :number => spec.version.to_s,
-        :platform => spec.platform]
-    end
-
-    def find_version_by_full_name(full_name)
-      result = gemstash_env.db[:versions][:full_name => full_name]
-      return result if result
-      # Try again with the default platform, in case it is implied
-      gemstash_env.db[:versions][:full_name => "#{full_name}-ruby"]
-    end
-
-    def insert_version(gem_id, spec, indexed = true)
-      gem_name = Gemstash::DB::Rubygem[gem_id].name
-      gemstash_env.db[:versions].insert(
-        :rubygem_id => gem_id,
-        :number => spec.version.to_s,
-        :platform => spec.platform,
-        :full_name => "#{gem_name}-#{spec.version}-#{spec.platform}",
-        :indexed => indexed,
-        :created_at => Sequel::SQL::Constants::CURRENT_TIMESTAMP,
-        :updated_at => Sequel::SQL::Constants::CURRENT_TIMESTAMP)
-    end
-
-    def deindex_version(version_id)
-      gemstash_env.db[:versions].where(:id => version_id).update(
-        :indexed => false,
-        :updated_at => Sequel::SQL::Constants::CURRENT_TIMESTAMP)
-    end
-
     def insert_dependencies(version_id, spec)
       spec.runtime_dependencies.each do |dep|
         requirements = dep.requirement.requirements

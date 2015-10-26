@@ -9,5 +9,6 @@ module Gemstash
     Sequel::Model.plugin :timestamps, update_on_create: true
     autoload :Authorization, "gemstash/db/authorization"
     autoload :Rubygem,       "gemstash/db/rubygem"
+    autoload :Version,       "gemstash/db/version"
   end
 end

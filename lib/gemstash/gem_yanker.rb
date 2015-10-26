@@ -21,7 +21,6 @@ module Gemstash
       @auth_key = auth_key
       @gem_name = gem_name
       @slug = slug
-      @db_helper = Gemstash::DBHelper.new
     end
 
     def yank
@@ -44,10 +43,10 @@ module Gemstash
         gem_id = Gemstash::DB::Rubygem.find_id(@gem_name)
         raise UnknownGemError, "Cannot yank an unknown gem!" unless gem_id
         full_name = "#{@gem_name}-#{@slug}"
-        version = @db_helper.find_version_by_full_name(full_name)
+        version = Gemstash::DB::Version.find_by_full_name(full_name)
         raise UnknownVersionError, "Cannot yank an unknown version!" unless version
-        raise YankedVersionError, "Cannot yank an already yanked version!" unless version[:indexed]
-        @db_helper.deindex_version(version[:id])
+        raise YankedVersionError, "Cannot yank an already yanked version!" unless version.indexed
+        version.deindex
       end
     end
 
