@@ -114,8 +114,16 @@ $ bundle
 
 ## Yanking
 
-Yanking gems is not yet supported in Gemstash, but will be featured in a future
-release.
+If you push a private gem by accident, you can yank the gem with Rubygems:
+```
+$ RUBYGEMS_HOST=http://localhost:9292/private gem yank --key test_key private-example --version 0.1.0
+```
+
+Like with pushing, the `/private` portion of the host option tells Gemstash you
+are interacting with private gems. Gemstash will only let you yank from
+`/private`. Unlike pushing, Rubygems doesn't support `--host` for yank and
+unyank (yet), so you need to specify the host via the `RUBYGEMS_HOST`
+environment variable.
 
 ## Unyanking
 
