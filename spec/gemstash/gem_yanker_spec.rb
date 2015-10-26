@@ -83,6 +83,7 @@ describe Gemstash::GemYanker do
       let(:gem_contents) { read_gem(gem_name, gem_version) }
 
       it "yanks the gem" do
+        # Fetch before, asserting cache will be invalidated
         expect(deps.fetch(%w(example))).to eq([gem_dependencies])
         Gemstash::GemYanker.new(auth_key, gem_name, gem_slug).yank
         expect(deps.fetch(%w(example))).to eq([])
@@ -125,14 +126,14 @@ describe Gemstash::GemYanker do
         {
           :name => "example",
           :number => "0.1.0",
-          :platform => "jruby",
+          :platform => "java",
           :dependencies => []
         }
       end
 
       before do
         gem_id = find_rubygem_id(gem_name)
-        insert_version gem_id, "0.1.0", "jruby"
+        insert_version gem_id, "0.1.0", "java"
       end
 
       it "yanks just the specified gem version" do
@@ -144,11 +145,11 @@ describe Gemstash::GemYanker do
     context "with an existing gem version and explicit platform with other platforms" do
       before do
         gem_id = find_rubygem_id(gem_name)
-        insert_version gem_id, "0.1.0", "jruby"
+        insert_version gem_id, "0.1.0", "java"
       end
 
       it "yanks just the specified gem version" do
-        Gemstash::GemYanker.new(auth_key, gem_name, "0.1.0-jruby").yank
+        Gemstash::GemYanker.new(auth_key, gem_name, "0.1.0-java").yank
         expect(deps.fetch(%w(example))).to eq([gem_dependencies])
       end
     end

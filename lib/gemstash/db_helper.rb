@@ -45,17 +45,18 @@ module Gemstash
         :updated_at => Sequel::SQL::Constants::CURRENT_TIMESTAMP)
     end
 
-    def find_version(gem_id, spec: nil, full_name: nil)
-      if spec
-        gemstash_env.db[:versions][
-          :rubygem_id => gem_id,
-          :number => spec.version.to_s,
-          :platform => spec.platform]
-      else
-        gemstash_env.db[:versions][
-          :rubygem_id => gem_id,
-          :full_name => full_name]
-      end
+    def find_version_by_spec(gem_id, spec)
+      gemstash_env.db[:versions][
+        :rubygem_id => gem_id,
+        :number => spec.version.to_s,
+        :platform => spec.platform]
+    end
+
+    def find_version_by_full_name(full_name)
+      result = gemstash_env.db[:versions][:full_name => full_name]
+      return result if result
+      # Try again with the default platform, in case it is implied
+      gemstash_env.db[:versions][:full_name => "#{full_name}-ruby"]
     end
 
     def insert_version(gem_id, spec, indexed = true)

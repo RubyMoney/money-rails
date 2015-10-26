@@ -57,6 +57,26 @@ describe Gemstash::GemPusher do
       end
     end
 
+    context "with a non-ruby platform" do
+      # TODO: I think this will fail without some changes
+      # TODO: Also, should 'example-0.1.0-ruby' work from storage?
+      xit "saves the dependency info and stores the gem" do
+        results = [{
+          :name => "example",
+          :number => "0.1.0",
+          :platform => "java",
+          :dependencies => [["sqlite3", "~> 1.3"],
+                            ["thor", "~> 0.19"]]
+        }]
+
+        # Fetch before, asserting cache will be invalidated
+        expect(deps.fetch(%w(example))).to eq([])
+        Gemstash::GemPusher.new(auth_key, gem_contents).push
+        expect(deps.fetch(%w(example))).to match_dependencies(results)
+        expect(storage.resource("example-0.1.0-java").load.content).to eq(gem_contents)
+      end
+    end
+
     context "with an exsiting gem name" do
       before do
         gem_id = insert_rubygem "example"

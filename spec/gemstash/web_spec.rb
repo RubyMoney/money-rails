@@ -24,10 +24,11 @@ describe Gemstash::Web do
                       gemstash_env: test_env)
   end
   let(:upstream) { "https://www.rubygems.org" }
+  let(:gem_source) { Gemstash::GemSource::RubygemsSource }
 
   let(:rack_env) do
     {
-      "gemstash.gem_source" => Gemstash::GemSource::RubygemsSource,
+      "gemstash.gem_source" => gem_source,
       "gemstash.upstream" => upstream
     }
   end
@@ -158,6 +159,39 @@ describe Gemstash::Web do
         expect(last_response.body).to eq("zapatito")
         expect(last_response.header["CONTENT-TYPE"]).to eq("octet/stream")
         expect(storage.resource("rack")).to exist
+      end
+    end
+
+    context "from private gems" do
+      let(:gem_source) { Gemstash::GemSource::PrivateSource }
+      let(:storage) { Gemstash::Storage.for("private").for("gems") }
+
+      context "with a regular gem" do
+        before do
+          gem_id = insert_rubygem "example"
+          insert_version gem_id, "0.1.0"
+          storage.resource("example-0.1.0").save("Example gem content")
+        end
+
+        it "fetches the gem contents" do
+          get "/gems/example-0.1.0.gem", {}, rack_env
+          expect(last_response).to be_ok
+          expect(last_response.body).to eq("Example gem content")
+        end
+      end
+
+      context "with a yanked gem" do
+        before do
+          gem_id = insert_rubygem "yanked"
+          insert_version gem_id, "0.1.0", "ruby", false
+          storage.resource("yanked-0.1.0").save("Example yanked gem content")
+        end
+
+        it "fails" do
+          get "/gems/yanked-0.1.0.gem", {}, rack_env
+          expect(last_response).to_not be_ok
+          expect(last_response.body).to_not eq("Example yanked gem content")
+        end
       end
     end
   end

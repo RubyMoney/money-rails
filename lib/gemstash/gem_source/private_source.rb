@@ -78,8 +78,9 @@ module Gemstash
       end
 
       def serve_gem(id)
-        gem_name = id.sub(/\.gem\z/, "")
-        gem = storage.resource(gem_name)
+        gem_full_name = id.sub(/\.gem\z/, "")
+        halt 403, "That gem has been yanked" unless gem_indexed?(gem_full_name)
+        gem = storage.resource(gem_full_name)
         halt 404 unless gem.exist?
         content_type "application/octet-stream"
         gem.load.content
@@ -104,6 +105,10 @@ module Gemstash
       rescue Gemstash::NotAuthorizedError => e
         headers["WWW-Authenticate"] = "Basic realm=\"#{realm}\""
         halt 401, e.message
+      end
+
+      def gem_indexed?(gem_full_name)
+        Gemstash::DBHelper.new.find_version_by_full_name(gem_full_name)[:indexed]
       end
 
       def dependencies

@@ -43,19 +43,12 @@ module Gemstash
       gemstash_env.db.transaction do
         gem_id = @db_helper.find_rubygem_id(@gem_name)
         raise UnknownGemError, "Cannot yank an unknown gem!" unless gem_id
-        version = find_version(gem_id)
+        full_name = "#{@gem_name}-#{@slug}"
+        version = @db_helper.find_version_by_full_name(full_name)
         raise UnknownVersionError, "Cannot yank an unknown version!" unless version
         raise YankedVersionError, "Cannot yank an already yanked version!" unless version[:indexed]
         @db_helper.deindex_version(version[:id])
       end
-    end
-
-    def find_version(gem_id)
-      full_name = "#{@gem_name}-#{@slug}"
-      result = @db_helper.find_version(gem_id, full_name: full_name)
-      return result if result
-      # Try again with the default platform, in case it is implied
-      @db_helper.find_version(gem_id, full_name: "#{full_name}-ruby")
     end
 
     def invalidate_cache
