@@ -690,6 +690,14 @@ if defined? ActiveRecord
           expect(dummy_product_with_nil_currency.price.currency).to eq(Money::Currency.find(:gbp))
         end
 
+        context "and field with allow_nil: true" do
+          it "doesn't set currency to nil when setting the field to nil" do
+            t = Transaction.new(:amount_cents => 2500, :currency => "CAD")
+            t.optional_amount = nil
+            expect(t.currency).to eq("CAD")
+          end
+        end
+
         context "and an Italian locale" do
           around(:each) do |example|
             I18n.with_locale(:it) do
