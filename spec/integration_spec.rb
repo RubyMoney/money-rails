@@ -3,16 +3,24 @@ require "fileutils"
 
 describe "gemstash integration tests" do
   before(:all) do
-    speaker_deps = {
-      :name => "speaker",
-      :number => "0.1.0",
-      :platform => "ruby",
-      :dependencies => []
-    }
+    speaker_deps = [
+      {
+        :name => "speaker",
+        :number => "0.1.0",
+        :platform => "ruby",
+        :dependencies => []
+      }, {
+        :name => "speaker",
+        :number => "0.1.0",
+        :platform => "java",
+        :dependencies => []
+      }
+    ]
 
     @rubygems_server = SimpleServer.new("127.0.0.1", port: 9043)
-    @rubygems_server.mount_gem_deps("speaker", [speaker_deps])
+    @rubygems_server.mount_gem_deps("speaker", speaker_deps)
     @rubygems_server.mount_gem("speaker", "0.1.0")
+    @rubygems_server.mount_gem("speaker", "0.1.0-java")
     @rubygems_server.start
     @empty_server = SimpleServer.new("127.0.0.1", port: 9044)
     @empty_server.mount_gem_deps
@@ -118,6 +126,14 @@ describe "gemstash integration tests" do
   describe "bundle install against gemstash" do
     let(:dir) { bundle_path(bundle) }
 
+    let(:platform_message) do
+      if RUBY_PLATFORM == "java"
+        "Java"
+      else
+        "Ruby"
+      end
+    end
+
     after do
       clean_bundle bundle
     end
@@ -127,7 +143,8 @@ describe "gemstash integration tests" do
 
       it "successfully bundles" do
         expect(execute("bundle", dir: dir)).to exit_success
-        expect(execute("bundle exec speaker hi", dir: dir)).to exit_success.and_output("Hello world\n")
+        expect(execute("bundle exec speaker hi", dir: dir)).
+          to exit_success.and_output("Hello world, #{platform_message}\n")
       end
     end
 
@@ -137,7 +154,8 @@ describe "gemstash integration tests" do
       # This should stay skipped until bundler sends the X-Gemfile-Source header
       xit "successfully bundles" do
         expect(execute("bundle", dir: dir)).to exit_success
-        expect(execute("bundle exec speaker hi", dir: dir)).to exit_success.and_output("Hello world\n")
+        expect(execute("bundle exec speaker hi", dir: dir)).
+          to exit_success.and_output("Hello world, #{platform_message}\n")
       end
     end
 
@@ -146,17 +164,20 @@ describe "gemstash integration tests" do
 
       it "successfully bundles" do
         expect(execute("bundle", dir: dir)).to exit_success
-        expect(execute("bundle exec speaker hi", dir: dir)).to exit_success.and_output("Hello world\n")
+        expect(execute("bundle exec speaker hi", dir: dir)).
+          to exit_success.and_output("Hello world, #{platform_message}\n")
       end
 
       it "can successfully bundle twice" do
         expect(execute("bundle", dir: dir)).to exit_success
-        expect(execute("bundle exec speaker hi", dir: dir)).to exit_success.and_output("Hello world\n")
+        expect(execute("bundle exec speaker hi", dir: dir)).
+          to exit_success.and_output("Hello world, #{platform_message}\n")
 
         clean_bundle bundle
 
         expect(execute("bundle", dir: dir)).to exit_success
-        expect(execute("bundle exec speaker hi", dir: dir)).to exit_success.and_output("Hello world\n")
+        expect(execute("bundle exec speaker hi", dir: dir)).
+          to exit_success.and_output("Hello world, #{platform_message}\n")
       end
     end
 
@@ -165,7 +186,8 @@ describe "gemstash integration tests" do
 
       it "successfully bundles" do
         expect(execute("bundle", dir: dir)).to exit_success
-        expect(execute("bundle exec speaker hi", dir: dir)).to exit_success.and_output("Hello world\n")
+        expect(execute("bundle exec speaker hi", dir: dir)).
+          to exit_success.and_output("Hello world, #{platform_message}\n")
       end
     end
 
@@ -173,6 +195,7 @@ describe "gemstash integration tests" do
       before do
         Gemstash::Authorization.authorize("test-key", "all")
         Gemstash::GemPusher.new("test-key", read_gem("speaker", "0.1.0")).push
+        Gemstash::GemPusher.new("test-key", read_gem("speaker", "0.1.0-java")).push
         @gemstash.env.cache.flush
       end
 
@@ -180,7 +203,8 @@ describe "gemstash integration tests" do
 
       it "successfully bundles" do
         expect(execute("bundle", dir: dir)).to exit_success
-        expect(execute("bundle exec speaker hi", dir: dir)).to exit_success.and_output("Hello world\n")
+        expect(execute("bundle exec speaker hi", dir: dir)).
+          to exit_success.and_output("Hello world, #{platform_message}\n")
       end
     end
   end
