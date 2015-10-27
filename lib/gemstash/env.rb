@@ -106,7 +106,12 @@ module Gemstash
         case config[:db_adapter]
         when "sqlite3"
           db_path = base_file("gemstash.db")
-          db = Sequel.connect("sqlite://#{db_path}")
+
+          if RUBY_PLATFORM == "java"
+            db = Sequel.connect("jdbc:sqlite:#{db_path}")
+          else
+            db = Sequel.connect("sqlite://#{db_path}")
+          end
         when "postgres"
           db = Sequel.connect(config[:db_url])
         else

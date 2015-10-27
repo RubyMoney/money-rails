@@ -94,8 +94,15 @@ module Gemstash
 
       def ask_postgres_details
         say_current_config(:db_url, "Current database url")
-        url = @cli.ask "Where is the database? [postgres:///gemstash]"
-        url = "postgres:///gemstash" if url.empty?
+
+        if RUBY_PLATFORM == "java"
+          default_value = "jdbc:postgres:///gemstash"
+        else
+          default_value = "postgres:///gemstash"
+        end
+
+        url = @cli.ask "Where is the database? [#{default_value}]"
+        url = default_value if url.empty?
         @config[:db_url] = url
       end
 
