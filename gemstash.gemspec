@@ -8,6 +8,7 @@ Gem::Specification.new do |spec|
   spec.version       = Gemstash::VERSION
   spec.authors       = ["Andre Arko"]
   spec.email         = ["andre@arko.net"]
+  spec.platform      = "java" if RUBY_PLATFORM == "java"
 
   spec.summary       = "A place to stash gems you'll need"
   spec.description   = "Gemstash acts as a local RubyGems server, caching \
