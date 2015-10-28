@@ -34,19 +34,16 @@ module Gemstash
         authenticated("Gemstash Private Gems") do
           auth = request.env["HTTP_AUTHORIZATION"]
           gem_name = params[:gem_name]
-          version = params[:version]
-          platform = params[:platform]
-          slug = if platform.to_s.empty?
-            version
-          else
-            "#{version}-#{platform}"
-          end
-          Gemstash::GemYanker.new(auth, gem_name, slug).yank
+          Gemstash::GemYanker.new(auth, gem_name, slug_param).yank
         end
       end
 
       def serve_unyank
-        halt 403, "Not yet supported"
+        authenticated("Gemstash Private Gems") do
+          auth = request.env["HTTP_AUTHORIZATION"]
+          gem_name = params[:gem_name]
+          Gemstash::GemUnyanker.new(auth, gem_name, slug_param).unyank
+        end
       end
 
       def serve_add_spec_json
@@ -99,6 +96,17 @@ module Gemstash
       end
 
     private
+
+      def slug_param
+        version = params[:version]
+        platform = params[:platform]
+
+        if platform.to_s.empty?
+          version
+        else
+          "#{version}-#{platform}"
+        end
+      end
 
       def authenticated(realm)
         yield

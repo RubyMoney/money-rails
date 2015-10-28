@@ -96,6 +96,23 @@ describe "gemstash integration tests" do
         expect { http_client.get("gems/speaker-0.1.0") }.to raise_error(Gemstash::WebError)
       end
     end
+
+    context "unyanking a gem" do
+      before do
+        Gemstash::GemPusher.new("test-key", gem_contents).push
+        Gemstash::GemYanker.new("test-key", gem_name, gem_version).yank
+        expect(deps.fetch(%w(speaker))).to match_dependencies([])
+        @gemstash.env.cache.flush
+      end
+
+      it "removes valid gems from the server", :db_transaction => false do
+        env = { "HOME" => env_dir, "RUBYGEMS_HOST" => host }
+        expect(execute("gem yank --key test '#{gem_name}' --version #{gem_version} --undo", env: env)).to exit_success
+        expect(deps.fetch(%w(speaker))).to match_dependencies([speaker_deps])
+        expect(storage.resource("speaker-0.1.0").load.content).to eq(gem_contents)
+        expect(http_client.get("gems/speaker-0.1.0")).to eq(gem_contents)
+      end
+    end
   end
 
   describe "bundle install against gemstash" do

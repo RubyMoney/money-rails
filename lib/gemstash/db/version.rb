@@ -8,6 +8,10 @@ module Gemstash
         update(indexed: false)
       end
 
+      def reindex
+        update(indexed: true)
+      end
+
       def self.find_by_spec(gem_id, spec)
         self[rubygem_id: gem_id,
              number: spec.version.to_s,
