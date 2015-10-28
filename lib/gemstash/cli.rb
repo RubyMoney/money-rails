@@ -8,6 +8,7 @@ module Gemstash
     autoload :Authorize, "gemstash/cli/authorize"
     autoload :Setup,     "gemstash/cli/setup"
     autoload :Start,     "gemstash/cli/start"
+    autoload :Status,    "gemstash/cli/status"
     autoload :Stop,      "gemstash/cli/stop"
 
     # Thor::Error for the CLI, which colors the message red.
@@ -50,6 +51,13 @@ module Gemstash
       "Config file to load when starting"
     def start
       Gemstash::CLI::Start.new(self).run
+    end
+
+    desc "status", "Check the status of your gemstash server"
+    method_option :config_file, :type => :string, :desc =>
+      "Config file to load when checking the status"
+    def status
+      Gemstash::CLI::Status.new(self).run
     end
 
     desc "stop", "Stops your gemstash server"
