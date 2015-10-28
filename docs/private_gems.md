@@ -128,5 +128,13 @@ environment variable.
 
 ## Unyanking
 
-Unyanking gems is not yet supported in Gemstash, but will be featured in a
-future release.
+If you yank a private gem by accident, you can unyank the gem with Rubygems:
+```
+$ RUBYGEMS_HOST=http://localhost:9292/private gem yank --key test_key private-example --version 0.1.0 --undo
+```
+
+Like with pushing and yanking, the `/private` portion of the host option tells
+Gemstash you are interacting with private gems. Gemstash will only let you
+unyank from `/private`. Unlike pushing, Rubygems doesn't support `--host` for
+unyank and yank (yet), so you need to specify the host via the `RUBYGEMS_HOST`
+environment variable.
