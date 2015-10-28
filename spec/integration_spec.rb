@@ -67,8 +67,6 @@ describe "gemstash integration tests" do
       before do
         expect(deps.fetch(%w(speaker))).to match_dependencies([])
         expect { storage.resource("speaker-0.1.0").load }.to raise_error(RuntimeError)
-        Gemstash::Env.current.cache_client.flush
-        @gemstash.env.db.disconnect
         @gemstash.env.cache.flush
       end
 
@@ -85,8 +83,6 @@ describe "gemstash integration tests" do
       before do
         Gemstash::GemPusher.new("test-key", gem_contents).push
         expect(deps.fetch(%w(speaker))).to match_dependencies([speaker_deps])
-        Gemstash::Env.current.cache_client.flush
-        @gemstash.env.db.disconnect
         @gemstash.env.cache.flush
       end
 
@@ -160,7 +156,6 @@ describe "gemstash integration tests" do
       before do
         Gemstash::Authorization.authorize("test-key", "all")
         Gemstash::GemPusher.new("test-key", read_gem("speaker", "0.1.0")).push
-        @gemstash.env.db.disconnect
         @gemstash.env.cache.flush
       end
 
