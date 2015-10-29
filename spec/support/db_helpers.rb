@@ -11,7 +11,7 @@ module DBHelpers
       :updated_at => Sequel::SQL::Constants::CURRENT_TIMESTAMP)
   end
 
-  def insert_version(gem_id, number, platform = "ruby", indexed = true)
+  def insert_version(gem_id, number, platform: "ruby", indexed: true, prerelease: false)
     gem_name = Gemstash::Env.current.db[:rubygems][:id => gem_id][:name]
 
     if platform == "ruby"
@@ -27,6 +27,7 @@ module DBHelpers
       :full_name => "#{gem_name}-#{number}-#{platform}",
       :storage_id => storage_id,
       :indexed => indexed,
+      :prerelease => prerelease,
       :created_at => Sequel::SQL::Constants::CURRENT_TIMESTAMP,
       :updated_at => Sequel::SQL::Constants::CURRENT_TIMESTAMP)
   end

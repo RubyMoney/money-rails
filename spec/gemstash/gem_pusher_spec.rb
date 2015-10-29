@@ -107,7 +107,7 @@ describe Gemstash::GemPusher do
     context "with a yanked version" do
       before do
         gem_id = insert_rubygem "example"
-        insert_version gem_id, "0.1.0", "ruby", false
+        insert_version gem_id, "0.1.0", indexed: false
         storage.resource("example-0.1.0").save("zapatito", indexed: false)
       end
 

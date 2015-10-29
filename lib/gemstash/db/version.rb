@@ -32,7 +32,8 @@ module Gemstash
             platform: spec.platform.to_s,
             full_name: "#{gem_name}-#{spec.version}-#{spec.platform}",
             storage_id: spec.full_name,
-            indexed: true).tap(&:save).id
+            indexed: true,
+            prerelease: spec.version.prerelease?).tap(&:save).id
       end
     end
   end

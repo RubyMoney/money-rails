@@ -69,7 +69,7 @@ describe Gemstash::GemYanker do
     context "with a yanked gem version" do
       before do
         gem_id = find_rubygem_id(gem_name)
-        insert_version gem_id, "0.4.2", "ruby", false
+        insert_version gem_id, "0.4.2", indexed: false
         storage.resource("#{gem_name}-0.4.2").save("zapatito", indexed: false)
       end
 
@@ -135,7 +135,7 @@ describe Gemstash::GemYanker do
 
       before do
         gem_id = find_rubygem_id(gem_name)
-        insert_version gem_id, "0.1.0", "java"
+        insert_version gem_id, "0.1.0", platform: "java"
         storage.resource("#{gem_name}-0.1.0-java").save("zapatito", indexed: true)
       end
 
@@ -148,7 +148,7 @@ describe Gemstash::GemYanker do
     context "with an existing gem version and explicit platform with other platforms" do
       before do
         gem_id = find_rubygem_id(gem_name)
-        insert_version gem_id, "0.1.0", "java"
+        insert_version gem_id, "0.1.0", platform: "java"
         storage.resource("#{gem_name}-0.1.0-java").save("zapatito", indexed: true)
       end
 

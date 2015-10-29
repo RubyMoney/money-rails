@@ -192,7 +192,7 @@ describe Gemstash::Web do
       context "with a yanked gem" do
         before do
           gem_id = insert_rubygem "yanked"
-          insert_version gem_id, "0.1.0", "ruby", false
+          insert_version gem_id, "0.1.0", indexed: false
           storage.resource("yanked-0.1.0").save("Example yanked gem content", indexed: false)
         end
 
