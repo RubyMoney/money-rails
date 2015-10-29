@@ -12,5 +12,13 @@ output directly to standard out:
 $ gemstash start --no-daemonize
 ```
 
+You can also [check the status](reference.md#status) of the server:
+```
+$ gemstash status
+```
+
+The server status is checked by passing through to
+[pumactl](https://github.com/puma/puma#pumactl).
+
 If you find a bug, please don't hesitate to [open a bug
 report](../README.md#contributing)!

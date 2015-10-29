@@ -27,12 +27,16 @@ Table of Contents
       * [Usage](#usage-2)
       * [Options](#options-2)
         * [--config-file](#--config-file-2)
-    * [Setup](#setup)
+    * [Status](#status)
       * [Usage](#usage-3)
       * [Options](#options-3)
+        * [--config-file](#--config-file-3)
+    * [Setup](#setup)
+      * [Usage](#usage-4)
+      * [Options](#options-4)
         * [--redo](#--redo)
         * [--debug](#--debug)
-        * [--config-file](#--config-file-3)
+        * [--config-file](#--config-file-4)
 
 
 
@@ -219,12 +223,32 @@ output to standard out.
 
 ## Stop
 
-Stops the Gemstash server. This will only work for a daemonized sever.
+Stops the Gemstash server.
 
 ### Usage
 
 ```
 gemstash stop
+```
+
+### Options
+
+#### --config-file
+
+**Usage:** `--config-file <file>`
+
+**Description**<br />
+Specify the config file to use. If you aren't using the default config file at
+`~/.gemstash/config.yml`, then you must specify the config file via this option.
+
+## Status
+
+Checks status of the Gemstash server.
+
+### Usage
+
+```
+gemstash status
 ```
 
 ### Options

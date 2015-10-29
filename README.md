@@ -116,6 +116,7 @@ For an anatomy of various configuration and commands, follow the links:
 * [Authorize](docs/reference.md#authorize)
 * [Start](docs/reference.md#start)
 * [Stop](docs/reference.md#stop)
+* [Status](docs/reference.md#status)
 * [Setup](docs/reference.md#setup)
 
 ## Development

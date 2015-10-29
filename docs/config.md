@@ -126,10 +126,11 @@ $ gemstash setup --config-file ./gemstash-config.yml
 $ gemstash authorize --config-file ./gemstash-config.yml
 $ gemstash start --config-file ./gemstash-config.yml
 $ gemstash stop --config-file ./gemstash-config.yml
+$ gemstash status --config-file ./gemstash-config.yml
 ```
 
 When providing `--config-file` to `gemstash setup`, the provided file will be
 output to with the provided configuration. **This will overwrite** any existing
 configuration. If the file doesn't exist when providing `--config-file` to
-`gemstash start`, `gemstash stop`, and `gemstash authorize`, the default
-configuration will be used.
+`gemstash start`, `gemstash stop`, `gemstash status`, and `gemstash authorize`,
+the default configuration will be used.
