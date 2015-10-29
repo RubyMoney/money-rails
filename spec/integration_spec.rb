@@ -67,8 +67,6 @@ describe "gemstash integration tests" do
       before do
         expect(deps.fetch(%w(speaker))).to match_dependencies([])
         expect { storage.resource("speaker-0.1.0").load }.to raise_error(RuntimeError)
-        Gemstash::Env.current.cache_client.flush
-        @gemstash.env.db.disconnect
         @gemstash.env.cache.flush
       end
 
@@ -85,8 +83,6 @@ describe "gemstash integration tests" do
       before do
         Gemstash::GemPusher.new("test-key", gem_contents).push
         expect(deps.fetch(%w(speaker))).to match_dependencies([speaker_deps])
-        Gemstash::Env.current.cache_client.flush
-        @gemstash.env.db.disconnect
         @gemstash.env.cache.flush
       end
 
@@ -98,6 +94,23 @@ describe "gemstash integration tests" do
         expect(storage.resource("speaker-0.1.0").load.content).to eq(gem_contents)
         # But it should block downloading the yanked gem
         expect { http_client.get("gems/speaker-0.1.0") }.to raise_error(Gemstash::WebError)
+      end
+    end
+
+    context "unyanking a gem" do
+      before do
+        Gemstash::GemPusher.new("test-key", gem_contents).push
+        Gemstash::GemYanker.new("test-key", gem_name, gem_version).yank
+        expect(deps.fetch(%w(speaker))).to match_dependencies([])
+        @gemstash.env.cache.flush
+      end
+
+      it "removes valid gems from the server", :db_transaction => false do
+        env = { "HOME" => env_dir, "RUBYGEMS_HOST" => host }
+        expect(execute("gem yank --key test '#{gem_name}' --version #{gem_version} --undo", env: env)).to exit_success
+        expect(deps.fetch(%w(speaker))).to match_dependencies([speaker_deps])
+        expect(storage.resource("speaker-0.1.0").load.content).to eq(gem_contents)
+        expect(http_client.get("gems/speaker-0.1.0")).to eq(gem_contents)
       end
     end
   end
@@ -160,7 +173,6 @@ describe "gemstash integration tests" do
       before do
         Gemstash::Authorization.authorize("test-key", "all")
         Gemstash::GemPusher.new("test-key", read_gem("speaker", "0.1.0")).push
-        @gemstash.env.db.disconnect
         @gemstash.env.cache.flush
       end
 
