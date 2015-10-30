@@ -14,6 +14,11 @@ module Gemstash
       new.build
     end
 
+    def self.invalidate_stored
+      storage = Gemstash::Storage.for("private").for("specs")
+      storage.resource("specs.4.8.gz").delete
+    end
+
     def build
       fetch_from_storage
       return result if result
@@ -26,8 +31,17 @@ module Gemstash
 
   private
 
+    def storage
+      @storage ||= Gemstash::Storage.for("private").for("specs")
+    end
+
     def fetch_from_storage
-      # TODO: Fetch from storage and store in @result if available
+      specs = storage.resource("specs.4.8.gz")
+      return unless specs.exist?
+      @result = specs.load.content
+    rescue
+      # On the off-chance of a race condition between specs.exist? and specs.load
+      @result = nil
     end
 
     def fetch_versions
@@ -54,7 +68,7 @@ module Gemstash
     end
 
     def store_result
-      # TODO: Store @result
+      storage.resource("specs.4.8.gz").save(@result)
     end
   end
 end

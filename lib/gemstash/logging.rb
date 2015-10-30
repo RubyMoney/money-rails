@@ -4,8 +4,22 @@ require "puma/events"
 module Gemstash
   #:nodoc:
   module Logging
+    LEVELS = {
+      debug: Logger::DEBUG,
+      info: Logger::INFO,
+      warn: Logger::WARN,
+      error: Logger::ERROR,
+      fatal: Logger::FATAL
+    }
+
     def log
       Gemstash::Logging.logger
+    end
+
+    def log_error(message, error, level: :error)
+      log.add(LEVELS[level]) do
+        "#{message} - #{error.message} (#{error.class})\n  #{error.backtrace.join("\n  ")}"
+      end
     end
 
     def self.setup_logger(logfile)
