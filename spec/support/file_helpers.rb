@@ -1,4 +1,6 @@
 require "fileutils"
+require "stringio"
+require "zlib"
 
 # Helper methods to easily find and manipulate test files.
 module FileHelpers
@@ -28,5 +30,12 @@ module FileHelpers
     File.delete lock_file if File.exist?(lock_file)
     installed_dir = File.join(dir, "installed_gems")
     FileUtils.remove_entry installed_dir if Dir.exist?(installed_dir)
+  end
+
+  def gunzip(content)
+    gz = Zlib::GzipReader.new(StringIO.new(content))
+    return gz.read
+  ensure
+    gz.close if gz
   end
 end

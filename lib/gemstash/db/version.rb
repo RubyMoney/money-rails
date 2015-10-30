@@ -4,12 +4,23 @@ module Gemstash
   module DB
     # Sequel model for versions table.
     class Version < Sequel::Model
+      many_to_one :rubygem
+
       def deindex
         update(indexed: false)
       end
 
       def reindex
         update(indexed: true)
+      end
+
+      # This converts to the format used by /private/specs.4.8.gz
+      def to_spec
+        [rubygem.name, Gem::Version.new(number), platform]
+      end
+
+      def self.indexed_and_released
+        where(indexed: true, prerelease: false).association_join(:rubygem)
       end
 
       def self.find_by_spec(gem_id, spec)
