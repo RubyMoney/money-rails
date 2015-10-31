@@ -15,7 +15,7 @@ module Gemstash
     end
 
     def self.invalidate_stored
-      storage = Gemstash::Storage.for("private").for("specs")
+      storage = Gemstash::Storage.for("private").for("specs_collection")
       storage.resource("specs.4.8.gz").delete
     end
 
@@ -32,7 +32,7 @@ module Gemstash
   private
 
     def storage
-      @storage ||= Gemstash::Storage.for("private").for("specs")
+      @storage ||= Gemstash::Storage.for("private").for("specs_collection")
     end
 
     def fetch_from_storage

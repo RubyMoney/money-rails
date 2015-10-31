@@ -67,7 +67,15 @@ module Gemstash
       end
 
       def serve_marshal(id)
-        halt 403, "Not yet supported"
+        gem_full_name = id.sub(/\.gemspec\.rz\z/, "")
+        gem = storage.resource(gem_full_name)
+        halt 404 unless gem.exist?
+        gem.load
+        halt 403, "That gem has been yanked" unless gem.properties[:indexed]
+        spec = spec_storage.resource(gem_full_name)
+        halt 404 unless spec.exist?
+        content_type "application/octet-stream"
+        spec.load.content
       end
 
       def serve_actual_gem(id)
@@ -123,6 +131,10 @@ module Gemstash
 
       def storage
         @storage ||= Gemstash::Storage.for("private").for("gems")
+      end
+
+      def spec_storage
+        @spec_storage ||= Gemstash::Storage.for("private").for("specs")
       end
     end
   end

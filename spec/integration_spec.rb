@@ -157,6 +157,12 @@ describe "gemstash integration tests" do
         expect(execute("bundle exec speaker hi", dir: dir)).
           to exit_success.and_output("Hello world, #{platform_message}\n")
       end
+
+      xit "can bundle with full index" do
+        expect(execute("bundle --full-index", dir: dir)).to exit_success
+        expect(execute("bundle exec speaker hi", dir: dir)).
+          to exit_success.and_output("Hello world\n")
+      end
     end
 
     context "with upstream gems" do
@@ -205,6 +211,12 @@ describe "gemstash integration tests" do
         expect(execute("bundle", dir: dir)).to exit_success
         expect(execute("bundle exec speaker hi", dir: dir)).
           to exit_success.and_output("Hello world, #{platform_message}\n")
+      end
+
+      it "can bundle with full index" do
+        expect(execute("bundle --full-index", dir: dir)).to exit_success
+        expect(execute("bundle exec speaker hi", dir: dir)).
+          to exit_success.and_output("Hello world\n")
       end
     end
   end

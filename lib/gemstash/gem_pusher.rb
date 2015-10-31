@@ -24,6 +24,7 @@ module Gemstash
     def push
       check_auth
       store_gem
+      store_gemspec
       save_to_database
       invalidate_cache
     end
@@ -38,12 +39,27 @@ module Gemstash
       @storage ||= Gemstash::Storage.for("private").for("gems")
     end
 
+    def spec_storage
+      @spec_storage ||= Gemstash::Storage.for("private").for("specs")
+    end
+
+    def full_name
+      @full_name ||= gem.spec.full_name
+    end
+
     def check_auth
       Gemstash::Authorization.check(@auth_key, "push")
     end
 
     def store_gem
-      storage.resource(gem.spec.full_name).save(@content, indexed: true)
+      storage.resource(full_name).save(@content, indexed: true)
+    end
+
+    def store_gemspec
+      spec = gem.spec
+      spec = Marshal.dump(spec)
+      spec = Zlib::Deflate.deflate(spec)
+      spec_storage.resource(full_name).save(spec)
     end
 
     def save_to_database
