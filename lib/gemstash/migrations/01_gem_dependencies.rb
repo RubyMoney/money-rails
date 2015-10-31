@@ -13,12 +13,14 @@ Sequel.migration do
       Integer :rubygem_id, :null => false
       String :number, :size => 255, :null => false
       String :platform, :size => 255, :null => false
+      String :full_name, :size => 255, :null => false
       TrueClass :indexed, :default => true, :null => false
       DateTime :created_at, :null => false
       DateTime :updated_at, :null => false
       index [:rubygem_id, :number, :platform], :unique => true
       index [:indexed]
       index [:number]
+      index [:full_name], :unique => true
     end
 
     create_table :dependencies do
