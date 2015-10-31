@@ -58,9 +58,9 @@ module Gemstash
     end
 
     def save(content, properties = nil)
-      @content = content
-      @properties = properties
-      store
+      save_content(content)
+      save_properties(properties)
+      self
     end
 
     def content
@@ -71,10 +71,10 @@ module Gemstash
       @properties || {}
     end
 
-    def update_properties(data)
+    def update_properties(props)
       load
-      @properties = properties.merge(data)
-      store(:properties)
+      save_properties(properties.merge(props))
+      self
     end
 
     def load
@@ -86,11 +86,19 @@ module Gemstash
 
   private
 
-    def store(storing = :all)
+    def save_content(content)
+      store(content_filename, content)
+      @content = content
+    end
+
+    def save_properties(props)
+      store(properties_filename, props.to_yaml)
+      @properties = props
+    end
+
+    def store(filename, content)
       FileUtils.mkpath(@folder) unless Dir.exist?(@folder)
-      save_file(content_filename) { @content } if storing == :all
-      save_file(properties_filename) { @properties.to_yaml }
-      self
+      save_file(filename) { content }
     end
 
     def save_file(filename)
