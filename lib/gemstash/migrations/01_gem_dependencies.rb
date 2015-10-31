@@ -11,6 +11,7 @@ Sequel.migration do
     create_table :versions do
       primary_key :id
       Integer :rubygem_id, :null => false
+      String :storage_id, :size => 255, :null => false
       String :number, :size => 255, :null => false
       String :platform, :size => 255, :null => false
       String :full_name, :size => 255, :null => false
@@ -21,6 +22,7 @@ Sequel.migration do
       index [:indexed]
       index [:number]
       index [:full_name], :unique => true
+      index [:storage_id], :unique => true
     end
 
     create_table :dependencies do

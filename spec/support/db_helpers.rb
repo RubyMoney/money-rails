@@ -18,6 +18,7 @@ module DBHelpers
       :number => number,
       :platform => platform,
       :full_name => "#{gem_name}-#{number}-#{platform}",
+      :storage_id => "#{gem_name}-#{number}-#{platform}",
       :indexed => indexed,
       :created_at => Sequel::SQL::Constants::CURRENT_TIMESTAMP,
       :updated_at => Sequel::SQL::Constants::CURRENT_TIMESTAMP)
