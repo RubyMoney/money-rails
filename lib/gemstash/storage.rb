@@ -71,6 +71,12 @@ module Gemstash
       @properties || {}
     end
 
+    def update_properties(data)
+      load
+      @properties = properties.merge(data)
+      store(:properties)
+    end
+
     def load
       raise "Resource #{@name} has no content to load" unless exist?
       @content = read_file(content_filename)
@@ -80,9 +86,9 @@ module Gemstash
 
   private
 
-    def store
+    def store(storing = :all)
       FileUtils.mkpath(@folder) unless Dir.exist?(@folder)
-      save_file(content_filename) { @content }
+      save_file(content_filename) { @content } if storing == :all
       save_file(properties_filename) { @properties.to_yaml }
       self
     end

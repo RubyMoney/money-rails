@@ -31,6 +31,10 @@ module Gemstash
 
   private
 
+    def storage
+      @storage ||= Gemstash::Storage.for("private").for("gems")
+    end
+
     def full_name
       @full_name ||= "#{@gem_name}-#{@slug}"
     end
@@ -46,6 +50,7 @@ module Gemstash
         raise UnknownVersionError, "Cannot yank an unknown version!" unless version
         raise YankedVersionError, "Cannot yank an already yanked version!" unless version.indexed
         version.deindex
+        storage.resource(version.storage_id).update_properties(indexed: false)
       end
     end
 

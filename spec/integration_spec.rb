@@ -105,7 +105,7 @@ describe "gemstash integration tests" do
         @gemstash.env.cache.flush
       end
 
-      it "removes valid gems from the server", :db_transaction => false do
+      it "adds valid gems back to the server", :db_transaction => false do
         env = { "HOME" => env_dir, "RUBYGEMS_HOST" => host }
         expect(execute("gem yank --key test '#{gem_name}' --version #{gem_version} --undo", env: env)).to exit_success
         expect(deps.fetch(%w(speaker))).to match_dependencies([speaker_deps])

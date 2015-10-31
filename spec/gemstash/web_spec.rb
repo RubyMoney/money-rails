@@ -166,11 +166,20 @@ describe Gemstash::Web do
       let(:gem_source) { Gemstash::GemSource::PrivateSource }
       let(:storage) { Gemstash::Storage.for("private").for("gems") }
 
+      context "with a missing gem" do
+        it "halts with 404" do
+          get "/gems/unknown-0.1.0.gem", {}, rack_env
+          expect(last_response).to_not be_ok
+          expect(last_response.status).to eq(404)
+          expect(last_response.body).to match(/not found/i)
+        end
+      end
+
       context "with a regular gem" do
         before do
           gem_id = insert_rubygem "example"
           insert_version gem_id, "0.1.0"
-          storage.resource("example-0.1.0").save("Example gem content")
+          storage.resource("example-0.1.0").save("Example gem content", indexed: true)
         end
 
         it "fetches the gem contents" do
@@ -184,7 +193,7 @@ describe Gemstash::Web do
         before do
           gem_id = insert_rubygem "yanked"
           insert_version gem_id, "0.1.0", "ruby", false
-          storage.resource("yanked-0.1.0").save("Example yanked gem content")
+          storage.resource("yanked-0.1.0").save("Example yanked gem content", indexed: false)
         end
 
         it "fails" do
