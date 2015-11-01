@@ -4,6 +4,7 @@ describe Gemstash::GemYanker do
   let(:auth_key) { "auth-key" }
   let(:invalid_auth_key) { "invalid-auth-key" }
   let(:auth_key_without_permission) { "auth-key-without-permission" }
+  let(:storage) { Gemstash::Storage.for("private").for("gems") }
   let(:deps) { Gemstash::Dependencies.for_private }
   let(:gem_name) { "example" }
   let(:gem_version) { "0.1.0" }
@@ -69,6 +70,7 @@ describe Gemstash::GemYanker do
       before do
         gem_id = find_rubygem_id(gem_name)
         insert_version gem_id, "0.4.2", "ruby", false
+        storage.resource("#{gem_name}-0.4.2").save("zapatito", indexed: false)
       end
 
       it "rejects the yank" do
@@ -79,7 +81,6 @@ describe Gemstash::GemYanker do
     end
 
     context "with an existing gem version" do
-      let(:storage) { Gemstash::Storage.for("private").for("gems") }
       let(:gem_contents) { read_gem(gem_name, gem_version) }
 
       it "yanks the gem" do
@@ -113,6 +114,7 @@ describe Gemstash::GemYanker do
       before do
         gem_id = find_rubygem_id(gem_name)
         insert_version gem_id, "0.0.1"
+        storage.resource("#{gem_name}-0.0.1").save("zapatito", indexed: true)
       end
 
       it "yanks just the specified gem version" do
@@ -134,6 +136,7 @@ describe Gemstash::GemYanker do
       before do
         gem_id = find_rubygem_id(gem_name)
         insert_version gem_id, "0.1.0", "java"
+        storage.resource("#{gem_name}-0.1.0-java").save("zapatito", indexed: true)
       end
 
       it "yanks just the specified gem version" do
@@ -146,6 +149,7 @@ describe Gemstash::GemYanker do
       before do
         gem_id = find_rubygem_id(gem_name)
         insert_version gem_id, "0.1.0", "java"
+        storage.resource("#{gem_name}-0.1.0-java").save("zapatito", indexed: true)
       end
 
       it "yanks just the specified gem version" do

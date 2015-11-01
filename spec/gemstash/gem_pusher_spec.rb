@@ -81,6 +81,7 @@ describe Gemstash::GemPusher do
       before do
         gem_id = insert_rubygem "example"
         insert_version gem_id, "0.0.1"
+        storage.resource("example-0.0.1").save("zapatito", indexed: true)
       end
 
       it "saves the new version dependency info and stores the gem" do
@@ -107,6 +108,7 @@ describe Gemstash::GemPusher do
       before do
         gem_id = insert_rubygem "example"
         insert_version gem_id, "0.1.0", "ruby", false
+        storage.resource("example-0.1.0").save("zapatito", indexed: false)
       end
 
       it "rejects the push" do
@@ -119,6 +121,7 @@ describe Gemstash::GemPusher do
       before do
         gem_id = insert_rubygem "example"
         insert_version gem_id, "0.1.0"
+        storage.resource("example-0.1.0").save("zapatito", indexed: true)
       end
 
       it "rejects the push" do

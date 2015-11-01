@@ -78,6 +78,15 @@ describe Gemstash::Storage do
         resource.load
         expect(resource.content).to eq(content)
       end
+
+      it "can have properties updated" do
+        resource = storage.resource(resource_id)
+        resource.update_properties(key: "value", other: :value)
+        expect(storage.resource(resource_id).load.properties).to eq(key: "value", other: :value)
+        resource = storage.resource(resource_id)
+        resource.update_properties(key: "new", new: 42)
+        expect(storage.resource(resource_id).load.properties).to eq(key: "new", other: :value, new: 42)
+      end
     end
 
     context "with resource name that is unique by case only" do
