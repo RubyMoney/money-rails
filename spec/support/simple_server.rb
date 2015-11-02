@@ -1,4 +1,5 @@
 require "webrick"
+require "zlib"
 require "support/file_helpers"
 require "support/server_check"
 
@@ -109,6 +110,23 @@ class SimpleServer
     return if name.nil?
     raise "Gem dependencies for '#{name}' already mounted!" if @gem_deps.include?(name)
     @gem_deps[name] = deps
+  end
+
+  def mount_quick_marshal(name, version)
+    mount("/quick/Marshal.4.8/#{name}-#{version}.gemspec.rz") do |_, response|
+      response.status = 200
+      response.content_type = "application/octet-stream"
+      gem = Gem::Package.new(gem_path(name, version))
+      response.body = Zlib::Deflate.deflate(Marshal.dump(gem.spec))
+    end
+  end
+
+  def mount_specs_marshal_gz(specs)
+    mount("/specs.4.8.gz") do |_, response|
+      response.status = 200
+      response.content_type = "application/octet-stream"
+      response.body = gzip(Marshal.dump(specs))
+    end
   end
 
   #:nodoc:

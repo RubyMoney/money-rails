@@ -32,6 +32,18 @@ module FileHelpers
     FileUtils.remove_entry installed_dir if Dir.exist?(installed_dir)
   end
 
+  def gzip(content)
+    begin
+      output = StringIO.new
+      gz = Zlib::GzipWriter.new(output)
+      gz.write(content)
+    ensure
+      gz.close if gz
+    end
+
+    output.string
+  end
+
   def gunzip(content)
     gz = Zlib::GzipReader.new(StringIO.new(content))
     return gz.read

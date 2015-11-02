@@ -17,10 +17,15 @@ describe "gemstash integration tests" do
       }
     ]
 
+    speaker_specs = [["speaker", Gem::Version.new("0.1.0"), "ruby"],
+                     ["speaker", Gem::Version.new("0.1.0"), "java"]]
     @rubygems_server = SimpleServer.new("127.0.0.1", port: 9043)
     @rubygems_server.mount_gem_deps("speaker", speaker_deps)
     @rubygems_server.mount_gem("speaker", "0.1.0")
     @rubygems_server.mount_gem("speaker", "0.1.0-java")
+    @rubygems_server.mount_quick_marshal("speaker", "0.1.0")
+    @rubygems_server.mount_quick_marshal("speaker", "0.1.0-java")
+    @rubygems_server.mount_specs_marshal_gz(speaker_specs)
     @rubygems_server.start
     @empty_server = SimpleServer.new("127.0.0.1", port: 9044)
     @empty_server.mount_gem_deps
@@ -161,7 +166,7 @@ describe "gemstash integration tests" do
       xit "can bundle with full index" do
         expect(execute("bundle --full-index", dir: dir)).to exit_success
         expect(execute("bundle exec speaker hi", dir: dir)).
-          to exit_success.and_output("Hello world\n")
+          to exit_success.and_output("Hello world, #{platform_message}\n")
       end
     end
 
@@ -182,6 +187,12 @@ describe "gemstash integration tests" do
         clean_bundle bundle
 
         expect(execute("bundle", dir: dir)).to exit_success
+        expect(execute("bundle exec speaker hi", dir: dir)).
+          to exit_success.and_output("Hello world, #{platform_message}\n")
+      end
+
+      it "can bundle with full index" do
+        expect(execute("bundle --full-index", dir: dir)).to exit_success
         expect(execute("bundle exec speaker hi", dir: dir)).
           to exit_success.and_output("Hello world, #{platform_message}\n")
       end
@@ -216,7 +227,7 @@ describe "gemstash integration tests" do
       it "can bundle with full index" do
         expect(execute("bundle --full-index", dir: dir)).to exit_success
         expect(execute("bundle exec speaker hi", dir: dir)).
-          to exit_success.and_output("Hello world\n")
+          to exit_success.and_output("Hello world, #{platform_message}\n")
       end
     end
   end
