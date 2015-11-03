@@ -3,8 +3,15 @@ require "open3"
 # Helpers for executing commands and asserting the results.
 module ExecHelpers
   def execute(command, dir: nil, env: {})
+    bundle_gemfile = nil
+
+    if dir
+      gemfile_path = File.join(dir, "Gemfile")
+      bundle_gemfile = gemfile_path if File.exist?(gemfile_path)
+    end
+
     env = {
-      "BUNDLE_GEMFILE" => nil,
+      "BUNDLE_GEMFILE" => bundle_gemfile,
       "RUBYLIB" => nil,
       "RUBYOPT" => nil,
       "GEM_PATH" => ENV["_ORIGINAL_GEM_PATH"]
@@ -21,6 +28,7 @@ module ExecHelpers
       @command = command
       @dir = dir
       @output, @status = Open3.capture2e(env, command, chdir: dir)
+      fix_jruby_output
     end
 
     def successful?
@@ -30,6 +38,20 @@ module ExecHelpers
     def matches_output?(expected)
       return true unless expected
       @output == expected
+    end
+
+  private
+
+    def fix_jruby_output
+      return unless RUBY_PLATFORM == "java"
+      # Travis builds or runs JRuby in a way that outputs the following warning for some reason
+      @output.gsub!(/^.*warning: unknown property jruby.cext.enabled\n/, "")
+
+      if Gem::Requirement.new(">= 1.11.0").satisfied_by?(Gem::Version.new(Bundler::VERSION))
+        raise "Please remove ExecHelpers#fix_jruby_output if the warning doesn't occur anymore"
+      end
+
+      @output.gsub!(/^.*warning: unsupported exec option: close_others\n/, "")
     end
   end
 end

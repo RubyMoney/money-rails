@@ -1,4 +1,5 @@
 require "speaker/version"
+require "speaker/platform"
 
 #:nodoc:
 module Speaker
@@ -11,9 +12,9 @@ module Speaker
     usage if argv.size != 1
 
     if argv.first == "hi"
-      puts "Hello world"
+      puts "Hello world, #{Speaker::Platform.name}"
     elsif argv.first == "bye"
-      puts "Goodbye moon"
+      puts "Goodbye moon, #{Speaker::Platform.name}"
     else
       usage
     end

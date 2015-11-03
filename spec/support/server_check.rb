@@ -19,6 +19,8 @@ class ServerCheck
   def server_online?
     Socket.tcp("127.0.0.1", @port, nil, nil, connect_timeout: 1).close
     true
+  rescue Errno::EBADF
+    false
   rescue Errno::ECONNREFUSED
     false
   rescue Errno::ETIMEDOUT

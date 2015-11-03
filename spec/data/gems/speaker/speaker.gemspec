@@ -8,6 +8,7 @@ Gem::Specification.new do |spec|
   spec.version       = Speaker::VERSION
   spec.authors       = ["Mike Virata-Stone"]
   spec.email         = ["mike@virata-stone.com"]
+  spec.platform      = "java" if RUBY_PLATFORM == "java"
 
   spec.summary       = "A gem that isn't real."
   spec.description   = "This is an example gem for testing purposes."

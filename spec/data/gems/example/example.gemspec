@@ -8,6 +8,7 @@ Gem::Specification.new do |spec|
   spec.version       = Example::VERSION
   spec.authors       = ["Mike Virata-Stone"]
   spec.email         = ["mike@virata-stone.com"]
+  spec.platform      = ENV["SPEC_PLATFORM"] unless ENV["SPEC_PLATFORM"].to_s.empty?
 
   spec.summary       = "A gem that isn't real."
   spec.description   = "This is an example gem for testing purposes."

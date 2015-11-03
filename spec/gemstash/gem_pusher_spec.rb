@@ -58,9 +58,9 @@ describe Gemstash::GemPusher do
     end
 
     context "with a non-ruby platform" do
-      # TODO: I think this will fail without some changes
-      # TODO: Also, should 'example-0.1.0-ruby' work from storage?
-      xit "saves the dependency info and stores the gem" do
+      let(:gem_contents) { read_gem("example", "0.1.0-java") }
+
+      it "saves the dependency info and stores the gem" do
         results = [{
           :name => "example",
           :number => "0.1.0",

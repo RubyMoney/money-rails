@@ -15,7 +15,7 @@ module Gemstash
       def self.find_by_spec(gem_id, spec)
         self[rubygem_id: gem_id,
              number: spec.version.to_s,
-             platform: spec.platform]
+             platform: spec.platform.to_s]
       end
 
       def self.find_by_full_name(full_name)
@@ -29,7 +29,7 @@ module Gemstash
         gem_name = Gemstash::DB::Rubygem[gem_id].name
         new(rubygem_id: gem_id,
             number: spec.version.to_s,
-            platform: spec.platform,
+            platform: spec.platform.to_s,
             full_name: "#{gem_name}-#{spec.version}-#{spec.platform}",
             storage_id: spec.full_name,
             indexed: true).tap(&:save).id
