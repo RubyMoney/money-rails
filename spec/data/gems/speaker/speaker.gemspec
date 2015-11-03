@@ -1,11 +1,10 @@
 # coding: utf-8
-lib = File.expand_path("../lib", __FILE__)
-$LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require "speaker/version"
+version = ENV["SPEC_VERSION"]
+version = "0.1.0" if version.to_s.empty?
 
 Gem::Specification.new do |spec|
   spec.name          = "speaker"
-  spec.version       = Speaker::VERSION
+  spec.version       = version
   spec.authors       = ["Mike Virata-Stone"]
   spec.email         = ["mike@virata-stone.com"]
   spec.platform      = "java" if RUBY_PLATFORM == "java"

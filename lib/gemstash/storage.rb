@@ -37,6 +37,7 @@ module Gemstash
 
   #:nodoc:
   class Resource
+    include Gemstash::Logging
     attr_reader :name, :folder
     def initialize(folder, name)
       @base_path = folder
@@ -82,6 +83,25 @@ module Gemstash
       @content = read_file(content_filename)
       @properties = YAML.load_file(properties_filename)
       self
+    end
+
+    def delete
+      return unless exist?
+
+      begin
+        File.delete(content_filename)
+      rescue => e
+        log_error "Failed to delete stored content at #{content_filename}", e, level: :warn
+      end
+
+      begin
+        File.delete(properties_filename)
+      rescue => e
+        log_error "Failed to delete stored properties at #{properties_filename}", e, level: :warn
+      end
+    ensure
+      @content = nil
+      @properties = nil
     end
 
   private

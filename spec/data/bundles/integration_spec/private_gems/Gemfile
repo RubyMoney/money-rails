@@ -1,3 +1,8 @@
 require "cgi"
 source "http://localhost:9042/private"
-gem "speaker"
+
+if ENV["SPEAKER_VERSION"].to_s.empty?
+  gem "speaker"
+else
+  gem "speaker", ENV["SPEAKER_VERSION"]
+end

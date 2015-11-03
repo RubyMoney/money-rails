@@ -67,7 +67,7 @@ module Gemstash
         begin
           return block.call
         rescue Faraday::ConnectionFailed => e
-          log.error("#{e.message} - #{e.backtrace.join('\n')}")
+          log_error("Connection failure", e)
           raise(ConnectionError, e.message) unless times > 0
           log.info "retrying... #{times} more times"
         end

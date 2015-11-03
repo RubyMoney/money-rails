@@ -67,7 +67,11 @@ module Gemstash
       end
 
       def serve_marshal(id)
-        halt 403, "Not yet supported"
+        gem_full_name = id.sub(/\.gemspec\.rz\z/, "")
+        fetch_gem(gem_full_name)
+        spec = fetch_spec(gem_full_name)
+        content_type "application/octet-stream"
+        spec.content
       end
 
       def serve_actual_gem(id)
@@ -76,10 +80,7 @@ module Gemstash
 
       def serve_gem(id)
         gem_full_name = id.sub(/\.gem\z/, "")
-        gem = storage.resource(gem_full_name)
-        halt 404 unless gem.exist?
-        gem.load
-        halt 403, "That gem has been yanked" unless gem.properties[:indexed]
+        gem = fetch_gem(gem_full_name)
         content_type "application/octet-stream"
         gem.content
       end
@@ -89,11 +90,13 @@ module Gemstash
       end
 
       def serve_specs
-        halt 403, "Not yet supported"
+        content_type "application/octet-stream"
+        Gemstash::SpecsBuilder.all
       end
 
       def serve_prerelease_specs
-        halt 403, "Not yet supported"
+        content_type "application/octet-stream"
+        Gemstash::SpecsBuilder.prerelease
       end
 
     private
@@ -122,6 +125,24 @@ module Gemstash
 
       def storage
         @storage ||= Gemstash::Storage.for("private").for("gems")
+      end
+
+      def spec_storage
+        @spec_storage ||= Gemstash::Storage.for("private").for("specs")
+      end
+
+      def fetch_gem(gem_full_name)
+        gem = storage.resource(gem_full_name)
+        halt 404 unless gem.exist?
+        gem.load
+        halt 403, "That gem has been yanked" unless gem.properties[:indexed]
+        gem
+      end
+
+      def fetch_spec(gem_full_name)
+        spec = spec_storage.resource(gem_full_name)
+        halt 404 unless spec.exist?
+        spec.load
       end
     end
   end

@@ -87,6 +87,17 @@ describe Gemstash::Storage do
         resource.update_properties(key: "new", new: 42)
         expect(storage.resource(resource_id).load.properties).to eq(key: "new", other: :value, new: 42)
       end
+
+      it "can be deleted" do
+        resource = storage.resource(resource_id)
+        resource.delete
+        expect(resource.exist?).to be_falsey
+        expect { resource.load }.to raise_error(/no content to load/)
+        # Fetching the resource again will still prevent access
+        resource = storage.resource(resource_id)
+        expect(resource.exist?).to be_falsey
+        expect { resource.load }.to raise_error(/no content to load/)
+      end
     end
 
     context "with resource name that is unique by case only" do

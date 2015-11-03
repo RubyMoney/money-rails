@@ -10,13 +10,21 @@ module Speaker
 
   def self.say(argv)
     usage if argv.size != 1
+    phrases = []
 
     if argv.first == "hi"
-      puts "Hello world, #{Speaker::Platform.name}"
+      phrases << "Hello world"
     elsif argv.first == "bye"
-      puts "Goodbye moon, #{Speaker::Platform.name}"
+      phrases << "Goodbye moon"
     else
       usage
     end
+
+    if Gem::Version.new(Speaker::VERSION).prerelease?
+      phrases << Speaker::VERSION.split(".").last
+    end
+
+    phrases << Speaker::Platform.name
+    puts phrases.join(", ")
   end
 end

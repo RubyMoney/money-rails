@@ -192,14 +192,63 @@ describe Gemstash::Web do
       context "with a yanked gem" do
         before do
           gem_id = insert_rubygem "yanked"
-          insert_version gem_id, "0.1.0", "ruby", false
+          insert_version gem_id, "0.1.0", indexed: false
           storage.resource("yanked-0.1.0").save("Example yanked gem content", indexed: false)
         end
 
-        it "fails" do
+        it "halts with 403" do
           get "/gems/yanked-0.1.0.gem", {}, rack_env
           expect(last_response).to_not be_ok
+          expect(last_response.status).to eq(403)
           expect(last_response.body).to_not eq("Example yanked gem content")
+        end
+      end
+    end
+  end
+
+  context "GET /quick/Marshal.4.8/:id" do
+    context "from private gems" do
+      let(:gem_source) { Gemstash::GemSource::PrivateSource }
+      let(:storage) { Gemstash::Storage.for("private").for("gems") }
+      let(:spec_storage) { Gemstash::Storage.for("private").for("specs") }
+
+      context "with a missing gem" do
+        it "halts with 404" do
+          get "/quick/Marshal.4.8/unknown-0.1.0.gemspec.rz", {}, rack_env
+          expect(last_response).to_not be_ok
+          expect(last_response.status).to eq(404)
+          expect(last_response.body).to match(/not found/i)
+        end
+      end
+
+      context "with a regular gem" do
+        before do
+          gem_id = insert_rubygem "example"
+          insert_version gem_id, "0.1.0"
+          storage.resource("example-0.1.0").save("Example gem content", indexed: true)
+          spec_storage.resource("example-0.1.0").save("Example gemspec content")
+        end
+
+        it "fetches the spec contents" do
+          get "/quick/Marshal.4.8/example-0.1.0.gemspec.rz", {}, rack_env
+          expect(last_response).to be_ok
+          expect(last_response.body).to eq("Example gemspec content")
+        end
+      end
+
+      context "with a yanked gem" do
+        before do
+          gem_id = insert_rubygem "yanked"
+          insert_version gem_id, "0.1.0", indexed: false
+          storage.resource("yanked-0.1.0").save("Example yanked gem content", indexed: false)
+          spec_storage.resource("yanked-0.1.0").save("Example yanked gemspec content")
+        end
+
+        it "halts with 403" do
+          get "/quick/Marshal.4.8/yanked-0.1.0.gemspec.rz", {}, rack_env
+          expect(last_response).to_not be_ok
+          expect(last_response.status).to eq(403)
+          expect(last_response.body).to_not match(/Example yanked gem(spec)? content/)
         end
       end
     end
