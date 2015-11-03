@@ -68,14 +68,10 @@ module Gemstash
 
       def serve_marshal(id)
         gem_full_name = id.sub(/\.gemspec\.rz\z/, "")
-        gem = storage.resource(gem_full_name)
-        halt 404 unless gem.exist?
-        gem.load
-        halt 403, "That gem has been yanked" unless gem.properties[:indexed]
-        spec = spec_storage.resource(gem_full_name)
-        halt 404 unless spec.exist?
+        fetch_gem(gem_full_name)
+        spec = fetch_spec(gem_full_name)
         content_type "application/octet-stream"
-        spec.load.content
+        spec.content
       end
 
       def serve_actual_gem(id)
@@ -84,10 +80,7 @@ module Gemstash
 
       def serve_gem(id)
         gem_full_name = id.sub(/\.gem\z/, "")
-        gem = storage.resource(gem_full_name)
-        halt 404 unless gem.exist?
-        gem.load
-        halt 403, "That gem has been yanked" unless gem.properties[:indexed]
+        gem = fetch_gem(gem_full_name)
         content_type "application/octet-stream"
         gem.content
       end
@@ -136,6 +129,20 @@ module Gemstash
 
       def spec_storage
         @spec_storage ||= Gemstash::Storage.for("private").for("specs")
+      end
+
+      def fetch_gem(gem_full_name)
+        gem = storage.resource(gem_full_name)
+        halt 404 unless gem.exist?
+        gem.load
+        halt 403, "That gem has been yanked" unless gem.properties[:indexed]
+        gem
+      end
+
+      def fetch_spec(gem_full_name)
+        spec = spec_storage.resource(gem_full_name)
+        halt 404 unless spec.exist?
+        spec.load
       end
     end
   end
