@@ -160,63 +160,8 @@ describe "gemstash integration tests" do
       clean_bundle bundle
     end
 
-    context "with default upstream gems" do
-      let(:bundle) { "integration_spec/default_upstream_gems" }
-
+    shared_examples "a bundleable project" do
       it "successfully bundles" do
-        expect(execute("bundle", dir: dir)).to exit_success
-        expect(execute("bundle exec speaker hi", dir: dir)).
-          to exit_success.and_output("Hello world, #{platform_message}\n")
-      end
-    end
-
-    context "with upstream gems via a header mirror" do
-      let(:bundle) { "integration_spec/header_mirror_gems" }
-
-      # This should stay skipped until bundler sends the X-Gemfile-Source header
-      xit "successfully bundles" do
-        expect(execute("bundle", dir: dir)).to exit_success
-        expect(execute("bundle exec speaker hi", dir: dir)).
-          to exit_success.and_output("Hello world, #{platform_message}\n")
-      end
-
-      xit "can bundle with full index" do
-        expect(execute("bundle --full-index", dir: dir)).to exit_success
-        expect(execute("bundle exec speaker hi", dir: dir)).
-          to exit_success.and_output("Hello world, #{platform_message}\n")
-      end
-
-      xit "can bundle with prerelease versions" do
-        env = { "SPEAKER_VERSION" => "= 0.2.0.pre" }
-        expect(execute("bundle", dir: dir, env: env)).to exit_success
-        expect(execute("bundle exec speaker hi", dir: dir, env: env)).
-          to exit_success.and_output("Hello world, pre, #{platform_message}\n")
-      end
-
-      xit "can bundle with prerelease versions with full index" do
-        env = { "SPEAKER_VERSION" => "= 0.2.0.pre" }
-        expect(execute("bundle --full-index", dir: dir, env: env)).to exit_success
-        expect(execute("bundle exec speaker hi", dir: dir, env: env)).
-          to exit_success.and_output("Hello world, pre, #{platform_message}\n")
-      end
-    end
-
-    context "with upstream gems" do
-      let(:bundle) { "integration_spec/upstream_gems" }
-
-      it "successfully bundles" do
-        expect(execute("bundle", dir: dir)).to exit_success
-        expect(execute("bundle exec speaker hi", dir: dir)).
-          to exit_success.and_output("Hello world, #{platform_message}\n")
-      end
-
-      it "can successfully bundle twice" do
-        expect(execute("bundle", dir: dir)).to exit_success
-        expect(execute("bundle exec speaker hi", dir: dir)).
-          to exit_success.and_output("Hello world, #{platform_message}\n")
-
-        clean_bundle bundle
-
         expect(execute("bundle", dir: dir)).to exit_success
         expect(execute("bundle exec speaker hi", dir: dir)).
           to exit_success.and_output("Hello world, #{platform_message}\n")
@@ -243,14 +188,37 @@ describe "gemstash integration tests" do
       end
     end
 
-    context "with redirecting gems" do
-      let(:bundle) { "integration_spec/redirecting_gems" }
+    context "with default upstream gems" do
+      let(:bundle) { "integration_spec/default_upstream_gems" }
+      it_behaves_like "a bundleable project"
+    end
 
-      it "successfully bundles" do
+    # This should stay skipped until bundler sends the X-Gemfile-Source header
+    xcontext "with upstream gems via a header mirror" do
+      let(:bundle) { "integration_spec/header_mirror_gems" }
+      it_behaves_like "a bundleable project"
+    end
+
+    context "with upstream gems" do
+      let(:bundle) { "integration_spec/upstream_gems" }
+      it_behaves_like "a bundleable project"
+
+      it "can successfully bundle twice" do
+        expect(execute("bundle", dir: dir)).to exit_success
+        expect(execute("bundle exec speaker hi", dir: dir)).
+          to exit_success.and_output("Hello world, #{platform_message}\n")
+
+        clean_bundle bundle
+
         expect(execute("bundle", dir: dir)).to exit_success
         expect(execute("bundle exec speaker hi", dir: dir)).
           to exit_success.and_output("Hello world, #{platform_message}\n")
       end
+    end
+
+    context "with redirecting gems" do
+      let(:bundle) { "integration_spec/redirecting_gems" }
+      it_behaves_like "a bundleable project"
     end
 
     context "with private gems", :db_transaction => false do
@@ -264,33 +232,7 @@ describe "gemstash integration tests" do
       end
 
       let(:bundle) { "integration_spec/private_gems" }
-
-      it "successfully bundles" do
-        expect(execute("bundle", dir: dir)).to exit_success
-        expect(execute("bundle exec speaker hi", dir: dir)).
-          to exit_success.and_output("Hello world, #{platform_message}\n")
-      end
-
-      it "can bundle with full index" do
-        expect(execute("bundle --full-index", dir: dir)).to exit_success
-        expect(execute("bundle exec speaker hi", dir: dir)).
-          to exit_success.and_output("Hello world, #{platform_message}\n")
-      end
-
-      it "can bundle with prerelease versions" do
-        env = { "SPEAKER_VERSION" => "= 0.2.0.pre" }
-        expect(execute("bundle", dir: dir, env: env)).to exit_success
-        expect(execute("bundle exec speaker hi", dir: dir, env: env)).
-          to exit_success.and_output("Hello world, pre, #{platform_message}\n")
-      end
-
-      # /private/prerelease_specs.4.8.gz still needs to be implemented for this to work
-      xit "can bundle with prerelease versions with full index" do
-        env = { "SPEAKER_VERSION" => "= 0.2.0.pre" }
-        expect(execute("bundle --full-index", dir: dir, env: env)).to exit_success
-        expect(execute("bundle exec speaker hi", dir: dir, env: env)).
-          to exit_success.and_output("Hello world, pre, #{platform_message}\n")
-      end
+      it_behaves_like "a bundleable project"
     end
   end
 end

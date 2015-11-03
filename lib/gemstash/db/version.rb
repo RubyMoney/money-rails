@@ -19,8 +19,8 @@ module Gemstash
         [rubygem.name, Gem::Version.new(number), platform]
       end
 
-      def self.indexed_and_released
-        where(indexed: true, prerelease: false).association_join(:rubygem)
+      def self.for_spec_collection(prerelease: false)
+        where(indexed: true, prerelease: prerelease).association_join(:rubygem)
       end
 
       def self.find_by_spec(gem_id, spec)

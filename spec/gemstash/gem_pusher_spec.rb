@@ -88,9 +88,9 @@ describe Gemstash::GemPusher do
         expect(storage.resource("example-0.1.0-java").load.content).to eq(gem_contents)
       end
 
-      xit "stores the gemspec" do
+      it "stores the gemspec" do
         Gemstash::GemPusher.new(auth_key, gem_contents).push
-        spec = spec_storage.resource("example-0.1.0").load.content
+        spec = spec_storage.resource("example-0.1.0-java").load.content
         spec = Marshal.load(Zlib::Inflate.inflate(spec))
         expect(spec).to be_a(Gem::Specification)
         expect(spec.name).to eq("example")

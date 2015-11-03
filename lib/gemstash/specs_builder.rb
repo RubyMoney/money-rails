@@ -14,9 +14,20 @@ module Gemstash
       new.build
     end
 
+    # Used for the /private/prerelease_specs.4.8.gz endpoint. Fetches
+    # prerelease, indexed private gems.
+    def self.prerelease
+      new(prerelease: true).build
+    end
+
     def self.invalidate_stored
       storage = Gemstash::Storage.for("private").for("specs_collection")
       storage.resource("specs.4.8.gz").delete
+      storage.resource("prerelease_specs.4.8.gz").delete
+    end
+
+    def initialize(prerelease: false)
+      @prerelease = prerelease
     end
 
     def build
@@ -35,8 +46,16 @@ module Gemstash
       @storage ||= Gemstash::Storage.for("private").for("specs_collection")
     end
 
+    def fetch_resource
+      if @prerelease
+        storage.resource("prerelease_specs.4.8.gz")
+      else
+        storage.resource("specs.4.8.gz")
+      end
+    end
+
     def fetch_from_storage
-      specs = storage.resource("specs.4.8.gz")
+      specs = fetch_resource
       return unless specs.exist?
       @result = specs.load.content
     rescue
@@ -45,7 +64,7 @@ module Gemstash
     end
 
     def fetch_versions
-      @versions = Gemstash::DB::Version.indexed_and_released.map(&:to_spec)
+      @versions = Gemstash::DB::Version.for_spec_collection(prerelease: @prerelease).map(&:to_spec)
     end
 
     def marshal
@@ -68,7 +87,7 @@ module Gemstash
     end
 
     def store_result
-      storage.resource("specs.4.8.gz").save(@result)
+      fetch_resource.save(@result)
     end
   end
 end

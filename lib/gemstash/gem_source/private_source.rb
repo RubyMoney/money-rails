@@ -102,7 +102,8 @@ module Gemstash
       end
 
       def serve_prerelease_specs
-        halt 403, "Not yet supported"
+        content_type "application/octet-stream"
+        Gemstash::SpecsBuilder.prerelease
       end
 
     private
