@@ -1,3 +1,4 @@
+require "rubygems/package"
 require "webrick"
 require "zlib"
 require "support/file_helpers"
@@ -123,6 +124,14 @@ class SimpleServer
 
   def mount_specs_marshal_gz(specs)
     mount("/specs.4.8.gz") do |_, response|
+      response.status = 200
+      response.content_type = "application/octet-stream"
+      response.body = gzip(Marshal.dump(specs))
+    end
+  end
+
+  def mount_prerelease_specs_marshal_gz(specs)
+    mount("/prerelease_specs.4.8.gz") do |_, response|
       response.status = 200
       response.content_type = "application/octet-stream"
       response.body = gzip(Marshal.dump(specs))
