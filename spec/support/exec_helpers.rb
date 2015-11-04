@@ -1,3 +1,4 @@
+require "bundler/version"
 require "open3"
 
 # Helpers for executing commands and asserting the results.
@@ -10,12 +11,23 @@ module ExecHelpers
       bundle_gemfile = gemfile_path if File.exist?(gemfile_path)
     end
 
-    env = {
+    default_env = {
       "BUNDLE_GEMFILE" => bundle_gemfile,
       "RUBYLIB" => nil,
       "RUBYOPT" => nil,
       "GEM_PATH" => ENV["_ORIGINAL_GEM_PATH"]
-    }.merge(env)
+    }
+
+    if RUBY_PLATFORM == "java"
+      default_env["JRUBY_OPTS"] = "--dev"
+
+      if command.start_with?("bundle")
+        bundler_patch = File.expand_path("../jruby_bundler_monkeypatch.rb", __FILE__)
+        default_env["JRUBY_OPTS"] += " -r#{bundler_patch}"
+      end
+    end
+
+    env = default_env.merge(env)
     dir ||= File.expand_path(".")
     Result.new(env, command, dir)
   end
