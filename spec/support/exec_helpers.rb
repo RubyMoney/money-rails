@@ -1,5 +1,6 @@
 require "bundler/version"
 require "open3"
+require "pathname"
 
 # Helpers for executing commands and asserting the results.
 module ExecHelpers
@@ -15,7 +16,7 @@ module ExecHelpers
       @command = command
       @env = env
       @original_dir = dir
-      @dir = dir || File.expand_path(".")
+      @dir = dir || File.expand_path("../../..", __FILE__)
       @output, @status = Open3.capture2e(patched_env, @command, chdir: @dir)
       fix_jruby_output
     end
@@ -70,7 +71,7 @@ module ExecHelpers
 
       if command.start_with?("bundle")
         bundler_patch = File.expand_path("../jruby_bundler_monkeypatch.rb", __FILE__)
-        raise "Spaces in your path will cause build failures!" if bundler_patch.include?(" ")
+        bundler_patch = Pathname.new(bundler_patch).relative_path_from(Pathname.new(dir))
         jruby_opts += " -r#{bundler_patch}"
       end
 

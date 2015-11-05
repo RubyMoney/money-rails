@@ -2,6 +2,7 @@ require "gemstash"
 require "dalli"
 require "fileutils"
 require "sequel"
+require "uri"
 
 module Gemstash
   # Storage for application-wide variables and configuration.
@@ -110,7 +111,7 @@ module Gemstash
           if RUBY_PLATFORM == "java"
             db = Sequel.connect("jdbc:sqlite:#{db_path}")
           else
-            db = Sequel.connect("sqlite://#{db_path}")
+            db = Sequel.connect("sqlite://#{URI.escape(db_path)}")
           end
         when "postgres"
           db = Sequel.connect(config[:db_url])
