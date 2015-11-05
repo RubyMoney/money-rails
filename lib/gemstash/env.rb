@@ -109,9 +109,9 @@ module Gemstash
           db_path = base_file("gemstash.db")
 
           if RUBY_PLATFORM == "java"
-            db = Sequel.connect("jdbc:sqlite:#{db_path}")
+            db = Sequel.connect("jdbc:sqlite:#{db_path}", max_connections: 1)
           else
-            db = Sequel.connect("sqlite://#{URI.escape(db_path)}")
+            db = Sequel.connect("sqlite://#{URI.escape(db_path)}", max_connections: 1)
           end
         when "postgres"
           db = Sequel.connect(config[:db_url])
