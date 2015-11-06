@@ -57,16 +57,10 @@ module ExecHelpers
       return unless RUBY_PLATFORM == "java"
       # Travis builds or runs JRuby in a way that outputs the following warning for some reason
       @output.gsub!(/^.*warning: unknown property jruby.cext.enabled\n/, "")
-
-      if Gem::Requirement.new(">= 1.11.0").satisfied_by?(Gem::Version.new(Bundler::VERSION))
-        raise "Please remove ExecHelpers#fix_jruby_output if the warning doesn't occur anymore"
-      end
-
-      @output.gsub!(/^.*warning: unsupported exec option: close_others\n/, "")
     end
 
     def patched_env
-      @patched_env ||= faster_jruby_env.merge(clear_bundler_env).merge(clear_ruby_env).merge(@env)
+      @patched_env ||= clear_bundler_env.merge(clear_ruby_env).merge(@env)
     end
 
     def clear_ruby_env
@@ -85,19 +79,6 @@ module ExecHelpers
 
       { "BUNDLE_GEMFILE" => bundle_gemfile }
     end
-
-    def faster_jruby_env
-      return {} unless RUBY_PLATFORM == "java"
-      jruby_opts = "--dev"
-
-      if command == "bundle"
-        bundler_patch = File.expand_path("../jruby_bundler_monkeypatch.rb", __FILE__)
-        bundler_patch = Pathname.new(bundler_patch).relative_path_from(Pathname.new(dir))
-        jruby_opts += " -r#{bundler_patch}"
-      end
-
-      { "JRUBY_OPTS" => jruby_opts }
-    end
   end
 
   # Executes and stores the results for an external command, but does it in
@@ -106,12 +87,8 @@ module ExecHelpers
     def exec
       binstub_dir = File.expand_path("../jruby_binstubs", __FILE__)
       binstub = File.join(binstub_dir, command)
-
-      if File.exist?(binstub)
-        exec_in_process(binstub)
-      else
-        super
-      end
+      raise "Missing binstub for #{command}" unless File.exist?(binstub)
+      exec_in_process(binstub)
     end
 
     def successful?
