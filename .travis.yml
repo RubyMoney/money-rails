@@ -2,12 +2,14 @@ language: ruby
 matrix:
   allow_failures:
   - rvm: ruby-head
+  include:
+  - rvm: jruby-9.0.3.0
+    env: JRUBY_OPTS="$JRUBY_OPTS -J-Xmx1536m -J-XX:MaxPermSize=192m"
 rvm:
 - 2.0
 - 2.1
 - 2.2
 - ruby-head
-- jruby-9.0.3.0
 bundler_args: "--binstubs --jobs=3 --retry=3"
 before_install: gem install bundler -v 1.10.6
 cache: bundler

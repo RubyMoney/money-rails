@@ -4,25 +4,46 @@ require "pathname"
 
 # Helpers for executing commands and asserting the results.
 module ExecHelpers
-  def execute(command, dir: nil, env: {})
-    Result.new(env, command, dir)
+  def execute(command, args = [], dir: nil, env: {})
+    if RUBY_PLATFORM == "java"
+      JRubyResult.new(env, command, args, dir)
+    else
+      Result.new(env, command, args, dir)
+    end
   end
 
   # Executes and stores the results for an external command.
   class Result
-    attr_reader :command, :dir, :output
+    attr_reader :command, :args, :dir, :output
 
-    def initialize(env, command, dir)
+    def initialize(env, command, args, dir)
       @command = command
+      @args = args
       @env = env
       @original_dir = dir
       @dir = dir || File.expand_path("../../..", __FILE__)
-      @output, @status = Open3.capture2e(patched_env, @command, chdir: @dir)
+      exec
       fix_jruby_output
+    end
+
+    def exec
+      @output, @status = Open3.capture2e(patched_env, command, *args, chdir: dir)
     end
 
     def successful?
       @status.success?
+    end
+
+    def display_command
+      display_args = args.map do |x|
+        if x =~ /\s/
+          "'#{x}'"
+        else
+          x
+        end
+      end
+
+      ([command] + display_args).join(" ")
     end
 
     def matches_output?(expected)
@@ -69,13 +90,39 @@ module ExecHelpers
       return {} unless RUBY_PLATFORM == "java"
       jruby_opts = "--dev"
 
-      if command.start_with?("bundle")
+      if command == "bundle"
         bundler_patch = File.expand_path("../jruby_bundler_monkeypatch.rb", __FILE__)
         bundler_patch = Pathname.new(bundler_patch).relative_path_from(Pathname.new(dir))
         jruby_opts += " -r#{bundler_patch}"
       end
 
       { "JRUBY_OPTS" => jruby_opts }
+    end
+  end
+
+  # Executes and stores the results for an external command, but does it in
+  # process with a separate JRuby instance rather than a process.
+  class JRubyResult < Result
+    def exec
+      binstub_dir = File.expand_path("../jruby_binstubs", __FILE__)
+      binstub = File.join(binstub_dir, command)
+
+      if File.exist?(binstub)
+        exec_in_process(binstub)
+      else
+        super
+      end
+    end
+
+    def successful?
+      @process.status == 0
+    end
+
+  private
+
+    def exec_in_process(binstub)
+      @process = InProcessExec.new(patched_env, dir, [binstub] + args)
+      @output = @process.output
     end
   end
 end
@@ -91,13 +138,13 @@ RSpec::Matchers.define :exit_success do
 
   failure_message do |actual|
     if actual.successful?
-      "expected '#{actual.command}' in '#{actual.dir}' to output:
+      "expected '#{actual.display_command}' in '#{actual.dir}' to output:
 #{@expected_output}
 
 but instead it output:
 #{actual.output}"
     else
-      "expected '#{actual.command}' in '#{actual.dir}' to exit with a success code, but it didn't.
+      "expected '#{actual.display_command}' in '#{actual.dir}' to exit with a success code, but it didn't.
 the command output was:
 #{actual.output}"
     end
