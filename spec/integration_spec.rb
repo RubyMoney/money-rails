@@ -102,7 +102,7 @@ describe "gemstash integration tests" do
 
       it "pushes valid gems to the server", :db_transaction => false do
         env = { "HOME" => env_dir }
-        expect(execute("gem push --key test --host '#{host}' '#{gem}'", env: env)).to exit_success
+        expect(execute("gem", ["push", "--key", "test", "--host", host, gem], env: env)).to exit_success
         expect(deps.fetch(%w(speaker))).to match_dependencies([speaker_deps])
         expect(storage.resource("speaker-0.1.0").load.content).to eq(gem_contents)
         expect(http_client.get("gems/speaker-0.1.0")).to eq(gem_contents)
@@ -118,7 +118,7 @@ describe "gemstash integration tests" do
 
       it "removes valid gems from the server", :db_transaction => false do
         env = { "HOME" => env_dir, "RUBYGEMS_HOST" => host }
-        expect(execute("gem yank --key test '#{gem_name}' --version #{gem_version}", env: env)).to exit_success
+        expect(execute("gem", ["yank", "--key", "test", gem_name, "--version", gem_version], env: env)).to exit_success
         expect(deps.fetch(%w(speaker))).to match_dependencies([])
         # It shouldn't actually delete the gem, to support unyank
         expect(storage.resource("speaker-0.1.0").load.content).to eq(gem_contents)
@@ -137,7 +137,8 @@ describe "gemstash integration tests" do
 
       it "adds valid gems back to the server", :db_transaction => false do
         env = { "HOME" => env_dir, "RUBYGEMS_HOST" => host }
-        expect(execute("gem yank --key test '#{gem_name}' --version #{gem_version} --undo", env: env)).to exit_success
+        expect(execute("gem", ["yank", "--key", "test", gem_name, "--version", gem_version, "--undo"], env: env)).
+          to exit_success
         expect(deps.fetch(%w(speaker))).to match_dependencies([speaker_deps])
         expect(storage.resource("speaker-0.1.0").load.content).to eq(gem_contents)
         expect(http_client.get("gems/speaker-0.1.0")).to eq(gem_contents)
@@ -163,27 +164,27 @@ describe "gemstash integration tests" do
     shared_examples "a bundleable project" do
       it "successfully bundles" do
         expect(execute("bundle", dir: dir)).to exit_success
-        expect(execute("bundle exec speaker hi", dir: dir)).
+        expect(execute("bundle", %w(exec speaker hi), dir: dir)).
           to exit_success.and_output("Hello world, #{platform_message}\n")
       end
 
       it "can bundle with full index" do
-        expect(execute("bundle --full-index", dir: dir)).to exit_success
-        expect(execute("bundle exec speaker hi", dir: dir)).
+        expect(execute("bundle", %w(--full-index), dir: dir)).to exit_success
+        expect(execute("bundle", %w(exec speaker hi), dir: dir)).
           to exit_success.and_output("Hello world, #{platform_message}\n")
       end
 
       it "can bundle with prerelease versions" do
         env = { "SPEAKER_VERSION" => "= 0.2.0.pre" }
         expect(execute("bundle", dir: dir, env: env)).to exit_success
-        expect(execute("bundle exec speaker hi", dir: dir, env: env)).
+        expect(execute("bundle", %w(exec speaker hi), dir: dir, env: env)).
           to exit_success.and_output("Hello world, pre, #{platform_message}\n")
       end
 
       it "can bundle with prerelease versions with full index" do
         env = { "SPEAKER_VERSION" => "= 0.2.0.pre" }
-        expect(execute("bundle --full-index", dir: dir, env: env)).to exit_success
-        expect(execute("bundle exec speaker hi", dir: dir, env: env)).
+        expect(execute("bundle", %w(--full-index), dir: dir, env: env)).to exit_success
+        expect(execute("bundle", %w(exec speaker hi), dir: dir, env: env)).
           to exit_success.and_output("Hello world, pre, #{platform_message}\n")
       end
     end
@@ -205,13 +206,13 @@ describe "gemstash integration tests" do
 
       it "can successfully bundle twice" do
         expect(execute("bundle", dir: dir)).to exit_success
-        expect(execute("bundle exec speaker hi", dir: dir)).
+        expect(execute("bundle", %w(exec speaker hi), dir: dir)).
           to exit_success.and_output("Hello world, #{platform_message}\n")
 
         clean_bundle bundle
 
         expect(execute("bundle", dir: dir)).to exit_success
-        expect(execute("bundle exec speaker hi", dir: dir)).
+        expect(execute("bundle", %w(exec speaker hi), dir: dir)).
           to exit_success.and_output("Hello world, #{platform_message}\n")
       end
     end

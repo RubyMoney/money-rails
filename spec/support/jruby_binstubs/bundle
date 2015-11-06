@@ -1,0 +1,25 @@
+require "rubygems"
+gem "bundler"
+require "bundler"
+require "bundler/fetcher"
+require_relative "../in_process_exec.rb"
+
+module Bundler
+  #:nodoc:
+  class Fetcher
+    # The Bundler user_agent uses SecureRandom, which causes the specs
+    # to run out of entropy and run a lot longer than they need to.
+    def user_agent
+      "gemstash spec"
+    end
+  end
+end
+
+def Kernel.exec(*args)
+  args.pop if args.last.kind_of?(Hash)
+  process = InProcessExec.new(ENV, File.expand_path("."), args)
+  puts process.output
+  exit process.status
+end
+
+load Gem.bin_path("bundler", "bundle")

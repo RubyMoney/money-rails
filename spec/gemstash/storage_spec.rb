@@ -1,5 +1,4 @@
 require "spec_helper"
-require "securerandom"
 
 describe Gemstash::Storage do
   before do
@@ -67,8 +66,8 @@ describe Gemstash::Storage do
     end
 
     context "with a previously stored resource" do
-      let(:resource_id) { SecureRandom.uuid }
-      let(:content) { SecureRandom.base64 }
+      let(:resource_id) { "42" }
+      let(:content) { "zapatito" }
       before do
         storage.resource(resource_id).save(content)
       end
