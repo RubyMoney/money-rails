@@ -23,7 +23,7 @@ module Gemstash
     end
 
     def self.setup_logger(logfile)
-      @logger = Logger.new(logfile)
+      @logger = Logger.new(logfile, 2, 10_485_760)
       @logger.level = Logger::INFO
       @logger.datetime_format = "%d/%b/%Y:%H:%M:%S %z"
       @logger.formatter = proc do |severity, datetime, _progname, msg|
