@@ -8,6 +8,12 @@ module Gemstash
   #:nodoc:
   class Storage
     extend Gemstash::Env::Helper
+    VERSION = 1
+
+    # If the storage engine detects something that was stored with a newer
+    # version of the storage engine, this error will be thrown.
+    class VersionTooNew < StandardError
+    end
 
     def initialize(folder)
       @folder = folder
@@ -80,8 +86,15 @@ module Gemstash
 
     def load
       raise "Resource #{@name} has no content to load" unless exist?
-      @content = read_file(content_filename)
       @properties = YAML.load_file(properties_filename)
+      version = @properties[:gemstash_storage_version]
+
+      if version > Gemstash::Storage::VERSION
+        @properties = nil
+        raise Gemstash::Storage::VersionTooNew, "Resource was stored with a newer storage: #{version}"
+      end
+
+      @content = read_file(content_filename)
       self
     end
 
@@ -112,6 +125,8 @@ module Gemstash
     end
 
     def save_properties(props)
+      props ||= {}
+      props = { gemstash_storage_version: Gemstash::Storage::VERSION }.merge(props)
       store(properties_filename, props.to_yaml)
       @properties = props
     end

@@ -33,10 +33,22 @@ describe Gemstash::Storage do
       expect(resource).not_to exist
     end
 
-    it "returns empty properties when they are not saved" do
+    it "auto sets gemstash version property, even when properties not saved" do
       resource = storage.resource("something")
       resource = resource.save("some content").load
-      expect(resource.properties).to eq({})
+      expect(resource.properties).to eq(gemstash_storage_version: Gemstash::Storage::VERSION)
+    end
+
+    it "won't update gemstash version when already stored" do
+      storage.resource("42").save("content", gemstash_storage_version: 0)
+      expect(storage.resource("42").load.properties[:gemstash_storage_version]).to eq(0)
+      storage.resource("42").update_properties(key: "value")
+      expect(storage.resource("42").load.properties[:gemstash_storage_version]).to eq(0)
+    end
+
+    it "won't load a resource that is at a larger version than our current version" do
+      storage.resource("42").save("content", gemstash_storage_version: 999_999)
+      expect { storage.resource("42").load }.to raise_error(Gemstash::Storage::VersionTooNew)
     end
 
     context "with a simple resource" do
@@ -55,13 +67,15 @@ describe Gemstash::Storage do
       it "can also save properties" do
         resource.save("some other content", "content-type" => "octet/stream")
         expect(resource.content).to eq("some other content")
-        expect(resource.properties).to eq("content-type" => "octet/stream")
+        expect(resource.properties).to eq("content-type" => "octet/stream",
+                                          gemstash_storage_version: Gemstash::Storage::VERSION)
       end
 
       it "can save nested properties" do
         resource.save("some other content", headers: { "content-type" => "octet/stream" })
         expect(resource.content).to eq("some other content")
-        expect(resource.properties).to eq(headers: { "content-type" => "octet/stream" })
+        expect(resource.properties).to eq(headers: { "content-type" => "octet/stream" },
+                                          gemstash_storage_version: Gemstash::Storage::VERSION)
       end
     end
 
@@ -81,10 +95,12 @@ describe Gemstash::Storage do
       it "can have properties updated" do
         resource = storage.resource(resource_id)
         resource.update_properties(key: "value", other: :value)
-        expect(storage.resource(resource_id).load.properties).to eq(key: "value", other: :value)
+        expect(storage.resource(resource_id).load.properties).to eq(key: "value", other: :value,
+                                                                    gemstash_storage_version: Gemstash::Storage::VERSION)
         resource = storage.resource(resource_id)
         resource.update_properties(key: "new", new: 42)
-        expect(storage.resource(resource_id).load.properties).to eq(key: "new", other: :value, new: 42)
+        expect(storage.resource(resource_id).load.properties).to eq(key: "new", other: :value, new: 42,
+                                                                    gemstash_storage_version: Gemstash::Storage::VERSION)
       end
 
       it "can be deleted" do
