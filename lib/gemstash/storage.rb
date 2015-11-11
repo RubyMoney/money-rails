@@ -15,7 +15,8 @@ module Gemstash
     class VersionTooNew < StandardError
     end
 
-    def initialize(folder)
+    def initialize(folder, root: true)
+      check_engine if root
       @folder = folder
       FileUtils.mkpath(@folder) unless Dir.exist?(@folder)
     end
@@ -25,14 +26,31 @@ module Gemstash
     end
 
     def for(child)
-      Storage.new(File.join(@folder, child))
+      Storage.new(File.join(@folder, child), root: false)
     end
 
     def self.for(name)
       new(gemstash_env.base_file(name))
     end
 
+    def self.metadata
+      file = gemstash_env.base_file("metadata.yml")
+
+      unless File.exist?(file)
+        File.write(file, { storage_version: Gemstash::Storage::VERSION,
+                           gemstash_version: Gemstash::VERSION }.to_yaml)
+      end
+
+      YAML.load_file(file)
+    end
+
   private
+
+    def check_engine
+      version = Gemstash::Storage.metadata[:storage_version]
+      return if version <= Gemstash::Storage::VERSION
+      raise Gemstash::Storage::VersionTooNew, "Storage engine is out of date: #{version}"
+    end
 
     def path_valid?(path)
       return false if path.nil?

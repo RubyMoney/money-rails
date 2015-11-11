@@ -1,4 +1,5 @@
 require "spec_helper"
+require "yaml"
 
 describe Gemstash::Storage do
   before do
@@ -17,6 +18,21 @@ describe Gemstash::Storage do
     expect(Dir.exist?(new_path)).to be_falsy
     Gemstash::Storage.new(new_path)
     expect(Dir.exist?(new_path)).to be_truthy
+  end
+
+  it "stores metadata about Gemstash and the storage engine version" do
+    expect(Gemstash::Storage.metadata[:storage_version]).to eq(Gemstash::Storage::VERSION)
+    expect(Gemstash::Storage.metadata[:gemstash_version]).to eq(Gemstash::VERSION)
+  end
+
+  it "prevents using storage engine if the storage version is too new" do
+    metadata = {
+      storage_version: 999_999,
+      gemstash_version: Gemstash::VERSION
+    }
+
+    File.write(Gemstash::Env.current.base_file("metadata.yml"), metadata.to_yaml)
+    expect { Gemstash::Storage.new(@folder) }.to raise_error(Gemstash::Storage::VersionTooNew)
   end
 
   context "with a valid storage" do
