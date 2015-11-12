@@ -9,8 +9,8 @@ module Gemstash
       @valid_headers = Set.new(["etag", "content-type", "content-length", "last-modified"])
     end
 
-    def fetch(gem_id, &block)
-      @http_client.get("gems/#{gem_id}") do |body, headers|
+    def fetch(gem_id, type, &block)
+      @http_client.get(path_for(gem_id, type)) do |body, headers|
         properties = filter_headers(headers)
         validate_download(body, properties)
         yield body, properties
@@ -18,6 +18,17 @@ module Gemstash
     end
 
   private
+
+    def path_for(gem_id, type)
+      case type
+      when :gem
+        "gems/#{gem_id}"
+      when :spec
+        "quick/Marshal.4.8/#{gem_id}"
+      else
+        raise "Invalid type #{type.inspect}"
+      end
+    end
 
     def filter_headers(headers)
       headers.inject({}) do|properties, (key, value)|

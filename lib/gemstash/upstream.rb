@@ -41,25 +41,25 @@ module Gemstash
     def hash
       Digest::MD5.hexdigest(to_s)
     end
-  end
 
-  #:nodoc:
-  class UpstreamGemName
-    def initialize(upstream, gem_name)
-      @upstream = upstream
-      @id = gem_name
-    end
+    #:nodoc:
+    class GemName
+      def initialize(upstream, gem_name)
+        @upstream = upstream
+        @id = gem_name
+      end
 
-    def to_s
-      name
-    end
+      def to_s
+        name
+      end
 
-    def id
-      @id
-    end
+      def id
+        @id
+      end
 
-    def name
-      @name ||= @id.gsub(/\.gem$/i, "")
+      def name
+        @name ||= @id.gsub(/\.gem(spec\.rz)?$/i, "")
+      end
     end
   end
 end
