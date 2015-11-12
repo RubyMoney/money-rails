@@ -5,17 +5,9 @@ module Gemstash
   class CLI
     # This implements the command line authorize task to authorize users:
     #  $ gemstash authorize authorized-key
-    class Authorize
-      include Gemstash::Env::Helper
-
-      def initialize(cli, *args)
-        Gemstash::Env.current = Gemstash::Env.new
-        @cli = cli
-        @args = args
-      end
-
+    class Authorize < Gemstash::CLI::Base
       def run
-        store_config
+        prepare
         setup_logging
 
         if @cli.options[:remove]
@@ -26,11 +18,6 @@ module Gemstash
       end
 
     private
-
-      def store_config
-        config = Gemstash::Configuration.new(file: @cli.options[:config_file])
-        gemstash_env.config = config
-      end
 
       def setup_logging
         Gemstash::Logging.setup_logger(gemstash_env.base_file("server.log"))

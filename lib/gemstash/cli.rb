@@ -6,6 +6,7 @@ module Gemstash
   # Base Command Line Interface class.
   class CLI < Thor
     autoload :Authorize, "gemstash/cli/authorize"
+    autoload :Base,      "gemstash/cli/base"
     autoload :Setup,     "gemstash/cli/setup"
     autoload :Start,     "gemstash/cli/start"
     autoload :Status,    "gemstash/cli/status"

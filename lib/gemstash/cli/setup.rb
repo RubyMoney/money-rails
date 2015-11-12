@@ -6,12 +6,9 @@ module Gemstash
   class CLI
     # This implements the command line setup task:
     #  $ gemstash setup
-    class Setup
-      include Gemstash::Env::Helper
-
+    class Setup < Gemstash::CLI::Base
       def initialize(cli)
-        Gemstash::Env.current = Gemstash::Env.new
-        @cli = cli
+        super
         @config = {}
       end
 
