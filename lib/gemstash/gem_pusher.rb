@@ -39,10 +39,6 @@ module Gemstash
       @storage ||= Gemstash::Storage.for("private").for("gems")
     end
 
-    def spec_storage
-      @spec_storage ||= Gemstash::Storage.for("private").for("specs")
-    end
-
     def full_name
       @full_name ||= gem.spec.full_name
     end
@@ -52,14 +48,14 @@ module Gemstash
     end
 
     def store_gem
-      storage.resource(full_name).save(@content, indexed: true)
+      storage.resource(full_name).save({ gem: @content }, indexed: true)
     end
 
     def store_gemspec
       spec = gem.spec
       spec = Marshal.dump(spec)
       spec = Zlib::Deflate.deflate(spec)
-      spec_storage.resource(full_name).save(spec)
+      storage.resource(full_name).save(spec: spec)
     end
 
     def save_to_database

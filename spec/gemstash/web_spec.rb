@@ -179,7 +179,7 @@ describe Gemstash::Web do
         before do
           gem_id = insert_rubygem "example"
           insert_version gem_id, "0.1.0"
-          storage.resource("example-0.1.0").save("Example gem content", indexed: true)
+          storage.resource("example-0.1.0").save({ gem: "Example gem content" }, indexed: true)
         end
 
         it "fetches the gem contents" do
@@ -193,7 +193,7 @@ describe Gemstash::Web do
         before do
           gem_id = insert_rubygem "yanked"
           insert_version gem_id, "0.1.0", indexed: false
-          storage.resource("yanked-0.1.0").save("Example yanked gem content", indexed: false)
+          storage.resource("yanked-0.1.0").save({ gem: "Example yanked gem content" }, indexed: false)
         end
 
         it "halts with 403" do
@@ -210,7 +210,6 @@ describe Gemstash::Web do
     context "from private gems" do
       let(:gem_source) { Gemstash::GemSource::PrivateSource }
       let(:storage) { Gemstash::Storage.for("private").for("gems") }
-      let(:spec_storage) { Gemstash::Storage.for("private").for("specs") }
 
       context "with a missing gem" do
         it "halts with 404" do
@@ -225,8 +224,8 @@ describe Gemstash::Web do
         before do
           gem_id = insert_rubygem "example"
           insert_version gem_id, "0.1.0"
-          storage.resource("example-0.1.0").save("Example gem content", indexed: true)
-          spec_storage.resource("example-0.1.0").save("Example gemspec content")
+          storage.resource("example-0.1.0").save({ gem: "Example gem content",
+                                                   spec: "Example gemspec content" }, indexed: true)
         end
 
         it "fetches the spec contents" do
@@ -240,8 +239,8 @@ describe Gemstash::Web do
         before do
           gem_id = insert_rubygem "yanked"
           insert_version gem_id, "0.1.0", indexed: false
-          storage.resource("yanked-0.1.0").save("Example yanked gem content", indexed: false)
-          spec_storage.resource("yanked-0.1.0").save("Example yanked gemspec content")
+          storage.resource("yanked-0.1.0").save({ gem: "Example yanked gem content",
+                                                  spec: "Example yanked gemspec content" }, indexed: false)
         end
 
         it "halts with 403" do

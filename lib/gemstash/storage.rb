@@ -67,7 +67,7 @@ module Gemstash
       @base_path = folder
       @name = name
       # Avoid odd characters in paths, in case of issues with the file system
-      safe_name = @name.gsub(/[^a-zA-Z0-9_]/, "_")
+      safe_name = sanitize(@name)
       # Use a trie structure to avoid file system limits causing too many files in 1 folder
       # Downcase to avoid issues with case insensitive file systems
       trie_parents = safe_name[0...3].downcase.split("")
@@ -78,18 +78,25 @@ module Gemstash
       @folder = File.join(@base_path, *trie_parents, child_folder)
     end
 
-    def exist?
-      File.exist?(content_filename) && File.exist?(properties_filename)
+    def exist?(key = nil)
+      if key
+        File.exist?(properties_filename) && File.exist?(content_filename(key))
+      else
+        File.exist?(properties_filename) && content?
+      end
     end
 
     def save(content, properties = nil)
-      save_content(content)
-      save_properties(properties)
+      content.each do |key, value|
+        save_content(key, value)
+      end
+
+      update_properties(properties)
       self
     end
 
-    def content
-      @content
+    def content(key)
+      @content[key]
     end
 
     def properties
@@ -97,49 +104,73 @@ module Gemstash
     end
 
     def update_properties(props)
-      load
-      save_properties(properties.merge(props))
+      load_properties
+      save_properties(properties.merge(props || {}))
       self
     end
 
-    def load
-      raise "Resource #{@name} has no content to load" unless exist?
-      @properties = YAML.load_file(properties_filename)
-      version = @properties[:gemstash_storage_version]
-
-      if version > Gemstash::Storage::VERSION
-        @properties = nil
-        raise Gemstash::Storage::VersionTooNew, "Resource was stored with a newer storage: #{version}"
-      end
-
-      @content = read_file(content_filename)
+    def load(key)
+      raise "Resource #{@name} has no content to load" unless exist?(key)
+      load_properties
+      @content ||= {}
+      @content[key] = read_file(content_filename(key))
       self
     end
 
-    def delete
-      return unless exist?
+    def delete(key)
+      return self unless exist?(key)
 
       begin
-        File.delete(content_filename)
+        File.delete(content_filename(key))
       rescue => e
-        log_error "Failed to delete stored content at #{content_filename}", e, level: :warn
+        log_error "Failed to delete stored content at #{content_filename(key)}", e, level: :warn
       end
 
       begin
-        File.delete(properties_filename)
+        File.delete(properties_filename) unless content?
       rescue => e
         log_error "Failed to delete stored properties at #{properties_filename}", e, level: :warn
       end
+
+      return self
     ensure
-      @content = nil
-      @properties = nil
+      reset
     end
 
   private
 
-    def save_content(content)
-      store(content_filename, content)
-      @content = content
+    def load_properties
+      return unless File.exist?(properties_filename)
+      @properties = YAML.load_file(properties_filename)
+      check_version
+    end
+
+    def check_version
+      version = @properties[:gemstash_storage_version]
+      return if version <= Gemstash::Storage::VERSION
+      reset
+      raise Gemstash::Storage::VersionTooNew, "Resource was stored with a newer storage: #{version}"
+    end
+
+    def reset
+      @content = nil
+      @properties = nil
+    end
+
+    def content?
+      return false unless Dir.exist?(@folder)
+      entries = Dir.entries(@folder).reject {|file| file =~ /\A\.\.?\z/ }
+      !entries.empty? && entries != %w(properties.yaml)
+    end
+
+    def sanitize(name)
+      name.gsub(/[^a-zA-Z0-9_]/, "_")
+    end
+
+    def save_content(key, content)
+      store(content_filename(key), content)
+      @content ||= {}
+      @content[key] = content
     end
 
     def save_properties(props)
@@ -163,8 +194,10 @@ module Gemstash
       File.open(filename, "rb", &:read)
     end
 
-    def content_filename
-      File.join(@folder, "content")
+    def content_filename(key)
+      name = sanitize(key.to_s)
+      raise "Invalid content key #{key.inspect}" if name.empty?
+      File.join(@folder, name)
     end
 
     def properties_filename
