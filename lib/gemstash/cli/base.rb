@@ -17,6 +17,7 @@ module Gemstash
       def prepare
         check_rubygems_version
         store_config
+        check_gemstash_version
       end
 
       def check_rubygems_version
@@ -29,6 +30,12 @@ module Gemstash
       def store_config
         config = Gemstash::Configuration.new(file: @cli.options[:config_file])
         gemstash_env.config = config
+      end
+
+      def check_gemstash_version
+        version = Gem::Version.new(Gemstash::Storage.metadata[:gemstash_version])
+        return if Gem::Requirement.new("<= #{Gemstash::VERSION}").satisfied_by?(Gem::Version.new(version))
+        raise Gemstash::CLI::Error.new(@cli, "Gemstash version is too old")
       end
 
       def pidfile_args
