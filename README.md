@@ -1,6 +1,6 @@
 [![Build Status](https://travis-ci.org/bundler/gemstash.svg?branch=master)](https://travis-ci.org/bundler/gemstash)
 
-# Gemstash
+<p align="center"><img src="gemstash.png" /></p>
 
 ## What is Gemstash?
 
