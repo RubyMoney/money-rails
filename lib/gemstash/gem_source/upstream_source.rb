@@ -108,15 +108,23 @@ module Gemstash
         @rack_env_rewriter ||= Gemstash::RackEnvRewriter.new(%r{\A/upstream/(?<upstream_url>[^/]+)})
       end
 
+      def serve_marshal(id)
+        serve_cached(id, :spec)
+      end
+
       def serve_gem(id)
-        gem = fetch_gem(id)
-        headers.update(gem.properties[:headers] || {})
-        gem.content
-      rescue Gemstash::WebError => e
-        halt e.code
+        serve_cached(id, :gem)
       end
 
     private
+
+      def serve_cached(id, key)
+        gem = fetch_gem(id, key)
+        headers.update(gem.properties[:headers][key]) if gem.properties[:headers] && gem.properties[:headers][key]
+        gem.content(key)
+      rescue Gemstash::WebError => e
+        halt e.code
+      end
 
       def dependencies
         @dependencies ||= begin
@@ -134,25 +142,25 @@ module Gemstash
         @gem_fetcher ||= Gemstash::GemFetcher.new(http_client_for(upstream))
       end
 
-      def fetch_gem(id)
-        gem_name = Gemstash::UpstreamGemName.new(upstream, id)
+      def fetch_gem(id, key)
+        gem_name = Gemstash::Upstream::GemName.new(upstream, id)
         gem_resource = storage.resource(gem_name.name)
-        if gem_resource.exist?
-          fetch_local_gem(gem_name, gem_resource)
+        if gem_resource.exist?(key)
+          fetch_local_gem(gem_name, gem_resource, key)
         else
-          fetch_remote_gem(gem_name, gem_resource)
+          fetch_remote_gem(gem_name, gem_resource, key)
         end
       end
 
-      def fetch_local_gem(gem_name, gem_resource)
-        log.info "Gem #{gem_name.name} exists, returning cached"
-        gem_resource.load
+      def fetch_local_gem(gem_name, gem_resource, key)
+        log.info "Gem #{gem_name.name} exists, returning cached #{key}"
+        gem_resource.load(key)
       end
 
-      def fetch_remote_gem(gem_name, gem_resource)
-        log.info "Gem #{gem_name.name} is not cached, fetching"
-        gem_fetcher.fetch(gem_name.id) do |content, properties|
-          gem_resource.save(content, headers: properties)
+      def fetch_remote_gem(gem_name, gem_resource, key)
+        log.info "Gem #{gem_name.name} is not cached, fetching #{key}"
+        gem_fetcher.fetch(gem_name.id, key) do |content, properties|
+          gem_resource.save({ key => content }, headers: { key => properties })
         end
       end
     end

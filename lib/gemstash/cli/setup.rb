@@ -6,12 +6,9 @@ module Gemstash
   class CLI
     # This implements the command line setup task:
     #  $ gemstash setup
-    class Setup
-      include Gemstash::Env::Helper
-
+    class Setup < Gemstash::CLI::Base
       def initialize(cli)
-        Gemstash::Env.current = Gemstash::Env.new
-        @cli = cli
+        super
         @config = {}
       end
 
@@ -21,6 +18,7 @@ module Gemstash
           return
         end
 
+        check_rubygems_version
         ask_storage
         ask_cache
         ask_database
@@ -28,6 +26,7 @@ module Gemstash
         check_storage
         check_database
         store_config
+        save_metadata
         @cli.say @cli.set_color("You are all setup!", :green)
       end
 
@@ -48,8 +47,8 @@ module Gemstash
 
       def ask_storage
         say_current_config(:base_path, "Current base path")
-        path = @cli.ask "Where should files go? [~/.gemstash]", :path => true
-        path = "~/.gemstash" if path.empty?
+        path = @cli.ask "Where should files go? [~/.gemstash]", path: true
+        path = Gemstash::Configuration::DEFAULTS[:base_path] if path.empty?
         @config[:base_path] = File.expand_path(path)
       end
 
@@ -125,9 +124,19 @@ module Gemstash
       def check_storage
         with_new_config do
           dir = gemstash_env.config[:base_path]
-          break if Dir.exist?(dir)
-          @cli.say "Creating the file storage path '#{dir}'"
-          FileUtils.mkpath(dir)
+
+          if Dir.exist?(dir)
+            # Do metadata check without using Gemstash::Storage.metadata because
+            # we don't want to store metadata just yet
+            metadata_file = gemstash_env.base_file("metadata.yml")
+            break unless File.exist?(metadata_file)
+            version = Gem::Version.new(YAML.load_file(metadata_file)[:gemstash_version])
+            break if Gem::Requirement.new("<= #{Gemstash::VERSION}").satisfied_by?(Gem::Version.new(version))
+            raise Gemstash::CLI::Error.new(@cli, "The base path already exists with a newer version of Gemstash")
+          else
+            @cli.say "Creating the file storage path '#{dir}'"
+            FileUtils.mkpath(dir)
+          end
         end
       end
 
@@ -135,6 +144,13 @@ module Gemstash
         config_dir = File.dirname(config_file)
         FileUtils.mkpath(config_dir) unless Dir.exist?(config_dir)
         File.write(config_file, YAML.dump(@config))
+      end
+
+      def save_metadata
+        with_new_config do
+          # Touch metadata to ensure it gets written
+          Gemstash::Storage.metadata
+        end
       end
 
       def say_error(title, error)

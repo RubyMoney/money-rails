@@ -6,7 +6,6 @@ describe Gemstash::GemPusher do
   let(:invalid_auth_key) { "invalid-auth-key" }
   let(:auth_key_without_permission) { "auth-key-without-permission" }
   let(:storage) { Gemstash::Storage.for("private").for("gems") }
-  let(:spec_storage) { Gemstash::Storage.for("private").for("specs") }
 
   before do
     Gemstash::Authorization.authorize(auth_key, "all")
@@ -55,12 +54,12 @@ describe Gemstash::GemPusher do
         expect(deps.fetch(%w(example))).to eq([])
         Gemstash::GemPusher.new(auth_key, gem_contents).push
         expect(deps.fetch(%w(example))).to match_dependencies(results)
-        expect(storage.resource("example-0.1.0").load.content).to eq(gem_contents)
+        expect(storage.resource("example-0.1.0").load(:gem).content(:gem)).to eq(gem_contents)
       end
 
       it "stores the gemspec" do
         Gemstash::GemPusher.new(auth_key, gem_contents).push
-        spec = spec_storage.resource("example-0.1.0").load.content
+        spec = storage.resource("example-0.1.0").load(:spec).content(:spec)
         spec = Marshal.load(Zlib::Inflate.inflate(spec))
         expect(spec).to be_a(Gem::Specification)
         expect(spec.name).to eq("example")
@@ -85,12 +84,12 @@ describe Gemstash::GemPusher do
         expect(deps.fetch(%w(example))).to eq([])
         Gemstash::GemPusher.new(auth_key, gem_contents).push
         expect(deps.fetch(%w(example))).to match_dependencies(results)
-        expect(storage.resource("example-0.1.0-java").load.content).to eq(gem_contents)
+        expect(storage.resource("example-0.1.0-java").load(:gem).content(:gem)).to eq(gem_contents)
       end
 
       it "stores the gemspec" do
         Gemstash::GemPusher.new(auth_key, gem_contents).push
-        spec = spec_storage.resource("example-0.1.0-java").load.content
+        spec = storage.resource("example-0.1.0-java").load(:spec).content(:spec)
         spec = Marshal.load(Zlib::Inflate.inflate(spec))
         expect(spec).to be_a(Gem::Specification)
         expect(spec.name).to eq("example")
@@ -103,7 +102,7 @@ describe Gemstash::GemPusher do
       before do
         gem_id = insert_rubygem "example"
         insert_version gem_id, "0.0.1"
-        storage.resource("example-0.0.1").save("zapatito", indexed: true)
+        storage.resource("example-0.0.1").save({ gem: "zapatito" }, indexed: true)
       end
 
       it "saves the new version dependency info and stores the gem" do
@@ -122,12 +121,12 @@ describe Gemstash::GemPusher do
 
         Gemstash::GemPusher.new(auth_key, gem_contents).push
         expect(deps.fetch(%w(example))).to match_dependencies(results)
-        expect(storage.resource("example-0.1.0").load.content).to eq(gem_contents)
+        expect(storage.resource("example-0.1.0").load(:gem).content(:gem)).to eq(gem_contents)
       end
 
       it "stores the gemspec" do
         Gemstash::GemPusher.new(auth_key, gem_contents).push
-        spec = spec_storage.resource("example-0.1.0").load.content
+        spec = storage.resource("example-0.1.0").load(:spec).content(:spec)
         spec = Marshal.load(Zlib::Inflate.inflate(spec))
         expect(spec).to be_a(Gem::Specification)
         expect(spec.name).to eq("example")
@@ -140,7 +139,7 @@ describe Gemstash::GemPusher do
       before do
         gem_id = insert_rubygem "example"
         insert_version gem_id, "0.1.0", indexed: false
-        storage.resource("example-0.1.0").save("zapatito", indexed: false)
+        storage.resource("example-0.1.0").save({ gem: "zapatito" }, indexed: false)
       end
 
       it "rejects the push" do
@@ -153,7 +152,7 @@ describe Gemstash::GemPusher do
       before do
         gem_id = insert_rubygem "example"
         insert_version gem_id, "0.1.0"
-        storage.resource("example-0.1.0").save("zapatito", indexed: true)
+        storage.resource("example-0.1.0").save({ gem: "zapatito" }, indexed: true)
       end
 
       it "rejects the push" do

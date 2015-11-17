@@ -91,17 +91,23 @@ describe Gemstash::Upstream do
   end
 end
 
-describe Gemstash::UpstreamGemName do
+describe Gemstash::Upstream::GemName do
   context "With a simple upstream" do
     let(:upstream) { Gemstash::Upstream.new("https://rubygems.org/") }
 
     it "resolves to the gem name" do
-      expect(Gemstash::UpstreamGemName.new(upstream, "mygemname").to_s).to eq("mygemname")
+      expect(Gemstash::Upstream::GemName.new(upstream, "mygemname").to_s).to eq("mygemname")
     end
 
     it "removes the trailing .gem from the name" do
-      gem_name = Gemstash::UpstreamGemName.new(upstream, "mygemname-1.0.1.gem")
+      gem_name = Gemstash::Upstream::GemName.new(upstream, "mygemname-1.0.1.gem")
       expect(gem_name.id).to eq("mygemname-1.0.1.gem")
+      expect(gem_name.name).to eq("mygemname-1.0.1")
+    end
+
+    it "removes the trailing .gemspec.rz from the name" do
+      gem_name = Gemstash::Upstream::GemName.new(upstream, "mygemname-1.0.1.gemspec.rz")
+      expect(gem_name.id).to eq("mygemname-1.0.1.gemspec.rz")
       expect(gem_name.name).to eq("mygemname-1.0.1")
     end
   end

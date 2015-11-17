@@ -12,6 +12,7 @@ describe Gemstash::Web do
       def for(server_url)
         stubs = Faraday::Adapter::Test::Stubs.new do |stub|
           stub.get("/gems/rack") { [200, { "CONTENT-TYPE" => "octet/stream" }, "zapatito"] }
+          stub.get("/quick/Marshal.4.8/rack.gemspec.rz") { [200, { "CONTENT-TYPE" => "octet/stream" }, "specatito"] }
         end
         client = Faraday.new {|builder| builder.adapter(:test, stubs) }
         Gemstash::HTTPClient.new(client)
@@ -158,7 +159,7 @@ describe Gemstash::Web do
         get "/gems/rack", {}, rack_env
         expect(last_response.body).to eq("zapatito")
         expect(last_response.header["CONTENT-TYPE"]).to eq("octet/stream")
-        expect(storage.resource("rack")).to exist
+        expect(storage.resource("rack").exist?(:gem)).to be_truthy
       end
     end
 
@@ -179,7 +180,7 @@ describe Gemstash::Web do
         before do
           gem_id = insert_rubygem "example"
           insert_version gem_id, "0.1.0"
-          storage.resource("example-0.1.0").save("Example gem content", indexed: true)
+          storage.resource("example-0.1.0").save({ gem: "Example gem content" }, indexed: true)
         end
 
         it "fetches the gem contents" do
@@ -193,7 +194,7 @@ describe Gemstash::Web do
         before do
           gem_id = insert_rubygem "yanked"
           insert_version gem_id, "0.1.0", indexed: false
-          storage.resource("yanked-0.1.0").save("Example yanked gem content", indexed: false)
+          storage.resource("yanked-0.1.0").save({ gem: "Example yanked gem content" }, indexed: false)
         end
 
         it "halts with 403" do
@@ -207,10 +208,22 @@ describe Gemstash::Web do
   end
 
   context "GET /quick/Marshal.4.8/:id" do
+    context "from the default upstream" do
+      let(:current_env) { Gemstash::Env.current }
+      let(:upstream) { Gemstash::Upstream.new(current_env.config[:rubygems_url]) }
+      let(:storage) { Gemstash::Storage.for("gem_cache").for(upstream.host_id) }
+
+      it "fetchs the marshalled gemspec, stores, and serves it" do
+        get "/quick/Marshal.4.8/rack.gemspec.rz", {}, rack_env
+        expect(last_response.body).to eq("specatito")
+        expect(last_response.header["CONTENT-TYPE"]).to eq("octet/stream")
+        expect(storage.resource("rack").exist?(:spec)).to be_truthy
+      end
+    end
+
     context "from private gems" do
       let(:gem_source) { Gemstash::GemSource::PrivateSource }
       let(:storage) { Gemstash::Storage.for("private").for("gems") }
-      let(:spec_storage) { Gemstash::Storage.for("private").for("specs") }
 
       context "with a missing gem" do
         it "halts with 404" do
@@ -225,8 +238,8 @@ describe Gemstash::Web do
         before do
           gem_id = insert_rubygem "example"
           insert_version gem_id, "0.1.0"
-          storage.resource("example-0.1.0").save("Example gem content", indexed: true)
-          spec_storage.resource("example-0.1.0").save("Example gemspec content")
+          storage.resource("example-0.1.0").save({ gem: "Example gem content",
+                                                   spec: "Example gemspec content" }, indexed: true)
         end
 
         it "fetches the spec contents" do
@@ -240,8 +253,8 @@ describe Gemstash::Web do
         before do
           gem_id = insert_rubygem "yanked"
           insert_version gem_id, "0.1.0", indexed: false
-          storage.resource("yanked-0.1.0").save("Example yanked gem content", indexed: false)
-          spec_storage.resource("yanked-0.1.0").save("Example yanked gemspec content")
+          storage.resource("yanked-0.1.0").save({ gem: "Example yanked gem content",
+                                                  spec: "Example yanked gemspec content" }, indexed: false)
         end
 
         it "halts with 403" do

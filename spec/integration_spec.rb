@@ -96,7 +96,7 @@ describe "gemstash integration tests" do
     context "pushing a gem" do
       before do
         expect(deps.fetch(%w(speaker))).to match_dependencies([])
-        expect { storage.resource("speaker-0.1.0").load }.to raise_error(RuntimeError)
+        expect { storage.resource("speaker-0.1.0").load(:gem) }.to raise_error(RuntimeError)
         @gemstash.env.cache.flush
       end
 
@@ -104,7 +104,7 @@ describe "gemstash integration tests" do
         env = { "HOME" => env_dir }
         expect(execute("gem", ["push", "--key", "test", "--host", host, gem], env: env)).to exit_success
         expect(deps.fetch(%w(speaker))).to match_dependencies([speaker_deps])
-        expect(storage.resource("speaker-0.1.0").load.content).to eq(gem_contents)
+        expect(storage.resource("speaker-0.1.0").load(:gem).content(:gem)).to eq(gem_contents)
         expect(http_client.get("gems/speaker-0.1.0")).to eq(gem_contents)
       end
     end
@@ -121,7 +121,7 @@ describe "gemstash integration tests" do
         expect(execute("gem", ["yank", "--key", "test", gem_name, "--version", gem_version], env: env)).to exit_success
         expect(deps.fetch(%w(speaker))).to match_dependencies([])
         # It shouldn't actually delete the gem, to support unyank
-        expect(storage.resource("speaker-0.1.0").load.content).to eq(gem_contents)
+        expect(storage.resource("speaker-0.1.0").load(:gem).content(:gem)).to eq(gem_contents)
         # But it should block downloading the yanked gem
         expect { http_client.get("gems/speaker-0.1.0") }.to raise_error(Gemstash::WebError)
       end
@@ -140,7 +140,7 @@ describe "gemstash integration tests" do
         expect(execute("gem", ["yank", "--key", "test", gem_name, "--version", gem_version, "--undo"], env: env)).
           to exit_success
         expect(deps.fetch(%w(speaker))).to match_dependencies([speaker_deps])
-        expect(storage.resource("speaker-0.1.0").load.content).to eq(gem_contents)
+        expect(storage.resource("speaker-0.1.0").load(:gem).content(:gem)).to eq(gem_contents)
         expect(http_client.get("gems/speaker-0.1.0")).to eq(gem_contents)
       end
     end

@@ -5,28 +5,16 @@ module Gemstash
   class CLI
     # This implements the command line stop task to stop the Gemstash server:
     #  $ gemstash stop
-    class Stop
-      include Gemstash::Env::Helper
-
-      def initialize(cli)
-        Gemstash::Env.current = Gemstash::Env.new
-        @cli = cli
-      end
-
+    class Stop < Gemstash::CLI::Base
       def run
-        store_config
+        prepare
         Puma::ControlCLI.new(args).run
       end
 
     private
 
-      def store_config
-        config = Gemstash::Configuration.new(file: @cli.options[:config_file])
-        gemstash_env.config = config
-      end
-
       def args
-        ["--pidfile", gemstash_env.base_file("puma.pid"), "stop"]
+        pidfile_args + %w(stop)
       end
     end
   end

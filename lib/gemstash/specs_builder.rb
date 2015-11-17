@@ -22,8 +22,8 @@ module Gemstash
 
     def self.invalidate_stored
       storage = Gemstash::Storage.for("private").for("specs_collection")
-      storage.resource("specs.4.8.gz").delete
-      storage.resource("prerelease_specs.4.8.gz").delete
+      storage.resource("specs.4.8.gz").delete(:specs)
+      storage.resource("prerelease_specs.4.8.gz").delete(:specs)
     end
 
     def initialize(prerelease: false)
@@ -56,8 +56,8 @@ module Gemstash
 
     def fetch_from_storage
       specs = fetch_resource
-      return unless specs.exist?
-      @result = specs.load.content
+      return unless specs.exist?(:specs)
+      @result = specs.load(:specs).content(:specs)
     rescue
       # On the off-chance of a race condition between specs.exist? and specs.load
       @result = nil
@@ -87,7 +87,7 @@ module Gemstash
     end
 
     def store_result
-      fetch_resource.save(@result)
+      fetch_resource.save(specs: @result)
     end
   end
 end

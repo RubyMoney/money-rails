@@ -70,7 +70,7 @@ describe Gemstash::GemYanker do
       before do
         gem_id = find_rubygem_id(gem_name)
         insert_version gem_id, "0.4.2", indexed: false
-        storage.resource("#{gem_name}-0.4.2").save("zapatito", indexed: false)
+        storage.resource("#{gem_name}-0.4.2").save({ gem: "zapatito" }, indexed: false)
       end
 
       it "rejects the yank" do
@@ -89,7 +89,7 @@ describe Gemstash::GemYanker do
         Gemstash::GemYanker.new(auth_key, gem_name, gem_slug).yank
         expect(deps.fetch(%w(example))).to eq([])
         # It doesn't actually delete
-        expect(storage.resource("#{gem_name}-#{gem_version}").load.content).to eq(gem_contents)
+        expect(storage.resource("#{gem_name}-#{gem_version}").load(:gem).content(:gem)).to eq(gem_contents)
       end
     end
 
@@ -114,7 +114,7 @@ describe Gemstash::GemYanker do
       before do
         gem_id = find_rubygem_id(gem_name)
         insert_version gem_id, "0.0.1"
-        storage.resource("#{gem_name}-0.0.1").save("zapatito", indexed: true)
+        storage.resource("#{gem_name}-0.0.1").save({ gem: "zapatito" }, indexed: true)
       end
 
       it "yanks just the specified gem version" do
@@ -136,7 +136,7 @@ describe Gemstash::GemYanker do
       before do
         gem_id = find_rubygem_id(gem_name)
         insert_version gem_id, "0.1.0", platform: "java"
-        storage.resource("#{gem_name}-0.1.0-java").save("zapatito", indexed: true)
+        storage.resource("#{gem_name}-0.1.0-java").save({ gem: "zapatito" }, indexed: true)
       end
 
       it "yanks just the specified gem version" do
@@ -149,7 +149,7 @@ describe Gemstash::GemYanker do
       before do
         gem_id = find_rubygem_id(gem_name)
         insert_version gem_id, "0.1.0", platform: "java"
-        storage.resource("#{gem_name}-0.1.0-java").save("zapatito", indexed: true)
+        storage.resource("#{gem_name}-0.1.0-java").save({ gem: "zapatito" }, indexed: true)
       end
 
       it "yanks just the specified gem version" do

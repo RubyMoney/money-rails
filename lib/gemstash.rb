@@ -20,7 +20,6 @@ module Gemstash
   autoload :SpecsBuilder,        "gemstash/specs_builder"
   autoload :Storage,             "gemstash/storage"
   autoload :Upstream,            "gemstash/upstream"
-  autoload :UpstreamGemName,     "gemstash/upstream"
   autoload :Web,                 "gemstash/web"
   autoload :WebError,            "gemstash/http_client"
   autoload :VERSION,             "gemstash/version"

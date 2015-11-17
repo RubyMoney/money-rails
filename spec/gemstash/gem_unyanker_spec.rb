@@ -80,7 +80,7 @@ describe Gemstash::GemUnyanker do
       before do
         gem_id = find_rubygem_id(gem_name)
         insert_version gem_id, "0.4.2"
-        storage.resource("#{gem_name}-0.4.2").save("zapatito", indexed: true)
+        storage.resource("#{gem_name}-0.4.2").save({ gem: "zapatito" }, indexed: true)
       end
 
       it "rejects the unyank" do
@@ -98,7 +98,7 @@ describe Gemstash::GemUnyanker do
         expect(deps.fetch(%w(example))).to eq([])
         Gemstash::GemUnyanker.new(auth_key, gem_name, gem_slug).unyank
         expect(deps.fetch(%w(example))).to eq([gem_dependencies])
-        expect(storage.resource("#{gem_name}-#{gem_version}").load.content).to eq(gem_contents)
+        expect(storage.resource("#{gem_name}-#{gem_version}").load(:gem).content(:gem)).to eq(gem_contents)
       end
     end
 
@@ -114,7 +114,7 @@ describe Gemstash::GemUnyanker do
       before do
         gem_id = find_rubygem_id(gem_name)
         insert_version gem_id, "0.0.1", indexed: false
-        storage.resource("#{gem_name}-0.1.0").save("zapatito", indexed: false)
+        storage.resource("#{gem_name}-0.1.0").save({ gem: "zapatito" }, indexed: false)
       end
 
       it "unyanks just the specified gem version" do
@@ -127,7 +127,7 @@ describe Gemstash::GemUnyanker do
       before do
         gem_id = find_rubygem_id(gem_name)
         insert_version gem_id, "0.1.0", platform: "java", indexed: false
-        storage.resource("#{gem_name}-0.1.0-java").save("zapatito", indexed: false)
+        storage.resource("#{gem_name}-0.1.0-java").save({ gem: "zapatito" }, indexed: false)
       end
 
       it "unyanks just the specified gem version" do
@@ -149,7 +149,7 @@ describe Gemstash::GemUnyanker do
       before do
         gem_id = find_rubygem_id(gem_name)
         insert_version gem_id, "0.1.0", platform: "java", indexed: false
-        storage.resource("#{gem_name}-0.1.0-java").save("zapatito", indexed: false)
+        storage.resource("#{gem_name}-0.1.0-java").save({ gem: "zapatito" }, indexed: false)
       end
 
       it "unyanks just the specified gem version" do
