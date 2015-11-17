@@ -11,13 +11,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151026220420) do
+ActiveRecord::Schema.define(version: 20151117120330) do
 
   create_table "dummy_products", force: :cascade do |t|
     t.string   "currency"
     t.integer  "price_cents"
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "exchange_rates", force: :cascade do |t|
+    t.string "from"
+    t.string "to"
+    t.float  "rate"
   end
 
   create_table "products", force: :cascade do |t|

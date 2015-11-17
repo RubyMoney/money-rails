@@ -120,6 +120,25 @@ if defined? ActiveRecord
         expect(product).to be_valid
       end
 
+      context 'when exchanging with custom store' do
+        before do
+          @bank = Money.default_bank
+          Money.default_bank = Money::Bank::VariableExchange.new(ExchangeRate)
+          Money.add_rate("USD", "EUR", 1)
+        end
+
+        after do
+          Money.default_bank = @bank
+        end
+
+        describe '#to_json' do
+          it 'should not explode' do
+            _ = product.price.exchange_to('EUR')
+            expect { product.price.to_json }.not_to raise_error
+          end
+        end
+      end
+
       context "when MoneyRails.raise_error_on_money_parsing is true" do
         before { MoneyRails.raise_error_on_money_parsing = true }
         after { MoneyRails.raise_error_on_money_parsing = false }
