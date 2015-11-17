@@ -18,6 +18,8 @@ describe Gemstash::CLI::Setup do
   before do
     @test_env = test_env
     Gemstash::Env.current = Gemstash::Env.new(TEST_CONFIG)
+    defaults = Gemstash::Configuration::DEFAULTS.merge(base_path: TEST_BASE_PATH)
+    stub_const("Gemstash::Configuration::DEFAULTS", defaults)
   end
 
   after do

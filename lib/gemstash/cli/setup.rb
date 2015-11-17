@@ -48,7 +48,7 @@ module Gemstash
       def ask_storage
         say_current_config(:base_path, "Current base path")
         path = @cli.ask "Where should files go? [~/.gemstash]", path: true
-        path = "~/.gemstash" if path.empty?
+        path = Gemstash::Configuration::DEFAULTS[:base_path] if path.empty?
         @config[:base_path] = File.expand_path(path)
       end
 
