@@ -113,7 +113,7 @@ module Gemstash
           else
             db = Sequel.connect("sqlite://#{URI.escape(db_path)}", max_connections: 1)
           end
-        when "postgres"
+        when "postgres", "mysql"
           db = Sequel.connect(config[:db_url])
         else
           raise "Unsupported DB adapter: '#{config[:db_adapter]}'"
