@@ -28,12 +28,14 @@ Quickstart Guide, you will be able to bundle stashed gems from public sources
 against a Gemstash server running on your machine.
 
 Install Gemstash to get started:
+
 ```
 $ gem install gemstash
 ```
 
 After it is installed, starting Gemstash requires no additional steps. Simply
 start the Gemstash server with the `gemstash` command:
+
 ```
 $ gemstash start
 ```
@@ -43,17 +45,24 @@ will run the server in the background by default. The server runs on port 9292.
 
 ### Bundling
 
-With the server running, you can bundle against it. Create a simple `Gemfile`
-like the following:
+With the server running, you can bundle against it. Tell Bundler that you want
+to use Gemstash to find gems from RubyGems.org:
+
+```
+$ bundle config mirror.https://rubygems.org http://localhost:9292
+```
+
+Now you can create a Gemfile and install gems through Gemstash:
+
 ```ruby
 # ./Gemfile
-source "http://localhost:9292"
+source "https://rubygems.org"
 gem "rubywarrior"
 ```
 
-The first line is important, as it will tell Bundler to use your new Gemstash
-server. The gems you include should be gems you don't yet have installed,
+The gems you include should be gems you don't yet have installed,
 otherwise Gemstash will have nothing to stash. Now bundle:
+
 ```
 $ bundle install --path .bundle
 ```
@@ -63,6 +72,7 @@ cached them for you! To prove this, you can disable your Internet connection and
 try again. The gem dependencies from https://www.rubygems.org are cached for 30
 minutes, so if you bundle again before that, you can successfully bundle without
 an Internet connection:
+
 ```
 $ # Disable your Internet first!
 $ rm -rf Gemfile.lock .bundle
@@ -73,8 +83,16 @@ $ bundle
 
 Once you've finish using your Gemstash server, you can stop it just as easily as
 you started it:
+
 ```
 $ gemstash stop
+```
+
+You'll also want to tell Bundler that it can go back to getting gems from
+RubyGems.org directly, instead of going through Gemstash:
+
+```
+$ bundle config --delete mirror.https://rubygems.org
 ```
 
 ### Under the Hood
