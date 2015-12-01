@@ -13,11 +13,14 @@ module Gemstash
     # If the storage engine detects something that was stored with a newer
     # version of the storage engine, this error will be thrown.
     class VersionTooNew < StandardError
+      def initialize(msg, folder, version)
+        super("#{msg} (location: #{folder}, version: #{version}, expected version: <= #{Gemstash::Storage::VERSION})")
+      end
     end
 
     def initialize(folder, root: true)
-      check_engine if root
       @folder = folder
+      check_engine if root
       FileUtils.mkpath(@folder) unless Dir.exist?(@folder)
     end
 
@@ -49,7 +52,7 @@ module Gemstash
     def check_engine
       version = Gemstash::Storage.metadata[:storage_version]
       return if version <= Gemstash::Storage::VERSION
-      raise Gemstash::Storage::VersionTooNew, "Storage engine is out of date: #{version}"
+      raise Gemstash::Storage::VersionTooNew.new("Storage engine is out of date", @folder, version)
     end
 
     def path_valid?(path)
@@ -149,7 +152,7 @@ module Gemstash
       version = @properties[:gemstash_storage_version]
       return if version <= Gemstash::Storage::VERSION
       reset
-      raise Gemstash::Storage::VersionTooNew, "Resource was stored with a newer storage: #{version}"
+      raise Gemstash::Storage::VersionTooNew.new("Resource was stored with a newer storage", @folder, version)
     end
 
     def reset
