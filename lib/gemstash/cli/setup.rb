@@ -91,7 +91,7 @@ module Gemstash
         ask_database_details(database) unless database == "sqlite3"
       end
 
-      def ask_database_details(database = "postgres")
+      def ask_database_details(database)
         say_current_config(:db_url, "Current database url")
 
         if RUBY_PLATFORM == "java"
