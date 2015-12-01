@@ -71,7 +71,7 @@ module Gemstash
         gem = fetch_gem(gem_full_name)
         halt 404 unless gem.exist?(:spec)
         content_type "application/octet-stream"
-        gem.load(:spec).content(:spec)
+        gem.content(:spec)
       end
 
       def serve_actual_gem(id)
@@ -130,7 +130,6 @@ module Gemstash
       def fetch_gem(gem_full_name)
         gem = storage.resource(gem_full_name)
         halt 404 unless gem.exist?(:gem)
-        gem.load(:gem)
         halt 403, "That gem has been yanked" unless gem.properties[:indexed]
         gem
       end

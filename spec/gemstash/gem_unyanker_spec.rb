@@ -98,7 +98,7 @@ describe Gemstash::GemUnyanker do
         expect(deps.fetch(%w(example))).to eq([])
         Gemstash::GemUnyanker.new(auth_key, gem_name, gem_slug).unyank
         expect(deps.fetch(%w(example))).to eq([gem_dependencies])
-        expect(storage.resource("#{gem_name}-#{gem_version}").load(:gem).content(:gem)).to eq(gem_contents)
+        expect(storage.resource("#{gem_name}-#{gem_version}").content(:gem)).to eq(gem_contents)
       end
     end
 

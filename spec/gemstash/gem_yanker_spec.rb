@@ -89,7 +89,7 @@ describe Gemstash::GemYanker do
         Gemstash::GemYanker.new(auth_key, gem_name, gem_slug).yank
         expect(deps.fetch(%w(example))).to eq([])
         # It doesn't actually delete
-        expect(storage.resource("#{gem_name}-#{gem_version}").load(:gem).content(:gem)).to eq(gem_contents)
+        expect(storage.resource("#{gem_name}-#{gem_version}").content(:gem)).to eq(gem_contents)
       end
     end
 

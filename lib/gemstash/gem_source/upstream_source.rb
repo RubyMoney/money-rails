@@ -154,7 +154,7 @@ module Gemstash
 
       def fetch_local_gem(gem_name, gem_resource, key)
         log.info "Gem #{gem_name.name} exists, returning cached #{key}"
-        gem_resource.load(key)
+        gem_resource
       end
 
       def fetch_remote_gem(gem_name, gem_resource, key)

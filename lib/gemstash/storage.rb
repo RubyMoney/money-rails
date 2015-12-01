@@ -99,24 +99,19 @@ module Gemstash
     end
 
     def content(key)
+      @content ||= {}
+      load(key) unless @content.include?(key)
       @content[key]
     end
 
     def properties
+      load_properties
       @properties || {}
     end
 
     def update_properties(props)
-      load_properties
+      load_properties(true)
       save_properties(properties.merge(props || {}))
-      self
-    end
-
-    def load(key)
-      raise "Resource #{@name} has no content to load" unless exist?(key)
-      load_properties
-      @content ||= {}
-      @content[key] = read_file(content_filename(key))
       self
     end
 
@@ -142,9 +137,17 @@ module Gemstash
 
   private
 
-    def load_properties
+    def load(key)
+      raise "Resource #{@name} has no content to load" unless exist?(key)
+      load_properties # Ensures storage version is checked
+      @content ||= {}
+      @content[key] = read_file(content_filename(key))
+    end
+
+    def load_properties(force = false)
+      return if @properties && !force
       return unless File.exist?(properties_filename)
-      @properties = YAML.load_file(properties_filename)
+      @properties = YAML.load_file(properties_filename) || {}
       check_version
     end
 
