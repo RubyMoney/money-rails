@@ -182,6 +182,7 @@ Specify the API key to affect. This should be the actual key value, not a name.
 This option is required when using `--remove` but is optional otherwise. If
 adding an authorization, using this will either create or update the permissions
 for the specified API key. If missing, a new API key will always be generated.
+Note that a key can only have a maximum length of 255 chars.
 
 #### --remove
 
