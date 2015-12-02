@@ -10,17 +10,18 @@ module Gemstash
     extend Gemstash::Env::Helper
     VERSION = 1
 
-    # If the storage engine detects something that was stored with a newer
-    # version of the storage engine, this error will be thrown.
+    # If the storage engine detects the base cache directory was originally
+    # initialized with a newer version, this error is thrown.
     class VersionTooNew < StandardError
-      def initialize(msg, folder, version)
-        super("#{msg} (location: #{folder}, version: #{version}, expected version: <= #{Gemstash::Storage::VERSION})")
+      def initialize(folder, version)
+        super("Gemstash storage version #{Gemstash::Storage::VERSION} does " \
+              "not support version #{version} found at #{folder}")
       end
     end
 
     def initialize(folder, root: true)
       @folder = folder
-      check_engine if root
+      check_storage_version if root
       FileUtils.mkpath(@folder) unless Dir.exist?(@folder)
     end
 
@@ -49,10 +50,10 @@ module Gemstash
 
   private
 
-    def check_engine
+    def check_storage_version
       version = Gemstash::Storage.metadata[:storage_version]
       return if version <= Gemstash::Storage::VERSION
-      raise Gemstash::Storage::VersionTooNew.new("Storage engine is out of date", @folder, version)
+      raise Gemstash::Storage::VersionTooNew.new(@folder, version)
     end
 
     def path_valid?(path)
@@ -66,6 +67,18 @@ module Gemstash
   class Resource
     include Gemstash::Logging
     attr_reader :name, :folder
+    VERSION = 1
+
+    # If the storage engine detects a resource was originally saved from a newer
+    # version, this error is thrown.
+    class VersionTooNew < StandardError
+      def initialize(name, folder, version)
+        super("Gemstash resource version #{Gemstash::Resource::VERSION} does " \
+              "not support version #{version} for resource #{name.inspect} " \
+              "found at #{folder}")
+      end
+    end
+
     def initialize(folder, name)
       @base_path = folder
       @name = name
@@ -138,7 +151,7 @@ module Gemstash
   private
 
     def load(key)
-      raise "Resource #{@name} has no content to load" unless exist?(key)
+      raise "Resource #{@name} has no #{key.inspect} content to load" unless exist?(key)
       load_properties # Ensures storage version is checked
       @content ||= {}
       @content[key] = read_file(content_filename(key))
@@ -148,14 +161,14 @@ module Gemstash
       return if @properties && !force
       return unless File.exist?(properties_filename)
       @properties = YAML.load_file(properties_filename) || {}
-      check_version
+      check_resource_version
     end
 
-    def check_version
-      version = @properties[:gemstash_storage_version]
-      return if version <= Gemstash::Storage::VERSION
+    def check_resource_version
+      version = @properties[:gemstash_resource_version]
+      return if version <= Gemstash::Resource::VERSION
       reset
-      raise Gemstash::Storage::VersionTooNew.new("Resource was stored with a newer storage", @folder, version)
+      raise Gemstash::Resource::VersionTooNew.new(name, folder, version)
     end
 
     def reset
@@ -181,7 +194,7 @@ module Gemstash
 
     def save_properties(props)
       props ||= {}
-      props = { gemstash_storage_version: Gemstash::Storage::VERSION }.merge(props)
+      props = { gemstash_resource_version: Gemstash::Resource::VERSION }.merge(props)
       store(properties_filename, props.to_yaml)
       @properties = props
     end

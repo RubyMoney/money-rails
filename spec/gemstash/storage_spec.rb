@@ -53,19 +53,19 @@ describe Gemstash::Storage do
     it "auto sets gemstash version property, even when properties not saved" do
       resource = storage.resource("something")
       resource = resource.save(content: "some content")
-      expect(resource.properties).to eq(gemstash_storage_version: Gemstash::Storage::VERSION)
+      expect(resource.properties).to eq(gemstash_resource_version: Gemstash::Resource::VERSION)
     end
 
     it "won't update gemstash version when already stored" do
-      storage.resource("42").save({ content: "content" }, gemstash_storage_version: 0)
-      expect(storage.resource("42").properties[:gemstash_storage_version]).to eq(0)
+      storage.resource("42").save({ content: "content" }, gemstash_resource_version: 0)
+      expect(storage.resource("42").properties[:gemstash_resource_version]).to eq(0)
       storage.resource("42").update_properties(key: "value")
-      expect(storage.resource("42").properties[:gemstash_storage_version]).to eq(0)
+      expect(storage.resource("42").properties[:gemstash_resource_version]).to eq(0)
     end
 
     it "won't load a resource that is at a larger version than our current version" do
-      storage.resource("42").save({ content: "content" }, gemstash_storage_version: 999_999)
-      expect { storage.resource("42").content(:content) }.to raise_error(Gemstash::Storage::VersionTooNew, /42/)
+      storage.resource("42").save({ content: "content" }, gemstash_resource_version: 999_999)
+      expect { storage.resource("42").content(:content) }.to raise_error(Gemstash::Resource::VersionTooNew, /42/)
     end
 
     context "with a simple resource" do
@@ -85,14 +85,14 @@ describe Gemstash::Storage do
         resource.save({ content: "some other content" }, "content-type" => "octet/stream")
         expect(resource.content(:content)).to eq("some other content")
         expect(resource.properties).to eq("content-type" => "octet/stream",
-                                          gemstash_storage_version: Gemstash::Storage::VERSION)
+                                          gemstash_resource_version: Gemstash::Resource::VERSION)
       end
 
       it "can save nested properties" do
         resource.save({ content: "some other content" }, headers: { "content-type" => "octet/stream" })
         expect(resource.content(:content)).to eq("some other content")
         expect(resource.properties).to eq(headers: { "content-type" => "octet/stream" },
-                                          gemstash_storage_version: Gemstash::Storage::VERSION)
+                                          gemstash_resource_version: Gemstash::Resource::VERSION)
       end
     end
 
@@ -112,22 +112,22 @@ describe Gemstash::Storage do
         resource = storage.resource(resource_id)
         resource.update_properties(key: "value", other: :value)
         expect(storage.resource(resource_id).properties).
-          to eq(key: "value", other: :value, gemstash_storage_version: Gemstash::Storage::VERSION)
+          to eq(key: "value", other: :value, gemstash_resource_version: Gemstash::Resource::VERSION)
         resource = storage.resource(resource_id)
         resource.update_properties(key: "new", new: 42)
         expect(storage.resource(resource_id).properties).
-          to eq(key: "new", other: :value, new: 42, gemstash_storage_version: Gemstash::Storage::VERSION)
+          to eq(key: "new", other: :value, new: 42, gemstash_resource_version: Gemstash::Resource::VERSION)
       end
 
       it "can be deleted" do
         resource = storage.resource(resource_id)
         resource.delete(:content)
         expect(resource.exist?(:content)).to be_falsey
-        expect { resource.content(:content) }.to raise_error(/no content to load/)
+        expect { resource.content(:content) }.to raise_error(/no :content content to load/)
         # Fetching the resource again will still prevent access
         resource = storage.resource(resource_id)
         expect(resource.exist?(:content)).to be_falsey
-        expect { resource.content(:content) }.to raise_error(/no content to load/)
+        expect { resource.content(:content) }.to raise_error(/no :content content to load/)
 
         # Ensure properties is deleted
         properties_filename = File.join(resource.folder, "properties.yml")
@@ -165,29 +165,29 @@ describe Gemstash::Storage do
       it "can be done in 2 saves with separate properties defined" do
         resource = storage.resource(resource_id)
         resource.save({ content: content }, foo: "bar").save({ other_content: other_content }, bar: "baz")
-        expect(resource.properties).to eq(foo: "bar", bar: "baz", gemstash_storage_version: Gemstash::Storage::VERSION)
+        expect(resource.properties).to eq(foo: "bar", bar: "baz", gemstash_resource_version: Gemstash::Resource::VERSION)
 
         resource = storage.resource(resource_id)
-        expect(resource.properties).to eq(foo: "bar", bar: "baz", gemstash_storage_version: Gemstash::Storage::VERSION)
+        expect(resource.properties).to eq(foo: "bar", bar: "baz", gemstash_resource_version: Gemstash::Resource::VERSION)
       end
 
       it "can be done in 2 saves with nil properties defined on second" do
         resource = storage.resource(resource_id)
         resource.save({ content: content }, foo: "bar").save(other_content: other_content)
-        expect(resource.properties).to eq(foo: "bar", gemstash_storage_version: Gemstash::Storage::VERSION)
+        expect(resource.properties).to eq(foo: "bar", gemstash_resource_version: Gemstash::Resource::VERSION)
 
         resource = storage.resource(resource_id)
-        expect(resource.properties).to eq(foo: "bar", gemstash_storage_version: Gemstash::Storage::VERSION)
+        expect(resource.properties).to eq(foo: "bar", gemstash_resource_version: Gemstash::Resource::VERSION)
       end
 
       it "can be done in 2 saves with separate properties defined from separate resource instances" do
         storage.resource(resource_id).save({ content: content }, foo: "bar")
         resource = storage.resource(resource_id)
         resource.save({ other_content: other_content }, bar: "baz")
-        expect(resource.properties).to eq(foo: "bar", bar: "baz", gemstash_storage_version: Gemstash::Storage::VERSION)
+        expect(resource.properties).to eq(foo: "bar", bar: "baz", gemstash_resource_version: Gemstash::Resource::VERSION)
 
         resource = storage.resource(resource_id)
-        expect(resource.properties).to eq(foo: "bar", bar: "baz", gemstash_storage_version: Gemstash::Storage::VERSION)
+        expect(resource.properties).to eq(foo: "bar", bar: "baz", gemstash_resource_version: Gemstash::Resource::VERSION)
       end
 
       it "supports 1 file being deleted" do
@@ -195,12 +195,12 @@ describe Gemstash::Storage do
         resource = storage.resource(resource_id)
         resource.delete(:content)
         expect(resource.exist?(:content)).to be_falsey
-        expect { resource.content(:content) }.to raise_error(/no content to load/)
+        expect { resource.content(:content) }.to raise_error(/no :content content to load/)
 
         resource = storage.resource(resource_id)
         expect(resource.content(:other_content)).to eq(other_content)
-        expect(resource.properties).to eq(foo: "bar", gemstash_storage_version: Gemstash::Storage::VERSION)
-        expect { resource.content(:content) }.to raise_error(/no content to load/)
+        expect(resource.properties).to eq(foo: "bar", gemstash_resource_version: Gemstash::Resource::VERSION)
+        expect { resource.content(:content) }.to raise_error(/no :content content to load/)
       end
 
       it "supports both files being deleted" do
@@ -210,15 +210,15 @@ describe Gemstash::Storage do
         expect(resource.exist?(:content)).to be_falsey
         expect(resource.exist?(:other_content)).to be_falsey
         expect(resource).to_not exist
-        expect { resource.content(:content) }.to raise_error(/no content to load/)
-        expect { resource.content(:other_content) }.to raise_error(/no content to load/)
+        expect { resource.content(:content) }.to raise_error(/no :content content to load/)
+        expect { resource.content(:other_content) }.to raise_error(/no :other_content content to load/)
 
         resource = storage.resource(resource_id)
         expect(resource.exist?(:content)).to be_falsey
         expect(resource.exist?(:other_content)).to be_falsey
         expect(resource).to_not exist
-        expect { resource.content(:content) }.to raise_error(/no content to load/)
-        expect { resource.content(:other_content) }.to raise_error(/no content to load/)
+        expect { resource.content(:content) }.to raise_error(/no :content content to load/)
+        expect { resource.content(:other_content) }.to raise_error(/no :other_content content to load/)
 
         # Ensure properties is deleted
         properties_filename = File.join(resource.folder, "properties.yml")
