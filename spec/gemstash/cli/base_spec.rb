@@ -30,7 +30,7 @@ describe Gemstash::CLI::Base do
     it "blocks loading when this version is a prerelease of the stored metadata version" do
       allow(Gemstash::Storage).to receive(:metadata).and_return(gemstash_version: "1.0.0")
       stub_const("Gemstash::VERSION", "1.0.0.pre.1")
-      expect { base.send(:check_gemstash_version) }.to raise_error(Gemstash::CLI::Error, /version is too old/)
+      expect { base.send(:check_gemstash_version) }.to raise_error(Gemstash::CLI::Error, /does not support version/)
     end
 
     it "allows loading when stored metadata is older" do
@@ -48,13 +48,13 @@ describe Gemstash::CLI::Base do
     it "blocks loading when stored metadata is newer" do
       allow(Gemstash::Storage).to receive(:metadata).and_return(gemstash_version: "1.1.0")
       stub_const("Gemstash::VERSION", "1.0.0")
-      expect { base.send(:check_gemstash_version) }.to raise_error(Gemstash::CLI::Error, /version is too old/)
+      expect { base.send(:check_gemstash_version) }.to raise_error(Gemstash::CLI::Error, /does not support version/)
     end
 
     it "blocks loading when stored metadata is prerelease of a newer version" do
       allow(Gemstash::Storage).to receive(:metadata).and_return(gemstash_version: "1.1.0.pre.1")
       stub_const("Gemstash::VERSION", "1.0.0")
-      expect { base.send(:check_gemstash_version) }.to raise_error(Gemstash::CLI::Error, /version is too old/)
+      expect { base.send(:check_gemstash_version) }.to raise_error(Gemstash::CLI::Error, /does not support version/)
     end
   end
 end
