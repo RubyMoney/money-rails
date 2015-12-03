@@ -118,10 +118,10 @@ module Gemstash
 
     private
 
-      def serve_cached(id, key)
-        gem = fetch_gem(id, key)
-        headers.update(gem.properties[:headers][key]) if gem.properties[:headers] && gem.properties[:headers][key]
-        gem.content(key)
+      def serve_cached(id, resource_type)
+        gem = fetch_gem(id, resource_type)
+        headers.update(gem.properties[:headers][resource_type]) if gem.property?(:headers, resource_type)
+        gem.content(resource_type)
       rescue Gemstash::WebError => e
         halt e.code
       end
@@ -142,25 +142,25 @@ module Gemstash
         @gem_fetcher ||= Gemstash::GemFetcher.new(http_client_for(upstream))
       end
 
-      def fetch_gem(id, key)
+      def fetch_gem(id, resource_type)
         gem_name = Gemstash::Upstream::GemName.new(upstream, id)
         gem_resource = storage.resource(gem_name.name)
-        if gem_resource.exist?(key)
-          fetch_local_gem(gem_name, gem_resource, key)
+        if gem_resource.exist?(resource_type)
+          fetch_local_gem(gem_name, gem_resource, resource_type)
         else
-          fetch_remote_gem(gem_name, gem_resource, key)
+          fetch_remote_gem(gem_name, gem_resource, resource_type)
         end
       end
 
-      def fetch_local_gem(gem_name, gem_resource, key)
-        log.info "Gem #{gem_name.name} exists, returning cached #{key}"
+      def fetch_local_gem(gem_name, gem_resource, resource_type)
+        log.info "Gem #{gem_name.name} exists, returning cached #{resource_type}"
         gem_resource
       end
 
-      def fetch_remote_gem(gem_name, gem_resource, key)
-        log.info "Gem #{gem_name.name} is not cached, fetching #{key}"
-        gem_fetcher.fetch(gem_name.id, key) do |content, properties|
-          gem_resource.save({ key => content }, headers: { key => properties })
+      def fetch_remote_gem(gem_name, gem_resource, resource_type)
+        log.info "Gem #{gem_name.name} is not cached, fetching #{resource_type}"
+        gem_fetcher.fetch(gem_name.id, resource_type) do |content, properties|
+          gem_resource.save({ resource_type => content }, headers: { resource_type => properties })
         end
       end
     end

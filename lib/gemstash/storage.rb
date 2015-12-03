@@ -191,6 +191,31 @@ module Gemstash
       self
     end
 
+    # Check if the metadata properties includes the +keys+. The +keys+ represent
+    # a nested path in the properties to check.
+    #
+    # Examples:
+    #
+    #   resource = Gemstash::Storage.for("x").resource("y")
+    #   resource.save({ file: "content" }, foo: "one", bar: { baz: "qux" })
+    #   resource.has_property?(:foo)       # true
+    #   resource.has_property?(:bar, :baz) # true
+    #   resource.has_property?(:missing)   # false
+    #   resource.has_property?(:foo, :bar) # false
+    #
+    # @param keys [Array<Object>] one or more keys pointing to a property
+    # @return [Boolean] whether the nested keys points to a valid property
+    def property?(*keys)
+      keys.inject(node: properties, result: true) do |memo, key|
+        if memo[:result]
+          memo[:result] = memo[:node].is_a?(Hash) && memo[:node].include?(key)
+          memo[:node] = memo[:node][key] if memo[:result]
+        end
+
+        memo
+      end[:result]
+    end
+
     # Delete the content for the given +key+. If the +key+ is the last one for
     # this resource, the metadata properties will be deleted as well. The +key+
     # corresponds to the +content+ key provided to {#save}.
@@ -252,8 +277,8 @@ module Gemstash
 
     def content?
       return false unless Dir.exist?(@folder)
-      entries = Dir.entries(@folder).reject {|file| file =~ /\A\.\.?\z/ }
-      !entries.empty? && entries != %w(properties.yaml)
+      entries = Dir.entries(@folder).reject {|file| file =~ /\A\.\.?\z/ || file == "properties.yaml" }
+      !entries.empty?
     end
 
     def sanitize(name)

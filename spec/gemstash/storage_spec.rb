@@ -256,5 +256,71 @@ describe Gemstash::Storage do
         expect(storage.resource(resource_id).folder).to_not match(/[.=$&]/)
       end
     end
+
+    describe "#property?" do
+      let(:resource) { storage.resource("existing") }
+
+      context "with a single key" do
+        before do
+          resource.save({ file: "content" }, foo: "one", bar: nil, baz: { qux: "two" })
+        end
+
+        it "returns true for a valid key" do
+          expect(resource.property?(:foo)).to eq(true)
+        end
+
+        it "returns true for a key pointing to explicit nil" do
+          expect(resource.property?(:bar)).to eq(true)
+        end
+
+        it "returns true for a key pointing to a nested hash" do
+          expect(resource.property?(:baz)).to eq(true)
+        end
+
+        it "returns false if the resource doesn't exist" do
+          expect(storage.resource("missing").property?(:foo)).to eq(false)
+        end
+
+        it "returns false for a missing key" do
+          expect(resource.property?(:missing)).to eq(false)
+        end
+      end
+
+      context "with nested keys" do
+        before do
+          resource.save({ file: "content" }, parent: { foo: "one", bar: nil, baz: { qux: "two" } })
+        end
+
+        it "returns true for a valid set of keys" do
+          expect(resource.property?(:parent, :foo)).to eq(true)
+        end
+
+        it "returns true for a set of keys pointing to explicit nil" do
+          expect(resource.property?(:parent, :bar)).to eq(true)
+        end
+
+        it "returns true for a set of keys pointing to a nested hash" do
+          expect(resource.property?(:parent, :baz)).to eq(true)
+        end
+
+        it "returns false if the resource doesn't exist" do
+          expect(storage.resource("missing").property?(:parent, :foo)).to eq(false)
+        end
+
+        it "returns false for a missing leaf key" do
+          expect(resource.property?(:parent, :missing)).to eq(false)
+        end
+
+        it "returns false for a missing parent key" do
+          expect(resource.property?(:missing, :foo)).to eq(false)
+          expect(resource.property?(:parent, :missing)).to eq(false)
+        end
+
+        it "returns false if a key hits a non-hash" do
+          expect(resource.property?(:parent, :foo, :non_node)).to eq(false)
+          expect(resource.property?(:parent, :bar, :non_node)).to eq(false)
+        end
+      end
+    end
   end
 end
