@@ -1,66 +1,16 @@
 require 'active_support/concern'
 require 'active_support/core_ext/array/extract_options'
 require 'active_support/deprecation/reporting'
+require 'money-rails/active_record/model_extensions/monetizable_attribute'
+require 'money-rails/active_record/model_extensions/currency_finder'
+require 'money-rails/active_record/model_extensions/attribute_writer'
+require 'money-rails/active_record/model_extensions/attribute_reader'
 
 module MoneyRails
   module ActiveRecord
     module Monetizable
       class ReadOnlyCurrencyException < StandardError; end
       extend ActiveSupport::Concern
-
-      class MonetizableAttribute
-        attr_accessor :field, :options
-
-        def initialize(field, options)
-          @options = options
-          @field = field
-        end
-
-        def deprecated?
-          options[:field_currency] || options[:target_name] || options[:model_currency]
-        end
-
-        def subunit_name
-          field.to_s
-        end
-
-        def field_currency_name
-          # This attribute allows per column currency values
-          # Overrides row and default currency
-          options[:with_currency] || options[:field_currency] || nil
-        end
-
-        def instance_currency_name
-          # Optional accessor to be run on an instance to detect currency
-          name = options[:with_model_currency] ||
-            options[:model_currency] ||
-            MoneyRails::Configuration.currency_column[:column_name]
-          name = name && name.to_s
-        end
-
-        def name
-          return @name if @name
-
-          @name = options[:as] || options[:target_name] || nil
-
-          # Form target name for the money backed ActiveModel field:
-          # if a target name is provided then use it
-          # if there is a "{column.postfix}" suffix then just remove it to create the target name
-          # if none of the previous is the case then use a default suffix
-          if @name
-            @name = @name.to_s
-          elsif subunit_name =~ /#{MoneyRails::Configuration.amount_column[:postfix]}$/
-            @name = subunit_name.sub(/#{MoneyRails::Configuration.amount_column[:postfix]}$/, "")
-          else
-            # FIXME: provide a better default
-            @name = [subunit_name, "money"].join("_")
-          end
-        end
-
-        def validation_enabled?
-          MoneyRails.include_validations && !options[:disable_validation]
-        end
-      end
 
       module ClassMethods
         def monetized_attributes
@@ -95,7 +45,7 @@ module MoneyRails
         private
 
         def define_methods_for(field, options)
-          attribute = MonetizableAttribute.new(field, options)
+          attribute = ModelExtensions::MonetizableAttribute.new(field, options)
 
           show_deprecation if attribute.deprecated?
 
@@ -110,7 +60,7 @@ module MoneyRails
           define_reader_method(attribute)
           define_writer_method(attribute)
 
-          defined_currency_for_method(attribute)
+          define_currency_method(attribute)
 
           attr_reader "#{attribute.name}_money_before_type_cast"
 
@@ -121,67 +71,9 @@ module MoneyRails
           end
         end
 
-        class CurrencyFinder
-          attr_accessor :model, :name, :instance_currency_name,
-            :field_currency_name, :instance_currency_name_with_postfix
-
-          def initialize(model, attribute)
-            @model = model
-            @name = attribute.name
-            @instance_currency_name = attribute.instance_currency_name
-            @field_currency_name = attribute.field_currency_name
-            if MoneyRails::Configuration.currency_column[:postfix].present?
-              @instance_currency_name_with_postfix = "#{name}#{MoneyRails::Configuration.currency_column[:postfix]}"
-            end
-          end
-
-          def call
-            instance_currency || field_currency ||
-              instance_currency_with_postfix ||
-              class_currency || default_currency
-          end
-
-          private
-
-          def default_currency
-            Money.default_currency
-          end
-
-          def class_currency
-            if model.class.respond_to?(:currency)
-              model.class.currency
-            end
-          end
-
-          def instance_currency_with_postfix
-            if instance_currency_name_with_postfix.present? &&
-                model.respond_to?(instance_currency_name_with_postfix) &&
-                Money::Currency.find(model.public_send(instance_currency_name_with_postfix))
-
-              Money::Currency.find(model.public_send(instance_currency_name_with_postfix))
-            end
-          end
-
-          def field_currency
-            if field_currency_name.respond_to?(:call)
-              Money::Currency.find(field_currency_name.call(model))
-            elsif field_currency_name
-              Money::Currency.find(field_currency_name)
-            end
-          end
-
-          def instance_currency
-            if instance_currency_name.present? && model.respond_to?(instance_currency_name) &&
-                Money::Currency.find(model.public_send(instance_currency_name))
-
-              Money::Currency.find(model.public_send(instance_currency_name))
-            end
-          end
-        end
-
-        def defined_currency_for_method(attribute)
+        def define_currency_method(attribute)
           define_method "currency_for_#{attribute.name}" do
-            CurrencyFinder.new(self, attribute).call
+            ModelExtensions::CurrencyFinder.new(self, attribute).call
           end
         end
 
@@ -194,130 +86,17 @@ module MoneyRails
           end
         end
 
-        class AttributeWriter
-          attr_accessor :model, :name, :instance_currency_name, :value,
-            :options, :attribute
-
-          def initialize(model, attribute, value)
-            @model = model
-            @name = attribute.name
-            @instance_currency_name = attribute.instance_currency_name
-            @options = attribute.options
-            @value = value
-            @attribute = attribute
-          end
-
-          def call
-            # Lets keep the before_type_cast value
-            model.instance_variable_set "@#{name}_money_before_type_cast", value
-            update_cents
-            update_currency
-
-            # Save and return the new Money object
-            model.instance_variable_set "@#{name}", money
-          end
-
-          private
-
-          def update_currency
-            money_currency = money.try(:currency)
-            # Update currency iso value if there is an instance currency attribute
-            if instance_currency_name.present? && model.respond_to?("#{instance_currency_name}=") && money_currency
-              model.public_send("#{instance_currency_name}=", money_currency.try(:iso_code))
-            else
-              current_currency = model.public_send("currency_for_#{name}")
-              if money_currency && current_currency != money_currency.id
-                raise ReadOnlyCurrencyException.new("Can't change readonly currency '#{current_currency}' to '#{money_currency}' for field '#{name}'") if MoneyRails.raise_error_on_money_parsing
-                return nil
-              end
-            end
-          end
-
-          def update_cents
-            cents = money.try(:cents)
-
-            if !attribute.validation_enabled?
-              # We haven't defined our own subunit writer, so we can invoke
-              # the regular writer, which works with store_accessors
-              model.public_send("#{attribute.subunit_name}=", cents)
-            elsif model.class.respond_to?(:attribute_aliases) &&
-              model.class.attribute_aliases.key?(attribute.subunit_name)
-              # If the attribute is aliased, make sure we write to the original
-              # attribute name or an error will be raised.
-              # (Note: 'attribute_aliases' doesn't exist in Rails 3.x, so we
-              # can't tell if the attribute was aliased.)
-              original_name = model.class.attribute_aliases[attribute.subunit_name.to_s]
-              model.send(:write_attribute, original_name, cents)
-            else
-              model.send(:write_attribute, attribute.subunit_name, cents)
-            end
-          end
-
-          def money
-            # Use nil or get a Money object
-            if options[:allow_nil] && value.blank?
-              money = nil
-            else
-              if value.is_a?(Money)
-                money = value
-              else
-                begin
-                  money = value.to_money(model.public_send("currency_for_#{name}"))
-                rescue NoMethodError
-                  return nil
-                rescue ArgumentError
-                  raise if MoneyRails.raise_error_on_money_parsing
-                  return nil
-                rescue Money::Currency::UnknownCurrency
-                  raise if MoneyRails.raise_error_on_money_parsing
-                  return nil
-                end
-              end
-            end
-          end
-        end
-
         def define_writer_method(attribute)
           name = attribute.name
           define_method "#{name}=" do |value|
-            AttributeWriter.new(self, attribute, value).call
+            ModelExtensions::AttributeWriter.new(self, attribute, value).call
           end
         end
 
         def define_reader_method(attribute)
           name = attribute.name
           define_method name do |*args|
-
-            # Get the cents
-            amount = public_send(attribute.subunit_name, *args)
-
-            # Get the currency object
-            attr_currency = public_send("currency_for_#{name}")
-
-            # Get the cached value
-            memoized = instance_variable_get("@#{name}")
-
-            # Dont create a new Money instance if the values haven't been changed.
-            if memoized && memoized.cents == amount &&
-                memoized.currency == attr_currency
-              result =  memoized
-            else
-              # If amount is NOT nil (or empty string) load the amount in a Money
-              amount = Money.new(amount, attr_currency) unless amount.blank?
-
-              # Cache the value (it may be nil)
-              result = instance_variable_set "@#{name}", amount
-            end
-
-            if MoneyRails::Configuration.preserve_user_input
-              value_before_type_cast = instance_variable_get "@#{name}_money_before_type_cast"
-              unless errors[name.to_sym].blank?
-                result.define_singleton_method(:to_s) { value_before_type_cast }
-                result.define_singleton_method(:format) { |_| value_before_type_cast }
-              end
-            end
-
-            result
+            ModelExtensions::AttributeReader.new(self, attribute, args).call
           end
         end
 
