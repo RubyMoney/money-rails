@@ -77,27 +77,27 @@ module Gemstash
 
       def ask_database
         say_current_config(:db_adapter, "Current database adapter")
-        options = %w(sqlite3 postgres)
+        options = %w(sqlite3 postgres mysql)
         database = nil
 
         until database
-          database = @cli.ask "What database adapter? [SQLITE3, postgres]"
+          database = @cli.ask "What database adapter? [SQLITE3, postgres, mysql]"
           database = database.downcase
           database = "sqlite3" if database.empty?
           database = nil unless options.include?(database)
         end
 
         @config[:db_adapter] = database
-        ask_postgres_details if database == "postgres"
+        ask_database_details(database) unless database == "sqlite3"
       end
 
-      def ask_postgres_details
+      def ask_database_details(database)
         say_current_config(:db_url, "Current database url")
 
         if RUBY_PLATFORM == "java"
-          default_value = "jdbc:postgres:///gemstash"
+          default_value = "jdbc:#{database}:///gemstash"
         else
-          default_value = "postgres:///gemstash"
+          default_value = "#{database}:///gemstash"
         end
 
         url = @cli.ask "Where is the database? [#{default_value}]"
