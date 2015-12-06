@@ -14,7 +14,7 @@ key against your server. Instead of the key value here, use whatever key is
 generated from running the commands.
 
 In order to push a gem to your Gemstash server, you need to first create an API
-key. Utilize the `gemstash` command to create the API key:
+key. Utilize the `gemstash authorize` command to create the API key:
 ```
 $ gemstash authorize
 Your new key is: e374e237fdf5fa5718d2a21bd63dc911
