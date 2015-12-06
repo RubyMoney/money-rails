@@ -10,6 +10,7 @@ module Gemstash
         prepare
         setup_logging
         store_daemonized
+        Gemstash::Logging.logger.info("Starting gemstash!\n")
         Puma::CLI.new(args, Gemstash::Logging::StreamLogger.puma_events).run
       end
 
