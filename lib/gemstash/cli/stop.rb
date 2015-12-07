@@ -9,6 +9,7 @@ module Gemstash
       def run
         prepare
         Puma::ControlCLI.new(args).run
+        @cli.say("Gemstash stopped successfully!", :green)
       end
 
     private
