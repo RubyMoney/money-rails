@@ -54,12 +54,12 @@ describe Gemstash::GemPusher do
         expect(deps.fetch(%w(example))).to eq([])
         Gemstash::GemPusher.new(auth_key, gem_contents).push
         expect(deps.fetch(%w(example))).to match_dependencies(results)
-        expect(storage.resource("example-0.1.0").load(:gem).content(:gem)).to eq(gem_contents)
+        expect(storage.resource("example-0.1.0").content(:gem)).to eq(gem_contents)
       end
 
       it "stores the gemspec" do
         Gemstash::GemPusher.new(auth_key, gem_contents).push
-        spec = storage.resource("example-0.1.0").load(:spec).content(:spec)
+        spec = storage.resource("example-0.1.0").content(:spec)
         spec = Marshal.load(Zlib::Inflate.inflate(spec))
         expect(spec).to be_a(Gem::Specification)
         expect(spec.name).to eq("example")
@@ -84,12 +84,12 @@ describe Gemstash::GemPusher do
         expect(deps.fetch(%w(example))).to eq([])
         Gemstash::GemPusher.new(auth_key, gem_contents).push
         expect(deps.fetch(%w(example))).to match_dependencies(results)
-        expect(storage.resource("example-0.1.0-java").load(:gem).content(:gem)).to eq(gem_contents)
+        expect(storage.resource("example-0.1.0-java").content(:gem)).to eq(gem_contents)
       end
 
       it "stores the gemspec" do
         Gemstash::GemPusher.new(auth_key, gem_contents).push
-        spec = storage.resource("example-0.1.0-java").load(:spec).content(:spec)
+        spec = storage.resource("example-0.1.0-java").content(:spec)
         spec = Marshal.load(Zlib::Inflate.inflate(spec))
         expect(spec).to be_a(Gem::Specification)
         expect(spec.name).to eq("example")
@@ -121,12 +121,12 @@ describe Gemstash::GemPusher do
 
         Gemstash::GemPusher.new(auth_key, gem_contents).push
         expect(deps.fetch(%w(example))).to match_dependencies(results)
-        expect(storage.resource("example-0.1.0").load(:gem).content(:gem)).to eq(gem_contents)
+        expect(storage.resource("example-0.1.0").content(:gem)).to eq(gem_contents)
       end
 
       it "stores the gemspec" do
         Gemstash::GemPusher.new(auth_key, gem_contents).push
-        spec = storage.resource("example-0.1.0").load(:spec).content(:spec)
+        spec = storage.resource("example-0.1.0").content(:spec)
         spec = Marshal.load(Zlib::Inflate.inflate(spec))
         expect(spec).to be_a(Gem::Specification)
         expect(spec.name).to eq("example")

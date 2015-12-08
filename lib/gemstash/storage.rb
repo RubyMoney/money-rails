@@ -5,34 +5,57 @@ require "fileutils"
 require "yaml"
 
 module Gemstash
-  #:nodoc:
+  # The entry point into the storage engine for storing cached gems, specs, and
+  # private gems.
   class Storage
     extend Gemstash::Env::Helper
     VERSION = 1
 
-    # If the storage engine detects something that was stored with a newer
-    # version of the storage engine, this error will be thrown.
+    # If the storage engine detects the base cache directory was originally
+    # initialized with a newer version, this error is thrown.
     class VersionTooNew < StandardError
+      def initialize(folder, version)
+        super("Gemstash storage version #{Gemstash::Storage::VERSION} does " \
+              "not support version #{version} found at #{folder}")
+      end
     end
 
+    # This object should not be constructed directly, but instead via
+    # {for} and {#for}.
     def initialize(folder, root: true)
-      check_engine if root
       @folder = folder
+      check_storage_version if root
       FileUtils.mkpath(@folder) unless Dir.exist?(@folder)
     end
 
+    # Fetch the resource with the given +id+ within this storage.
+    #
+    # @param id [String] the id of the resource to fetch
+    # @return [Gemstash::Resource] a new resource instance from the +id+
     def resource(id)
       Resource.new(@folder, id)
     end
 
+    # Fetch a nested entry from this instance in the storage engine.
+    #
+    # @param child [String] the name of the nested entry to load
+    # @return [Gemstash::Storage] a new storage instance for the +child+
     def for(child)
       Storage.new(File.join(@folder, child), root: false)
     end
 
+    # Fetch a base entry in the storage engine.
+    #
+    # @param name [String] the name of the entry to load
+    # @return [Gemstash::Storage] a new storage instance for the +name+
     def self.for(name)
       new(gemstash_env.base_file(name))
     end
 
+    # Read the global metadata for Gemstash and the storage engine. If the
+    # metadata hasn't been stored yet, it will be created.
+    #
+    # @return [Hash] the metadata about Gemstash and the storage engine
     def self.metadata
       file = gemstash_env.base_file("metadata.yml")
 
@@ -46,10 +69,10 @@ module Gemstash
 
   private
 
-    def check_engine
+    def check_storage_version
       version = Gemstash::Storage.metadata[:storage_version]
       return if version <= Gemstash::Storage::VERSION
-      raise Gemstash::Storage::VersionTooNew, "Storage engine is out of date: #{version}"
+      raise Gemstash::Storage::VersionTooNew.new(@folder, version)
     end
 
     def path_valid?(path)
@@ -59,10 +82,25 @@ module Gemstash
     end
   end
 
-  #:nodoc:
+  # A resource within the storage engine. The resource may have 1 or more files
+  # associated with it along with a metadata Hash that is stored in a YAML file.
   class Resource
     include Gemstash::Logging
     attr_reader :name, :folder
+    VERSION = 1
+
+    # If the storage engine detects a resource was originally saved from a newer
+    # version, this error is thrown.
+    class VersionTooNew < StandardError
+      def initialize(name, folder, version)
+        super("Gemstash resource version #{Gemstash::Resource::VERSION} does " \
+              "not support version #{version} for resource #{name.inspect} " \
+              "found at #{folder}")
+      end
+    end
+
+    # This object should not be constructed directly, but instead via
+    # {Gemstash::Storage#resource}.
     def initialize(folder, name)
       @base_path = folder
       @name = name
@@ -78,6 +116,13 @@ module Gemstash
       @folder = File.join(@base_path, *trie_parents, child_folder)
     end
 
+    # When +key+ is nil, this will test if this resource exists with any
+    # content. If a +key+ is provided, this will test that the resource exists
+    # with at least the given +key+ file. The +key+ corresponds to the +content+
+    # key provided to {#save}.
+    #
+    # @param key [Symbol, nil] the key of the content to check existence
+    # @return [Boolean] true if the indicated content exists
     def exist?(key = nil)
       if key
         File.exist?(properties_filename) && File.exist?(content_filename(key))
@@ -86,6 +131,25 @@ module Gemstash
       end
     end
 
+    # Save one or more files for this resource given by the +content+ hash.
+    # Metadata properties about the file(s) may be provided in the optional
+    # +properties+ parameter. The keys in the content hash correspond to the
+    # file name for this resource, while the values will be the content stored
+    # for that key.
+    #
+    # Separate calls to save for the same resource will replace existing files,
+    # and add new ones. Properties on additional calls will be merged with
+    # existing properties.
+    #
+    # Examples:
+    #
+    #   Gemstash::Storage.for("foo").resource("bar").save(baz: "qux")
+    #   Gemstash::Storage.for("foo").resource("bar").save(baz: "one", qux: "two")
+    #   Gemstash::Storage.for("foo").resource("bar").save({ baz: "qux" }, meta: true)
+    #
+    # @param content [Hash{Symbol => String}] files to save, *must not be nil*
+    # @param properties [Hash, nil] metadata properties related to this resource
+    # @return [Gemstash::Resource] self for chaining purposes
     def save(content, properties = nil)
       content.each do |key, value|
         save_content(key, value)
@@ -95,28 +159,74 @@ module Gemstash
       self
     end
 
+    # Fetch the content for the given +key+. This will load and cache the
+    # properties and the content of the +key+. The +key+ corresponds to the
+    # +content+ key provided to {#save}.
+    #
+    # @param key [Symbol] the key of the content to load
+    # @return [String] the content stored in the +key+
     def content(key)
+      @content ||= {}
+      load(key) unless @content.include?(key)
       @content[key]
     end
 
+    # Fetch the metadata properties for this resource. The properties will be
+    # cached for future calls.
+    #
+    # @return [Hash] the metadata properties for this resource
     def properties
+      load_properties
       @properties || {}
     end
 
+    # Update the metadata properties of this resource. The +props+ will be
+    # merged with any existing properties.
+    #
+    # @param props [Hash] the properties to add
+    # @return [Gemstash::Resource] self for chaining purposes
     def update_properties(props)
-      load_properties
+      load_properties(true)
       save_properties(properties.merge(props || {}))
       self
     end
 
-    def load(key)
-      raise "Resource #{@name} has no content to load" unless exist?(key)
-      load_properties
-      @content ||= {}
-      @content[key] = read_file(content_filename(key))
-      self
+    # Check if the metadata properties includes the +keys+. The +keys+ represent
+    # a nested path in the properties to check.
+    #
+    # Examples:
+    #
+    #   resource = Gemstash::Storage.for("x").resource("y")
+    #   resource.save({ file: "content" }, foo: "one", bar: { baz: "qux" })
+    #   resource.has_property?(:foo)       # true
+    #   resource.has_property?(:bar, :baz) # true
+    #   resource.has_property?(:missing)   # false
+    #   resource.has_property?(:foo, :bar) # false
+    #
+    # @param keys [Array<Object>] one or more keys pointing to a property
+    # @return [Boolean] whether the nested keys points to a valid property
+    def property?(*keys)
+      keys.inject(node: properties, result: true) do |memo, key|
+        if memo[:result]
+          memo[:result] = memo[:node].is_a?(Hash) && memo[:node].include?(key)
+          memo[:node] = memo[:node][key] if memo[:result]
+        end
+
+        memo
+      end[:result]
     end
 
+    # Delete the content for the given +key+. If the +key+ is the last one for
+    # this resource, the metadata properties will be deleted as well. The +key+
+    # corresponds to the +content+ key provided to {#save}.
+    #
+    # The resource will be reset afterwards, clearing any cached content or
+    # properties.
+    #
+    # Does nothing if the key doesn't {#exist?}.
+    #
+    # @param key [Symbol] the key of the content to delete
+    # @return [Gemstash::Resource] self for chaining purposes
     def delete(key)
       return self unless exist?(key)
 
@@ -139,17 +249,25 @@ module Gemstash
 
   private
 
-    def load_properties
-      return unless File.exist?(properties_filename)
-      @properties = YAML.load_file(properties_filename)
-      check_version
+    def load(key)
+      raise "Resource #{@name} has no #{key.inspect} content to load" unless exist?(key)
+      load_properties # Ensures storage version is checked
+      @content ||= {}
+      @content[key] = read_file(content_filename(key))
     end
 
-    def check_version
-      version = @properties[:gemstash_storage_version]
-      return if version <= Gemstash::Storage::VERSION
+    def load_properties(force = false)
+      return if @properties && !force
+      return unless File.exist?(properties_filename)
+      @properties = YAML.load_file(properties_filename) || {}
+      check_resource_version
+    end
+
+    def check_resource_version
+      version = @properties[:gemstash_resource_version]
+      return if version <= Gemstash::Resource::VERSION
       reset
-      raise Gemstash::Storage::VersionTooNew, "Resource was stored with a newer storage: #{version}"
+      raise Gemstash::Resource::VersionTooNew.new(name, folder, version)
     end
 
     def reset
@@ -159,8 +277,8 @@ module Gemstash
 
     def content?
       return false unless Dir.exist?(@folder)
-      entries = Dir.entries(@folder).reject {|file| file =~ /\A\.\.?\z/ }
-      !entries.empty? && entries != %w(properties.yaml)
+      entries = Dir.entries(@folder).reject {|file| file =~ /\A\.\.?\z/ || file == "properties.yaml" }
+      !entries.empty?
     end
 
     def sanitize(name)
@@ -175,7 +293,7 @@ module Gemstash
 
     def save_properties(props)
       props ||= {}
-      props = { gemstash_storage_version: Gemstash::Storage::VERSION }.merge(props)
+      props = { gemstash_resource_version: Gemstash::Resource::VERSION }.merge(props)
       store(properties_filename, props.to_yaml)
       @properties = props
     end
