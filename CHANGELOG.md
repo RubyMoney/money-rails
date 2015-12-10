@@ -1,8 +1,21 @@
+## 1.0.0.pre.2 (2015-12-10)
+
+### Bugfixes
+
+  - Add --pre option to gemstash installation documentation ([#54](https://github.com/bundler/gemstash/pull/54), [@farukaydin](https://github.com/farukaydin))
+  - Fix docs for `gemstash authorize` ([#59](https://github.com/bundler/gemstash/pull/59), [@farukaydin](https://github.com/farukaydin))
+  - Refactoring, changed resource metadata `:gemstash_storage_version` to use `:gemstash_resource_version` ([#60](https://github.com/bundler/gemstash/pull/60), [@smellsblue](https://github.com/smellsblue))
+
+### Features
+
+  - Support MySQL as DB backend ([#52](https://github.com/bundler/gemstash/pull/52), [@pcarranza](https://github.com/pcarranza))
+  - Add start/stop output ([#58](https://github.com/bundler/gemstash/pull/58), [@farukaydin](https://github.com/farukaydin))
+
 ## 1.0.0.pre.1 (2015-11-30)
 
-Features:
+### Features
 
-  - cache gems from multiple sources
-  - push, yank, and unyank private gems
-  - zero setup dependencies
-  - optionally use Memcached for caching or PostgreSQL for the database
+  - Cache gems from multiple sources
+  - Push, yank, and unyank private gems
+  - Zero setup dependencies
+  - Optionally use Memcached for caching or PostgreSQL for the database
