@@ -137,6 +137,9 @@ For an anatomy of various configuration and commands, follow the links:
 * [Status](docs/reference.md#status)
 * [Setup](docs/reference.md#setup)
 
+To see what has changed in recent versions of Gemstash, see the
+[CHANGELOG](CHANGELOG.md).
+
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run
