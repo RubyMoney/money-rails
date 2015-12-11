@@ -1,5 +1,9 @@
 ## 1.0.0.pre.2 (2015-12-10)
 
+### Upgrade Notes
+
+  - If you pushed any private gems to your Gemstash instance, you will need to run: https://gist.github.com/smellsblue/53f5a6757dcc91ad10bc
+
 ### Bugfixes
 
   - Add --pre option to gemstash installation documentation ([#54](https://github.com/bundler/gemstash/pull/54), [@farukaydin](https://github.com/farukaydin))
