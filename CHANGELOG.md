@@ -9,6 +9,7 @@
   - Add --pre option to gemstash installation documentation ([#54](https://github.com/bundler/gemstash/pull/54), [@farukaydin](https://github.com/farukaydin))
   - Fix docs for `gemstash authorize` ([#59](https://github.com/bundler/gemstash/pull/59), [@farukaydin](https://github.com/farukaydin))
   - Refactoring, changed resource metadata `:gemstash_storage_version` to use `:gemstash_resource_version` ([#60](https://github.com/bundler/gemstash/pull/60), [@smellsblue](https://github.com/smellsblue))
+  - Fix migrations for utf8 on MySQL >= 5.5 ([#64](https://github.com/bundler/gemstash/pull/64), [@chriseckhardt](https://github.com/chriseckhardt))
 
 ### Features
 

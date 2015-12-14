@@ -47,15 +47,36 @@ class Changelog
     end
   end
 
+  def octokit
+    @octokit ||= begin
+      require "octokit"
+      token_path = File.expand_path("../../.rake_github_token", __FILE__)
+
+      if File.exist?(token_path)
+        options = { access_token: File.read(token_path).strip }
+      else
+        puts "\e[31mWARNING:\e[0m You do not have a GitHub OAuth token configured"
+        puts "Please generate one at: https://github.com/settings/tokens"
+        puts "And store it at: #{token_path}"
+        puts "Otherwise you might hit rate limits while running this"
+        print "Continue without token? [yes/no] "
+        abort("Please create your token and retry") unless STDIN.gets.strip.downcase == "yes"
+        options = {}
+      end
+
+      client = Octokit::Client.new(options)
+      client.auto_paginate = true
+      client
+    end
+  end
+
   def fetch_missing_pull_requests
-    require "octokit"
-    Octokit.auto_paginate = true
     @missing_pull_requests = missing_pull_request_numbers.map {|pr| fetch_pull_request(pr) }
   end
 
   def fetch_pull_request(number)
     puts "Fetching pull request ##{number}"
-    Octokit.pull_request("bundler/gemstash", number)
+    octokit.pull_request("bundler/gemstash", number)
   end
 
   def missing_pull_request_numbers
@@ -136,8 +157,24 @@ class Changelog
     pull_requests.each do |pr|
       puts "Fetching commits for ##{pr.number}"
       commits = pr.rels[:commits].get.data
-      authors = commits.map(&:author).map {|author| "[@#{author.login}](#{author.html_url})" }.uniq
+      authors = commits.map {|commit| author_link(commit) }.uniq
       file.puts "  - #{pr.title} ([##{pr.number}](#{pr.html_url}), #{authors.join(", ")})"
+    end
+  end
+
+  def author_link(commit)
+    @author_links ||= {}
+    author = commit.author
+
+    if author
+      "[@#{author.login}](#{author.html_url})"
+    elsif @author_links[commit.commit.author.name]
+      @author_links[commit.commit.author.name]
+    else
+      puts "Cannot find GitHub link for author: #{commit.commit.author.name}"
+      print "What is their GitHub username? "
+      username = STDIN.gets.strip
+      @author_links[commit.commit.author.name] = "[@#{username}](https://github.com/#{username})"
     end
   end
 
