@@ -1,4 +1,4 @@
-## 1.0.0.pre.2 (2015-12-10)
+## 1.0.0.pre.2 (2015-12-14)
 
 ### Upgrade Notes
 
@@ -14,6 +14,8 @@
 
   - Support MySQL as DB backend ([#52](https://github.com/bundler/gemstash/pull/52), [@pcarranza](https://github.com/pcarranza))
   - Add start/stop output ([#58](https://github.com/bundler/gemstash/pull/58), [@farukaydin](https://github.com/farukaydin))
+  - Add `gemstash --version` ([#62](https://github.com/bundler/gemstash/pull/62), [@smellsblue](https://github.com/smellsblue))
+  - Create the CHANGELOG ([#63](https://github.com/bundler/gemstash/pull/63), [@smellsblue](https://github.com/smellsblue))
 
 ## 1.0.0.pre.1 (2015-11-30)
 
