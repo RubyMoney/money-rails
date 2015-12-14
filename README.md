@@ -136,6 +136,7 @@ For an anatomy of various configuration and commands, follow the links:
 * [Stop](docs/reference.md#stop)
 * [Status](docs/reference.md#status)
 * [Setup](docs/reference.md#setup)
+* [Version](docs/reference.md#version)
 
 To see what has changed in recent versions of Gemstash, see the
 [CHANGELOG](CHANGELOG.md).

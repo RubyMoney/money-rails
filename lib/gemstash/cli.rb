@@ -67,5 +67,11 @@ module Gemstash
     def stop
       Gemstash::CLI::Stop.new(self).run
     end
+
+    desc "version", "Prints gemstash version information"
+    def version
+      say "Gemstash version #{Gemstash::VERSION}"
+    end
+    map %w(-v --version) => :version
   end
 end
