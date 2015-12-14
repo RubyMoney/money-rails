@@ -2,7 +2,7 @@ Sequel.migration do
   change do
     create_table :rubygems do
       primary_key :id
-      String :name, :size => 255, :null => false
+      String :name, :size => 191, :null => false
       DateTime :created_at, :null => false
       DateTime :updated_at, :null => false
       index [:name], :unique => true
@@ -11,10 +11,10 @@ Sequel.migration do
     create_table :versions do
       primary_key :id
       Integer :rubygem_id, :null => false
-      String :storage_id, :size => 255, :null => false
-      String :number, :size => 255, :null => false
-      String :platform, :size => 255, :null => false
-      String :full_name, :size => 255, :null => false
+      String :storage_id, :size => 191, :null => false
+      String :number, :size => 191, :null => false
+      String :platform, :size => 191, :null => false
+      String :full_name, :size => 191, :null => false
       TrueClass :indexed, :default => true, :null => false
       TrueClass :prerelease, :null => false
       DateTime :created_at, :null => false
@@ -30,8 +30,8 @@ Sequel.migration do
     create_table :dependencies do
       primary_key :id
       Integer :version_id, :null => false
-      String :rubygem_name, :size => 255, :null => false
-      String :requirements, :size => 255, :null => false
+      String :rubygem_name, :size => 191, :null => false
+      String :requirements, :size => 191, :null => false
       DateTime :created_at, :null => false
       DateTime :updated_at, :null => false
       index [:version_id]
