@@ -37,6 +37,8 @@ Table of Contents
         * [--redo](#--redo)
         * [--debug](#--debug)
         * [--config-file](#--config-file-4)
+    * [Version](#version)
+      * [Usage](#usage-5)
 
 
 
@@ -303,6 +305,18 @@ This will do nothing if all checks pass.
 Specify the config file to write to. Without this option, your configuration
 will be written to `~/.gemstash/config.yml`. If you write to a custom location,
 you will need to pass the `--config-file` option to all Gemstash commands.
+
+## Version
+
+Show what version of Gemstash you are using.
+
+### Usage
+
+```
+gemstash version
+gemstash --version
+gemstash -v
+```
 
 ---
 
