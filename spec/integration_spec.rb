@@ -195,7 +195,7 @@ describe "gemstash integration tests" do
     end
 
     # This should stay skipped until bundler sends the X-Gemfile-Source header
-    xcontext "with upstream gems via a header mirror" do
+    context "with upstream gems via a header mirror" do
       let(:bundle) { "integration_spec/header_mirror_gems" }
       it_behaves_like "a bundleable project"
     end

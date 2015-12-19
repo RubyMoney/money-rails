@@ -13,12 +13,21 @@ module Gemstash
 
     DEFAULT_FILE = File.expand_path("~/.gemstash/config.yml").freeze
 
+    # This error is thrown when a config file is explicitly specified that
+    # doesn't exist.
+    class MissingFileError < StandardError
+      def initialize(file)
+        super("Missing config file: #{file}")
+      end
+    end
+
     def initialize(file: nil, config: nil)
       if config
         @config = DEFAULTS.merge(config).freeze
         return
       end
 
+      raise MissingFileError, file if file && !File.exist?(file)
       file ||= DEFAULT_FILE
 
       if File.exist?(file)

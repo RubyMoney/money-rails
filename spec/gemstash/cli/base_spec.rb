@@ -57,4 +57,18 @@ describe Gemstash::CLI::Base do
       expect { base.send(:check_gemstash_version) }.to raise_error(Gemstash::CLI::Error, /does not support version/)
     end
   end
+
+  describe "#store_config" do
+    let(:base) { Gemstash::CLI::Base.new(cli) }
+
+    it "fails if the config file doesn't exist" do
+      allow(cli).to receive(:options).and_return(config_file: File.join(TEST_BASE_PATH, "missing_file.yml"))
+      expect { base.send(:store_config) }.to raise_error(Gemstash::CLI::Error, /missing_file\.yml/)
+    end
+
+    it "fails if the config file is specified as empty" do
+      allow(cli).to receive(:options).and_return(config_file: "")
+      expect { base.send(:store_config) }.to raise_error(Gemstash::CLI::Error, /Missing config file/)
+    end
+  end
 end
