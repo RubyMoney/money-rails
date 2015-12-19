@@ -1,3 +1,9 @@
+## 1.0.0.pre.3 (2015-12-19)
+
+### Bugfixes
+
+  - Fail on missing specified config ([#66](https://github.com/bundler/gemstash/pull/66), [@smellsblue](https://github.com/smellsblue))
+
 ## 1.0.0.pre.2 (2015-12-14)
 
 ### Upgrade Notes
