@@ -30,6 +30,8 @@ module Gemstash
       def store_config
         config = Gemstash::Configuration.new(file: @cli.options[:config_file])
         gemstash_env.config = config
+      rescue Gemstash::Configuration::MissingFileError => e
+        raise Gemstash::CLI::Error.new(@cli, e.message)
       end
 
       def check_gemstash_version
