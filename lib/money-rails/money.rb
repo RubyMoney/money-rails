@@ -1,9 +1,9 @@
 require "active_support/core_ext/module/aliasing.rb"
 require "active_support/core_ext/hash/reverse_merge.rb"
 
-module FormatWithSettings
+class Money
 
-  def format(*rules)
+  def format_with_settings(*rules)
     rules = normalize_formatting_rules(rules)
 
     # Apply global defaults for money only for non-nil values
@@ -19,9 +19,9 @@ module FormatWithSettings
       rules.reverse_merge!(MoneyRails::Configuration.default_format)
     end
 
-    super(rules)
+    format_without_settings(rules)
   end
 
-end
+  alias_method_chain :format, :settings
 
-Money.send(:prepend, FormatWithSettings)
+end
