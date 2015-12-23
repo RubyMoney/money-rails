@@ -83,7 +83,7 @@ grammar Changelog::Grammar
   end
 
   rule paragraph
-    ("  " !"- " /\w[^\n]*/ "\n")+ "\n"
+    ("  " !"- " /(\w|`)[^\n]*/ "\n")+ "\n"
   end
 
   rule changes

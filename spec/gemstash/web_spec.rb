@@ -12,7 +12,15 @@ describe Gemstash::Web do
       def for(server_url)
         stubs = Faraday::Adapter::Test::Stubs.new do |stub|
           stub.get("/gems/rack") { [200, { "CONTENT-TYPE" => "octet/stream" }, "zapatito"] }
+          stub.get("/gems/rack-1.0.0.gem") { [200, { "CONTENT-TYPE" => "octet/stream" }, "zapatito-1.0.0"] }
+          stub.get("/gems/rack-1.1.0.gem") { [200, { "CONTENT-TYPE" => "octet/stream" }, "zapatito-1.1.0"] }
           stub.get("/quick/Marshal.4.8/rack.gemspec.rz") { [200, { "CONTENT-TYPE" => "octet/stream" }, "specatito"] }
+          stub.get("/quick/Marshal.4.8/rack-1.0.0.gemspec.rz") do
+            [200, { "CONTENT-TYPE" => "octet/stream" }, "specatito-1.0.0"]
+          end
+          stub.get("/quick/Marshal.4.8/rack-1.1.0.gemspec.rz") do
+            [200, { "CONTENT-TYPE" => "octet/stream" }, "specatito-1.1.0"]
+          end
         end
         client = Faraday.new {|builder| builder.adapter(:test, stubs) }
         Gemstash::HTTPClient.new(client)
@@ -155,7 +163,52 @@ describe Gemstash::Web do
       let(:upstream) { Gemstash::Upstream.new(current_env.config[:rubygems_url]) }
       let(:storage) { Gemstash::Storage.for("gem_cache").for(upstream.host_id) }
 
-      it "fetchs the gem file, stores, and serves it" do
+      it "fetches the gem file, stores, and serves it" do
+        get "/gems/rack", {}, rack_env
+        expect(last_response.body).to eq("zapatito")
+        expect(last_response.header["CONTENT-TYPE"]).to eq("octet/stream")
+        expect(storage.resource("rack").exist?(:gem)).to be_truthy
+      end
+
+      it "keeps the upstream and full gem name in the properties" do
+        get "/gems/rack-1.0.0.gem", {}, rack_env
+        properties = storage.resource("rack-1.0.0").properties
+        expect(properties[:upstream]).to eq(upstream.to_s)
+        expect(properties[:gem_name]).to eq("rack-1.0.0")
+      end
+
+      it "keeps headers for specs that have been previously fetched" do
+        get "/quick/Marshal.4.8/rack.gemspec.rz", {}, rack_env
+        get "/gems/rack", {}, rack_env
+        expect(storage.resource("rack").properties[:headers][:spec]).to be
+        expect(storage.resource("rack").properties[:headers][:gem]).to be
+      end
+
+      it "indexes the cached gem" do
+        get "/gems/rack", {}, rack_env
+        db_upstream = Gemstash::DB::Upstream[uri: upstream.to_s]
+        expect(db_upstream).to be
+        expect(Gemstash::DB::CachedRubygem[upstream_id: db_upstream.id, name: "rack", resource_type: "gem"]).to be
+      end
+
+      it "indexes specs of different versions separately" do
+        get "/gems/rack-1.0.0.gem", {}, rack_env
+        get "/gems/rack-1.1.0.gem", {}, rack_env
+        db_upstream = Gemstash::DB::Upstream[uri: upstream.to_s]
+        expect(db_upstream).to be
+        expect(Gemstash::DB::CachedRubygem[upstream_id: db_upstream.id, name: "rack-1.0.0", resource_type: "gem"]).to be
+        expect(Gemstash::DB::CachedRubygem[upstream_id: db_upstream.id, name: "rack-1.1.0", resource_type: "gem"]).to be
+      end
+
+      it "can be called multiple times without error" do
+        get "/gems/rack", {}, rack_env
+        get "/gems/rack", {}, rack_env
+      end
+
+      it "can be called after the gem has been deleted" do
+        get "/gems/rack", {}, rack_env
+        storage.resource("rack").delete(:gem)
+        expect(storage.resource("rack").exist?(:gem)).to be_falsey
         get "/gems/rack", {}, rack_env
         expect(last_response.body).to eq("zapatito")
         expect(last_response.header["CONTENT-TYPE"]).to eq("octet/stream")
@@ -213,7 +266,52 @@ describe Gemstash::Web do
       let(:upstream) { Gemstash::Upstream.new(current_env.config[:rubygems_url]) }
       let(:storage) { Gemstash::Storage.for("gem_cache").for(upstream.host_id) }
 
-      it "fetchs the marshalled gemspec, stores, and serves it" do
+      it "fetches the marshalled gemspec, stores, and serves it" do
+        get "/quick/Marshal.4.8/rack.gemspec.rz", {}, rack_env
+        expect(last_response.body).to eq("specatito")
+        expect(last_response.header["CONTENT-TYPE"]).to eq("octet/stream")
+        expect(storage.resource("rack").exist?(:spec)).to be_truthy
+      end
+
+      it "keeps the upstream and full gem name in the properties" do
+        get "/quick/Marshal.4.8/rack-1.0.0.gemspec.rz", {}, rack_env
+        properties = storage.resource("rack-1.0.0").properties
+        expect(properties[:upstream]).to eq(upstream.to_s)
+        expect(properties[:gem_name]).to eq("rack-1.0.0")
+      end
+
+      it "keeps headers for gems that have been previously fetched" do
+        get "/gems/rack", {}, rack_env
+        get "/quick/Marshal.4.8/rack.gemspec.rz", {}, rack_env
+        expect(storage.resource("rack").properties[:headers][:gem]).to be
+        expect(storage.resource("rack").properties[:headers][:spec]).to be
+      end
+
+      it "indexes the cached spec" do
+        get "/quick/Marshal.4.8/rack.gemspec.rz", {}, rack_env
+        db_upstream = Gemstash::DB::Upstream[uri: upstream.to_s]
+        expect(db_upstream).to be
+        expect(Gemstash::DB::CachedRubygem[upstream_id: db_upstream.id, name: "rack", resource_type: "spec"]).to be
+      end
+
+      it "indexes specs of different versions separately" do
+        get "/quick/Marshal.4.8/rack-1.0.0.gemspec.rz", {}, rack_env
+        get "/quick/Marshal.4.8/rack-1.1.0.gemspec.rz", {}, rack_env
+        db_upstream = Gemstash::DB::Upstream[uri: upstream.to_s]
+        expect(db_upstream).to be
+        expect(Gemstash::DB::CachedRubygem[upstream_id: db_upstream.id, name: "rack-1.0.0", resource_type: "spec"]).to be
+        expect(Gemstash::DB::CachedRubygem[upstream_id: db_upstream.id, name: "rack-1.1.0", resource_type: "spec"]).to be
+      end
+
+      it "can be called multiple times without error" do
+        get "/quick/Marshal.4.8/rack.gemspec.rz", {}, rack_env
+        get "/quick/Marshal.4.8/rack.gemspec.rz", {}, rack_env
+      end
+
+      it "can be called after the spec has been deleted" do
+        get "/quick/Marshal.4.8/rack.gemspec.rz", {}, rack_env
+        storage.resource("rack").delete(:spec)
+        expect(storage.resource("rack").exist?(:spec)).to be_falsey
         get "/quick/Marshal.4.8/rack.gemspec.rz", {}, rack_env
         expect(last_response.body).to eq("specatito")
         expect(last_response.header["CONTENT-TYPE"]).to eq("octet/stream")

@@ -119,6 +119,17 @@ describe Gemstash::Storage do
           to eq(key: "new", other: :value, new: 42, gemstash_resource_version: Gemstash::Resource::VERSION)
       end
 
+      it "can merge nested properties" do
+        resource = storage.resource(resource_id)
+        resource.save({ gem: "some gem content" }, headers: { gem: { foo: "bar" } })
+        resource.save({ spec: "some spec content" }, headers: { spec: { foo: "baz" } })
+        expect(resource.properties).to eq(headers: { gem: { foo: "bar" }, spec: { foo: "baz" } },
+                                          gemstash_resource_version: Gemstash::Resource::VERSION)
+        resource.save({ spec: "some spec content" }, headers: { spec: { foo: "changed" } })
+        expect(resource.properties).to eq(headers: { gem: { foo: "bar" }, spec: { foo: "changed" } },
+                                          gemstash_resource_version: Gemstash::Resource::VERSION)
+      end
+
       it "can be deleted" do
         resource = storage.resource(resource_id)
         resource.delete(:content)

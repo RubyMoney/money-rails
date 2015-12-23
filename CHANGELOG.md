@@ -1,3 +1,21 @@
+## 1.0.0.pre.4 (2015-12-23)
+
+### Upgrade Notes
+
+  Any gems fetched before this release won't be indexed, which means plugins you
+  might install can't know about them. These cached gems might also have
+  incorrect headers stored (which shouldn't affect bundling). If you wish to
+  correct this, you can delete or back up your cache by deleting or moving your
+  `~/.gemstash/gem_cache` directory.
+
+### Bugfixes
+
+  - Cached gem and spec headers don't clobber each other ([#68](https://github.com/bundler/gemstash/pull/68), [@smellsblue](https://github.com/smellsblue))
+
+### Features
+
+  - Index cached gems and their upstreams for future use of plugins ([#68](https://github.com/bundler/gemstash/pull/68), [@smellsblue](https://github.com/smellsblue))
+
 ## 1.0.0.pre.3 (2015-12-21)
 
 ### Bugfixes
