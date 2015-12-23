@@ -12,7 +12,15 @@ describe Gemstash::Web do
       def for(server_url)
         stubs = Faraday::Adapter::Test::Stubs.new do |stub|
           stub.get("/gems/rack") { [200, { "CONTENT-TYPE" => "octet/stream" }, "zapatito"] }
+          stub.get("/gems/rack-1.0.0.gem") { [200, { "CONTENT-TYPE" => "octet/stream" }, "zapatito-1.0.0"] }
+          stub.get("/gems/rack-1.1.0.gem") { [200, { "CONTENT-TYPE" => "octet/stream" }, "zapatito-1.1.0"] }
           stub.get("/quick/Marshal.4.8/rack.gemspec.rz") { [200, { "CONTENT-TYPE" => "octet/stream" }, "specatito"] }
+          stub.get("/quick/Marshal.4.8/rack-1.0.0.gemspec.rz") do
+            [200, { "CONTENT-TYPE" => "octet/stream" }, "specatito-1.0.0"]
+          end
+          stub.get("/quick/Marshal.4.8/rack-1.1.0.gemspec.rz") do
+            [200, { "CONTENT-TYPE" => "octet/stream" }, "specatito-1.1.0"]
+          end
         end
         client = Faraday.new {|builder| builder.adapter(:test, stubs) }
         Gemstash::HTTPClient.new(client)
@@ -161,6 +169,27 @@ describe Gemstash::Web do
         expect(last_response.header["CONTENT-TYPE"]).to eq("octet/stream")
         expect(storage.resource("rack").exist?(:gem)).to be_truthy
       end
+
+      it "indexes the cached gem" do
+        get "/gems/rack", {}, rack_env
+        db_upstream = Gemstash::DB::Upstream[uri: upstream.to_s]
+        expect(db_upstream).to be
+        expect(Gemstash::DB::CachedRubygem[upstream_id: db_upstream.id, name: "rack", resource_type: "gem"]).to be
+      end
+
+      it "indexes specs of different versions separately" do
+        get "/gems/rack-1.0.0.gem", {}, rack_env
+        get "/gems/rack-1.1.0.gem", {}, rack_env
+        db_upstream = Gemstash::DB::Upstream[uri: upstream.to_s]
+        expect(db_upstream).to be
+        expect(Gemstash::DB::CachedRubygem[upstream_id: db_upstream.id, name: "rack-1.0.0", resource_type: "gem"]).to be
+        expect(Gemstash::DB::CachedRubygem[upstream_id: db_upstream.id, name: "rack-1.1.0", resource_type: "gem"]).to be
+      end
+
+      it "can be called multiple times without error" do
+        get "/gems/rack", {}, rack_env
+        get "/gems/rack", {}, rack_env
+      end
     end
 
     context "from private gems" do
@@ -218,6 +247,27 @@ describe Gemstash::Web do
         expect(last_response.body).to eq("specatito")
         expect(last_response.header["CONTENT-TYPE"]).to eq("octet/stream")
         expect(storage.resource("rack").exist?(:spec)).to be_truthy
+      end
+
+      it "indexes the cached spec" do
+        get "/quick/Marshal.4.8/rack.gemspec.rz", {}, rack_env
+        db_upstream = Gemstash::DB::Upstream[uri: upstream.to_s]
+        expect(db_upstream).to be
+        expect(Gemstash::DB::CachedRubygem[upstream_id: db_upstream.id, name: "rack", resource_type: "spec"]).to be
+      end
+
+      it "indexes specs of different versions separately" do
+        get "/quick/Marshal.4.8/rack-1.0.0.gemspec.rz", {}, rack_env
+        get "/quick/Marshal.4.8/rack-1.1.0.gemspec.rz", {}, rack_env
+        db_upstream = Gemstash::DB::Upstream[uri: upstream.to_s]
+        expect(db_upstream).to be
+        expect(Gemstash::DB::CachedRubygem[upstream_id: db_upstream.id, name: "rack-1.0.0", resource_type: "spec"]).to be
+        expect(Gemstash::DB::CachedRubygem[upstream_id: db_upstream.id, name: "rack-1.1.0", resource_type: "spec"]).to be
+      end
+
+      it "can be called multiple times without error" do
+        get "/quick/Marshal.4.8/rack.gemspec.rz", {}, rack_env
+        get "/quick/Marshal.4.8/rack.gemspec.rz", {}, rack_env
       end
     end
 

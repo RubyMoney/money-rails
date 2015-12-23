@@ -100,7 +100,7 @@ describe "gemstash integration tests" do
         @gemstash.env.cache.flush
       end
 
-      it "pushes valid gems to the server", :db_transaction => false do
+      it "pushes valid gems to the server", db_transaction: false do
         env = { "HOME" => env_dir }
         expect(execute("gem", ["push", "--key", "test", "--host", host, gem], env: env)).to exit_success
         expect(deps.fetch(%w(speaker))).to match_dependencies([speaker_deps])
@@ -116,7 +116,7 @@ describe "gemstash integration tests" do
         @gemstash.env.cache.flush
       end
 
-      it "removes valid gems from the server", :db_transaction => false do
+      it "removes valid gems from the server", db_transaction: false do
         env = { "HOME" => env_dir, "RUBYGEMS_HOST" => host }
         expect(execute("gem", ["yank", "--key", "test", gem_name, "--version", gem_version], env: env)).to exit_success
         expect(deps.fetch(%w(speaker))).to match_dependencies([])
@@ -135,7 +135,7 @@ describe "gemstash integration tests" do
         @gemstash.env.cache.flush
       end
 
-      it "adds valid gems back to the server", :db_transaction => false do
+      it "adds valid gems back to the server", db_transaction: false do
         env = { "HOME" => env_dir, "RUBYGEMS_HOST" => host }
         expect(execute("gem", ["yank", "--key", "test", gem_name, "--version", gem_version, "--undo"], env: env)).
           to exit_success
@@ -189,18 +189,18 @@ describe "gemstash integration tests" do
       end
     end
 
-    context "with default upstream gems" do
+    context "with default upstream gems", db_transaction: false do
       let(:bundle) { "integration_spec/default_upstream_gems" }
       it_behaves_like "a bundleable project"
     end
 
     # This should stay skipped until bundler sends the X-Gemfile-Source header
-    context "with upstream gems via a header mirror" do
+    context "with upstream gems via a header mirror", db_transaction: false do
       let(:bundle) { "integration_spec/header_mirror_gems" }
       it_behaves_like "a bundleable project"
     end
 
-    context "with upstream gems" do
+    context "with upstream gems", db_transaction: false do
       let(:bundle) { "integration_spec/upstream_gems" }
       it_behaves_like "a bundleable project"
 
@@ -222,7 +222,7 @@ describe "gemstash integration tests" do
       it_behaves_like "a bundleable project"
     end
 
-    context "with private gems", :db_transaction => false do
+    context "with private gems", db_transaction: false do
       before do
         Gemstash::Authorization.authorize("test-key", "all")
         Gemstash::GemPusher.new("test-key", read_gem("speaker", "0.1.0")).push
