@@ -139,7 +139,7 @@ module Gemstash
     #
     # Separate calls to save for the same resource will replace existing files,
     # and add new ones. Properties on additional calls will be merged with
-    # existing properties.
+    # existing properties. Nested hashes in properties will also be merged.
     #
     # Examples:
     #
@@ -181,12 +181,23 @@ module Gemstash
     end
 
     # Update the metadata properties of this resource. The +props+ will be
-    # merged with any existing properties.
+    # merged with any existing properties. Nested hashes in the properties will
+    # also be merged.
     #
     # @param props [Hash] the properties to add
     # @return [Gemstash::Resource] self for chaining purposes
     def update_properties(props)
       load_properties(true)
+
+      deep_merge = proc do |_, old_value, new_value|
+        if old_value.is_a?(Hash) && new_value.is_a?(Hash)
+          old_value.merge(new_value, &deep_merge)
+        else
+          new_value
+        end
+      end
+
+      props = properties.merge(props || {}, &deep_merge)
       save_properties(properties.merge(props || {}))
       self
     end

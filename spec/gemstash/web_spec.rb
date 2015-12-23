@@ -170,6 +170,13 @@ describe Gemstash::Web do
         expect(storage.resource("rack").exist?(:gem)).to be_truthy
       end
 
+      it "keeps headers for specs that have been previously fetched" do
+        get "/quick/Marshal.4.8/rack.gemspec.rz", {}, rack_env
+        get "/gems/rack", {}, rack_env
+        expect(storage.resource("rack").properties[:headers][:spec]).to be
+        expect(storage.resource("rack").properties[:headers][:gem]).to be
+      end
+
       it "indexes the cached gem" do
         get "/gems/rack", {}, rack_env
         db_upstream = Gemstash::DB::Upstream[uri: upstream.to_s]
@@ -247,6 +254,13 @@ describe Gemstash::Web do
         expect(last_response.body).to eq("specatito")
         expect(last_response.header["CONTENT-TYPE"]).to eq("octet/stream")
         expect(storage.resource("rack").exist?(:spec)).to be_truthy
+      end
+
+      it "keeps headers for gems that have been previously fetched" do
+        get "/gems/rack", {}, rack_env
+        get "/quick/Marshal.4.8/rack.gemspec.rz", {}, rack_env
+        expect(storage.resource("rack").properties[:headers][:gem]).to be
+        expect(storage.resource("rack").properties[:headers][:spec]).to be
       end
 
       it "indexes the cached spec" do
