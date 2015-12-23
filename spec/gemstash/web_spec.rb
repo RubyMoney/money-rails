@@ -204,6 +204,16 @@ describe Gemstash::Web do
         get "/gems/rack", {}, rack_env
         get "/gems/rack", {}, rack_env
       end
+
+      it "can be called after the gem has been deleted" do
+        get "/gems/rack", {}, rack_env
+        storage.resource("rack").delete(:gem)
+        expect(storage.resource("rack").exist?(:gem)).to be_falsey
+        get "/gems/rack", {}, rack_env
+        expect(last_response.body).to eq("zapatito")
+        expect(last_response.header["CONTENT-TYPE"]).to eq("octet/stream")
+        expect(storage.resource("rack").exist?(:gem)).to be_truthy
+      end
     end
 
     context "from private gems" do
@@ -296,6 +306,16 @@ describe Gemstash::Web do
       it "can be called multiple times without error" do
         get "/quick/Marshal.4.8/rack.gemspec.rz", {}, rack_env
         get "/quick/Marshal.4.8/rack.gemspec.rz", {}, rack_env
+      end
+
+      it "can be called after the spec has been deleted" do
+        get "/quick/Marshal.4.8/rack.gemspec.rz", {}, rack_env
+        storage.resource("rack").delete(:spec)
+        expect(storage.resource("rack").exist?(:spec)).to be_falsey
+        get "/quick/Marshal.4.8/rack.gemspec.rz", {}, rack_env
+        expect(last_response.body).to eq("specatito")
+        expect(last_response.header["CONTENT-TYPE"]).to eq("octet/stream")
+        expect(storage.resource("rack").exist?(:spec)).to be_truthy
       end
     end
 
