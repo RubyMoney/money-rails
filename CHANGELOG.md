@@ -1,3 +1,7 @@
+## 1.0.0 (2015-12-25)
+
+  There are no changes since the last release.
+
 ## 1.0.0.pre.4 (2015-12-23)
 
 ### Upgrade Notes

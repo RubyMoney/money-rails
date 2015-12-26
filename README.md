@@ -30,7 +30,7 @@ against a Gemstash server running on your machine.
 Install Gemstash to get started:
 
 ```
-$ gem install gemstash --pre
+$ gem install gemstash
 ```
 
 After it is installed, starting Gemstash requires no additional steps. Simply
