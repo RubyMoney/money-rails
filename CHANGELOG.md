@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.6.0
+
+- Update Money and Monetize gem reqs.
+
 ## 1.5.0
 
 - Respect Money.use_i18n when validating.
