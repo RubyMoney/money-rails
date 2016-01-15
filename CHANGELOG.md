@@ -1,6 +1,6 @@
 # Changelog
 
-## master (next release)
+## 1.5.0
 
 - Respect Money.use_i18n when validating.
 - Include attribute in validation messages like Rails does.
