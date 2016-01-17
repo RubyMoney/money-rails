@@ -65,6 +65,17 @@ if defined? ActiveRecord
         expect(product.price_cents).to eq(3210)
       end
 
+      context 'when currency from a Money object differs from default currency' do
+        before do
+          Money.default_bank.add_rate("EUR", "USD", 0.95)
+        end
+
+        it "converts the Money object to the default currency" do
+          product.price = Money.new(1000, "EUR")
+          expect(product.price).to eql(Money.new(950, "USD"))
+        end
+      end
+
       it "assigns the correct value from a Money object using create" do
         product = Product.create(:price => Money.new(3210, "USD"), :discount => 150,
                                  :bonus_cents => 200, :optional_price => 100)
@@ -121,17 +132,15 @@ if defined? ActiveRecord
       end
 
       context "when MoneyRails.raise_error_on_money_parsing is true" do
-        before { MoneyRails.raise_error_on_money_parsing = true }
+        before do
+          MoneyRails.raise_error_on_money_parsing = true
+          Money.default_bank.add_rate("RUB", "USD", 1)
+        end
+
         after { MoneyRails.raise_error_on_money_parsing = false }
 
         it "raises exception when a String value with hyphen is assigned" do
           expect { product.accessor_price = "10-235" }.to raise_error ArgumentError
-        end
-
-        it "raises an exception if it can't change currency" do
-          expect {
-            Product.new.price = Money.new(10, "RUB")
-          }.to raise_error(MoneyRails::ActiveRecord::Monetizable::ReadOnlyCurrencyException, "Can't change readonly currency 'USD' to 'RUB' for field 'price'")
         end
       end
 

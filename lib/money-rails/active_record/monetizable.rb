@@ -149,7 +149,7 @@ module MoneyRails
                 money = nil
               else
                 if value.is_a?(Money)
-                  money = value
+                  money = value.exchange_to(currency_for_name(name, options))
                 else
                   begin
                     money = value.to_money(public_send("currency_for_#{name}"))
@@ -268,6 +268,14 @@ module MoneyRails
 
           @monetized_attributes[name] = value
         end
+      end
+
+      private
+      def currency_for_name(name, options = {})
+        return (self.send("#{name}_money_before_type_cast".to_sym) == self.send(options[:with_model_currency]) ? self.send(options[:with_model_currency])  : self.send("#{name}_money_before_type_cast".to_sym).currency_as_string) if options[:with_model_currency]
+        options[:with_currency] ||
+        (self.class.respond_to?(:currency) ? self.class.currency : nil) ||
+        Money.default_currency
       end
     end
   end
