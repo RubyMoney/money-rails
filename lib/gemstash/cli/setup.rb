@@ -77,11 +77,11 @@ module Gemstash
 
       def ask_database
         say_current_config(:db_adapter, "Current database adapter")
-        options = %w(sqlite3 postgres mysql)
+        options = %w(sqlite3 postgres mysql mysql2)
         database = nil
 
         until database
-          database = @cli.ask "What database adapter? [SQLITE3, postgres, mysql]"
+          database = @cli.ask "What database adapter? [SQLITE3, postgres, mysql, mysql2]"
           database = database.downcase
           database = "sqlite3" if database.empty?
           database = nil unless options.include?(database)
