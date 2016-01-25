@@ -33,6 +33,11 @@ you push your own private gems as well."
   spec.add_runtime_dependency "faraday", "~> 0.9"
   spec.add_runtime_dependency "faraday_middleware", "~> 0.10"
 
+  # Run Gemstash with the mysql adapter
+  # spec.add_runtime_dependency "mysql", "~> 2.9"
+  # Run Gemstash with the mysql2 adapter
+  # spec.add_runtime_dependency "mysql2", "~> 0.4"
+
   if RUBY_PLATFORM == "java"
     spec.add_runtime_dependency "jdbc-sqlite3", "~> 3.8"
   else
@@ -45,5 +50,5 @@ you push your own private gems as well."
   spec.add_development_dependency "rack-test", "~> 0.6"
   spec.add_development_dependency "rake", "~> 10.0"
   spec.add_development_dependency "rspec", "~> 3.3"
-  spec.add_development_dependency "rubocop", "~> 0.34"
+  spec.add_development_dependency "rubocop", "0.35.1"
 end
