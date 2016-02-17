@@ -455,7 +455,7 @@ So `humanized_money` will ignore `config.default_format = { no_cents_if_whole: f
 
 ### Testing
 
-If you use Rspec there is an test helper implementation.
+If you use Rspec there is a test helper implementation.
 Just write `require "money-rails/test_helpers"` in spec_helper.rb.
 
 * the `monetize` matcher
