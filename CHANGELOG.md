@@ -15,6 +15,7 @@
  - validator was looking for monetizable_attributes using a symbol key, when the keys are all strings. Asserted string key values in rspec and changed validator to look for a string key.
  - make monetized_attribute hash comparison order independent
  - Isolate class used for the monetized_attributes tests to prevent cross-contamination
+ - rename `format_with_settings` method to `format`
  - add gem tasks
 
 ## 1.4.0
