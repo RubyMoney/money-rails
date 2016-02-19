@@ -98,6 +98,10 @@ module Gemstash
       File.join(base_path, path)
     end
 
+    def log_file
+      base_file(config[:log_file] || "server.log")
+    end
+
     def rackup
       File.expand_path("../config.ru", __FILE__)
     end
