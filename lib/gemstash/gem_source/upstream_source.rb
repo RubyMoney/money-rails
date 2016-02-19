@@ -120,10 +120,17 @@ module Gemstash
 
       def serve_cached(id, resource_type)
         gem = fetch_gem(id, resource_type)
-        headers.update(gem.properties[:headers][resource_type]) if gem.property?(:headers, resource_type)
+        set_gem_headers(gem, resource_type)
         gem.content(resource_type)
       rescue Gemstash::WebError => e
         halt e.code
+      end
+
+      def set_gem_headers(gem, resource_type)
+        return unless gem.property?(:headers, resource_type)
+        headers = gem.properties[:headers][resource_type]
+        headers = headers.reject { |key, _| key =~ /\Acontent-length\z/i }
+        headers.update(headers)
       end
 
       def dependencies
