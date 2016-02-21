@@ -42,8 +42,7 @@ module MoneyRails
 
             # This attribute allows per column currency values
             # Overrides row and default currency
-            field_currency_name = options[:with_currency] ||
-              options[:field_currency] || nil
+            field_currency = options[:with_currency] || options[:field_currency] || nil
 
             name = options[:as] || options[:target_name] || nil
 
@@ -209,28 +208,7 @@ module MoneyRails
             end
 
             define_method "currency_for_#{name}" do
-              if MoneyRails::Configuration.currency_column[:postfix].present?
-                instance_currency_name_with_postfix = "#{name}#{MoneyRails::Configuration.currency_column[:postfix]}"
-              end
-
-              if instance_currency_name.present? && respond_to?(instance_currency_name) &&
-                  Money::Currency.find(public_send(instance_currency_name))
-
-                Money::Currency.find(public_send(instance_currency_name))
-              elsif field_currency_name.respond_to?(:call)
-                Money::Currency.find(field_currency_name.call(self))
-              elsif field_currency_name
-                Money::Currency.find(field_currency_name)
-              elsif instance_currency_name_with_postfix.present? &&
-                     respond_to?(instance_currency_name_with_postfix) &&
-                     Money::Currency.find(public_send(instance_currency_name_with_postfix))
-
-                Money::Currency.find(public_send(instance_currency_name_with_postfix))
-              elsif self.class.respond_to?(:currency)
-                self.class.currency
-              else
-                Money.default_currency
-              end
+              currency_for name, instance_currency_name, field_currency
             end
 
             attr_reader "#{name}_money_before_type_cast"
@@ -267,6 +245,31 @@ module MoneyRails
           end
 
           @monetized_attributes[name] = value
+        end
+      end
+
+      def currency_for(name, instance_currency_name, field_currency)
+        if MoneyRails::Configuration.currency_column[:postfix].present?
+          instance_currency_name_with_postfix = "#{name}#{MoneyRails::Configuration.currency_column[:postfix]}"
+        end
+
+        if instance_currency_name.present? && respond_to?(instance_currency_name) &&
+            Money::Currency.find(public_send(instance_currency_name))
+
+          Money::Currency.find(public_send(instance_currency_name))
+        elsif field_currency.respond_to?(:call)
+          Money::Currency.find(field_currency.call(self))
+        elsif field_currency
+          Money::Currency.find(field_currency)
+        elsif instance_currency_name_with_postfix.present? &&
+               respond_to?(instance_currency_name_with_postfix) &&
+               Money::Currency.find(public_send(instance_currency_name_with_postfix))
+
+          Money::Currency.find(public_send(instance_currency_name_with_postfix))
+        elsif self.class.respond_to?(:currency)
+          self.class.currency
+        else
+          Money.default_currency
         end
       end
     end
