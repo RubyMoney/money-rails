@@ -6,7 +6,7 @@ class Sub < Product; end
 
 if defined? ActiveRecord
   describe MoneyRails::ActiveRecord::Monetizable do
-    describe "monetize" do
+    describe ".monetize" do
       let(:product) do
         Product.create(:price_cents => 3000, :discount => 150,
                        :bonus_cents => 200, :optional_price => 100,
@@ -20,7 +20,7 @@ if defined? ActiveRecord
         Service.create(:charge_cents => 2000, :discount_cents => 120)
       end
 
-      context 'monetized_attributes' do
+      context ".monetized_attributes" do
 
         class InheritedMonetizeProduct < Product
           monetize :special_price_cents
@@ -798,10 +798,58 @@ if defined? ActiveRecord
       end
     end
 
-    describe "register_currency" do
+    describe ".register_currency" do
       it "attaches currency at model level" do
         expect(Product.currency).to eq(Money::Currency.find(:usd))
         expect(DummyProduct.currency).to eq(Money::Currency.find(:gbp))
+      end
+    end
+
+    describe "#currency_for" do
+      it "detects currency based on instance currency name" do
+        product = Product.new(:sale_price_currency_code => 'CAD')
+        currency = product.send(:currency_for, :sale_price, :sale_price_currency_code, nil)
+
+        expect(currency).to be_an_instance_of(Money::Currency)
+        expect(currency.iso_code).to eq('CAD')
+      end
+
+      it "detects currency based on currency passed as a block" do
+        product = Product.new
+        currency = product.send(:currency_for, :lambda_price, nil, ->(_) { 'CAD' })
+
+        expect(currency).to be_an_instance_of(Money::Currency)
+        expect(currency.iso_code).to eq('CAD')
+      end
+
+      it "detects currency based on currency passed explicitly" do
+        product = Product.new
+        currency = product.send(:currency_for, :bonus, nil, 'CAD')
+
+        expect(currency).to be_an_instance_of(Money::Currency)
+        expect(currency.iso_code).to eq('CAD')
+      end
+
+      it "detects currency based on inferred currency field" do
+        product = Product.new(:reduced_price_currency => 'CAD')
+        currency = product.send(:currency_for, :reduced_price, nil, nil)
+
+        expect(currency).to be_an_instance_of(Money::Currency)
+        expect(currency.iso_code).to eq('CAD')
+      end
+
+      it "falls back to a registered currency" do
+        product = Product.new
+        currency = product.send(:currency_for, :amount, nil, nil)
+
+        expect(currency).to eq(Product.currency)
+      end
+
+      it "falls back to a default currency" do
+        transaction = Transaction.new
+        currency = transaction.send(:currency_for, :amount, nil, nil)
+
+        expect(currency).to eq(Money.default_currency)
       end
     end
   end
