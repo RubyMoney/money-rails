@@ -25,7 +25,7 @@ grammar Changelog::Grammar
   end
 
   rule version
-    (version_header version_section+) {
+    (version_header version_section*) {
       def number
         capture(:version_header).capture(:version_number).value
       end

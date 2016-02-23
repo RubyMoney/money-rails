@@ -1,3 +1,9 @@
+## 1.0.1 (2016-02-23)
+
+### Bugfixes
+
+  - Don't pass along the Content-Length header ([#77](https://github.com/bundler/gemstash/pull/77), [@smellsblue](https://github.com/smellsblue))
+
 ## 1.0.0 (2015-12-25)
 
   There are no changes since the last release.
