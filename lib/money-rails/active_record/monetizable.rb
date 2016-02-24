@@ -117,43 +117,7 @@ module MoneyRails
             end
 
             define_method name do |*args|
-
-              # Get the cents
-              amount = public_send(subunit_name, *args)
-
-              # Get the currency object
-              attr_currency = public_send("currency_for_#{name}")
-
-              # Get the cached value
-              memoized = instance_variable_get("@#{name}")
-
-              # Dont create a new Money instance if the values haven't been changed.
-              if memoized && memoized.cents == amount
-                if memoized.currency == attr_currency
-                  result =  memoized
-                else
-                  memoized_amount = memoized.amount.to_money(attr_currency)
-                  write_attribute subunit_name, memoized_amount.cents
-                  # Cache the value (it may be nil)
-                  result = instance_variable_set "@#{name}", memoized_amount
-                end
-              elsif amount.present?
-                # If amount is NOT nil (or empty string) load the amount in a Money
-                amount = Money.new(amount, attr_currency)
-
-                # Cache the value (it may be nil)
-                result = instance_variable_set "@#{name}", amount
-              end
-
-              if MoneyRails::Configuration.preserve_user_input
-                value_before_type_cast = instance_variable_get "@#{name}_money_before_type_cast"
-                unless errors[name.to_sym].blank?
-                  result.define_singleton_method(:to_s) { value_before_type_cast }
-                  result.define_singleton_method(:format) { |_| value_before_type_cast }
-                end
-              end
-
-              result
+              read_monetized name, subunit_name, *args
             end
 
             define_method "#{name}=" do |value|
@@ -264,6 +228,45 @@ module MoneyRails
 
           @monetized_attributes[name] = value
         end
+      end
+
+      def read_monetized(name, subunit_name, *args)
+        # Get the cents
+        amount = public_send(subunit_name, *args)
+
+        # Get the currency object
+        attr_currency = public_send("currency_for_#{name}")
+
+        # Get the cached value
+        memoized = instance_variable_get("@#{name}")
+
+        # Dont create a new Money instance if the values haven't been changed.
+        if memoized && memoized.cents == amount
+          if memoized.currency == attr_currency
+            result = memoized
+          else
+            memoized_amount = memoized.amount.to_money(attr_currency)
+            write_attribute subunit_name, memoized_amount.cents
+            # Cache the value (it may be nil)
+            result = instance_variable_set("@#{name}", memoized_amount)
+          end
+        elsif amount.present?
+          # If amount is NOT nil (or empty string) load the amount in a Money
+          amount = Money.new(amount, attr_currency)
+
+          # Cache the value (it may be nil)
+          result = instance_variable_set("@#{name}", amount)
+        end
+
+        if MoneyRails::Configuration.preserve_user_input
+          value_before_type_cast = instance_variable_get "@#{name}_money_before_type_cast"
+          if errors[name.to_sym].present?
+            result.define_singleton_method(:to_s) { value_before_type_cast }
+            result.define_singleton_method(:format) { |_| value_before_type_cast }
+          end
+        end
+
+        result
       end
 
       def currency_for(name, instance_currency_name, field_currency)
