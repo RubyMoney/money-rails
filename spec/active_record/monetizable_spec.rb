@@ -77,6 +77,14 @@ if defined? ActiveRecord
         expect(product.price_cents).to eq(215)
       end
 
+      it "assigns the correct value from params" do
+        params_clp = { amount: '20000', tax: '1000', currency:  'CLP' }
+        product = Transaction.create(params_clp)
+        expect(product.valid?).to be_truthy
+        expect(product.amount.currency.subunit_to_unit).to eq(1)
+        expect(product.amount_cents).to eq(20000)
+      end
+
       it "raises an error if trying to create two attributes with the same name" do
         expect do
           class Product
