@@ -104,68 +104,14 @@ module MoneyRails
             end
 
 
+            # Getter for monetized attribute
             define_method name do |*args|
               read_monetized name, subunit_name, *args
             end
 
+            # Setter for monetized attribute
             define_method "#{name}=" do |value|
-
-              # Lets keep the before_type_cast value
-              instance_variable_set "@#{name}_money_before_type_cast", value
-
-              # Use nil or get a Money object
-              if options[:allow_nil] && value.blank?
-                money = nil
-              else
-                if value.is_a?(Money)
-                  money = value
-                else
-                  begin
-                    money = value.to_money(public_send("currency_for_#{name}"))
-                  rescue NoMethodError
-                    return nil
-                  rescue ArgumentError
-                    raise if MoneyRails.raise_error_on_money_parsing
-                    return nil
-                  rescue Money::Currency::UnknownCurrency
-                    raise if MoneyRails.raise_error_on_money_parsing
-                    return nil
-                  end
-                end
-              end
-
-              # Update cents
-              if !validation_enabled
-                # We haven't defined our own subunit writer, so we can invoke
-                # the regular writer, which works with store_accessors
-                public_send("#{subunit_name}=", money.try(:cents))
-              elsif self.class.respond_to?(:attribute_aliases) &&
-                  self.class.attribute_aliases.key?(subunit_name)
-                # If the attribute is aliased, make sure we write to the original
-                # attribute name or an error will be raised.
-                # (Note: 'attribute_aliases' doesn't exist in Rails 3.x, so we
-                # can't tell if the attribute was aliased.)
-                original_name = self.class.attribute_aliases[subunit_name.to_s]
-                write_attribute(original_name, money.try(:cents))
-              else
-                write_attribute(subunit_name, money.try(:cents))
-              end
-
-              money_currency = money.try(:currency)
-
-              # Update currency iso value if there is an instance currency attribute
-              if instance_currency_name.present? && respond_to?("#{instance_currency_name}=") && money_currency
-                public_send("#{instance_currency_name}=", money_currency.try(:iso_code))
-              else
-                current_currency = public_send("currency_for_#{name}")
-                if money_currency && current_currency != money_currency.id
-                  raise ReadOnlyCurrencyException.new("Can't change readonly currency '#{current_currency}' to '#{money_currency}' for field '#{name}'") if MoneyRails.raise_error_on_money_parsing
-                  return nil
-                end
-              end
-
-              # Save and return the new Money object
-              instance_variable_set "@#{name}", money
+              write_monetized name, subunit_name, value, validation_enabled, instance_currency_name, options
             end
 
             if validation_enabled
@@ -177,6 +123,7 @@ module MoneyRails
               end
             end
 
+            # Currency getter
             define_method "currency_for_#{name}" do
               currency_for name, instance_currency_name, field_currency
             end
@@ -249,6 +196,65 @@ module MoneyRails
         end
 
         result
+      end
+
+      def write_monetized(name, subunit_name, value, validation_enabled, instance_currency_name, options)
+        # Keep before_type_cast value as a reference to original input
+        instance_variable_set "@#{name}_money_before_type_cast", value
+
+        # Use nil or get a Money object
+        if options[:allow_nil] && value.blank?
+          money = nil
+        else
+          if value.is_a?(Money)
+            money = value
+          else
+            begin
+              money = value.to_money(public_send("currency_for_#{name}"))
+            rescue NoMethodError
+              return nil
+            rescue ArgumentError
+              raise if MoneyRails.raise_error_on_money_parsing
+              return nil
+            rescue Money::Currency::UnknownCurrency
+              raise if MoneyRails.raise_error_on_money_parsing
+              return nil
+            end
+          end
+        end
+
+        # Update cents
+        if !validation_enabled
+          # We haven't defined our own subunit writer, so we can invoke
+          # the regular writer, which works with store_accessors
+          public_send("#{subunit_name}=", money.try(:cents))
+        elsif self.class.respond_to?(:attribute_aliases) &&
+            self.class.attribute_aliases.key?(subunit_name)
+          # If the attribute is aliased, make sure we write to the original
+          # attribute name or an error will be raised.
+          # (Note: 'attribute_aliases' doesn't exist in Rails 3.x, so we
+          # can't tell if the attribute was aliased.)
+          original_name = self.class.attribute_aliases[subunit_name.to_s]
+          write_attribute(original_name, money.try(:cents))
+        else
+          write_attribute(subunit_name, money.try(:cents))
+        end
+
+        if money_currency = money.try(:currency)
+          # Update currency iso value if there is an instance currency attribute
+          if instance_currency_name.present? && respond_to?("#{instance_currency_name}=")
+            public_send("#{instance_currency_name}=", money_currency.iso_code)
+          else
+            current_currency = public_send("currency_for_#{name}")
+            if current_currency != money_currency.id
+              raise ReadOnlyCurrencyException.new("Can't change readonly currency '#{current_currency}' to '#{money_currency}' for field '#{name}'") if MoneyRails.raise_error_on_money_parsing
+              return nil
+            end
+          end
+        end
+
+        # Save and return the new Money object
+        instance_variable_set "@#{name}", money
       end
 
       def currency_for(name, instance_currency_name, field_currency)
