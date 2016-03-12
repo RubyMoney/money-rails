@@ -64,6 +64,10 @@ RSpec.configure do |config|
     TestGemstashServer.join_all
   end
 
+  # Tag examples with focus: true to run only those
+  config.filter_run :focus
+  config.run_all_when_everything_filtered = true
+
   config.include EnvHelpers
   config.include DBHelpers
   config.include ExecHelpers

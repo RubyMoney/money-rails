@@ -9,7 +9,7 @@ describe Gemstash::Web do
   let(:http_client_builder) do
     #:nodoc:
     class StubHttpBuilder
-      def for(server_url)
+      def for(server_url, timeout = 20)
         stubs = Faraday::Adapter::Test::Stubs.new do |stub|
           stub.get("/gems/rack") { [200, { "CONTENT-TYPE" => "octet/stream" }, "zapatito"] }
           stub.get("/gems/rack-1.0.0.gem") { [200, { "CONTENT-TYPE" => "octet/stream" }, "zapatito-1.0.0"] }

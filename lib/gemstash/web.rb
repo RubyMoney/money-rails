@@ -18,7 +18,8 @@ module Gemstash
     end
 
     def http_client_for(server_url)
-      @http_client_builder.for(server_url)
+      timeout = Gemstash::Configuration.new[:fetch_timeout] || 20
+      @http_client_builder.for(server_url, timeout)
     end
 
     not_found do

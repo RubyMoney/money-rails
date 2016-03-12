@@ -20,6 +20,16 @@ describe Gemstash::HTTPClient do
     @other_server.stop
   end
 
+  describe "#for" do
+    it "sets configured timeout value" do
+      configured_timeout = 99
+      client = Gemstash::HTTPClient.for(Gemstash::Upstream.new(@server.url), configured_timeout)
+      expect(
+        client.instance_variable_get(:@client).options.timeout
+      ).to eq(configured_timeout)
+    end
+  end
+
   describe ".get" do
     let(:http_client) do
       Gemstash::HTTPClient.for(Gemstash::Upstream.new(@server.url))

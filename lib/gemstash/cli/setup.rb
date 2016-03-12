@@ -22,6 +22,7 @@ module Gemstash
         ask_storage
         ask_cache
         ask_database
+        ask_timeout
         check_cache
         check_storage
         check_database
@@ -103,6 +104,13 @@ module Gemstash
         url = @cli.ask "Where is the database? [#{default_value}]"
         url = default_value if url.empty?
         @config[:db_url] = url
+      end
+
+      def ask_timeout
+        say_current_config(:fetch_timeout, "Fetch timeout")
+        timeout = @cli.ask "How many seconds to wait when fetching a gem? [20]"
+        timeout = Gemstash::Configuration::DEFAULTS[:fetch_timeout] if timeout.to_i < 1
+        @config[:fetch_timeout] = timeout.to_i
       end
 
       def check_cache
