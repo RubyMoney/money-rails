@@ -138,3 +138,35 @@ Gemstash you are interacting with private gems. Gemstash will only let you
 unyank from `/private`. Unlike pushing, Rubygems doesn't support `--host` for
 unyank and yank (yet), so you need to specify the host via the `RUBYGEMS_HOST`
 environment variable.
+
+## Protected Fetching
+
+Private gems often require protected fetching. While the feature is still being discussed at here: https://github.com/bundler/gemstash/issues/24, a temporary solution is available through configuring web server.
+
+Depends on your choice of the web server, for example, Nginx has a `basic_auth` module, which helps to setup HTTP Basic Authentication. On the Bundler side, HTTP Basic Auth credentials can be configured through: http://bundler.io/man/gemfile.5.html#CREDENTIALS-credentials
+
+Below is a sample Nginx config with HTTP Basic Auth added to `/private` path:
+```
+upstream my-gemstash.dev {
+  server unix:/home/my-gemstash-folder/shared/sockets/puma.sock fail_timeout=0;
+}
+
+server {
+  listen 80;
+  server_name my-gemstash.dev;
+  root /home/my-gemstash-folder/public;
+
+  location / {
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header Host $http_host;
+    proxy_redirect off;
+    proxy_pass http://my-gemstash.dev;
+    location ^~ /private {
+      auth_basic "Restricted Content";
+      auth_basic_user_file /etc/nginx/.htpasswd;
+      proxy_pass http://my-gemstash.dev;
+    }
+  }
+}
+```
+Please follow this [tutorial](https://www.digitalocean.com/community/tutorials/how-to-set-up-password-authentication-with-nginx-on-ubuntu-14-04) if you are not familiar with creating password for `.htpasswd`.
