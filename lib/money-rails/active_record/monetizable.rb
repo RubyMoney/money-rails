@@ -53,6 +53,13 @@ module MoneyRails
             # if none of the previous is the case then use a default suffix
             if name
               name = name.to_s
+
+              # Check if the options[:as] parameter is not the same as subunit_name
+              # which would result in stack overflow
+              if name == subunit_name
+                raise ArgumentError, "monetizable attribute name cannot be the same as options[:as] parameter"
+              end
+
             elsif subunit_name =~ /#{MoneyRails::Configuration.amount_column[:postfix]}$/
               name = subunit_name.sub(/#{MoneyRails::Configuration.amount_column[:postfix]}$/, "")
             else
@@ -103,7 +110,6 @@ module MoneyRails
                 }
               end
             end
-
 
             define_method name do |*args|
 
