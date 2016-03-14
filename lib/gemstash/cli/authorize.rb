@@ -20,7 +20,7 @@ module Gemstash
     private
 
       def setup_logging
-        Gemstash::Logging.setup_logger(gemstash_env.base_file("server.log"))
+        Gemstash::Logging.setup_logger(gemstash_env.log_file)
       end
 
       def remove_authorization
