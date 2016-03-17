@@ -85,6 +85,14 @@ if defined? ActiveRecord
         end.to raise_error ArgumentError
       end
 
+      it "raises an error if Money object has the same attribute name as the monetizable attribute" do
+        expect do
+          class AnotherProduct < Product
+            monetize :price_cents, as: :price_cents
+          end
+        end.to raise_error ArgumentError
+      end
+
       it "allows subclass to redefine attribute with the same name" do
         class SubProduct < Product
           monetize :discount, as: :discount_price, with_currency: :gbp
