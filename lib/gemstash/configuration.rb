@@ -1,4 +1,5 @@
 require "yaml"
+require "erb"
 
 module Gemstash
   #:nodoc:
@@ -31,7 +32,7 @@ module Gemstash
       file ||= DEFAULT_FILE
 
       if File.exist?(file)
-        @config = YAML.load_file(file)
+        @config = YAML.load(::ERB.new(File.read(file)).result)
         @config = DEFAULTS.merge(@config)
         @config.freeze
       else
