@@ -698,6 +698,14 @@ if defined? ActiveRecord
           expect(dummy_product_with_nil_currency.price.currency).to eq(Money::Currency.find(:gbp))
         end
 
+        it "updates inferred currency column based on currency column postfix" do
+          product.reduced_price = Money.new(999_00, 'CAD')
+          product.save
+
+          expect(product.reduced_price_cents).to eq(999_00)
+          expect(product.reduced_price_currency).to eq('CAD')
+        end
+
         context "and field with allow_nil: true" do
           it "doesn't set currency to nil when setting the field to nil" do
             t = Transaction.new(:amount_cents => 2500, :currency => "CAD")
