@@ -32,19 +32,6 @@ module MoneyRails
                                               ":with_currency or :with_model_currency")
             end
 
-            # Optional accessor to be run on an instance to detect currency
-            instance_currency_name = options[:with_model_currency] ||
-              options[:model_currency] ||
-              MoneyRails::Configuration.currency_column[:column_name]
-
-            instance_currency_name = instance_currency_name &&
-              instance_currency_name.to_s
-
-            # This attribute allows per column currency values
-            # Overrides row and default currency
-            field_currency_name = options[:with_currency] ||
-              options[:field_currency] || nil
-
             name = options[:as] || options[:target_name] || nil
 
             # Form target name for the money backed ActiveModel field:
@@ -66,6 +53,23 @@ module MoneyRails
               # FIXME: provide a better default
               name = [subunit_name, "money"].join("_")
             end
+
+            # Optional accessor to be run on an instance to detect currency
+            instance_currency_name = options[:with_model_currency] ||
+              options[:model_currency] ||
+              MoneyRails::Configuration.currency_column[:column_name]
+
+            # Infer currency column from name and postfix
+            if !instance_currency_name && MoneyRails::Configuration.currency_column[:postfix].present?
+              instance_currency_name = "#{name}#{MoneyRails::Configuration.currency_column[:postfix]}"
+            end
+
+            instance_currency_name = instance_currency_name && instance_currency_name.to_s
+
+            # This attribute allows per column currency values
+            # Overrides row and default currency
+            field_currency_name = options[:with_currency] ||
+              options[:field_currency] || nil
 
             # Create a reverse mapping of the monetized attributes
             track_monetized_attribute name, subunit_name
