@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.6.1
+
+- View helper now respects currency decimal mark and thousands separator
+- Fix error when monetizing with attribute's name
+- Fix mime-types dependency issue with ruby 1.9
+- Fix issue with gem not updating automatically inferred currency column
+
 ## 1.6.0
 
 - Update Money and Monetize gem reqs.
