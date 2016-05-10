@@ -79,6 +79,24 @@ $ rm -rf Gemfile.lock .bundle
 $ bundle
 ```
 
+### Falling back to rubygems.org
+
+If you want to make sure that your bundling from https://rubygems.org still
+works as expected when the Gemstash server is not running, you can easily 
+configure Bundler to fallback to https://rubygems.org.
+
+```
+bundle config mirror.https://rubygems.org.fallback_timeout true
+```
+
+You can also configure this fallback as a number of seconds in case the Gemstash
+server is simply unresponsive.
+This example uses a 3 second timeout:
+
+```
+bundle config mirror.https://rubygems.org.fallback_timeout 3
+```
+
 ### Stopping the Server
 
 Once you've finish using your Gemstash server, you can stop it just as easily as
