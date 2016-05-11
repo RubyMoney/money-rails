@@ -127,12 +127,18 @@ module MoneyRails
               memoized = instance_variable_get("@#{name}")
 
               # Dont create a new Money instance if the values haven't been changed.
-              if memoized && memoized.cents == amount &&
-                memoized.currency == attr_currency
-                result =  memoized
-              else
+              if memoized && memoized.cents == amount
+                if memoized.currency == attr_currency
+                  result =  memoized
+                else
+                  memoized_amount = memoized.amount.to_money(attr_currency)
+                  write_attribute subunit_name, memoized_amount.cents
+                  # Cache the value (it may be nil)
+                  result = instance_variable_set "@#{name}", memoized_amount
+                end
+              elsif amount.present?
                 # If amount is NOT nil (or empty string) load the amount in a Money
-                amount = Money.new(amount, attr_currency) unless amount.blank?
+                amount = Money.new(amount, attr_currency)
 
                 # Cache the value (it may be nil)
                 result = instance_variable_set "@#{name}", amount
