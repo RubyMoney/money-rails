@@ -14,3 +14,7 @@ if defined? Rails
   require "money-rails/railtie"
   require "money-rails/engine"
 end
+
+if Object.const_defined?("RailsAdmin")
+  require "money-rails/rails_admin"
+end
