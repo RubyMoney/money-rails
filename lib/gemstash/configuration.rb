@@ -32,7 +32,11 @@ module Gemstash
       file ||= DEFAULT_FILE
 
       if File.exist?(file)
-        @config = YAML.load(::ERB.new(File.read(file)).result)
+        if File.fnmatch?("**.erb", file)
+          @config = YAML.load(::ERB.new(File.read(file)).result)
+        else
+          @config = YAML.load_file(file)
+        end
         @config = DEFAULTS.merge(@config)
         @config.freeze
       else
