@@ -24,6 +24,11 @@ module FileHelpers
     File.join(bundles_dir, name)
   end
 
+  def config_path(name)
+    configs_dir = File.expand_path("../../data/configurations", __FILE__)
+    File.join(configs_dir, name)
+  end
+
   def clean_bundle(name)
     dir = bundle_path(name)
     lock_file = File.join(dir, "Gemfile.lock")
