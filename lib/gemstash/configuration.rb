@@ -29,7 +29,7 @@ module Gemstash
       end
 
       raise MissingFileError, file if file && !File.exist?(file)
-      file ||= DEFAULT_FILE
+      file ||= default_file
 
       if File.exist?(file)
         @config = parse_config(file)
@@ -49,6 +49,10 @@ module Gemstash
     end
 
   private
+
+    def default_file
+      File.exist?("#{DEFAULT_FILE}.erb") ? "#{DEFAULT_FILE}.erb" : DEFAULT_FILE
+    end
 
     def parse_config(file)
       if File.fnmatch?("**.erb", file)
