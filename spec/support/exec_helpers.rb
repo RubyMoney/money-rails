@@ -67,8 +67,18 @@ module ExecHelpers
       {
         "RUBYLIB" => nil,
         "RUBYOPT" => nil,
-        "GEM_PATH" => ENV["_ORIGINAL_GEM_PATH"]
+        "GEM_PATH" => original_gem_path
       }
+    end
+
+    def original_gem_path
+      if !(ENV["_ORIGINAL_GEM_PATH"] || "").strip.empty?
+        ENV["_ORIGINAL_GEM_PATH"]
+      elsif !(ENV["BUNDLE_ORIG_GEM_PATH"] || "").strip.empty?
+        ENV["BUNDLE_ORIG_GEM_PATH"]
+      else
+        raise "Could not determine the original GEM_PATH!"
+      end
     end
 
     def clear_bundler_env
