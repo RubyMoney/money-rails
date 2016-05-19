@@ -23,7 +23,7 @@ Checking that the database is available
 The database is not available
 </pre>
 
-Once you've answered the questsions, some checks will be made to ensure the
+Once you've answered the questions, some checks will be made to ensure the
 configuration will work. For example, the database didn't exist in the previous
 example, so the command failed and the configuration wasn't saved. If the
 command passes, you may provide the `--redo` option to force configuration to be
@@ -115,6 +115,18 @@ changed. To change the binding, update the `:bind` configuration key:
 This maps directly to the [Puma bind
 flag](https://github.com/puma/puma#binding-tcp--sockets), and will support
 anything valid for that flag.
+
+## Environment Variables
+
+You may also create a `~/.gemstash/config.yml.erb` file. If present this will be used instead of `~/.gemstash/config.yml`.
+With this you can use Environment Variables in the config:
+
+```yaml
+# ~/.gemstash/config.yml
+---
+:db_adapter: postgres
+:db_url: <%= DATABASE_URL %>
+```
 
 ## Config File Location
 
