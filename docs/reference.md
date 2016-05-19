@@ -173,7 +173,7 @@ of Gemstash).
 
 **Description**<br />
 Specify the config file to use. If you aren't using the default config file at
-`~/.gemstash/config.yml`, then you must specify the config file via this option.
+`~/.gemstash/config.yml` or [`~/.gemstash/config.yml.erb`](https://github.com/bundler/gemstash/blob/master/docs/config.md#erb-parsed-config)), then you must specify the config file via this option.
 
 #### --key
 
@@ -213,7 +213,7 @@ gemstash start --no-daemonize
 
 **Description**<br />
 Specify the config file to use. If you aren't using the default config file at
-`~/.gemstash/config.yml`, then you must specify the config file via this option.
+`~/.gemstash/config.yml` (or [`~/.gemstash/config.yml.erb`](https://github.com/bundler/gemstash/blob/master/docs/config.md#erb-parsed-config)), then you must specify the config file via this option.
 
 #### --no-daemonize
 
@@ -242,7 +242,7 @@ gemstash stop
 
 **Description**<br />
 Specify the config file to use. If you aren't using the default config file at
-`~/.gemstash/config.yml`, then you must specify the config file via this option.
+`~/.gemstash/config.yml` or [`~/.gemstash/config.yml.erb`](https://github.com/bundler/gemstash/blob/master/docs/config.md#erb-parsed-config)), then you must specify the config file via this option.
 
 ## Status
 
@@ -262,7 +262,7 @@ gemstash status
 
 **Description**<br />
 Specify the config file to use. If you aren't using the default config file at
-`~/.gemstash/config.yml`, then you must specify the config file via this option.
+`~/.gemstash/config.yml` or [`~/.gemstash/config.yml.erb`](https://github.com/bundler/gemstash/blob/master/docs/config.md#erb-parsed-config)), then you must specify the config file via this option.
 
 ## Setup
 
@@ -303,7 +303,7 @@ This will do nothing if all checks pass.
 
 **Description**<br />
 Specify the config file to write to. Without this option, your configuration
-will be written to `~/.gemstash/config.yml`. If you write to a custom location,
+will be written to `~/.gemstash/config.yml` or [`~/.gemstash/config.yml.erb`](https://github.com/bundler/gemstash/blob/master/docs/config.md#erb-parsed-config)). If you write to a custom location,
 you will need to pass the `--config-file` option to all Gemstash commands.
 
 ## Version

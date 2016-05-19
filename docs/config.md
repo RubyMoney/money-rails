@@ -116,18 +116,6 @@ This maps directly to the [Puma bind
 flag](https://github.com/puma/puma#binding-tcp--sockets), and will support
 anything valid for that flag.
 
-## Environment Variables
-
-You may also create a `~/.gemstash/config.yml.erb` file. If present this will be used instead of `~/.gemstash/config.yml`.
-With this you can use Environment Variables in the config:
-
-```yaml
-# ~/.gemstash/config.yml
----
-:db_adapter: postgres
-:db_url: <%= DATABASE_URL %>
-```
-
 ## Config File Location
 
 By default, configuration for Gemstash will be at `~/.gemstash/config.yml`. This
@@ -146,3 +134,15 @@ output to with the provided configuration. **This will overwrite** any existing
 configuration. If the file doesn't exist when providing `--config-file` to
 `gemstash start`, `gemstash stop`, `gemstash status`, and `gemstash authorize`,
 the default configuration will be used.
+
+### ERB parsed config
+
+You may also create a `~/.gemstash/config.yml.erb` file. If present this will be used instead of `~/.gemstash/config.yml`.
+For example with this you can use Environment Variables in the config:
+
+```yaml
+# ~/.gemstash/config.yml.erb
+---
+:db_adapter: postgres
+:db_url: <%= ENV["DATABASE_URL"] %>
+```
