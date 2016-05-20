@@ -6,7 +6,8 @@ class InProcessExec
     raise "InProcessExec is only valid on JRuby!" unless RUBY_PLATFORM == "java"
     @env = env
     @dir = dir
-    @args = args
+    @args = args.dup
+    @args[0] = @args[0][0] if @args[0].is_a?(Array)
     exec
   end
 
