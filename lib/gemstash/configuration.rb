@@ -1,4 +1,5 @@
 require "yaml"
+require "erb"
 
 module Gemstash
   #:nodoc:
@@ -28,10 +29,10 @@ module Gemstash
       end
 
       raise MissingFileError, file if file && !File.exist?(file)
-      file ||= DEFAULT_FILE
+      file ||= default_file
 
       if File.exist?(file)
-        @config = YAML.load_file(file)
+        @config = parse_config(file)
         @config = DEFAULTS.merge(@config)
         @config.freeze
       else
@@ -45,6 +46,20 @@ module Gemstash
 
     def [](key)
       @config[key]
+    end
+
+  private
+
+    def default_file
+      File.exist?("#{DEFAULT_FILE}.erb") ? "#{DEFAULT_FILE}.erb" : DEFAULT_FILE
+    end
+
+    def parse_config(file)
+      if file.end_with?(".erb")
+        @config = YAML.load(ERB.new(File.read(file)).result)
+      else
+        @config = YAML.load_file(file)
+      end
     end
   end
 end
