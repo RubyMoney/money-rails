@@ -56,4 +56,32 @@ describe Gemstash::CLI::Setup do
       expect(File.exist?(cli_options[:config_file])).to be_falsey
     end
   end
+
+  context "with invalid cache setup" do
+    let(:cache_client) { double }
+
+    it "errors when cehcking the cache" do
+      allow(cli).to receive(:ask).and_return("")
+      expect(cli).to receive(:ask).with("Where should files go? [~/.gemstash]", path: true).and_return(TEST_BASE_PATH)
+      allow_any_instance_of(Gemstash::Env).to receive(:cache_client).and_return(cache_client)
+      expect(cache_client).to receive(:alive!).and_raise("Invalid cache setup!")
+      expect(File.exist?(cli_options[:config_file])).to be_falsey
+      expect { Gemstash::CLI::Setup.new(cli).run }.to raise_error(Gemstash::CLI::Error, /The cache is not available/)
+      expect(File.exist?(cli_options[:config_file])).to be_falsey
+    end
+  end
+
+  context "with invalid database setup" do
+    let(:database) { double }
+
+    it "errors when cehcking the cache" do
+      allow(cli).to receive(:ask).and_return("")
+      expect(cli).to receive(:ask).with("Where should files go? [~/.gemstash]", path: true).and_return(TEST_BASE_PATH)
+      allow_any_instance_of(Gemstash::Env).to receive(:db).and_return(database)
+      expect(database).to receive(:test_connection).and_raise("Invalid db setup!")
+      expect(File.exist?(cli_options[:config_file])).to be_falsey
+      expect { Gemstash::CLI::Setup.new(cli).run }.to raise_error(Gemstash::CLI::Error, /The database is not available/)
+      expect(File.exist?(cli_options[:config_file])).to be_falsey
+    end
+  end
 end
