@@ -21,7 +21,7 @@ module Gemstash
       @content = content
     end
 
-    def push
+    def serve
       check_auth
       store_gem
       store_gemspec
@@ -90,14 +90,14 @@ module Gemstash
     module LegacyRubyGemsSupport
       def self.included(base)
         base.class_eval do
-          alias_method :push_without_cleanup, :push
-          remove_method :push
+          alias_method :serve_without_cleanup, :serve
+          remove_method :serve
           remove_method :gem
         end
       end
 
-      def push
-        push_without_cleanup
+      def serve
+        serve_without_cleanup
       ensure
         cleanup
       end

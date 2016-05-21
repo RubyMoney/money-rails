@@ -23,7 +23,7 @@ module Gemstash
       @slug = slug
     end
 
-    def yank
+    def serve
       check_auth
       update_database
       invalidate_cache

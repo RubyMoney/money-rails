@@ -26,7 +26,7 @@ module Gemstash
         authenticated("Gemstash Private Gems") do
           auth = request.env["HTTP_AUTHORIZATION"]
           gem = request.body.read
-          Gemstash::GemPusher.new(auth, gem).push
+          Gemstash::GemPusher.new(auth, gem).serve
         end
       end
 
@@ -34,7 +34,7 @@ module Gemstash
         authenticated("Gemstash Private Gems") do
           auth = request.env["HTTP_AUTHORIZATION"]
           gem_name = params[:gem_name]
-          Gemstash::GemYanker.new(auth, gem_name, slug_param).yank
+          Gemstash::GemYanker.new(auth, gem_name, slug_param).serve
         end
       end
 
@@ -42,7 +42,7 @@ module Gemstash
         authenticated("Gemstash Private Gems") do
           auth = request.env["HTTP_AUTHORIZATION"]
           gem_name = params[:gem_name]
-          Gemstash::GemUnyanker.new(auth, gem_name, slug_param).unyank
+          Gemstash::GemUnyanker.new(auth, gem_name, slug_param).serve
         end
       end
 

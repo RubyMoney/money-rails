@@ -111,7 +111,7 @@ describe "gemstash integration tests" do
 
     context "yanking a gem" do
       before do
-        Gemstash::GemPusher.new("test-key", gem_contents).push
+        Gemstash::GemPusher.new("test-key", gem_contents).serve
         expect(deps.fetch(%w(speaker))).to match_dependencies([speaker_deps])
         @gemstash.env.cache.flush
       end
@@ -129,8 +129,8 @@ describe "gemstash integration tests" do
 
     context "unyanking a gem" do
       before do
-        Gemstash::GemPusher.new("test-key", gem_contents).push
-        Gemstash::GemYanker.new("test-key", gem_name, gem_version).yank
+        Gemstash::GemPusher.new("test-key", gem_contents).serve
+        Gemstash::GemYanker.new("test-key", gem_name, gem_version).serve
         expect(deps.fetch(%w(speaker))).to match_dependencies([])
         @gemstash.env.cache.flush
       end
@@ -225,10 +225,10 @@ describe "gemstash integration tests" do
     context "with private gems", db_transaction: false do
       before do
         Gemstash::Authorization.authorize("test-key", "all")
-        Gemstash::GemPusher.new("test-key", read_gem("speaker", "0.1.0")).push
-        Gemstash::GemPusher.new("test-key", read_gem("speaker", "0.1.0-java")).push
-        Gemstash::GemPusher.new("test-key", read_gem("speaker", "0.2.0.pre")).push
-        Gemstash::GemPusher.new("test-key", read_gem("speaker", "0.2.0.pre-java")).push
+        Gemstash::GemPusher.new("test-key", read_gem("speaker", "0.1.0")).serve
+        Gemstash::GemPusher.new("test-key", read_gem("speaker", "0.1.0-java")).serve
+        Gemstash::GemPusher.new("test-key", read_gem("speaker", "0.2.0.pre")).serve
+        Gemstash::GemPusher.new("test-key", read_gem("speaker", "0.2.0.pre-java")).serve
         @gemstash.env.cache.flush
       end
 
