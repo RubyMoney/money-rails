@@ -10,7 +10,7 @@ module Gemstash
       warn: Logger::WARN,
       error: Logger::ERROR,
       fatal: Logger::FATAL
-    }
+    }.freeze
 
     def log
       Gemstash::Logging.logger

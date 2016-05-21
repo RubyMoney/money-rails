@@ -69,15 +69,8 @@ module Gemstash
       gemstash_env.db.transaction do
         gem_id = Gemstash::DB::Rubygem.find_or_insert(spec)
         existing = Gemstash::DB::Version.find_by_spec(gem_id, spec)
-
-        if existing
-          if existing.indexed
-            raise ExistingVersionError, "Cannot push to an existing version!"
-          else
-            raise YankedVersionError, "Cannot push to a yanked version!"
-          end
-        end
-
+        raise ExistingVersionError, "Cannot push to an existing version!" if existing && existing.indexed
+        raise YankedVersionError, "Cannot push to a yanked version!" if existing && !existing.indexed
         version_id = Gemstash::DB::Version.insert_by_spec(gem_id, spec)
         Gemstash::DB::Dependency.insert_by_spec(version_id, spec)
       end

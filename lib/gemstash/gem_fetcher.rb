@@ -31,7 +31,7 @@ module Gemstash
     end
 
     def filter_headers(headers)
-      headers.inject({}) do|properties, (key, value)|
+      headers.inject({}) do |properties, (key, value)|
         properties[key.downcase] = value if @valid_headers.include?(key.downcase)
         properties
       end

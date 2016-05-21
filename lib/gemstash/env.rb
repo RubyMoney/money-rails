@@ -54,11 +54,8 @@ module Gemstash
     end
 
     def self.daemonized?
-      if @daemonized.nil?
-        raise "Daemonized hasn't been set yet!"
-      else
-        @daemonized
-      end
+      raise "Daemonized hasn't been set yet!" if @daemonized.nil?
+      @daemonized
     end
 
     def self.daemonized=(value)
@@ -112,10 +109,10 @@ module Gemstash
         when "sqlite3"
           db_path = base_file("gemstash.db")
 
-          if RUBY_PLATFORM == "java"
-            db = Sequel.connect("jdbc:sqlite:#{db_path}", max_connections: 1)
+          db = if RUBY_PLATFORM == "java"
+            Sequel.connect("jdbc:sqlite:#{db_path}", max_connections: 1)
           else
-            db = Sequel.connect("sqlite://#{URI.escape(db_path)}", max_connections: 1)
+            Sequel.connect("sqlite://#{URI.escape(db_path)}", max_connections: 1)
           end
         when "postgres", "mysql", "mysql2"
           db = Sequel.connect(config[:db_url])
