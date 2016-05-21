@@ -9,16 +9,10 @@ module Gemstash
     include Gemstash::Env::Helper
     attr_reader :result
 
-    # Used for the /private/specs.4.8.gz endpoint. Fetches non-prerelease,
-    # indexed private gems.
-    def self.all(auth)
-      new(auth: auth).build
-    end
-
-    # Used for the /private/prerelease_specs.4.8.gz endpoint. Fetches
-    # prerelease, indexed private gems.
-    def self.prerelease(auth)
-      new(auth: auth, prerelease: true).build
+    def self.serve(app)
+      prerelease = app.params[:prerelease]
+      app.content_type "application/octet-stream"
+      new(app.auth, prerelease: prerelease).serve
     end
 
     def self.invalidate_stored
@@ -27,12 +21,12 @@ module Gemstash
       storage.resource("prerelease_specs.4.8.gz").delete(:specs)
     end
 
-    def initialize(auth: nil, prerelease: false)
+    def initialize(auth, prerelease: false)
       @auth = auth
       @prerelease = prerelease
     end
 
-    def build
+    def serve
       check_auth if gemstash_env.config[:protected_fetch]
       fetch_from_storage
       return result if result
@@ -96,6 +90,5 @@ module Gemstash
     def check_auth
       @auth.check("fetch")
     end
-
   end
 end

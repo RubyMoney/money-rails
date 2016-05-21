@@ -24,21 +24,15 @@ module Gemstash
       end
 
       def serve_add_gem
-        authorization.protect(self, request) do |auth|
-          Gemstash::GemPusher.serve(auth, request, params)
-        end
+        protected(Gemstash::GemPusher)
       end
 
       def serve_yank
-        authorization.protect(self, request) do |auth|
-          Gemstash::GemYanker.serve(auth, request, params)
-        end
+        protected(Gemstash::GemYanker)
       end
 
       def serve_unyank
-        authorization.protect(self, request) do |auth|
-          Gemstash::GemUnyanker.serve(auth, request, params)
-        end
+        protected(Gemstash::GemUnyanker)
       end
 
       def serve_add_spec_json
@@ -85,23 +79,19 @@ module Gemstash
       end
 
       def serve_specs
-        authorization.protect(self, request) do |auth|
-          content_type "application/octet-stream"
-          Gemstash::SpecsBuilder.all(auth)
-        end
+        params[:prerelease] = false
+        protected(Gemstash::SpecsBuilder)
       end
 
       def serve_prerelease_specs
-        authorization.protect(self, request) do |auth|
-          content_type "application/octet-stream"
-          Gemstash::SpecsBuilder.prerelease(auth)
-        end
+        params[:prerelease] = true
+        protected(Gemstash::SpecsBuilder)
       end
 
     private
 
-      def authenticated(servable)
-        authorization.serve(self, servable)
+      def protected(servable)
+        authorization.protect(self) { servable.serve(self) }
       end
 
       def authorization
