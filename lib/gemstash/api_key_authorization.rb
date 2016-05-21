@@ -8,12 +8,18 @@ module Gemstash
     end
 
     def self.protect(app, &block)
-      key = app.request.env["HTTP_AUTHORIZATION"]
+      key = parse_authorization(app.request.env)
       app.auth = new(key)
       yield
     rescue Gemstash::NotAuthorizedError => e
       app.headers["WWW-Authenticate"] = "Basic realm=\"Gemstash Private Gems\""
       app.halt 401, e.message
+    end
+
+    def self.parse_authorization(request_env)
+      http_auth = Rack::Auth::Basic::Request.new(request_env)
+      return http_auth.credentials.first if http_auth.provided? && http_auth.basic?
+      request_env["HTTP_AUTHORIZATION"]
     end
 
     def check(permission)
