@@ -90,11 +90,11 @@ module Gemstash
     private
 
       def authenticated(server)
-        auth = request.env["HTTP_AUTHORIZATION"]
-        server.serve(auth, request, params)
-      rescue Gemstash::NotAuthorizedError => e
-        headers["WWW-Authenticate"] = "Basic realm=\"Gemstash Private Gems\""
-        halt 401, e.message
+        authorization.serve(server, self, request, params)
+      end
+
+      def authorization
+        Gemstash::ApiKeyAuthorization
       end
 
       def dependencies
