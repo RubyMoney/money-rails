@@ -9,7 +9,8 @@ module Gemstash
       :base_path => File.expand_path("~/.gemstash"),
       :db_adapter => "sqlite3",
       :bind => "tcp://0.0.0.0:9292",
-      :rubygems_url => "https://www.rubygems.org"
+      :rubygems_url => "https://www.rubygems.org",
+      :protected_fetch => false
     }.freeze
 
     DEFAULT_FILE = File.expand_path("~/.gemstash/config.yml").freeze

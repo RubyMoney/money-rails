@@ -164,6 +164,7 @@ describe Gemstash::Authorization do
         expect(auth.push?).to be_truthy
         expect(auth.yank?).to be_truthy
         expect(auth.unyank?).to be_truthy
+        expect(auth.fetch?).to be_truthy
       end
     end
 
@@ -175,13 +176,15 @@ describe Gemstash::Authorization do
         expect(auth.push?).to be_truthy
         expect(auth.yank?).to be_truthy
         expect(auth.unyank?).to be_falsey
+        expect(auth.fetch?).to be_falsey
 
-        Gemstash::Authorization.authorize("abc", %w(yank unyank))
+        Gemstash::Authorization.authorize("abc", %w(yank unyank fetch))
         auth = Gemstash::Authorization["abc"]
         expect(auth.all?).to be_falsey
         expect(auth.push?).to be_falsey
         expect(auth.yank?).to be_truthy
         expect(auth.unyank?).to be_truthy
+        expect(auth.fetch?).to be_truthy
       end
     end
   end
