@@ -16,6 +16,11 @@ module Gemstash
     class YankedVersionError < ExistingVersionError
     end
 
+    def self.serve(auth_key, request, params)
+      gem = request.body.read
+      new(auth_key, gem).serve
+    end
+
     def initialize(auth_key, content)
       @auth_key = auth_key
       @content = content
