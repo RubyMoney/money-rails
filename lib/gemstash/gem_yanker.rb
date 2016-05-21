@@ -17,10 +17,10 @@ module Gemstash
     class YankedVersionError < StandardError
     end
 
-    def self.serve(auth, request, params)
-      gem_name = params[:gem_name]
-      slug = Gemstash::DB::Version.slug(params)
-      new(auth, gem_name, slug).serve
+    def self.serve(app)
+      gem_name = app.params[:gem_name]
+      slug = Gemstash::DB::Version.slug(app.params)
+      new(app.auth, gem_name, slug).serve
     end
 
     def initialize(auth, gem_name, slug)
