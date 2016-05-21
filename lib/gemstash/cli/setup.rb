@@ -102,11 +102,11 @@ module Gemstash
       end
 
       def check_cache
-        check_for_exception("cache") { gemstash_env.cache_client.alive! }
+        try("cache") { gemstash_env.cache_client.alive! }
       end
 
       def check_database
-        check_for_exception("database") { gemstash_env.db.test_connection }
+        try("database") { gemstash_env.db.test_connection }
       end
 
       def check_storage
@@ -157,7 +157,7 @@ module Gemstash
         gemstash_env.reset
       end
 
-      def check_for_exception(thing)
+      def try(thing)
         @cli.say "Checking that the #{thing} is available"
         with_new_config { yield }
       rescue => e
