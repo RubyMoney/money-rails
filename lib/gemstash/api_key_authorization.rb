@@ -7,14 +7,10 @@ module Gemstash
       @key = key
     end
 
-    def self.protect(app, request, &block)
-      key = request.env["HTTP_AUTHORIZATION"]
-      auth = new(key)
-      if block_given?
-        yield auth
-      else
-        auth
-      end
+    def self.serve(app, servable)
+      key = app.request.env["HTTP_AUTHORIZATION"]
+      app.auth = new(key)
+      servable.serve(app)
     rescue Gemstash::NotAuthorizedError => e
       app.headers["WWW-Authenticate"] = "Basic realm=\"Gemstash Private Gems\""
       app.halt 401, e.message

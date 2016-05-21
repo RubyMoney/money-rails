@@ -6,6 +6,7 @@ module Gemstash
     class PrivateSource < Gemstash::GemSource::Base
       include Gemstash::GemSource::DependencyCaching
       include Gemstash::Env::Helper
+      attr_accessor :auth
 
       def self.rack_env_rewriter
         @rack_env_rewriter ||= Gemstash::RackEnvRewriter.new(%r{\A/private})
@@ -98,6 +99,10 @@ module Gemstash
       end
 
     private
+
+      def authenticated(servable)
+        authorization.serve(self, servable)
+      end
 
       def authorization
         Gemstash::ApiKeyAuthorization
