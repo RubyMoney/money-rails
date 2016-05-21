@@ -56,11 +56,14 @@ module Gemstash
       end
 
       def serve_marshal(id)
-        gem_full_name = id.sub(/\.gemspec\.rz\z/, "")
-        gem = fetch_gem(gem_full_name)
-        halt 404 unless gem.exist?(:spec)
-        content_type "application/octet-stream"
-        gem.content(:spec)
+        authorization.protect(self) do
+          auth.check("fetch") if gemstash_env.config[:protected_fetch]
+          gem_full_name = id.sub(/\.gemspec\.rz\z/, "")
+          gem = fetch_gem(gem_full_name)
+          halt 404 unless gem.exist?(:spec)
+          content_type "application/octet-stream"
+          gem.content(:spec)
+        end
       end
 
       def serve_actual_gem(id)
@@ -68,10 +71,13 @@ module Gemstash
       end
 
       def serve_gem(id)
-        gem_full_name = id.sub(/\.gem\z/, "")
-        gem = fetch_gem(gem_full_name)
-        content_type "application/octet-stream"
-        gem.content(:gem)
+        authorization.protect(self) do
+          auth.check("fetch") if gemstash_env.config[:protected_fetch]
+          gem_full_name = id.sub(/\.gem\z/, "")
+          gem = fetch_gem(gem_full_name)
+          content_type "application/octet-stream"
+          gem.content(:gem)
+        end
       end
 
       def serve_latest_specs
