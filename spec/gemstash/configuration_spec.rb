@@ -33,4 +33,13 @@ describe Gemstash::Configuration do
       expect(env.config[:db_url]).to eq("postgres://gemstash")
     end
   end
+
+  context "empty yaml config file" do
+    let(:config) { Gemstash::Configuration.new(file: "#{config_dir}/empty-config.yml") }
+    let(:env) { Gemstash::Env.new(config) }
+
+    it "loads the default config" do
+      expect(env.config[:db_adapter]).to eq("sqlite3")
+    end
+  end
 end
