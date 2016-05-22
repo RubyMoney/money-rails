@@ -11,6 +11,7 @@ Table of Contents
       * [:db_url](#db_url)
       * [:rubygems_url](#rubygems_url)
       * [:bind](#bind)
+      * [:protected_fetch](#protected_fetch)
     * [Authorize](#authorize)
       * [Usage](#usage)
       * [Arguments](#arguments)
@@ -59,6 +60,7 @@ Table of Contents
 :db_url: postgres:///gemstash
 :rubygems_url: https://my.gem-source.local
 :bind: tcp://0.0.0.0:4242
+:protected_fetch: true
 ```
 
 ### :base_path
@@ -145,6 +147,15 @@ Specifies the binding used to start the Gemstash server. Keep in mind the user
 starting Gemstash needs to have access to bind in this manner. For example, if
 you use a port below 1024, you will need to run Gemstash as the root user.
 
+### :protected_fetch
+
+**Default value:** `false`
+
+**Valid values:** Boolean values `true` or `false`
+
+**Description**<br />
+Tells Gemstash to authenticate via API Key before allowing the fetching of Private gems and specs. Default is un-authenticated download of Private gems and specs.
+
 ## Authorize
 
 Adds or removes authorization to interact with privately stored gems.
@@ -161,7 +172,7 @@ gemstash authorize --remove --key <secure-key>
 ### Arguments
 
 Any arguments will be used as specific permissions. Valid permissions include
-`push`, `yank`, and `unyank`. If no permissions are provided, then all
+`push`, `yank`, `unyank`, and `fetch`. If no permissions are provided, then all
 permissions will be granted (including any that may be added in future versions
 of Gemstash).
 
