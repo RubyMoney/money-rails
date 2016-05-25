@@ -9,7 +9,7 @@ module Gemstash
   class Authorization
     extend Gemstash::Env::Helper
     extend Gemstash::Logging
-    VALID_PERMISSIONS = %w(push yank unyank).freeze
+    VALID_PERMISSIONS = %w(push yank unyank fetch).freeze
 
     def self.authorize(auth_key, permissions)
       raise "Authorization key is required!" if auth_key.to_s.strip.empty?
@@ -82,6 +82,10 @@ module Gemstash
 
     def unyank?
       can?("unyank")
+    end
+
+    def fetch?
+      can?("fetch")
     end
   end
 end
