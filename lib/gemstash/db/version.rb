@@ -19,6 +19,17 @@ module Gemstash
         [rubygem.name, Gem::Version.new(number), platform]
       end
 
+      def self.slug(params)
+        version = params[:version]
+        platform = params[:platform]
+
+        if platform.to_s.empty?
+          version
+        else
+          "#{version}-#{platform}"
+        end
+      end
+
       def self.for_spec_collection(prerelease: false)
         where(indexed: true, prerelease: prerelease).association_join(:rubygem)
       end

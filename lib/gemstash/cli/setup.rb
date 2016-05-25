@@ -45,6 +45,22 @@ module Gemstash
         @cli.say "#{label}: #{gemstash_env.config[option]}"
       end
 
+      def ask_with_default(prompt, options, default)
+        raise "The options must all be lower case" if options.any? {|x| x.downcase != x }
+        result = nil
+        displayed_options = options.map {|x| x == default ? x.upcase : x }
+        prompt = "#{prompt} [#{displayed_options.join(", ")}]"
+
+        until result
+          result = @cli.ask prompt
+          result = result.downcase
+          result = default if result.empty?
+          result = nil unless options.include?(result)
+        end
+
+        result
+      end
+
       def ask_storage
         say_current_config(:base_path, "Current base path")
         path = @cli.ask "Where should files go? [~/.gemstash]", path: true
@@ -54,18 +70,8 @@ module Gemstash
 
       def ask_cache
         say_current_config(:cache_type, "Current cache")
-        options = %w(memory memcached)
-        cache = nil
-
-        until cache
-          cache = @cli.ask "Cache with what? [MEMORY, memcached]"
-          cache = cache.downcase
-          cache = "memory" if cache.empty?
-          cache = nil unless options.include?(cache)
-        end
-
-        @config[:cache_type] = cache
-        ask_memcached_details if cache == "memcached"
+        @config[:cache_type] = ask_with_default("Cache with what?", %w(memory memcached), "memory")
+        ask_memcached_details if @config[:cache_type] == "memcached"
       end
 
       def ask_memcached_details
@@ -77,27 +83,17 @@ module Gemstash
 
       def ask_database
         say_current_config(:db_adapter, "Current database adapter")
-        options = %w(sqlite3 postgres mysql mysql2)
-        database = nil
-
-        until database
-          database = @cli.ask "What database adapter? [SQLITE3, postgres, mysql, mysql2]"
-          database = database.downcase
-          database = "sqlite3" if database.empty?
-          database = nil unless options.include?(database)
-        end
-
-        @config[:db_adapter] = database
-        ask_database_details(database) unless database == "sqlite3"
+        @config[:db_adapter] = ask_with_default("What database adapter?", %w(sqlite3 postgres mysql mysql2), "sqlite3")
+        ask_database_details(@config[:db_adapter]) unless @config[:db_adapter] == "sqlite3"
       end
 
       def ask_database_details(database)
         say_current_config(:db_url, "Current database url")
 
-        if RUBY_PLATFORM == "java"
-          default_value = "jdbc:#{database}:///gemstash"
+        default_value = if RUBY_PLATFORM == "java"
+          "jdbc:#{database}:///gemstash"
         else
-          default_value = "#{database}:///gemstash"
+          "#{database}:///gemstash"
         end
 
         url = @cli.ask "Where is the database? [#{default_value}]"
@@ -106,19 +102,11 @@ module Gemstash
       end
 
       def check_cache
-        @cli.say "Checking that the cache is available"
-        with_new_config { gemstash_env.cache_client.alive! }
-      rescue => e
-        say_error "Cache error", e
-        raise Gemstash::CLI::Error.new(@cli, "The cache is not available")
+        try("cache") { gemstash_env.cache_client.alive! }
       end
 
       def check_database
-        @cli.say "Checking that the database is available"
-        with_new_config { gemstash_env.db.test_connection }
-      rescue => e
-        say_error "Database error", e
-        raise Gemstash::CLI::Error.new(@cli, "The database is not available")
+        try("database") { gemstash_env.db.test_connection }
       end
 
       def check_storage
@@ -167,6 +155,14 @@ module Gemstash
         yield
       ensure
         gemstash_env.reset
+      end
+
+      def try(thing)
+        @cli.say "Checking that the #{thing} is available"
+        with_new_config { yield }
+      rescue => e
+        say_error "Error checking #{thing}", e
+        raise Gemstash::CLI::Error.new(@cli, "The #{thing} is not available")
       end
     end
   end

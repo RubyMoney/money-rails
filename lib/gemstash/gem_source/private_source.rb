@@ -23,27 +23,15 @@ module Gemstash
       end
 
       def serve_add_gem
-        authenticated("Gemstash Private Gems") do
-          auth = request.env["HTTP_AUTHORIZATION"]
-          gem = request.body.read
-          Gemstash::GemPusher.new(auth, gem).push
-        end
+        authenticated(Gemstash::GemPusher)
       end
 
       def serve_yank
-        authenticated("Gemstash Private Gems") do
-          auth = request.env["HTTP_AUTHORIZATION"]
-          gem_name = params[:gem_name]
-          Gemstash::GemYanker.new(auth, gem_name, slug_param).yank
-        end
+        authenticated(Gemstash::GemYanker)
       end
 
       def serve_unyank
-        authenticated("Gemstash Private Gems") do
-          auth = request.env["HTTP_AUTHORIZATION"]
-          gem_name = params[:gem_name]
-          Gemstash::GemUnyanker.new(auth, gem_name, slug_param).unyank
-        end
+        authenticated(Gemstash::GemUnyanker)
       end
 
       def serve_add_spec_json
@@ -101,21 +89,11 @@ module Gemstash
 
     private
 
-      def slug_param
-        version = params[:version]
-        platform = params[:platform]
-
-        if platform.to_s.empty?
-          version
-        else
-          "#{version}-#{platform}"
-        end
-      end
-
-      def authenticated(realm)
-        yield
+      def authenticated(server)
+        auth = request.env["HTTP_AUTHORIZATION"]
+        server.serve(auth, request, params)
       rescue Gemstash::NotAuthorizedError => e
-        headers["WWW-Authenticate"] = "Basic realm=\"#{realm}\""
+        headers["WWW-Authenticate"] = "Basic realm=\"Gemstash Private Gems\""
         halt 401, e.message
       end
 

@@ -23,21 +23,21 @@ describe Gemstash::GemYanker do
   before do
     Gemstash::Authorization.authorize(auth_key, "all")
     Gemstash::Authorization.authorize(auth_key_without_permission, ["push"])
-    Gemstash::GemPusher.new(auth_key, read_gem(gem_name, gem_version)).push
+    Gemstash::GemPusher.new(auth_key, read_gem(gem_name, gem_version)).serve
   end
 
-  describe ".yank" do
+  describe ".serve" do
     context "without authorization" do
       it "prevents yanking" do
-        expect { Gemstash::GemYanker.new(nil, gem_name, gem_slug).yank }.to raise_error(Gemstash::NotAuthorizedError)
-        expect { Gemstash::GemYanker.new("", gem_name, gem_slug).yank }.to raise_error(Gemstash::NotAuthorizedError)
+        expect { Gemstash::GemYanker.new(nil, gem_name, gem_slug).serve }.to raise_error(Gemstash::NotAuthorizedError)
+        expect { Gemstash::GemYanker.new("", gem_name, gem_slug).serve }.to raise_error(Gemstash::NotAuthorizedError)
         expect(deps.fetch(%w(example))).to eq([gem_dependencies])
       end
     end
 
     context "with invalid authorization" do
       it "prevents yanking" do
-        expect { Gemstash::GemYanker.new(invalid_auth_key, gem_name, gem_slug).yank }.
+        expect { Gemstash::GemYanker.new(invalid_auth_key, gem_name, gem_slug).serve }.
           to raise_error(Gemstash::NotAuthorizedError)
         expect(deps.fetch(%w(example))).to eq([gem_dependencies])
       end
@@ -45,7 +45,7 @@ describe Gemstash::GemYanker do
 
     context "with invalid permission" do
       it "prevents yanking" do
-        expect { Gemstash::GemYanker.new(auth_key_without_permission, gem_name, gem_slug).yank }.
+        expect { Gemstash::GemYanker.new(auth_key_without_permission, gem_name, gem_slug).serve }.
           to raise_error(Gemstash::NotAuthorizedError)
         expect(deps.fetch(%w(example))).to eq([gem_dependencies])
       end
@@ -53,14 +53,14 @@ describe Gemstash::GemYanker do
 
     context "with an unknown gem name" do
       it "rejects the yank" do
-        expect { Gemstash::GemYanker.new(auth_key, "unknown", "0.4.2-ruby").yank }.
+        expect { Gemstash::GemYanker.new(auth_key, "unknown", "0.4.2-ruby").serve }.
           to raise_error(Gemstash::GemYanker::UnknownGemError)
       end
     end
 
     context "with an unknown gem version" do
       it "rejects the yank" do
-        expect { Gemstash::GemYanker.new(auth_key, gem_name, "0.4.2-ruby").yank }.
+        expect { Gemstash::GemYanker.new(auth_key, gem_name, "0.4.2-ruby").serve }.
           to raise_error(Gemstash::GemYanker::UnknownVersionError)
         expect(deps.fetch(%w(example))).to eq([gem_dependencies])
       end
@@ -74,7 +74,7 @@ describe Gemstash::GemYanker do
       end
 
       it "rejects the yank" do
-        expect { Gemstash::GemYanker.new(auth_key, gem_name, "0.4.2-ruby").yank }.
+        expect { Gemstash::GemYanker.new(auth_key, gem_name, "0.4.2-ruby").serve }.
           to raise_error(Gemstash::GemYanker::YankedVersionError)
         expect(deps.fetch(%w(example))).to eq([gem_dependencies])
       end
@@ -86,7 +86,7 @@ describe Gemstash::GemYanker do
       it "yanks the gem" do
         # Fetch before, asserting cache will be invalidated
         expect(deps.fetch(%w(example))).to eq([gem_dependencies])
-        Gemstash::GemYanker.new(auth_key, gem_name, gem_slug).yank
+        Gemstash::GemYanker.new(auth_key, gem_name, gem_slug).serve
         expect(deps.fetch(%w(example))).to eq([])
         # It doesn't actually delete
         expect(storage.resource("#{gem_name}-#{gem_version}").content(:gem)).to eq(gem_contents)
@@ -96,7 +96,7 @@ describe Gemstash::GemYanker do
     context "with an implicit platform" do
       it "yanks the gem" do
         expect(deps.fetch(%w(example))).to eq([gem_dependencies])
-        Gemstash::GemYanker.new(auth_key, gem_name, gem_version).yank
+        Gemstash::GemYanker.new(auth_key, gem_name, gem_version).serve
         expect(deps.fetch(%w(example))).to eq([])
       end
     end
@@ -118,7 +118,7 @@ describe Gemstash::GemYanker do
       end
 
       it "yanks just the specified gem version" do
-        Gemstash::GemYanker.new(auth_key, gem_name, gem_slug).yank
+        Gemstash::GemYanker.new(auth_key, gem_name, gem_slug).serve
         expect(deps.fetch(%w(example))).to eq([alternate_deps])
       end
     end
@@ -140,7 +140,7 @@ describe Gemstash::GemYanker do
       end
 
       it "yanks just the specified gem version" do
-        Gemstash::GemYanker.new(auth_key, gem_name, gem_slug).yank
+        Gemstash::GemYanker.new(auth_key, gem_name, gem_slug).serve
         expect(deps.fetch(%w(example))).to eq([alternate_deps])
       end
     end
@@ -153,7 +153,7 @@ describe Gemstash::GemYanker do
       end
 
       it "yanks just the specified gem version" do
-        Gemstash::GemYanker.new(auth_key, gem_name, "0.1.0-java").yank
+        Gemstash::GemYanker.new(auth_key, gem_name, "0.1.0-java").serve
         expect(deps.fetch(%w(example))).to eq([gem_dependencies])
       end
     end

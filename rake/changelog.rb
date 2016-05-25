@@ -60,7 +60,7 @@ class Changelog
         puts "And store it at: #{token_path}"
         puts "Otherwise you might hit rate limits while running this"
         print "Continue without token? [yes/no] "
-        abort("Please create your token and retry") unless STDIN.gets.strip.downcase == "yes"
+        abort("Please create your token and retry") unless STDIN.gets.strip.casecmp("yes") == 0
         options = {}
       end
 

@@ -17,13 +17,19 @@ module Gemstash
     class YankedVersionError < StandardError
     end
 
+    def self.serve(auth_key, request, params)
+      gem_name = params[:gem_name]
+      slug = Gemstash::DB::Version.slug(params)
+      new(auth_key, gem_name, slug).serve
+    end
+
     def initialize(auth_key, gem_name, slug)
       @auth_key = auth_key
       @gem_name = gem_name
       @slug = slug
     end
 
-    def yank
+    def serve
       check_auth
       update_database
       invalidate_cache

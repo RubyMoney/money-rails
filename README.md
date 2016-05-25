@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/bundler/gemstash.svg?branch=master)](https://travis-ci.org/bundler/gemstash)
+[![Code Climate](https://codeclimate.com/github/bundler/gemstash/badges/gpa.svg)](https://codeclimate.com/github/bundler/gemstash)
 
 <p align="center"><img src="gemstash.png" /></p>
 
@@ -82,7 +83,7 @@ $ bundle
 ### Falling back to rubygems.org
 
 If you want to make sure that your bundling from https://rubygems.org still
-works as expected when the Gemstash server is not running, you can easily 
+works as expected when the Gemstash server is not running, you can easily
 configure Bundler to fallback to https://rubygems.org.
 
 ```

@@ -166,7 +166,7 @@ describe Gemstash::SpecsBuilder do
     it "busts the cache" do
       result = Gemstash::SpecsBuilder.all
       expect(Marshal.load(gunzip(result))).to match_array(initial_specs)
-      Gemstash::GemPusher.new("auth-key", read_gem("example", "0.1.0")).push
+      Gemstash::GemPusher.new("auth-key", read_gem("example", "0.1.0")).serve
       result = Gemstash::SpecsBuilder.all
       expect(Marshal.load(gunzip(result))).to match_array(specs_after_push)
     end
@@ -185,7 +185,7 @@ describe Gemstash::SpecsBuilder do
     it "busts the cache" do
       result = Gemstash::SpecsBuilder.prerelease
       expect(Marshal.load(gunzip(result))).to match_array(initial_specs)
-      Gemstash::GemPusher.new("auth-key", read_gem("example", "0.1.0.pre")).push
+      Gemstash::GemPusher.new("auth-key", read_gem("example", "0.1.0.pre")).serve
       result = Gemstash::SpecsBuilder.prerelease
       expect(Marshal.load(gunzip(result))).to match_array(specs_after_push)
     end
@@ -203,13 +203,13 @@ describe Gemstash::SpecsBuilder do
       Gemstash::Authorization.authorize("auth-key", "all")
       gem_id = insert_rubygem("example")
       insert_version(gem_id, "0.0.1")
-      Gemstash::GemPusher.new("auth-key", read_gem("example", "0.1.0")).push
+      Gemstash::GemPusher.new("auth-key", read_gem("example", "0.1.0")).serve
     end
 
     it "busts the cache" do
       result = Gemstash::SpecsBuilder.all
       expect(Marshal.load(gunzip(result))).to match_array(initial_specs)
-      Gemstash::GemYanker.new("auth-key", "example", "0.1.0").yank
+      Gemstash::GemYanker.new("auth-key", "example", "0.1.0").serve
       result = Gemstash::SpecsBuilder.all
       expect(Marshal.load(gunzip(result))).to match_array(specs_after_yank)
     end
@@ -227,13 +227,13 @@ describe Gemstash::SpecsBuilder do
       Gemstash::Authorization.authorize("auth-key", "all")
       gem_id = insert_rubygem("example")
       insert_version(gem_id, "0.0.1.pre", prerelease: true)
-      Gemstash::GemPusher.new("auth-key", read_gem("example", "0.1.0.pre")).push
+      Gemstash::GemPusher.new("auth-key", read_gem("example", "0.1.0.pre")).serve
     end
 
     it "busts the cache" do
       result = Gemstash::SpecsBuilder.prerelease
       expect(Marshal.load(gunzip(result))).to match_array(initial_specs)
-      Gemstash::GemYanker.new("auth-key", "example", "0.1.0.pre").yank
+      Gemstash::GemYanker.new("auth-key", "example", "0.1.0.pre").serve
       result = Gemstash::SpecsBuilder.prerelease
       expect(Marshal.load(gunzip(result))).to match_array(specs_after_yank)
     end
@@ -247,14 +247,14 @@ describe Gemstash::SpecsBuilder do
       Gemstash::Authorization.authorize("auth-key", "all")
       gem_id = insert_rubygem("example")
       insert_version(gem_id, "0.0.1")
-      Gemstash::GemPusher.new("auth-key", read_gem("example", "0.1.0")).push
-      Gemstash::GemYanker.new("auth-key", "example", "0.1.0").yank
+      Gemstash::GemPusher.new("auth-key", read_gem("example", "0.1.0")).serve
+      Gemstash::GemYanker.new("auth-key", "example", "0.1.0").serve
     end
 
     it "busts the cache" do
       result = Gemstash::SpecsBuilder.all
       expect(Marshal.load(gunzip(result))).to match_array(initial_specs)
-      Gemstash::GemUnyanker.new("auth-key", "example", "0.1.0").unyank
+      Gemstash::GemUnyanker.new("auth-key", "example", "0.1.0").serve
       result = Gemstash::SpecsBuilder.all
       expect(Marshal.load(gunzip(result))).to match_array(specs_after_unyank)
     end
@@ -268,14 +268,14 @@ describe Gemstash::SpecsBuilder do
       Gemstash::Authorization.authorize("auth-key", "all")
       gem_id = insert_rubygem("example")
       insert_version(gem_id, "0.0.1.pre", prerelease: true)
-      Gemstash::GemPusher.new("auth-key", read_gem("example", "0.1.0.pre")).push
-      Gemstash::GemYanker.new("auth-key", "example", "0.1.0.pre").yank
+      Gemstash::GemPusher.new("auth-key", read_gem("example", "0.1.0.pre")).serve
+      Gemstash::GemYanker.new("auth-key", "example", "0.1.0.pre").serve
     end
 
     it "busts the cache" do
       result = Gemstash::SpecsBuilder.prerelease
       expect(Marshal.load(gunzip(result))).to match_array(initial_specs)
-      Gemstash::GemUnyanker.new("auth-key", "example", "0.1.0.pre").unyank
+      Gemstash::GemUnyanker.new("auth-key", "example", "0.1.0.pre").serve
       result = Gemstash::SpecsBuilder.prerelease
       expect(Marshal.load(gunzip(result))).to match_array(specs_after_unyank)
     end
