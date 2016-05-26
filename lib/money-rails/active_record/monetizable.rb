@@ -50,8 +50,9 @@ module MoneyRails
             elsif subunit_name =~ /#{MoneyRails::Configuration.amount_column[:postfix]}$/
               name = subunit_name.sub(/#{MoneyRails::Configuration.amount_column[:postfix]}$/, "")
             else
-              # FIXME: provide a better default
-              name = [subunit_name, "money"].join("_")
+              raise ArgumentError, "Unable to infer the name of the monetizable attribute for '#{subunit_name}'. " \
+                                   "Expected amount column postfix is '#{MoneyRails::Configuration.amount_column[:postfix]}'. " \
+                                   "Use :as option to explicitly specify the name or change the amount column postfix in the initializer."
             end
 
             # Optional accessor to be run on an instance to detect currency
