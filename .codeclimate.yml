@@ -1,7 +1,5 @@
 ---
 engines:
-  bundler-audit:
-    enabled: true
   duplication:
     enabled: true
     config:
@@ -13,7 +11,6 @@ engines:
     enabled: true
 ratings:
   paths:
-  - Gemfile.lock
   - "**.rb"
 exclude_paths:
 - spec/
