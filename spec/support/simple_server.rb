@@ -145,9 +145,7 @@ class SimpleServer
       super
     end
 
-    # rubocop:disable Style/MethodName
-    def do_GET(request, response)
-      # rubocop:enable Style/MethodName
+    def do_GET(request, response) # rubocop:disable Style/MethodName
       @simple_server.routes[request.path].call request, response
     end
   end

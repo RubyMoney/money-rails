@@ -116,6 +116,19 @@ This maps directly to the [Puma bind
 flag](https://github.com/puma/puma#binding-tcp--sockets), and will support
 anything valid for that flag.
 
+## Protected Fetch
+
+Gemstash by default allows un-authenticated access for Private gems. Authenticated access is available via the `:protected_fetch` configuration key.
+
+
+```yaml
+# ~/.gemstash/config.yml
+---
+:protected_fetch: true
+```
+
+More details on [protected_fetch are here](https://github.com/bundler/gemstash/blob/master/docs/private_gems.md#protected-fetching).
+
 ## Config File Location
 
 By default, configuration for Gemstash will be at `~/.gemstash/config.yml`. This

@@ -20,7 +20,7 @@ $ gemstash authorize
 Your new key is: e374e237fdf5fa5718d2a21bd63dc911
 ```
 
-This new key can `push`, `yank`, and `unyank` gems from your Gemstash server.
+This new key can `push`, `yank`, `unyank`, and `fetch` gems from your Gemstash server.
 Run `gemstash authorize` with just the permissions you want to limit what the
 key will be allowed to do. You can similarly update a specific key by providing
 it via the `--key` option:
@@ -141,55 +141,32 @@ environment variable.
 
 ## Protected Fetching
 
-Private gems often require protected fetching. While the feature is still being discussed at here: https://github.com/bundler/gemstash/issues/24, a temporary solution is available through configuring web server.
+By default private gems and specs can be accessed without authentication.
 
-Depends on your choice of the web server, for example, Nginx has a `basic_auth` module, which helps to setup HTTP Basic Authentication.
+Private gems often require protected fetching. For backwards compatibility this is disabled by default, this can be enabled via `$ gemstash setup` command.
 
-Below is a sample Nginx config with HTTP Basic Auth added to `/private` path:
-```
-upstream my-gemstash.dev {
-  server unix:/home/my-gemstash-folder/shared/sockets/puma.sock fail_timeout=0;
-}
-
-server {
-  listen 80;
-  server_name my-gemstash.dev;
-  root /home/my-gemstash-folder/public;
-
-  location / {
-    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-    proxy_set_header Host $http_host;
-    proxy_redirect off;
-    proxy_pass http://my-gemstash.dev;
-    location ^~ /private {
-      auth_basic "Restricted Content";
-      auth_basic_user_file /etc/nginx/.htpasswd;
-      proxy_pass http://my-gemstash.dev;
-    }
-  }
-}
-```
-
-Please follow this [tutorial](https://www.digitalocean.com/community/tutorials/how-to-set-up-password-authentication-with-nginx-on-ubuntu-14-04) if you are not familiar with creating password for `.htpasswd`.
+When protected fetching is enabled API keys with the permissions `all` or `fetch` can be used to download gems and specs.
 
 On the Bundler side, there are a few ways to configure credentials for a given gem source:
 
 Add credentials globally:
 
 ```
-$ bundle config my-gemstash.dev user:password
+$ bundle config my-gemstash.dev api_key
 ```
 
 Add credentials in Gemfile:
 
 ```
-source "https://user:password@my-gemstash.dev"
+source "https://api_key@my-gemstash.dev"
 ```
 
 However, it's not a good practice to commit credentials to source control. A recommended solution is to use Bundler's [configuration keys](http://bundler.io/man/bundle-config.1.html#CONFIGURATION-KEYS), e.g.:
 
 ```
-$ export BUNDLE_MYGEMSTASH__DEV=user:password
+$ export BUNDLE_MYGEMSTASH__DEV=api_key
 ```
 
 Behind the scene, Bundler will pickup the ENV var according to the host name (e.g. mygemstash.dev) and add to `URI.userinfo` for making requests.
+
+The API key is treated as a HTTP Basic Auth username and any HTTP Basic password supplied will be ignored.

@@ -22,6 +22,7 @@ module Gemstash
         ask_storage
         ask_cache
         ask_database
+        ask_protected_fetch
         check_cache
         check_storage
         check_database
@@ -99,6 +100,14 @@ module Gemstash
         url = @cli.ask "Where is the database? [#{default_value}]"
         url = default_value if url.empty?
         @config[:db_url] = url
+      end
+
+      def ask_protected_fetch
+        say_current_config(:protected_fetch, "Protected Fetch enabled")
+
+        value = @cli.yes? "Use Protected Fetch for Private Gems? [y/N]"
+        value = Gemstash::Configuration::DEFAULTS[:protected_fetch] if value.is_a?(String) && value.empty?
+        @config[:protected_fetch] = value
       end
 
       def check_cache

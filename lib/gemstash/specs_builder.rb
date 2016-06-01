@@ -6,18 +6,13 @@ module Gemstash
   # Builds a Marshal'ed and GZipped array of arrays containing specs as:
   # [name, Gem::Version, platform]
   class SpecsBuilder
+    include Gemstash::Env::Helper
     attr_reader :result
 
-    # Used for the /private/specs.4.8.gz endpoint. Fetches non-prerelease,
-    # indexed private gems.
-    def self.all
-      new.build
-    end
-
-    # Used for the /private/prerelease_specs.4.8.gz endpoint. Fetches
-    # prerelease, indexed private gems.
-    def self.prerelease
-      new(prerelease: true).build
+    def self.serve(app)
+      prerelease = app.params[:prerelease]
+      app.content_type "application/octet-stream"
+      new(app.auth, prerelease: prerelease).serve
     end
 
     def self.invalidate_stored
@@ -26,11 +21,13 @@ module Gemstash
       storage.resource("prerelease_specs.4.8.gz").delete(:specs)
     end
 
-    def initialize(prerelease: false)
+    def initialize(auth, prerelease: false)
+      @auth = auth
       @prerelease = prerelease
     end
 
-    def build
+    def serve
+      check_auth if gemstash_env.config[:protected_fetch]
       fetch_from_storage
       return result if result
       fetch_versions
@@ -88,6 +85,10 @@ module Gemstash
 
     def store_result
       fetch_resource.save(specs: @result)
+    end
+
+    def check_auth
+      @auth.check("fetch")
     end
   end
 end
