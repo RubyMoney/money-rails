@@ -101,6 +101,19 @@ if defined? ActiveRecord
         end.to raise_error ArgumentError
       end
 
+      it "raises an error when unable to infer attribute name" do
+        old_postfix = MoneyRails::Configuration.amount_column[:postfix]
+        MoneyRails::Configuration.amount_column[:postfix] = '_pennies'
+
+        expect do
+          class AnotherProduct < Product
+            monetize :price_cents
+          end
+        end.to raise_error ArgumentError
+
+        MoneyRails::Configuration.amount_column[:postfix] = old_postfix
+      end
+
       it "allows subclass to redefine attribute with the same name" do
         class SubProduct < Product
           monetize :discount, as: :discount_price, with_currency: :gbp
