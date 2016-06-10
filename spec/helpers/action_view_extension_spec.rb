@@ -1,5 +1,3 @@
-# encoding: utf-8
-
 require 'spec_helper'
 
 describe 'MoneyRails::ActionViewExtension', :type => :helper do
@@ -46,18 +44,10 @@ describe 'MoneyRails::ActionViewExtension', :type => :helper do
   end
 
   describe '#humanized_money_with_symbol' do
-    let(:amount) { 125_010 }
-    let(:expected_values) { {
-      :eur => '€1.250,10',
-      :usd => '$1,250.10',
-      :sek => '1 250,10 kr'
-    } }
-
-    it 'returns the correctly formatted values' do
-      expected_values.each do |currency, result|
-        expect(helper.humanized_money_with_symbol(Money.new(amount, currency))).to eq result
-      end
-    end
+    subject { helper.humanized_money_with_symbol Money.new(12500) }
+    it { is_expected.to be_a String }
+    it { is_expected.not_to include Money.default_currency.decimal_mark }
+    it { is_expected.to include Money.default_currency.symbol }
   end
 
   describe '#money_without_cents' do
@@ -96,7 +86,7 @@ describe 'MoneyRails::ActionViewExtension', :type => :helper do
       describe '#humanized_money' do
         subject { helper.humanized_money Money.new(12500) }
         it { is_expected.to be_a String }
-        it { is_expected.to include Money.default_currency.decimal_mark }
+        it { is_expected.not_to include Money.default_currency.decimal_mark }
         it { is_expected.not_to include Money.default_currency.symbol }
         it { is_expected.to include "00" }
       end
@@ -104,7 +94,7 @@ describe 'MoneyRails::ActionViewExtension', :type => :helper do
       describe '#humanized_money_with_symbol' do
         subject { helper.humanized_money_with_symbol Money.new(12500) }
         it { is_expected.to be_a String }
-        it { is_expected.to include Money.default_currency.decimal_mark }
+        it { is_expected.not_to include Money.default_currency.decimal_mark }
         it { is_expected.to include Money.default_currency.symbol }
         it { is_expected.to include "00" }
       end
