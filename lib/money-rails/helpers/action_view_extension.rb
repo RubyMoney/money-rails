@@ -11,23 +11,19 @@ module MoneyRails
         options = { :symbol => options }
       end
 
-      unless value.is_a?(Money)
-        if value.respond_to?(:to_money)
-          value = value.to_money
-        else
-          return ''
-        end
-      end
-
       options = {
-        :no_cents_if_whole   => MoneyRails::Configuration.no_cents_if_whole.nil? ? true : MoneyRails::Configuration.no_cents_if_whole,
-        :symbol              => false,
-        :decimal_mark        => value.currency.decimal_mark,
-        :thousands_separator => value.currency.thousands_separator
+        :no_cents_if_whole => MoneyRails::Configuration.no_cents_if_whole.nil? ? true : MoneyRails::Configuration.no_cents_if_whole,
+        :symbol => false
       }.merge(options)
       options.delete(:symbol) if options[:disambiguate]
 
-      value.format(options)
+      if value.is_a?(Money)
+        value.format(options)
+      elsif value.respond_to?(:to_money)
+        value.to_money.format(options)
+      else
+        ""
+      end
     end
 
     def humanized_money_with_symbol(value, options={})
