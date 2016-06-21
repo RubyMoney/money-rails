@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.6.2
+
+- Fix attribute order possibly affecting the value of monetized attribute
+- Add support for RailsAdmin (use :money type)
+- Raise error when gem was unable to infer monetized attribute name
+- Revert decimal mark and thousands separator addtion, since formatting should depend on country and locale, instead of currency
+
 ## 1.6.1
 
 - View helper now respects currency decimal mark and thousands separator
