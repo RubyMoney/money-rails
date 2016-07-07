@@ -32,7 +32,7 @@ describe Gemstash::Web do
     Gemstash::Web.new(http_client_builder: http_client_builder,
                       gemstash_env: test_env)
   end
-  let(:upstream) { "https://www.rubygems.org" }
+  let(:upstream) { "https://rubygems.org" }
   let(:gem_source) { Gemstash::GemSource::RubygemsSource }
 
   let(:rack_env) do
@@ -57,7 +57,7 @@ describe Gemstash::Web do
     it "redirects to rubygems.org" do
       get request, {}, rack_env
 
-      expect(last_response).to redirect_to("https://www.rubygems.org")
+      expect(last_response).to redirect_to("https://rubygems.org")
     end
   end
 

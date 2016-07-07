@@ -83,7 +83,7 @@ describe Gemstash::GemSource do
       }
     end
 
-    let(:upstream_url) { "https://www.rubygems.org" }
+    let(:upstream_url) { "https://rubygems.org" }
     let(:result) { double }
 
     it "sets the source to RubygemsSource" do
