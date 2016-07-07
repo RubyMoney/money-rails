@@ -1,7 +1,7 @@
 require "spec_helper"
 
 describe Gemstash::Dependencies do
-  let(:upstream) { "https://www.rubygems.org" }
+  let(:upstream) { "https://rubygems.org" }
   let(:http_client) { double }
   let(:web_deps) { Gemstash::Dependencies.for_upstream(upstream, http_client) }
   let(:db_deps) { Gemstash::Dependencies.for_private }

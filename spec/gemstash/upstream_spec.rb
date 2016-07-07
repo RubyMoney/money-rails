@@ -60,32 +60,32 @@ describe Gemstash::Upstream do
   end
 
   describe ".url" do
-    let(:server_url) { "https://www.rubygems.org" }
+    let(:server_url) { "https://rubygems.org" }
     let(:upstream) { Gemstash::Upstream.new(server_url) }
 
     context "with nothing provided" do
       it "returns the server url" do
-        expect(upstream.url).to eq("https://www.rubygems.org")
-        expect(upstream.url(nil, "")).to eq("https://www.rubygems.org")
-        expect(upstream.url("", "")).to eq("https://www.rubygems.org")
+        expect(upstream.url).to eq("https://rubygems.org")
+        expect(upstream.url(nil, "")).to eq("https://rubygems.org")
+        expect(upstream.url("", "")).to eq("https://rubygems.org")
       end
     end
 
     context "with just a query string provided" do
       it "returns the url" do
-        expect(upstream.url(nil, "abc=123")).to eq("https://www.rubygems.org?abc=123")
+        expect(upstream.url(nil, "abc=123")).to eq("https://rubygems.org?abc=123")
       end
     end
 
     context "with just a path provided" do
       it "returns the url" do
-        expect(upstream.url("path/somewhere")).to eq("https://www.rubygems.org/path/somewhere")
+        expect(upstream.url("path/somewhere")).to eq("https://rubygems.org/path/somewhere")
       end
     end
 
     context "with just a path and query string provided" do
       it "returns the url" do
-        expect(upstream.url("path/somewhere", "abc=123")).to eq("https://www.rubygems.org/path/somewhere?abc=123")
+        expect(upstream.url("path/somewhere", "abc=123")).to eq("https://rubygems.org/path/somewhere?abc=123")
       end
     end
   end

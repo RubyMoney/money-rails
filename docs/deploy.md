@@ -4,7 +4,7 @@ Bundler is here for the rescue to keep Gemstash up to date! Create a `Gemfile`
 pointing to Gemstash:
 ```ruby
 # ./Gemfile
-source "https://www.rubygems.org"
+source "https://rubygems.org"
 gem "gemstash"
 ```
 
