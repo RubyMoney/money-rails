@@ -123,7 +123,7 @@ Specifies the database to connect to when using `postgres` for the
 
 ### :rubygems_url
 
-**Default value:** `https://www.rubygems.org`
+**Default value:** `https://rubygems.org`
 
 **Valid values:** A valid gem source URL
 

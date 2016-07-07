@@ -36,7 +36,7 @@ $ gemstash authorize --key e374e237fdf5fa5718d2a21bd63dc911
 ```
 
 With the key generated, you'll need to tell Rubygems about your new key. If
-you've pushed a gem to https://www.rubygems.org, then you will already have a
+you've pushed a gem to https://rubygems.org, then you will already have a
 credentials file to add the key to. If not, run the following commands before
 modifying the credentials file:
 ```

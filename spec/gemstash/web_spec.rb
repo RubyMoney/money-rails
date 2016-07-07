@@ -32,7 +32,7 @@ describe Gemstash::Web do
     Gemstash::Web.new(http_client_builder: http_client_builder,
                       gemstash_env: test_env)
   end
-  let(:upstream) { "https://www.rubygems.org" }
+  let(:upstream) { "https://rubygems.org" }
   let(:gem_source) { Gemstash::GemSource::RubygemsSource }
 
   let(:rack_env) do
@@ -57,7 +57,51 @@ describe Gemstash::Web do
     it "redirects to rubygems.org" do
       get request, {}, rack_env
 
-      expect(last_response).to redirect_to("https://www.rubygems.org")
+      expect(last_response).to redirect_to("https://rubygems.org")
+    end
+  end
+
+  context "GET /versions" do
+    let(:request) { "/versions" }
+
+    context "with https://rubygems.org upstream" do
+      it "redirects to https://index.rubygems.org" do
+        get request, {}, rack_env
+
+        expect(last_response).to redirect_to("https://index.rubygems.org/versions")
+      end
+    end
+
+    context "with a non https://rubygems.org upstream" do
+      let(:upstream) { "https://private-gem-server.net" }
+
+      it "redirects to the same upstream" do
+        get request, {}, rack_env
+
+        expect(last_response).to redirect_to("#{upstream}/versions")
+      end
+    end
+  end
+
+  context "GET /info/*" do
+    let(:request) { "/info/some-gem" }
+
+    context "with https://rubygems.org upstream" do
+      it "redirects to https://index.rubygems.org" do
+        get request, {}, rack_env
+
+        expect(last_response).to redirect_to("https://index.rubygems.org/info/some-gem")
+      end
+    end
+
+    context "with a non https://rubygems.org upstream" do
+      let(:upstream) { "https://private-gem-server.net" }
+
+      it "redirects to the same upstream" do
+        get request, {}, rack_env
+
+        expect(last_response).to redirect_to("#{upstream}/info/some-gem")
+      end
     end
   end
 

@@ -4,8 +4,8 @@
 
 ## What is Gemstash?
 
-Gemstash is both a cache for remote servers such as https://www.rubygems.org,
-and a private gem source.
+Gemstash is both a cache for remote servers such as https://rubygems.org, and a
+private gem source.
 
 If you are using [bundler](http://bundler.io/) across many machines that have
 access to a server within your control, you might want to use Gemstash.
@@ -16,7 +16,7 @@ you might want to use Gemstash.
 If you frequently bundle the same set of gems across multiple projects, you
 might want to use Gemstash.
 
-Are you only using gems from https://www.rubygems.org, and don't bundle the same
+Are you only using gems from https://rubygems.org, and don't bundle the same
 gems frequently? Well, maybe you don't need Gemstash... yet.
 
 ## Quickstart Guide
@@ -67,11 +67,11 @@ otherwise Gemstash will have nothing to stash. Now bundle:
 $ bundle install --path .bundle
 ```
 
-Your Gemstash server has fetched the gems from https://www.rubygems.org and
-cached them for you! To prove this, you can disable your Internet connection and
-try again. The gem dependencies from https://www.rubygems.org are cached for 30
-minutes, so if you bundle again before that, you can successfully bundle without
-an Internet connection:
+Your Gemstash server has fetched the gems from https://rubygems.org and cached
+them for you! To prove this, you can disable your Internet connection and try
+again. The gem dependencies from https://rubygems.org are cached for 30 minutes,
+so if you bundle again before that, you can successfully bundle without an
+Internet connection:
 
 ```
 $ # Disable your Internet first!
@@ -112,7 +112,7 @@ Gemstash temporarily caches things like gem dependencies in memory. Anything
 cached in memory will last for 30 minutes before being retrieved again. You can
 [use memcached](docs/config.md#cache) instead of caching in memory. Gem files
 are always cached permanently, so bundling with a `Gemfile.lock` with all gems
-cached will never call out to https://www.rubygems.org.
+cached will never call out to https://rubygems.org.
 
 The server you ran is provided via [Puma](http://puma.io/) and
 [Rack](http://rack.github.io/), however they are not customizable at this point.
