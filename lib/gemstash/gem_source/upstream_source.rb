@@ -60,11 +60,11 @@ module Gemstash
       end
 
       def serve_versions
-        redirect upstream.url("versions", request.query_string)
+        redirect index_upstream.url("versions", request.query_string)
       end
 
       def serve_info(name)
-        redirect upstream.url("info/#{name}", request.query_string)
+        redirect index_upstream.url("info/#{name}", request.query_string)
       end
 
       def serve_marshal(id)
@@ -96,6 +96,17 @@ module Gemstash
       def upstream
         @upstream ||= Gemstash::Upstream.new(env["gemstash.upstream"],
           user_agent: env["gemstash.user-agent"])
+      end
+
+      def index_upstream
+        @index_upstream ||=
+          if upstream.uri.host == "rubygems.org"
+            uri = upstream.uri.dup
+            uri.host = "index.rubygems.org"
+            Gemstash::Upstream.new(uri, user_agent: upstream.user_agent)
+          else
+            upstream
+          end
       end
     end
 
