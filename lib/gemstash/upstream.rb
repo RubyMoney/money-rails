@@ -1,11 +1,12 @@
 require "digest"
+require "uri"
 
 module Gemstash
   #:nodoc:
   class Upstream
     extend Forwardable
 
-    attr_reader :user_agent
+    attr_reader :user_agent, :uri
 
     def_delegators :@uri, :scheme, :host, :user, :password, :to_s
 
