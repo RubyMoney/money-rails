@@ -28,6 +28,7 @@ task :spec => :prepare_test_env
 desc "Prepare money-rails engine test environment"
 task :prepare_test_env do
   Rake.application['app:db:drop:all'].invoke
+  Rake.application['app:db:create'].invoke if Rails::VERSION::MAJOR >= 5
   Rake.application['app:db:migrate'].invoke
   Rake.application['app:db:test:prepare'].invoke
 end
@@ -48,6 +49,9 @@ namespace :spec do
   desc "Run Tests against mongoid (version 2)"
   task(:mongoid2) { run_with_gemfile 'gemfiles/mongoid2.gemfile' }
 
+  desc "Run Tests against rails 5.0"
+  task(:rails50) { run_with_gemfile 'gemfiles/rails50.gemfile' }
+
   desc "Run Tests against rails 4.2"
   task(:rails42) { run_with_gemfile 'gemfiles/rails42.gemfile' }
 
@@ -63,8 +67,8 @@ namespace :spec do
   desc "Run Tests against mongoid 2 & 3 & 4"
   task :mongoid => [:mongoid2, :mongoid3, :mongoid4]
 
-  desc "Run Tests against rails 3 & 4 & 4.1 & 4.2"
-  task :rails => [:rails3, :rails4, :rails41, :rails42]
+  desc "Run Tests against rails 3 & 4 & 4.1 & 4.2 & 5.0"
+  task :rails => [:rails3, :rails4, :rails41, :rails42, :rails5]
 
   desc "Run Tests against all ORMs"
   task :all => [:rails, :mongoid]
