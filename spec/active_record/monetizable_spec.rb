@@ -992,14 +992,6 @@ if defined? ActiveRecord
         expect(currency.iso_code).to eq('CAD')
       end
 
-      it "detects currency based on inferred currency field" do
-        product = Product.new(:reduced_price_currency => 'CAD')
-        currency = product.send(:currency_for, :reduced_price, nil, nil)
-
-        expect(currency).to be_an_instance_of(Money::Currency)
-        expect(currency.iso_code).to eq('CAD')
-      end
-
       it "falls back to a registered currency" do
         product = Product.new
         currency = product.send(:currency_for, :amount, nil, nil)

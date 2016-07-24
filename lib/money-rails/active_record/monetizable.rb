@@ -277,10 +277,6 @@ module MoneyRails
       end
 
       def currency_for(name, instance_currency_name, field_currency_name)
-        if MoneyRails::Configuration.currency_column[:postfix].present?
-          instance_currency_name_with_postfix = "#{name}#{MoneyRails::Configuration.currency_column[:postfix]}"
-        end
-
         if instance_currency_name.present? && respond_to?(instance_currency_name) &&
             Money::Currency.find(public_send(instance_currency_name))
 
@@ -289,11 +285,6 @@ module MoneyRails
           Money::Currency.find(field_currency_name.call(self))
         elsif field_currency_name
           Money::Currency.find(field_currency_name)
-        elsif instance_currency_name_with_postfix.present? &&
-               respond_to?(instance_currency_name_with_postfix) &&
-               Money::Currency.find(public_send(instance_currency_name_with_postfix))
-
-          Money::Currency.find(public_send(instance_currency_name_with_postfix))
         elsif self.class.respond_to?(:currency)
           self.class.currency
         else
