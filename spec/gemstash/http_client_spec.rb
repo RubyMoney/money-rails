@@ -20,16 +20,6 @@ describe Gemstash::HTTPClient do
     @other_server.stop
   end
 
-  describe "#for" do
-    it "sets configured timeout value" do
-      configured_timeout = 99
-      client = Gemstash::HTTPClient.for(Gemstash::Upstream.new(@server.url), configured_timeout)
-      expect(
-        client.instance_variable_get(:@client).options.timeout
-      ).to eq(configured_timeout)
-    end
-  end
-
   describe ".get" do
     let(:http_client) do
       Gemstash::HTTPClient.for(Gemstash::Upstream.new(@server.url))
@@ -154,6 +144,34 @@ describe Gemstash::HTTPClient do
             expect(headers_result).to eq("CONTENT-TYPE" => "octet/stream")
           end
         end
+      end
+    end
+
+    context "with a slow server" do
+      before do
+        @slow_server = SlowSimpleServer.new("localhost")
+        @slow_server.mount_message("/slow_fetch", "OK")
+        @slow_server.start
+      end
+
+      after(:each) do
+        @slow_server.stop
+      end
+
+      it "times out with a small fetch_timeout value" do
+        fetch_timeout = 0.1
+        client = Gemstash::HTTPClient.for(Gemstash::Upstream.new(@slow_server.url), fetch_timeout)
+        expect do
+          client.get("slow_fetch")
+        end.to raise_error(Faraday::TimeoutError)
+      end
+
+      it "does not timeout out with a larger fetch_timeout value" do
+        fetch_timeout = 0.5
+        client = Gemstash::HTTPClient.for(Gemstash::Upstream.new(@slow_server.url), fetch_timeout)
+        expect do
+          client.get("slow_fetch")
+        end.to_not raise_error
       end
     end
   end

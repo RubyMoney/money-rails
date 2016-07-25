@@ -12,6 +12,7 @@ require "support/in_process_exec"
 require "support/log_helpers"
 require "support/matchers"
 require "support/simple_server"
+require "support/slow_simple_server"
 require "support/test_gemstash_server"
 
 TEST_BASE_PATH = File.expand_path("../../tmp/test_base", __FILE__)

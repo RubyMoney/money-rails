@@ -23,7 +23,7 @@ module Gemstash
         ask_cache
         ask_database
         ask_protected_fetch
-        ask timeout
+        ask_timeout
         check_cache
         check_storage
         check_database

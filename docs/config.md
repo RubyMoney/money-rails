@@ -129,6 +129,15 @@ Gemstash by default allows un-authenticated access for Private gems. Authenticat
 
 More details on [protected_fetch are here](https://github.com/bundler/gemstash/blob/master/docs/private_gems.md#protected-fetching).
 
+## Fetch Timeout
+
+The default fetch timeout is 20 seconds. Use the `:fetch_timeout` configuration key to change it.
+
+```yaml
+---
+:fetch_timeout: 20
+```
+
 ## Config File Location
 
 By default, configuration for Gemstash will be at `~/.gemstash/config.yml`. This
