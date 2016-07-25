@@ -6,6 +6,7 @@ module Gemstash
     class PrivateSource < Gemstash::GemSource::Base
       include Gemstash::GemSource::DependencyCaching
       include Gemstash::Env::Helper
+      attr_accessor :auth
 
       def self.rack_env_rewriter
         @rack_env_rewriter ||= Gemstash::RackEnvRewriter.new(%r{\A/private})
@@ -23,27 +24,15 @@ module Gemstash
       end
 
       def serve_add_gem
-        authenticated("Gemstash Private Gems") do
-          auth = request.env["HTTP_AUTHORIZATION"]
-          gem = request.body.read
-          Gemstash::GemPusher.new(auth, gem).push
-        end
+        protected(Gemstash::GemPusher)
       end
 
       def serve_yank
-        authenticated("Gemstash Private Gems") do
-          auth = request.env["HTTP_AUTHORIZATION"]
-          gem_name = params[:gem_name]
-          Gemstash::GemYanker.new(auth, gem_name, slug_param).yank
-        end
+        protected(Gemstash::GemYanker)
       end
 
       def serve_unyank
-        authenticated("Gemstash Private Gems") do
-          auth = request.env["HTTP_AUTHORIZATION"]
-          gem_name = params[:gem_name]
-          Gemstash::GemUnyanker.new(auth, gem_name, slug_param).unyank
-        end
+        protected(Gemstash::GemUnyanker)
       end
 
       def serve_add_spec_json
@@ -67,11 +56,14 @@ module Gemstash
       end
 
       def serve_marshal(id)
-        gem_full_name = id.sub(/\.gemspec\.rz\z/, "")
-        gem = fetch_gem(gem_full_name)
-        halt 404 unless gem.exist?(:spec)
-        content_type "application/octet-stream"
-        gem.content(:spec)
+        authorization.protect(self) do
+          auth.check("fetch") if gemstash_env.config[:protected_fetch]
+          gem_full_name = id.sub(/\.gemspec\.rz\z/, "")
+          gem = fetch_gem(gem_full_name)
+          halt 404 unless gem.exist?(:spec)
+          content_type "application/octet-stream"
+          gem.content(:spec)
+        end
       end
 
       def serve_actual_gem(id)
@@ -79,10 +71,13 @@ module Gemstash
       end
 
       def serve_gem(id)
-        gem_full_name = id.sub(/\.gem\z/, "")
-        gem = fetch_gem(gem_full_name)
-        content_type "application/octet-stream"
-        gem.content(:gem)
+        authorization.protect(self) do
+          auth.check("fetch") if gemstash_env.config[:protected_fetch]
+          gem_full_name = id.sub(/\.gem\z/, "")
+          gem = fetch_gem(gem_full_name)
+          content_type "application/octet-stream"
+          gem.content(:gem)
+        end
       end
 
       def serve_latest_specs
@@ -90,33 +85,23 @@ module Gemstash
       end
 
       def serve_specs
-        content_type "application/octet-stream"
-        Gemstash::SpecsBuilder.all
+        params[:prerelease] = false
+        protected(Gemstash::SpecsBuilder)
       end
 
       def serve_prerelease_specs
-        content_type "application/octet-stream"
-        Gemstash::SpecsBuilder.prerelease
+        params[:prerelease] = true
+        protected(Gemstash::SpecsBuilder)
       end
 
     private
 
-      def slug_param
-        version = params[:version]
-        platform = params[:platform]
-
-        if platform.to_s.empty?
-          version
-        else
-          "#{version}-#{platform}"
-        end
+      def protected(servable)
+        authorization.protect(self) { servable.serve(self) }
       end
 
-      def authenticated(realm)
-        yield
-      rescue Gemstash::NotAuthorizedError => e
-        headers["WWW-Authenticate"] = "Basic realm=\"#{realm}\""
-        halt 401, e.message
+      def authorization
+        Gemstash::ApiKeyAuthorization
       end
 
       def dependencies

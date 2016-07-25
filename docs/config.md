@@ -23,7 +23,7 @@ Checking that the database is available
 The database is not available
 </pre>
 
-Once you've answered the questsions, some checks will be made to ensure the
+Once you've answered the questions, some checks will be made to ensure the
 configuration will work. For example, the database didn't exist in the previous
 example, so the command failed and the configuration wasn't saved. If the
 command passes, you may provide the `--redo` option to force configuration to be
@@ -116,6 +116,19 @@ This maps directly to the [Puma bind
 flag](https://github.com/puma/puma#binding-tcp--sockets), and will support
 anything valid for that flag.
 
+## Protected Fetch
+
+Gemstash by default allows un-authenticated access for Private gems. Authenticated access is available via the `:protected_fetch` configuration key.
+
+
+```yaml
+# ~/.gemstash/config.yml
+---
+:protected_fetch: true
+```
+
+More details on [protected_fetch are here](https://github.com/bundler/gemstash/blob/master/docs/private_gems.md#protected-fetching).
+
 ## Config File Location
 
 By default, configuration for Gemstash will be at `~/.gemstash/config.yml`. This
@@ -134,3 +147,15 @@ output to with the provided configuration. **This will overwrite** any existing
 configuration. If the file doesn't exist when providing `--config-file` to
 `gemstash start`, `gemstash stop`, `gemstash status`, and `gemstash authorize`,
 the default configuration will be used.
+
+### ERB parsed config
+
+You may also create a `~/.gemstash/config.yml.erb` file. If present this will be used instead of `~/.gemstash/config.yml`.
+For example with this you can use Environment Variables in the config:
+
+```yaml
+# ~/.gemstash/config.yml.erb
+---
+:db_adapter: postgres
+:db_url: <%= ENV["DATABASE_URL"] %>
+```

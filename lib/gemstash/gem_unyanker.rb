@@ -17,13 +17,19 @@ module Gemstash
     class NotYankedVersionError < StandardError
     end
 
-    def initialize(auth_key, gem_name, slug)
-      @auth_key = auth_key
+    def self.serve(app)
+      gem_name = app.params[:gem_name]
+      slug = Gemstash::DB::Version.slug(app.params)
+      new(app.auth, gem_name, slug).serve
+    end
+
+    def initialize(auth, gem_name, slug)
+      @auth = auth
       @gem_name = gem_name
       @slug = slug
     end
 
-    def unyank
+    def serve
       check_auth
       update_database
       invalidate_cache
@@ -40,7 +46,7 @@ module Gemstash
     end
 
     def check_auth
-      Gemstash::Authorization.check(@auth_key, "unyank")
+      @auth.check("unyank")
     end
 
     def update_database

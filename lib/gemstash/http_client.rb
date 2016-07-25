@@ -24,7 +24,7 @@ module Gemstash
   class HTTPClient
     include Gemstash::Logging
 
-    DEFAULT_USER_AGENT = "Gemstash/#{Gemstash::VERSION}"
+    DEFAULT_USER_AGENT = "Gemstash/#{Gemstash::VERSION}".freeze
 
     def self.for(upstream, timeout = 20)
       client = Faraday.new(upstream.to_s) do |config|
@@ -62,11 +62,11 @@ module Gemstash
 
   private
 
-    def with_retries(times: 3, &block)
+    def with_retries(times: 3)
       loop do
         times -= 1
         begin
-          return block.call
+          return yield
         rescue Faraday::ConnectionFailed => e
           log_error("Connection failure", e)
           raise(ConnectionError, e.message) unless times > 0

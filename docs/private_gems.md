@@ -20,7 +20,7 @@ $ gemstash authorize
 Your new key is: e374e237fdf5fa5718d2a21bd63dc911
 ```
 
-This new key can `push`, `yank`, and `unyank` gems from your Gemstash server.
+This new key can `push`, `yank`, `unyank`, and `fetch` gems from your Gemstash server.
 Run `gemstash authorize` with just the permissions you want to limit what the
 key will be allowed to do. You can similarly update a specific key by providing
 it via the `--key` option:
@@ -36,7 +36,7 @@ $ gemstash authorize --key e374e237fdf5fa5718d2a21bd63dc911
 ```
 
 With the key generated, you'll need to tell Rubygems about your new key. If
-you've pushed a gem to https://www.rubygems.org, then you will already have a
+you've pushed a gem to https://rubygems.org, then you will already have a
 credentials file to add the key to. If not, run the following commands before
 modifying the credentials file:
 ```
@@ -138,3 +138,35 @@ Gemstash you are interacting with private gems. Gemstash will only let you
 unyank from `/private`. Unlike pushing, Rubygems doesn't support `--host` for
 unyank and yank (yet), so you need to specify the host via the `RUBYGEMS_HOST`
 environment variable.
+
+## Protected Fetching
+
+By default private gems and specs can be accessed without authentication.
+
+Private gems often require protected fetching. For backwards compatibility this is disabled by default, this can be enabled via `$ gemstash setup` command.
+
+When protected fetching is enabled API keys with the permissions `all` or `fetch` can be used to download gems and specs.
+
+On the Bundler side, there are a few ways to configure credentials for a given gem source:
+
+Add credentials globally:
+
+```
+$ bundle config my-gemstash.dev api_key
+```
+
+Add credentials in Gemfile:
+
+```
+source "https://api_key@my-gemstash.dev"
+```
+
+However, it's not a good practice to commit credentials to source control. A recommended solution is to use Bundler's [configuration keys](http://bundler.io/man/bundle-config.1.html#CONFIGURATION-KEYS), e.g.:
+
+```
+$ export BUNDLE_MYGEMSTASH__DEV=api_key
+```
+
+Behind the scene, Bundler will pickup the ENV var according to the host name (e.g. mygemstash.dev) and add to `URI.userinfo` for making requests.
+
+The API key is treated as a HTTP Basic Auth username and any HTTP Basic password supplied will be ignored.

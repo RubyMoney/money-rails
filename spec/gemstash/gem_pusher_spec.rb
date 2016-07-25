@@ -2,6 +2,9 @@ require "spec_helper"
 require "zlib"
 
 describe Gemstash::GemPusher do
+  let(:auth) { Gemstash::ApiKeyAuthorization.new(auth_key) }
+  let(:auth_with_invalid_auth_key) { Gemstash::ApiKeyAuthorization.new(invalid_auth_key) }
+  let(:auth_without_permission) { Gemstash::ApiKeyAuthorization.new(auth_key_without_permission) }
   let(:auth_key) { "auth-key" }
   let(:invalid_auth_key) { "invalid-auth-key" }
   let(:auth_key_without_permission) { "auth-key-without-permission" }
@@ -12,21 +15,23 @@ describe Gemstash::GemPusher do
     Gemstash::Authorization.authorize(auth_key_without_permission, ["yank"])
   end
 
-  describe ".push" do
+  describe ".serve" do
     let(:deps) { Gemstash::Dependencies.for_private }
     let(:gem_contents) { read_gem("example", "0.1.0") }
 
     context "without authorization" do
       it "prevents pushing" do
-        expect { Gemstash::GemPusher.new(nil, gem_contents).push }.to raise_error(Gemstash::NotAuthorizedError)
-        expect { Gemstash::GemPusher.new("", gem_contents).push }.to raise_error(Gemstash::NotAuthorizedError)
+        expect { Gemstash::GemPusher.new(Gemstash::ApiKeyAuthorization.new(nil), gem_contents).serve }.
+          to raise_error(Gemstash::NotAuthorizedError)
+        expect { Gemstash::GemPusher.new(Gemstash::ApiKeyAuthorization.new(""), gem_contents).serve }.
+          to raise_error(Gemstash::NotAuthorizedError)
         expect(deps.fetch(%w(example))).to eq([])
       end
     end
 
     context "with invalid authorization" do
       it "prevents pushing" do
-        expect { Gemstash::GemPusher.new(invalid_auth_key, gem_contents).push }.
+        expect { Gemstash::GemPusher.new(auth_with_invalid_auth_key, gem_contents).serve }.
           to raise_error(Gemstash::NotAuthorizedError)
         expect(deps.fetch(%w(example))).to eq([])
       end
@@ -34,7 +39,7 @@ describe Gemstash::GemPusher do
 
     context "with invalid permission" do
       it "prevents pushing" do
-        expect { Gemstash::GemPusher.new(auth_key_without_permission, gem_contents).push }.
+        expect { Gemstash::GemPusher.new(auth_without_permission, gem_contents).serve }.
           to raise_error(Gemstash::NotAuthorizedError)
         expect(deps.fetch(%w(example))).to eq([])
       end
@@ -52,13 +57,13 @@ describe Gemstash::GemPusher do
 
         # Fetch before, asserting cache will be invalidated
         expect(deps.fetch(%w(example))).to eq([])
-        Gemstash::GemPusher.new(auth_key, gem_contents).push
+        Gemstash::GemPusher.new(auth, gem_contents).serve
         expect(deps.fetch(%w(example))).to match_dependencies(results)
         expect(storage.resource("example-0.1.0").content(:gem)).to eq(gem_contents)
       end
 
       it "stores the gemspec" do
-        Gemstash::GemPusher.new(auth_key, gem_contents).push
+        Gemstash::GemPusher.new(auth, gem_contents).serve
         spec = storage.resource("example-0.1.0").content(:spec)
         spec = Marshal.load(Zlib::Inflate.inflate(spec))
         expect(spec).to be_a(Gem::Specification)
@@ -82,13 +87,13 @@ describe Gemstash::GemPusher do
 
         # Fetch before, asserting cache will be invalidated
         expect(deps.fetch(%w(example))).to eq([])
-        Gemstash::GemPusher.new(auth_key, gem_contents).push
+        Gemstash::GemPusher.new(auth, gem_contents).serve
         expect(deps.fetch(%w(example))).to match_dependencies(results)
         expect(storage.resource("example-0.1.0-java").content(:gem)).to eq(gem_contents)
       end
 
       it "stores the gemspec" do
-        Gemstash::GemPusher.new(auth_key, gem_contents).push
+        Gemstash::GemPusher.new(auth, gem_contents).serve
         spec = storage.resource("example-0.1.0-java").content(:spec)
         spec = Marshal.load(Zlib::Inflate.inflate(spec))
         expect(spec).to be_a(Gem::Specification)
@@ -119,13 +124,13 @@ describe Gemstash::GemPusher do
                             ["thor", "~> 0.19"]]
         }]
 
-        Gemstash::GemPusher.new(auth_key, gem_contents).push
+        Gemstash::GemPusher.new(auth, gem_contents).serve
         expect(deps.fetch(%w(example))).to match_dependencies(results)
         expect(storage.resource("example-0.1.0").content(:gem)).to eq(gem_contents)
       end
 
       it "stores the gemspec" do
-        Gemstash::GemPusher.new(auth_key, gem_contents).push
+        Gemstash::GemPusher.new(auth, gem_contents).serve
         spec = storage.resource("example-0.1.0").content(:spec)
         spec = Marshal.load(Zlib::Inflate.inflate(spec))
         expect(spec).to be_a(Gem::Specification)
@@ -143,7 +148,7 @@ describe Gemstash::GemPusher do
       end
 
       it "rejects the push" do
-        expect { Gemstash::GemPusher.new(auth_key, gem_contents).push }.
+        expect { Gemstash::GemPusher.new(auth, gem_contents).serve }.
           to raise_error(Gemstash::GemPusher::YankedVersionError)
       end
     end
@@ -156,7 +161,7 @@ describe Gemstash::GemPusher do
       end
 
       it "rejects the push" do
-        expect { Gemstash::GemPusher.new(auth_key, gem_contents).push }.
+        expect { Gemstash::GemPusher.new(auth, gem_contents).serve }.
           to raise_error(Gemstash::GemPusher::ExistingVersionError)
       end
     end

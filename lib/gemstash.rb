@@ -1,5 +1,6 @@
 #:nodoc:
 module Gemstash
+  autoload :ApiKeyAuthorization, "gemstash/api_key_authorization"
   autoload :Authorization,       "gemstash/authorization"
   autoload :DB,                  "gemstash/db"
   autoload :Cache,               "gemstash/cache"

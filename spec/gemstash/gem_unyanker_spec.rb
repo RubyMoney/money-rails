@@ -1,6 +1,9 @@
 require "spec_helper"
 
 describe Gemstash::GemUnyanker do
+  let(:auth) { Gemstash::ApiKeyAuthorization.new(auth_key) }
+  let(:auth_with_invalid_auth_key) { Gemstash::ApiKeyAuthorization.new(invalid_auth_key) }
+  let(:auth_without_permission) { Gemstash::ApiKeyAuthorization.new(auth_key_without_permission) }
   let(:auth_key) { "auth-key" }
   let(:invalid_auth_key) { "invalid-auth-key" }
   let(:auth_key_without_permission) { "auth-key-without-permission" }
@@ -23,22 +26,24 @@ describe Gemstash::GemUnyanker do
   before do
     Gemstash::Authorization.authorize(auth_key, "all")
     Gemstash::Authorization.authorize(auth_key_without_permission, ["push"])
-    Gemstash::GemPusher.new(auth_key, read_gem(gem_name, gem_version)).push
-    Gemstash::GemYanker.new(auth_key, gem_name, gem_version).yank
+    Gemstash::GemPusher.new(auth, read_gem(gem_name, gem_version)).serve
+    Gemstash::GemYanker.new(auth, gem_name, gem_version).serve
   end
 
-  describe ".unyank" do
+  describe ".serve" do
     context "without authorization" do
       it "prevents unyanking" do
-        expect { Gemstash::GemUnyanker.new(nil, gem_name, gem_slug).unyank }.to raise_error(Gemstash::NotAuthorizedError)
-        expect { Gemstash::GemUnyanker.new("", gem_name, gem_slug).unyank }.to raise_error(Gemstash::NotAuthorizedError)
+        expect { Gemstash::GemUnyanker.new(Gemstash::ApiKeyAuthorization.new(nil), gem_name, gem_slug).serve }.
+          to raise_error(Gemstash::NotAuthorizedError)
+        expect { Gemstash::GemUnyanker.new(Gemstash::ApiKeyAuthorization.new(""), gem_name, gem_slug).serve }.
+          to raise_error(Gemstash::NotAuthorizedError)
         expect(deps.fetch(%w(example))).to eq([])
       end
     end
 
     context "with invalid authorization" do
       it "prevents unyanking" do
-        expect { Gemstash::GemUnyanker.new(invalid_auth_key, gem_name, gem_slug).unyank }.
+        expect { Gemstash::GemUnyanker.new(auth_with_invalid_auth_key, gem_name, gem_slug).serve }.
           to raise_error(Gemstash::NotAuthorizedError)
         expect(deps.fetch(%w(example))).to eq([])
       end
@@ -46,7 +51,7 @@ describe Gemstash::GemUnyanker do
 
     context "with invalid permission" do
       it "prevents unyanking" do
-        expect { Gemstash::GemUnyanker.new(auth_key_without_permission, gem_name, gem_slug).unyank }.
+        expect { Gemstash::GemUnyanker.new(auth_without_permission, gem_name, gem_slug).serve }.
           to raise_error(Gemstash::NotAuthorizedError)
         expect(deps.fetch(%w(example))).to eq([])
       end
@@ -54,14 +59,14 @@ describe Gemstash::GemUnyanker do
 
     context "with an unknown gem name" do
       it "rejects the unyank" do
-        expect { Gemstash::GemUnyanker.new(auth_key, "unknown", "0.4.2-ruby").unyank }.
+        expect { Gemstash::GemUnyanker.new(auth, "unknown", "0.4.2-ruby").serve }.
           to raise_error(Gemstash::GemUnyanker::UnknownGemError)
       end
     end
 
     context "with an unknown gem version" do
       it "rejects the unyank" do
-        expect { Gemstash::GemUnyanker.new(auth_key, gem_name, "0.4.2-ruby").unyank }.
+        expect { Gemstash::GemUnyanker.new(auth, gem_name, "0.4.2-ruby").serve }.
           to raise_error(Gemstash::GemUnyanker::UnknownVersionError)
         expect(deps.fetch(%w(example))).to eq([])
       end
@@ -84,7 +89,7 @@ describe Gemstash::GemUnyanker do
       end
 
       it "rejects the unyank" do
-        expect { Gemstash::GemUnyanker.new(auth_key, gem_name, "0.4.2-ruby").unyank }.
+        expect { Gemstash::GemUnyanker.new(auth, gem_name, "0.4.2-ruby").serve }.
           to raise_error(Gemstash::GemUnyanker::NotYankedVersionError)
         expect(deps.fetch(%w(example))).to match_dependencies([alternate_deps])
       end
@@ -96,7 +101,7 @@ describe Gemstash::GemUnyanker do
       it "unyanks the gem" do
         # Fetch before, asserting cache will be invalidated
         expect(deps.fetch(%w(example))).to eq([])
-        Gemstash::GemUnyanker.new(auth_key, gem_name, gem_slug).unyank
+        Gemstash::GemUnyanker.new(auth, gem_name, gem_slug).serve
         expect(deps.fetch(%w(example))).to eq([gem_dependencies])
         expect(storage.resource("#{gem_name}-#{gem_version}").content(:gem)).to eq(gem_contents)
       end
@@ -105,7 +110,7 @@ describe Gemstash::GemUnyanker do
     context "with an implicit platform" do
       it "unyanks the gem" do
         expect(deps.fetch(%w(example))).to eq([])
-        Gemstash::GemUnyanker.new(auth_key, gem_name, gem_version).unyank
+        Gemstash::GemUnyanker.new(auth, gem_name, gem_version).serve
         expect(deps.fetch(%w(example))).to eq([gem_dependencies])
       end
     end
@@ -118,7 +123,7 @@ describe Gemstash::GemUnyanker do
       end
 
       it "unyanks just the specified gem version" do
-        Gemstash::GemUnyanker.new(auth_key, gem_name, gem_slug).unyank
+        Gemstash::GemUnyanker.new(auth, gem_name, gem_slug).serve
         expect(deps.fetch(%w(example))).to eq([gem_dependencies])
       end
     end
@@ -131,7 +136,7 @@ describe Gemstash::GemUnyanker do
       end
 
       it "unyanks just the specified gem version" do
-        Gemstash::GemUnyanker.new(auth_key, gem_name, gem_slug).unyank
+        Gemstash::GemUnyanker.new(auth, gem_name, gem_slug).serve
         expect(deps.fetch(%w(example))).to eq([gem_dependencies])
       end
     end
@@ -153,7 +158,7 @@ describe Gemstash::GemUnyanker do
       end
 
       it "unyanks just the specified gem version" do
-        Gemstash::GemUnyanker.new(auth_key, gem_name, "0.1.0-java").unyank
+        Gemstash::GemUnyanker.new(auth, gem_name, "0.1.0-java").serve
         expect(deps.fetch(%w(example))).to eq([alternate_deps])
       end
     end

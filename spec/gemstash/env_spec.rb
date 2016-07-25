@@ -11,5 +11,17 @@ describe Gemstash::Env do
       expect { env.base_path }.to raise_error("Base path '#{dir}' is not writable")
       expect { env.base_file("example.txt") }.to raise_error("Base path '#{dir}' is not writable")
     end
+
+    it "defaults the log file to server.log" do
+      expect(env.log_file).to eq(env.base_file("server.log"))
+    end
+
+    it "can override the default log file location" do
+      Dir.mktmpdir do |dir|
+        log_file = File.join(dir, "server.log")
+        env.config = Gemstash::Configuration.new(config: { :log_file => log_file })
+        expect(env.log_file).to eq(env.base_file(log_file))
+      end
+    end
   end
 end

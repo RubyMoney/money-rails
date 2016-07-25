@@ -16,12 +16,17 @@ module Gemstash
     class YankedVersionError < ExistingVersionError
     end
 
-    def initialize(auth_key, content)
-      @auth_key = auth_key
+    def self.serve(app)
+      gem = app.request.body.read
+      new(app.auth, gem).serve
+    end
+
+    def initialize(auth, content)
+      @auth = auth
       @content = content
     end
 
-    def push
+    def serve
       check_auth
       store_gem
       store_gemspec
@@ -44,7 +49,7 @@ module Gemstash
     end
 
     def check_auth
-      Gemstash::Authorization.check(@auth_key, "push")
+      @auth.check("push")
     end
 
     def store_gem
@@ -64,15 +69,8 @@ module Gemstash
       gemstash_env.db.transaction do
         gem_id = Gemstash::DB::Rubygem.find_or_insert(spec)
         existing = Gemstash::DB::Version.find_by_spec(gem_id, spec)
-
-        if existing
-          if existing.indexed
-            raise ExistingVersionError, "Cannot push to an existing version!"
-          else
-            raise YankedVersionError, "Cannot push to a yanked version!"
-          end
-        end
-
+        raise ExistingVersionError, "Cannot push to an existing version!" if existing && existing.indexed
+        raise YankedVersionError, "Cannot push to a yanked version!" if existing && !existing.indexed
         version_id = Gemstash::DB::Version.insert_by_spec(gem_id, spec)
         Gemstash::DB::Dependency.insert_by_spec(version_id, spec)
       end
@@ -90,14 +88,14 @@ module Gemstash
     module LegacyRubyGemsSupport
       def self.included(base)
         base.class_eval do
-          alias_method :push_without_cleanup, :push
-          remove_method :push
+          alias_method :serve_without_cleanup, :serve
+          remove_method :serve
           remove_method :gem
         end
       end
 
-      def push
-        push_without_cleanup
+      def serve
+        serve_without_cleanup
       ensure
         cleanup
       end

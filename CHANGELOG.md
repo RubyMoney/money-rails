@@ -1,3 +1,11 @@
+## 1.0.2 (2016-07-07)
+
+### Bugfixes
+
+  - Fix broken JRuby build ([#91](https://github.com/bundler/gemstash/pull/91), [@smellsblue](https://github.com/smellsblue))
+  - Drop www.rubygems.org in favor of rubygems.org ([#101](https://github.com/bundler/gemstash/pull/101), [@smellsblue](https://github.com/smellsblue))
+  - Redirect /versions and /info/* to index.rubygems.org ([#102](https://github.com/bundler/gemstash/pull/102), [@smellsblue](https://github.com/smellsblue))
+
 ## 1.0.1 (2016-02-23)
 
 ### Bugfixes

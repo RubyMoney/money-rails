@@ -11,6 +11,7 @@ Table of Contents
       * [:db_url](#db_url)
       * [:rubygems_url](#rubygems_url)
       * [:bind](#bind)
+      * [:protected_fetch](#protected_fetch)
     * [Authorize](#authorize)
       * [Usage](#usage)
       * [Arguments](#arguments)
@@ -59,6 +60,7 @@ Table of Contents
 :db_url: postgres:///gemstash
 :rubygems_url: https://my.gem-source.local
 :bind: tcp://0.0.0.0:4242
+:protected_fetch: true
 ```
 
 ### :base_path
@@ -123,7 +125,7 @@ Specifies the database to connect to when using `postgres` for the
 
 ### :rubygems_url
 
-**Default value:** `https://www.rubygems.org`
+**Default value:** `https://rubygems.org`
 
 **Valid values:** A valid gem source URL
 
@@ -145,6 +147,15 @@ Specifies the binding used to start the Gemstash server. Keep in mind the user
 starting Gemstash needs to have access to bind in this manner. For example, if
 you use a port below 1024, you will need to run Gemstash as the root user.
 
+### :protected_fetch
+
+**Default value:** `false`
+
+**Valid values:** Boolean values `true` or `false`
+
+**Description**<br />
+Tells Gemstash to authenticate via API Key before allowing the fetching of Private gems and specs. Default is un-authenticated download of Private gems and specs.
+
 ## Authorize
 
 Adds or removes authorization to interact with privately stored gems.
@@ -161,7 +172,7 @@ gemstash authorize --remove --key <secure-key>
 ### Arguments
 
 Any arguments will be used as specific permissions. Valid permissions include
-`push`, `yank`, and `unyank`. If no permissions are provided, then all
+`push`, `yank`, `unyank`, and `fetch`. If no permissions are provided, then all
 permissions will be granted (including any that may be added in future versions
 of Gemstash).
 
@@ -173,7 +184,7 @@ of Gemstash).
 
 **Description**<br />
 Specify the config file to use. If you aren't using the default config file at
-`~/.gemstash/config.yml`, then you must specify the config file via this option.
+`~/.gemstash/config.yml` or [`~/.gemstash/config.yml.erb`](https://github.com/bundler/gemstash/blob/master/docs/config.md#erb-parsed-config)), then you must specify the config file via this option.
 
 #### --key
 
@@ -213,7 +224,7 @@ gemstash start --no-daemonize
 
 **Description**<br />
 Specify the config file to use. If you aren't using the default config file at
-`~/.gemstash/config.yml`, then you must specify the config file via this option.
+`~/.gemstash/config.yml` (or [`~/.gemstash/config.yml.erb`](https://github.com/bundler/gemstash/blob/master/docs/config.md#erb-parsed-config)), then you must specify the config file via this option.
 
 #### --no-daemonize
 
@@ -242,7 +253,7 @@ gemstash stop
 
 **Description**<br />
 Specify the config file to use. If you aren't using the default config file at
-`~/.gemstash/config.yml`, then you must specify the config file via this option.
+`~/.gemstash/config.yml` or [`~/.gemstash/config.yml.erb`](https://github.com/bundler/gemstash/blob/master/docs/config.md#erb-parsed-config)), then you must specify the config file via this option.
 
 ## Status
 
@@ -262,7 +273,7 @@ gemstash status
 
 **Description**<br />
 Specify the config file to use. If you aren't using the default config file at
-`~/.gemstash/config.yml`, then you must specify the config file via this option.
+`~/.gemstash/config.yml` or [`~/.gemstash/config.yml.erb`](https://github.com/bundler/gemstash/blob/master/docs/config.md#erb-parsed-config)), then you must specify the config file via this option.
 
 ## Setup
 
@@ -303,7 +314,7 @@ This will do nothing if all checks pass.
 
 **Description**<br />
 Specify the config file to write to. Without this option, your configuration
-will be written to `~/.gemstash/config.yml`. If you write to a custom location,
+will be written to `~/.gemstash/config.yml` or [`~/.gemstash/config.yml.erb`](https://github.com/bundler/gemstash/blob/master/docs/config.md#erb-parsed-config)). If you write to a custom location,
 you will need to pass the `--config-file` option to all Gemstash commands.
 
 ## Version
