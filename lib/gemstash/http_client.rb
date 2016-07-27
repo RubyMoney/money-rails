@@ -22,15 +22,16 @@ module Gemstash
 
   #:nodoc:
   class HTTPClient
+    extend Gemstash::Env::Helper
     include Gemstash::Logging
 
     DEFAULT_USER_AGENT = "Gemstash/#{Gemstash::VERSION}".freeze
 
-    def self.for(upstream, timeout = 20)
+    def self.for(upstream)
       client = Faraday.new(upstream.to_s) do |config|
         config.use FaradayMiddleware::FollowRedirects
         config.adapter :net_http
-        config.options.timeout = timeout
+        config.options.timeout = gemstash_env.config[:fetch_timeout]
       end
       user_agent = "#{upstream.user_agent} " unless upstream.user_agent.to_s.empty?
       user_agent = user_agent.to_s + DEFAULT_USER_AGENT
