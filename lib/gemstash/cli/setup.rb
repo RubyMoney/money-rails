@@ -23,6 +23,7 @@ module Gemstash
         ask_cache
         ask_database
         ask_protected_fetch
+        ask_timeout
         check_cache
         check_storage
         check_database
@@ -108,6 +109,13 @@ module Gemstash
         value = @cli.yes? "Use Protected Fetch for Private Gems? [y/N]"
         value = Gemstash::Configuration::DEFAULTS[:protected_fetch] if value.is_a?(String) && value.empty?
         @config[:protected_fetch] = value
+      end
+
+      def ask_timeout
+        say_current_config(:fetch_timeout, "Fetch timeout")
+        timeout = @cli.ask "How many seconds to wait when fetching a gem? [20]"
+        timeout = Gemstash::Configuration::DEFAULTS[:fetch_timeout] if timeout.to_i < 1
+        @config[:fetch_timeout] = timeout.to_i
       end
 
       def check_cache

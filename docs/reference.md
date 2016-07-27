@@ -12,6 +12,7 @@ Table of Contents
       * [:rubygems_url](#rubygems_url)
       * [:bind](#bind)
       * [:protected_fetch](#protected_fetch)
+      * [:fetch_timeout](#fetch_timeout)
     * [Authorize](#authorize)
       * [Usage](#usage)
       * [Arguments](#arguments)
@@ -61,6 +62,7 @@ Table of Contents
 :rubygems_url: https://my.gem-source.local
 :bind: tcp://0.0.0.0:4242
 :protected_fetch: true
+:fetch_timeout: 20
 ```
 
 ### :base_path
@@ -155,6 +157,15 @@ you use a port below 1024, you will need to run Gemstash as the root user.
 
 **Description**<br />
 Tells Gemstash to authenticate via API Key before allowing the fetching of Private gems and specs. Default is un-authenticated download of Private gems and specs.
+
+### :fetch_timeout
+
+**Default value:** `20`
+
+**Valid values:** Integer values `1` to `9999`+
+
+**Description**<br />
+The timeout setting for fetching gems. Fetching gems over a slow connection may cause timeout errors. If you experience timeout errors you may want to increase this value. The default is `20` seconds.
 
 ## Authorize
 

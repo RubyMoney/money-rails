@@ -12,6 +12,7 @@ require "support/in_process_exec"
 require "support/log_helpers"
 require "support/matchers"
 require "support/simple_server"
+require "support/slow_simple_server"
 require "support/test_gemstash_server"
 
 TEST_BASE_PATH = File.expand_path("../../tmp/test_base", __FILE__)
@@ -63,6 +64,10 @@ RSpec.configure do |config|
     SimpleServer.join_all
     TestGemstashServer.join_all
   end
+
+  # Tag examples with focus: true to run only those
+  config.filter_run :focus
+  config.run_all_when_everything_filtered = true
 
   config.include EnvHelpers
   config.include DBHelpers

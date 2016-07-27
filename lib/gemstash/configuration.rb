@@ -10,7 +10,8 @@ module Gemstash
       db_adapter: "sqlite3",
       bind: "tcp://0.0.0.0:9292",
       rubygems_url: "https://rubygems.org",
-      protected_fetch: false
+      protected_fetch: false,
+      fetch_timeout: 20
     }.freeze
 
     DEFAULT_FILE = File.expand_path("~/.gemstash/config.yml").freeze
