@@ -2,6 +2,7 @@ require "bundler/gem_tasks"
 require "rspec/core/rake_task"
 require "rubocop/rake_task"
 require_relative "rake/changelog.rb"
+require_relative "rake/doc.rb"
 require_relative "rake/table_of_contents.rb"
 
 RuboCop::RakeTask.new
@@ -22,4 +23,9 @@ end
 desc "Update ChangeLog based on commits in master"
 task :changelog do
   Changelog.new.run
+end
+
+desc "Generate markdown, man, and text documentation"
+task :doc do
+  Doc.new.run
 end

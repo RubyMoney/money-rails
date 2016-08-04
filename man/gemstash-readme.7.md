@@ -1,3 +1,9 @@
+---
+title: gemstash-readme
+date: November 30, 2015
+section: 7
+...
+
 [![Build Status](https://travis-ci.org/bundler/gemstash.svg?branch=master)](https://travis-ci.org/bundler/gemstash)
 
 <p align="center"><img src="gemstash.png" /></p>
@@ -7,7 +13,7 @@
 Gemstash is both a cache for remote servers such as https://rubygems.org, and a
 private gem source.
 
-If you are using [bundler](http://bundler.io/) across many machines that have
+If you are using [bundler][BUNDLER] across many machines that have
 access to a server within your control, you might want to use Gemstash.
 
 If you produce gems that you don't want everyone in the world to have access to,
@@ -101,45 +107,45 @@ You might wonder where the gems are stored. After running the commands above,
 you will find a new directory at `~/.gemstash`. This directory holds all the
 cached and private gems. It also has a server log, the database, and
 configuration for Gemstash. If you prefer, you can [point to a different
-directory](docs/config.md#files).
+directory][CUSTOMIZE_FILES].
 
-Gemstash uses [SQLite](https://www.sqlite.org/) to store details about private
+Gemstash uses [SQLite][SQLITE] to store details about private
 gems. The database will be located in `~/.gemstash`, however you won't see the
 database appear until you start using private gems. If you prefer, you can [use
-a different database](docs/config.md#database).
+a different database][CUSTOMIZE_DATABASE].
 
 Gemstash temporarily caches things like gem dependencies in memory. Anything
 cached in memory will last for 30 minutes before being retrieved again. You can
-[use memcached](docs/config.md#cache) instead of caching in memory. Gem files
+[use memcached][CUSTOMIZE_CACHE] instead of caching in memory. Gem files
 are always cached permanently, so bundling with a `Gemfile.lock` with all gems
 cached will never call out to https://rubygems.org.
 
-The server you ran is provided via [Puma](http://puma.io/) and
-[Rack](http://rack.github.io/), however they are not customizable at this point.
+The server you ran is provided via [Puma][PUMA] and [Rack][RACK], however they
+are not customizable at this point.
 
 ## Deep Dive
 
 For a deep dive into the following subjects, follow the links:
-* [Private gems](docs/private_gems.md)
-* [Multiple gem sources](docs/multiple_sources.md)
-* [Using Gemstash as a mirror](docs/mirror.md)
-* [Customizing the server (database, storage, caching, and more)](docs/config.md)
-* [Deploying Gemstash](docs/deploy.md)
-* [Debugging Gemstash](docs/debug.md)
+* [Private gems][PRIVATE_GEMS]
+* [Multiple gem sources][MULTIPLE_SOURCES]
+* [Using Gemstash as a mirror][MIRROR]
+* [Customizing the server (database, storage, caching, and more)][CUSTOMIZE]
+* [Deploying Gemstash][DEPLOY]
+* [Debugging Gemstash][DEBUGGING]
 
 ## Reference
 
 For an anatomy of various configuration and commands, follow the links:
-* [Configuration](docs/reference.md#configuration)
-* [Authorize](docs/reference.md#authorize)
-* [Start](docs/reference.md#start)
-* [Stop](docs/reference.md#stop)
-* [Status](docs/reference.md#status)
-* [Setup](docs/reference.md#setup)
-* [Version](docs/reference.md#version)
+* [Configuration][CONFIGURATION]
+* [Authorize][AUTHORIZE]
+* [Start][START]
+* [Stop][STOP]
+* [Status][STATUS]
+* [Setup][SETUP]
+* [Version][VERSION]
 
 To see what has changed in recent versions of Gemstash, see the
-[CHANGELOG](CHANGELOG.md).
+[CHANGELOG][CHANGELOG].
 
 ## Development
 
@@ -153,9 +159,33 @@ interactive prompt that will allow you to experiment.
 Bug reports and pull requests are welcome on GitHub at
 https://github.com/bundler/gemstash. This project is intended to be a safe,
 welcoming space for collaboration, and contributors are expected to adhere to
-the [Contributor Covenant](CODE_OF_CONDUCT.md) code of conduct.
+the [Contributor Covenant][CODE_OF_CONDUCT] code of conduct.
 
 ## License
 
 The gem is available as open source under the terms of the
-[MIT License](http://opensource.org/licenses/MIT).
+[MIT License][LICENSE].
+
+[BUNDLER]: http://bundler.io/
+[CUSTOMIZE_FILES]: ./gemstash-customize.7.md#files
+[SQLITE]: https://www.sqlite.org/
+[CUSTOMIZE_DATABASE]: ./gemstash-customize.7.md#database
+[CUSTOMIZE_CACHE]: ./gemstash-customize.7.md#cache
+[PUMA]: http://puma.io/
+[RACK]: http://rack.github.io/
+[PRIVATE_GEMS]: ./gemstash-private-gems.7.md
+[MULTIPLE_SOURCES]: ./gemstash-multiple-sources.7.md
+[MIRROR]: ./gemstash-mirror.7.md
+[CUSTOMIZE]: ./gemstash-customize.7.md
+[DEPLOY]: ./gemstash-deploy.7.md
+[DEBUGGING]: ./gemstash-debugging.7.md
+[CONFIGURATION]: ./gemstash-configuration.5.md
+[AUTHORIZE]: ./gemstash-authorize.1.md
+[START]: ./gemstash-start.1.md
+[STOP]: ./gemstash-stop.1.md
+[STATUS]: ./gemstash-status.1.md
+[SETUP]: ./gemstash-setup.1.md
+[VERSION]: ./gemstash-version.1.md
+[CHANGELOG]: https://github.com/bundler/gemstash/blob/master/CHANGELOG.md
+[CODE_OF_CONDUCT]: https://github.com/bundler/gemstash/blob/master/CODE_OF_CONDUCT.md
+[LICENSE]: http://opensource.org/licenses/MIT
