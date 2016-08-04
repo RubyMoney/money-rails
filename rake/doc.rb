@@ -4,17 +4,23 @@ require "pathname"
 class Doc
   def run
     check_for_pandoc
+    check_for_groff
     convert_docs
   end
 
   def check_for_pandoc
-    return if pandoc_exist?
+    return if which?("pandoc")
     abort("You need to install pandoc to generate documentation")
   end
 
-  def pandoc_exist?
+  def check_for_groff
+    return if which?("groff")
+    abort("You need to install groff to generate documentation")
+  end
+
+  def which?(exe)
     ENV["PATH"].split(::File::PATH_SEPARATOR).any? do |file|
-      path = ::File.join(file, "pandoc")
+      path = ::File.join(file, exe)
       ::File.exist?(path) && ::File.executable?(path)
     end
   end
@@ -23,7 +29,7 @@ class Doc
     Dir[root_dir.join("man/*.md")].each do |file|
       file = Doc::File.new(self, file)
       file.export_to_github
-      file.export_to_man
+      file.export_to_man_and_txt
     end
   end
 
@@ -59,8 +65,10 @@ class Doc
       export "markdown_github", export_path("docs", path), *filters
     end
 
-    def export_to_man
-      export "man", export_path("lib/gemstash/man", to_extension("")), Doc::Filters::UPCASE_HEADERS
+    def export_to_man_and_txt
+      path = export_path("lib/gemstash/man", to_extension(""))
+      export "man", path, Doc::Filters::UPCASE_HEADERS
+      system "groff -Wall -mtty-char -mandoc -Tascii #{path} | col -b > #{path}.txt"
     end
 
     def export(format, to_file, *filters)
