@@ -34,6 +34,7 @@ class Doc
   # Container for pandoc filter paths
   module Filters
     UPCASE_HEADERS = ::File.expand_path("../doc/upcase_headers.rb", __FILE__)
+    INSERT_GITHUB_IMAGES = ::File.expand_path("../doc/insert_github_images.rb", __FILE__)
   end
 
   # Represents a single documentation file being converted
@@ -47,7 +48,15 @@ class Doc
     end
 
     def export_to_github
-      export "markdown_github", export_path("docs", to_extension(".md")), Doc::Filters::UPCASE_HEADERS
+      if base_file == "gemstash-readme.7.md"
+        path = doc.root_dir.join("README.md")
+        filters = [Doc::Filters::INSERT_GITHUB_IMAGES]
+      else
+        path = to_extension(".md")
+        filters = []
+      end
+
+      export "markdown_github", export_path("docs", path), *filters
     end
 
     def export_to_man

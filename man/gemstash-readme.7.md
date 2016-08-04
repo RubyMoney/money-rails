@@ -4,9 +4,7 @@ date: November 30, 2015
 section: 7
 ...
 
-[![Build Status](https://travis-ci.org/bundler/gemstash.svg?branch=master)](https://travis-ci.org/bundler/gemstash)
-
-<p align="center"><img src="gemstash.png" /></p>
+# Gemstash
 
 ## What is Gemstash?
 
