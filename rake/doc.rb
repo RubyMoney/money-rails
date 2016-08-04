@@ -31,10 +31,12 @@ class Doc
     @root_dir ||= Pathname.new(::File.expand_path("../..", __FILE__))
   end
 
+  # Container for pandoc filter paths
   module Filters
     UPCASE_HEADERS = ::File.expand_path("../doc/upcase_headers.rb", __FILE__)
   end
 
+  # Represents a single documentation file being converted
   class File
     attr_reader :doc, :file, :base_file
 
@@ -53,7 +55,7 @@ class Doc
     end
 
     def export(format, to_file, *filters)
-      filters = filters.map { |filter| "--filter '#{filter}'" }
+      filters = filters.map {|filter| "--filter '#{filter}'" }
       system "pandoc -s -f markdown -t #{format} #{filters.join(" ")} -o '#{to_file}' '#{file}'"
     end
 

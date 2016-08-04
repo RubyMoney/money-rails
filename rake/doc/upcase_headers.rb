@@ -9,7 +9,7 @@ def upcase_if_str_node(node)
   end
 end
 
-PandocFilter.filter do |type, value, format, meta|
+PandocFilter.filter do |type, value, _format, _meta|
   next unless type == "Header"
-  PandocElement.Header(value[0], value[1], value[2].map { |node| upcase_if_str_node(node) })
+  PandocElement.Header(value[0], value[1], value[2].map {|node| upcase_if_str_node(node) })
 end
