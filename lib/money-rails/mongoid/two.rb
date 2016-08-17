@@ -21,6 +21,7 @@ class Money
         :cents        => object.cents.is_a?(BigDecimal) ? object.cents.to_s : object.cents,
         :currency_iso => object.currency.iso_code
       }
+    when object.nil? then nil
     when object.respond_to?(:to_money)
       begin
         serialize(object.to_money)
