@@ -34,8 +34,16 @@ task :prepare_test_env do
 end
 
 def run_with_gemfile(gemfile)
-  sh "BUNDLE_GEMFILE='#{gemfile}' bundle install --quiet"
-  sh "BUNDLE_GEMFILE='#{gemfile}' bundle exec rake -t spec"
+  Bundler.with_clean_env do
+    begin
+      sh "BUNDLE_GEMFILE='#{gemfile}' bundle install --quiet"
+      Rake.application['app:db:create'].invoke
+      Rake.application['app:db:test:prepare'].invoke
+      sh "BUNDLE_GEMFILE='#{gemfile}' bundle exec rake spec"
+    ensure
+      Rake.application['app:db:drop:all'].execute
+    end
+  end
 end
 
 namespace :spec do
@@ -71,7 +79,7 @@ namespace :spec do
   task :mongoid => [:mongoid2, :mongoid3, :mongoid4, :mongoid5]
 
   desc "Run Tests against rails 3 & 4 & 4.1 & 4.2 & 5.0"
-  task :rails => [:rails3, :rails4, :rails41, :rails42, :rails5]
+  task :rails => [:rails3, :rails4, :rails41, :rails42, :rails50]
 
   desc "Run Tests against all ORMs"
   task :all => [:rails, :mongoid]
