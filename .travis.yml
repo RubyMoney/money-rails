@@ -26,7 +26,7 @@ gemfile:
   - gemfiles/rails4.gemfile
   - gemfiles/rails41.gemfile
   - gemfiles/rails42.gemfile
-  - gemfiles/rails5.gemfile
+  - gemfiles/rails50.gemfile
 matrix:
   exclude:
     - rvm: 1.9.2
@@ -34,11 +34,11 @@ matrix:
     - rvm: 1.9.2
       gemfile: gemfiles/rails4.gemfile
     - rvm: 1.9.3
-      gemfile: gemfiles/rails5.gemfile
+      gemfile: gemfiles/rails50.gemfile
     - rvm: 2.0.0
-      gemfile: gemfiles/rails5.gemfile
+      gemfile: gemfiles/rails50.gemfile
     - rvm: 2.1.8
-      gemfile: gemfiles/rails5.gemfile
+      gemfile: gemfiles/rails50.gemfile
 notifications:
   recipients:
     - andreas@aloop.org
