@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.7.0
+
+- Rails 5 support
+- Mongoid 5 support
+- Do not convert Mongoid money fields from nil to zero
+- Refactor `#monetize` method
+
 ## 1.6.2
 
 - Fix attribute order possibly affecting the value of monetized attribute
