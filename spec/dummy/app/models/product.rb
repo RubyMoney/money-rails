@@ -21,6 +21,9 @@ class Product < ActiveRecord::Base
   monetize :sale_price_amount, :as => :sale_price,
     :with_model_currency => :sale_price_currency_code
 
+  # Varied price based on exchange rate
+  monetize :varied_price_cents
+
   monetize :price_in_a_range_cents, :allow_nil => true,
   :subunit_numericality => {
     :greater_than => 0,

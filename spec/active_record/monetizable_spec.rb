@@ -12,7 +12,7 @@ if defined? ActiveRecord
                      :sale_price_amount => 1200, :delivery_fee_cents => 100,
                      :restock_fee_cents => 2000,
                      :reduced_price_cents => 1500, :reduced_price_currency => :lvl,
-                     :lambda_price_cents => 4000)
+                     :lambda_price_cents => 4000, varied_price_cents: 10000)
     end
 
     describe ".monetize" do
@@ -796,6 +796,26 @@ if defined? ActiveRecord
 
         expect(reduced_price).to be_an_instance_of(Money)
         expect(reduced_price).to eq(Money.new(product.reduced_price_cents, product.reduced_price_currency))
+      end
+
+      it "handels varied exchange rates" do
+        require "money-fixer-io"
+        old_default_bank = Money.default_bank
+        Money.default_bank = Money::Bank::FixerIo.new
+
+        begin
+          product.update_attributes!(varied_price_exchanged_at: Time.new(2004, 1, 1))
+
+          result_four = product.varied_price.exchange_to("DKK")
+          expect(result_four.to_f).to eq 589.47
+
+          product.update_attributes!(varied_price_exchanged_at: Time.new(2016, 1, 1))
+
+          result_sixteen = product.varied_price.exchange_to("DKK")
+          expect(result_sixteen.to_f).to eq 685.46
+        ensure
+          Money.default_bank = old_default_bank
+        end
       end
 
       context "memoize" do

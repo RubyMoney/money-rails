@@ -1,4 +1,3 @@
-# encoding: UTF-8
 # This file is auto-generated from the current state of the database. Instead
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
@@ -11,13 +10,16 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151026220420) do
+ActiveRecord::Schema.define(version: 20161001114547) do
 
   create_table "dummy_products", force: :cascade do |t|
     t.string   "currency"
     t.integer  "price_cents"
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "items", force: :cascade do |t|
   end
 
   create_table "products", force: :cascade do |t|
@@ -27,7 +29,7 @@ ActiveRecord::Schema.define(version: 20151026220420) do
     t.datetime "updated_at"
     t.integer  "bonus_cents"
     t.integer  "optional_price_cents"
-    t.integer  "sale_price_amount",             default: 0, null: false
+    t.integer  "sale_price_amount",             default: 0,     null: false
     t.string   "sale_price_currency_code"
     t.integer  "price_in_a_range_cents"
     t.integer  "validates_method_amount_cents"
@@ -39,6 +41,9 @@ ActiveRecord::Schema.define(version: 20151026220420) do
     t.integer  "special_price_cents"
     t.integer  "lambda_price_cents"
     t.string   "skip_validation_price_cents"
+    t.integer  "varied_price_cents",            default: 0,     null: false
+    t.string   "varied_price_currency",         default: "USD", null: false
+    t.datetime "varied_price_exchanged_at"
   end
 
   create_table "services", force: :cascade do |t|

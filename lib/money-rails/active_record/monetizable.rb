@@ -215,8 +215,10 @@ module MoneyRails
         end
 
         # Set the exchange time if it exists as a column for date based exchanges with other amounts
-        exchanged_at_method_name = "#{name}_exchanged_at"
-        result.exchanged_at = __send__(exchanged_at_method_name) if respond_to?(exchanged_at_method_name)
+        if result
+          exchanged_at_method_name = "#{name}_exchanged_at"
+          result.exchanged_at = __send__(exchanged_at_method_name) if respond_to?(exchanged_at_method_name)
+        end
 
         result
       end
