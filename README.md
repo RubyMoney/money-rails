@@ -70,9 +70,9 @@ $ bundle install --path .bundle
 
 Your Gemstash server has fetched the gems from https://rubygems.org and cached
 them for you! To prove this, you can disable your Internet connection and try
-again. The gem dependencies from https://rubygems.org are cached for 30 minutes,
-so if you bundle again before that, you can successfully bundle without an
-Internet connection:
+again. Gem files (*.gem) are cached indefinitely. Gem dependencies metadata are
+cached for 30 minutes, so if you bundle again before that, you can successfully
+bundle without an Internet connection:
 
 ```
 $ # Disable your Internet first!
