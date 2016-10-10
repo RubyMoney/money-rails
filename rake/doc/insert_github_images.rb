@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 require "json"
 require "open3"
-require "pandoc-filter"
+require "pandoc_object_filters"
 
 GITHUB_IMAGES = %{[![Build Status](https://travis-ci.org/bundler/gemstash.svg?branch=master)](https://travis-ci.org/bundler/gemstash)
 
@@ -26,10 +26,11 @@ end
 
 found = false
 
-PandocFilter.filter do |type, value, _format, _meta|
-  next unless type == "Header"
-  next unless value[2] == [{ "t" => "Str", "c" => "Gemstash" }]
+PandocObjectFilters.filter! do |element|
+  next unless element.is_a?(PandocObjectFilters::Element::Header)
+  next unless element.elements.first.is_a?(PandocObjectFilters::Element::Str)
+  next unless element.elements.first.value == "Gemstash"
   next if found
   found = true
-  github_images_json
+  PandocObjectFilters::Element.to_object(github_images_json)
 end
