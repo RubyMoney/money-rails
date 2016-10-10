@@ -244,6 +244,19 @@ MoneyRails.configure do |config|
 end
 ```
 
+If you need to set the default currency on a per-request basis, such as in a
+multi-tenant application, you may use a lambda to lazy-load the default currency
+from a field in a configuration model called `Tenant` in this example:
+
+```ruby
+# config/initializers/money.rb
+MoneyRails.configure do |config|
+
+  # set the default currency based on client configuration
+  config.default_currency = -> { Tenant.current.default_currency }
+end
+```
+
 In many cases this is not enough, so there are some other options to
 meet your needs.
 
