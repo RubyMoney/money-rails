@@ -124,6 +124,7 @@ are not customizable at this point.
 ## Deep Dive
 
 For a deep dive into the following subjects, follow the links:
+
 * [Private gems][PRIVATE_GEMS]
 * [Multiple gem sources][MULTIPLE_SOURCES]
 * [Using Gemstash as a mirror][MIRROR]
@@ -134,6 +135,7 @@ For a deep dive into the following subjects, follow the links:
 ## Reference
 
 For an anatomy of various configuration and commands, follow the links:
+
 * [Configuration][CONFIGURATION]
 * [Authorize][AUTHORIZE]
 * [Start][START]

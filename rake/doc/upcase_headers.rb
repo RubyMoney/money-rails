@@ -3,5 +3,5 @@ require "pandoc_object_filters"
 
 PandocObjectFilters.filter do |element|
   next unless element.is_a?(PandocObjectFilters::Element::Header)
-  element.elements.each { |e| e.value.upcase! if e.is_a?(PandocObjectFilters::Element::Str) }
+  element.elements.each {|e| e.value.upcase! if e.is_a?(PandocObjectFilters::Element::Str) }
 end
