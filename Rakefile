@@ -25,7 +25,7 @@ task :changelog do
   Changelog.new.run
 end
 
-desc "Generate markdown, man, and text documentation"
+desc "Generate markdown, man, text, and html documentation"
 task :doc do
   Doc.new.run
 end

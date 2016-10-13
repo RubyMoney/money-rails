@@ -1,3 +1,4 @@
+require "fileutils"
 require "pathname"
 
 # Helper class for running pandoc
@@ -32,6 +33,8 @@ class Doc
       file.export_to_man_and_txt
       file.export_to_html
     end
+
+    FileUtils.cp(root_dir.join("gemstash.png"), root_dir.join("html/gemstash.png"))
   end
 
   def root_dir
@@ -81,7 +84,7 @@ class Doc
 
     def filters
       %w(insert_github_generation_comment.rb
-         insert_github_images.rb
+         insert_images.rb
          upcase_headers.rb
          fix_links_for_format.rb).map do |filter|
         ::File.expand_path("../doc/#{filter}", __FILE__)
