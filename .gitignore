@@ -8,4 +8,5 @@
 /spec/reports/
 /tmp/
 /html/
+/lib/gemstash/man/
 .*

@@ -17,9 +17,13 @@ you push your own private gems as well."
   spec.homepage      = "https://github.com/bundler/gemstash"
   spec.license       = "MIT"
 
-  spec.files         = `git ls-files -z`.split("\x0").reject {|f|
-    f.match(%r{^(test|spec|features)/})
+  spec.files         = `git ls-files -z`.split("\x0").select {|f|
+    f.match(%r{^(lib|exe|CHANGELOG|CODE_OF_CONDUCT|LICENSE)})
   }
+  # we don't check in man pages, but we need to ship them because
+  # we use them to generate the long-form help for each command.
+  spec.files += Dir.glob("lib/gemstash/man/**/*")
+
   spec.bindir        = "exe"
   spec.executables   = spec.files.grep(%r{^exe/}) {|f| File.basename(f) }
   spec.require_paths = ["lib"]
