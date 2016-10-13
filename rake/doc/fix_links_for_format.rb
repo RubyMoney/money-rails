@@ -31,7 +31,12 @@ class DocLinkUrl
   end
 
   def filename
-    @filename ||= extract_meta(doc.meta["#{FILTER.format}_link_name"], File.basename(@file).sub(/\.md\z/, format_extension))
+    @filename ||=
+      begin
+        meta = doc.meta["#{FILTER.format}_link_name"]
+        default = File.basename(@file).sub(/\.md\z/, format_extension)
+        extract_meta(meta, default)
+      end
   end
 
   def format_extension
