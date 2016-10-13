@@ -100,6 +100,9 @@ module Gemstash
   private
 
     def manpage(command)
+      page = File.expand_path("../man/gemstash-#{command}", __FILE__)
+      return page if File.file?(page)
+
       1.upto(8) do |section|
         page = File.expand_path("../man/gemstash-#{command}.#{section}", __FILE__)
         return page if File.file?(page)

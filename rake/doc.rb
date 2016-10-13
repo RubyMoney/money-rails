@@ -69,7 +69,10 @@ class Doc
     end
 
     def filters
-      %w(insert_github_generation_comment.rb insert_github_images.rb upcase_headers.rb).map do |filter|
+      %w(insert_github_generation_comment.rb
+         insert_github_images.rb
+         upcase_headers.rb
+         fix_links_for_format.rb).map do |filter|
         ::File.expand_path("../doc/#{filter}", __FILE__)
       end
     end

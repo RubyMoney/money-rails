@@ -3,6 +3,8 @@ title: gemstash-readme
 date: November 30, 2015
 section: 7
 insert_github_images: true
+github_link_path: .
+github_link_name: README.md
 ...
 
 # Gemstash
@@ -124,7 +126,7 @@ are not customizable at this point.
 
 ## Deep Dive
 
-For a deep dive into the following subjects, follow the links:
+Deep dive into more subjects:
 
 * [Private gems][PRIVATE_GEMS]
 * [Multiple gem sources][MULTIPLE_SOURCES]
@@ -135,7 +137,7 @@ For a deep dive into the following subjects, follow the links:
 
 ## Reference
 
-For an anatomy of various configuration and commands, follow the links:
+An anatomy of various configuration and commands:
 
 * [Configuration][CONFIGURATION]
 * [Authorize][AUTHORIZE]
