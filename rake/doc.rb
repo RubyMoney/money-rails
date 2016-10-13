@@ -37,12 +37,6 @@ class Doc
     @root_dir ||= Pathname.new(::File.expand_path("../..", __FILE__))
   end
 
-  # Container for pandoc filter paths
-  module Filters
-    UPCASE_HEADERS = ::File.expand_path("../doc/upcase_headers.rb", __FILE__)
-    INSERT_GITHUB_IMAGES = ::File.expand_path("../doc/insert_github_images.rb", __FILE__)
-  end
-
   # Represents a single documentation file being converted
   class File
     attr_reader :doc, :file, :base_file
@@ -56,24 +50,33 @@ class Doc
     def export_to_github
       if base_file == "gemstash-readme.7.md"
         path = doc.root_dir.join("README.md")
-        filters = [Doc::Filters::INSERT_GITHUB_IMAGES]
       else
         path = to_extension(".md")
-        filters = []
       end
 
-      export "markdown_github", export_path("docs", path), *filters
+      export "markdown_github", export_path("docs", path)
+    end
+
+    def system(command)
+      puts command
+      Kernel.system(command)
     end
 
     def export_to_man_and_txt
       path = export_path("lib/gemstash/man", to_extension(""))
-      export "man", path, Doc::Filters::UPCASE_HEADERS
+      export "man", path
       system "groff -Wall -mtty-char -mandoc -Tascii #{path} | col -b > #{path}.txt"
     end
 
-    def export(format, to_file, *filters)
-      filters = filters.map {|filter| "--filter '#{filter}'" }
-      system "pandoc -s -f markdown -t #{format} #{filters.join(" ")} -o '#{to_file}' '#{file}'"
+    def filters
+      %w(insert_github_generation_comment.rb insert_github_images.rb upcase_headers.rb).map do |filter|
+        ::File.expand_path("../doc/#{filter}", __FILE__)
+      end
+    end
+
+    def export(format, to_file)
+      filter_args = filters.map {|filter| "--filter '#{filter}'" }
+      system "pandoc -s -f markdown -t #{format} #{filter_args.join(" ")} -o '#{to_file}' '#{file}'"
     end
 
     def export_path(dir, filename)
