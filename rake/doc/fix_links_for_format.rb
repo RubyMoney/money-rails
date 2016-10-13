@@ -31,7 +31,20 @@ class DocLinkUrl
   end
 
   def filename
-    @filename ||= extract_meta(doc.meta["github_link_name"], File.basename(@file))
+    @filename ||= extract_meta(doc.meta["#{FILTER.format}_link_name"], File.basename(@file).sub(/\.md\z/, format_extension))
+  end
+
+  def format_extension
+    case FILTER.format
+    when "markdown_github"
+      ".md"
+    when "html"
+      ".html"
+    when "man"
+      ""
+    else
+      raise "Unknown format: #{FILTER.format}"
+    end
   end
 
   def relative_path
@@ -48,9 +61,10 @@ class DocLinkUrl
     case FILTER.format
     when "markdown_github"
       "#{relative_path}#{heading}"
+    when "html"
+      "#{relative_path.sub(/\.md\z/, ".html")}#{heading}"
     when "man"
-      page = @file.gsub(/(\Agemstash-)|(\.md\z)/, "")
-      "gemstash help #{page}"
+      "gemstash help #{filename.sub(/\Agemstash-/, "")}"
     else
       raise "Unknown format: #{FILTER.format}"
     end
@@ -62,7 +76,8 @@ def current_path
 end
 
 def path_to(doc)
-  extract_meta(doc.meta["github_link_path"], "doc")
+  default = FILTER.format == "markdown_github" ? "doc" : "."
+  extract_meta(doc.meta["#{FILTER.format}_link_path"], default)
 end
 
 def extract_meta(meta, default = nil)

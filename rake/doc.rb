@@ -30,6 +30,7 @@ class Doc
       file = Doc::File.new(self, file)
       file.export_to_github
       file.export_to_man_and_txt
+      file.export_to_html
     end
   end
 
@@ -66,6 +67,16 @@ class Doc
       path = export_path("lib/gemstash/man", to_extension(""))
       export "man", path
       system "groff -Wall -mtty-char -mandoc -Tascii #{path} | col -b > #{path}.txt"
+    end
+
+    def export_to_html
+      if base_file == "gemstash-readme.7.md"
+        path = "index.html"
+      else
+        path = to_extension(".html")
+      end
+
+      export "html", export_path("html", path)
     end
 
     def filters

@@ -3,8 +3,9 @@ title: gemstash-readme
 date: November 30, 2015
 section: 7
 insert_github_images: true
-github_link_path: .
-github_link_name: README.md
+markdown_github_link_path: .
+markdown_github_link_name: README.md
+html_link_name: index.html
 ...
 
 # Gemstash
