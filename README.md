@@ -68,11 +68,11 @@ You'll also want to tell Bundler that it can go back to getting gems from RubyGe
 
 ### Under the Hood
 
-You might wonder where the gems are stored. After running the commands above, you will find a new directory at `~/.gemstash`. This directory holds all the cached and private gems. It also has a server log, the database, and configuration for Gemstash. If you prefer, you can [point to a different directory](doc/gemstash-customize.7.md#files).
+You might wonder where the gems are stored. After running the commands above, you will find a new directory at `~/.gemstash`. This directory holds all the cached and private gems. It also has a server log, the database, and configuration for Gemstash. If you prefer, you can [point to a different directory](docs/gemstash-customize.7.md#files).
 
-Gemstash uses [SQLite](https://www.sqlite.org/) to store details about private gems. The database will be located in `~/.gemstash`, however you won't see the database appear until you start using private gems. If you prefer, you can [use a different database](doc/gemstash-customize.7.md#database).
+Gemstash uses [SQLite](https://www.sqlite.org/) to store details about private gems. The database will be located in `~/.gemstash`, however you won't see the database appear until you start using private gems. If you prefer, you can [use a different database](docs/gemstash-customize.7.md#database).
 
-Gemstash temporarily caches things like gem dependencies in memory. Anything cached in memory will last for 30 minutes before being retrieved again. You can [use memcached](doc/gemstash-customize.7.md#cache) instead of caching in memory. Gem files are always cached permanently, so bundling with a `Gemfile.lock` with all gems cached will never call out to https://rubygems.org.
+Gemstash temporarily caches things like gem dependencies in memory. Anything cached in memory will last for 30 minutes before being retrieved again. You can [use memcached](docs/gemstash-customize.7.md#cache) instead of caching in memory. Gem files are always cached permanently, so bundling with a `Gemfile.lock` with all gems cached will never call out to https://rubygems.org.
 
 The server you ran is provided via [Puma](http://puma.io/) and [Rack](http://rack.github.io/), however they are not customizable at this point.
 
@@ -81,25 +81,25 @@ Deep Dive
 
 Deep dive into more subjects:
 
--   [Private gems](doc/gemstash-private-gems.7.md)
--   [Multiple gem sources](doc/gemstash-multiple-sources.7.md)
--   [Using Gemstash as a mirror](doc/gemstash-mirror.7.md)
--   [Customizing the server (database, storage, caching, and more)](doc/gemstash-customize.7.md)
--   [Deploying Gemstash](doc/gemstash-deploy.7.md)
--   [Debugging Gemstash](doc/gemstash-debugging.7.md)
+-   [Private gems](docs/gemstash-private-gems.7.md)
+-   [Multiple gem sources](docs/gemstash-multiple-sources.7.md)
+-   [Using Gemstash as a mirror](docs/gemstash-mirror.7.md)
+-   [Customizing the server (database, storage, caching, and more)](docs/gemstash-customize.7.md)
+-   [Deploying Gemstash](docs/gemstash-deploy.7.md)
+-   [Debugging Gemstash](docs/gemstash-debugging.7.md)
 
 Reference
 ---------
 
 An anatomy of various configuration and commands:
 
--   [Configuration](doc/gemstash-configuration.5.md)
--   [Authorize](doc/gemstash-authorize.1.md)
--   [Start](doc/gemstash-start.1.md)
--   [Stop](doc/gemstash-stop.1.md)
--   [Status](doc/gemstash-status.1.md)
--   [Setup](doc/gemstash-setup.1.md)
--   [Version](doc/gemstash-version.1.md)
+-   [Configuration](docs/gemstash-configuration.5.md)
+-   [Authorize](docs/gemstash-authorize.1.md)
+-   [Start](docs/gemstash-start.1.md)
+-   [Stop](docs/gemstash-stop.1.md)
+-   [Status](docs/gemstash-status.1.md)
+-   [Setup](docs/gemstash-setup.1.md)
+-   [Version](docs/gemstash-version.1.md)
 
 To see what has changed in recent versions of Gemstash, see the [CHANGELOG](https://github.com/bundler/gemstash/blob/master/CHANGELOG.md).
 

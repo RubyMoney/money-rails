@@ -76,7 +76,7 @@ def current_path
 end
 
 def path_to(doc)
-  default = FILTER.format == "markdown_github" ? "doc" : "."
+  default = FILTER.format == "markdown_github" ? "docs" : "."
   extract_meta(doc.meta["#{FILTER.format}_link_path"], default)
 end
 
