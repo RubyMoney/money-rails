@@ -29,3 +29,5 @@ desc "Generate markdown, man, text, and html documentation"
 task :doc do
   Doc.new.run
 end
+
+task build: :doc
