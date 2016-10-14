@@ -1,5 +1,4 @@
 require "gemstash"
-require "active_support/core_ext/file/atomic"
 require "fileutils"
 require "yaml"
 
@@ -144,7 +143,7 @@ module Gemstash
       def store_config
         config_dir = File.dirname(config_file)
         FileUtils.mkpath(config_dir) unless Dir.exist?(config_dir)
-        File.atomic_write(config_file) {|f| f.write(YAML.dump(@config)) }
+        gemstash_env.atomic_write(config_file) {|f| f.write(YAML.dump(@config)) }
       end
 
       def save_metadata

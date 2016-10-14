@@ -1,7 +1,7 @@
 require "spec_helper"
 
 describe "gemstash concurrency tests" do
-  TIMEOUT = 2
+  TIMEOUT = 5
 
   def write_thread(resource_id, content = "unchanging", &block)
     env = Gemstash::Env.current

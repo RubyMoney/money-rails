@@ -1,4 +1,5 @@
 require "gemstash"
+require "active_support/core_ext/file/atomic"
 require "dalli"
 require "fileutils"
 require "sequel"
@@ -96,6 +97,10 @@ module Gemstash
 
     def base_file(path)
       File.join(base_path, path)
+    end
+
+    def atomic_write(file, &block)
+      File.atomic_write(file, File.dirname(file), &block)
     end
 
     def rackup
