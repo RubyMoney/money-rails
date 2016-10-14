@@ -3,7 +3,7 @@ require "spec_helper"
 describe "gemstash concurrency tests" do
   TIMEOUT = 2
 
-  def write_thread(resource_id, content = "unchanging")
+  def write_thread(resource_id, content = "unchanging", &block)
     env = Gemstash::Env.current
 
     Thread.new do
@@ -11,11 +11,16 @@ describe "gemstash concurrency tests" do
       Gemstash::Env.current = env
       storage = Gemstash::Storage.for("concurrent_test")
       resource = storage.resource(resource_id.to_s)
-      resource.save({ file: "Example content: #{content}" }, example: true, content: content)
+
+      if block
+        block.call(resource)
+      else
+        resource.save({ file: "Example content: #{content}" }, example: true, content: content)
+      end
     end
   end
 
-  def read_thread(resource_id)
+  def read_thread(resource_id, &block)
     env = Gemstash::Env.current
 
     Thread.new do
@@ -25,11 +30,15 @@ describe "gemstash concurrency tests" do
       resource = storage.resource(resource_id.to_s)
 
       if resource.exist?(:file)
-        raise "Property mismatch" unless resource.properties[:example]
-        raise "Property mismatch" unless resource.properties[:content]
-        expected_content = "Example content: #{resource.properties[:content]}"
-        actual_content = resource.content(:file)
-        raise "Content mismatch:\n  #{actual_content}\n  #{expected_content}" unless actual_content == expected_content
+        if block
+          block.call(resource)
+        else
+          raise "Property mismatch" unless resource.properties[:example]
+          raise "Property mismatch" unless resource.properties[:content]
+          expected_content = "Example content: #{resource.properties[:content]}"
+          actual_content = resource.content(:file)
+          raise "Content mismatch:\n  #{actual_content}\n  #{expected_content}" unless actual_content == expected_content
+        end
       end
     end
   end
@@ -42,7 +51,11 @@ describe "gemstash concurrency tests" do
       begin
         # Join raises an error if the thread raised an error
         result = thread.join(TIMEOUT)
-        raise "Thread #{thread[:name]} did not die in #{TIMEOUT} seconds, possible deadlock!" unless result
+
+        unless result
+          thread.kill
+          raise "Thread #{thread[:name]} did not die in #{TIMEOUT} seconds, possible deadlock!"
+        end
       rescue => e
         error = e unless error
       end
@@ -70,6 +83,33 @@ describe "gemstash concurrency tests" do
           else
             threads << read_thread(i)
             threads << write_thread(i)
+          end
+        end
+      end
+
+      check_for_errors_and_deadlocks(threads)
+    end
+
+    it "works with large reads and writes" do
+      threads = []
+      possible_content = [
+        ("One" * 100_000).freeze,
+        ("Two" * 100_000).freeze,
+        ("Three" * 100_000).freeze,
+        ("Four" * 100_000).freeze
+      ].freeze
+
+      50.times do
+        if rand(2) == 0
+          threads << write_thread("large") do |resource|
+            large_content = possible_content[rand(possible_content.size)]
+            resource.save({ file: large_content }, example: true, content: large_content)
+          end
+        else
+          threads << read_thread("large") do |resource|
+            raise "Property mismatch" unless resource.properties[:example]
+            raise "Property mismatch" unless possible_content.include?(resource.properties[:content])
+            raise "Content mismatch" unless possible_content.include?(resource.content(:file))
           end
         end
       end
