@@ -3,7 +3,7 @@ require "spec_helper"
 describe "gemstash concurrency tests" do
   TIMEOUT = 2
 
-  def write_thread(resource_id)
+  def write_thread(resource_id, content = "unchanging")
     env = Gemstash::Env.current
 
     Thread.new do
@@ -11,7 +11,7 @@ describe "gemstash concurrency tests" do
       Gemstash::Env.current = env
       storage = Gemstash::Storage.for("concurrent_test")
       resource = storage.resource(resource_id.to_s)
-      resource.save({ file: "Example content" }, example: true)
+      resource.save({ file: "Example content: #{content}" }, example: true, content: content)
     end
   end
 
@@ -26,7 +26,10 @@ describe "gemstash concurrency tests" do
 
       if resource.exist?(:file)
         raise "Property mismatch" unless resource.properties[:example]
-        raise "Content mismatch" unless resource.content(:file) == "Example content"
+        raise "Property mismatch" unless resource.properties[:content]
+        expected_content = "Example content: #{resource.properties[:content]}"
+        actual_content = resource.content(:file)
+        raise "Content mismatch:\n  #{actual_content}\n  #{expected_content}" unless actual_content == expected_content
       end
     end
   end
@@ -59,7 +62,7 @@ describe "gemstash concurrency tests" do
     it "works with concurrent reads and writes" do
       threads = []
 
-      1.upto(25) do |i|
+      25.times do |i|
         10.times do
           if rand(2) == 0
             threads << write_thread(i)
@@ -67,6 +70,28 @@ describe "gemstash concurrency tests" do
           else
             threads << read_thread(i)
             threads << write_thread(i)
+          end
+        end
+      end
+
+      check_for_errors_and_deadlocks(threads)
+    end
+
+    it "works with concurrent reads and writes with varying content" do
+      skip "this fails because of this scenario: thread-1 loads a resource and the corresponding properties file, " \
+           "then thread-2 writes the files for a resource, then thread-1 reads the files for the resource; this " \
+           "scenario is unimportant since the content in gemstash should be always consistent, though the extra work " \
+           "is a bit undesirable"
+      threads = []
+
+      25.times do |i|
+        10.times do |j|
+          if rand(2) == 0
+            threads << write_thread(i, "#{i},#{j}")
+            threads << read_thread(i)
+          else
+            threads << read_thread(i)
+            threads << write_thread(i, "#{i},#{j}")
           end
         end
       end
