@@ -1,7 +1,8 @@
 require "gemstash"
+require "active_support/core_ext/file/atomic"
 require "digest"
-require "pathname"
 require "fileutils"
+require "pathname"
 require "yaml"
 
 module Gemstash
@@ -60,8 +61,10 @@ module Gemstash
       file = gemstash_env.base_file("metadata.yml")
 
       unless File.exist?(file)
-        File.write(file, { storage_version: Gemstash::Storage::VERSION,
-                           gemstash_version: Gemstash::VERSION }.to_yaml)
+        File.atomic_write(file) do |f|
+          f.write({ storage_version: Gemstash::Storage::VERSION,
+                    gemstash_version: Gemstash::VERSION }.to_yaml)
+        end
       end
 
       YAML.load_file(file)
@@ -316,7 +319,7 @@ module Gemstash
 
     def save_file(filename)
       content = yield
-      File.open(filename, "wb") {|f| f.write(content) }
+      File.atomic_write(filename) {|f| f.write(content) }
     end
 
     def read_file(filename)
