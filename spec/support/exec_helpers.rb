@@ -76,6 +76,8 @@ module ExecHelpers
         ENV["_ORIGINAL_GEM_PATH"]
       elsif !(ENV["BUNDLE_ORIG_GEM_PATH"] || "").strip.empty?
         ENV["BUNDLE_ORIG_GEM_PATH"]
+      elsif !(ENV["BUNDLER_ORIG_GEM_PATH"] || "").strip.empty?
+        ENV["BUNDLER_ORIG_GEM_PATH"]
       else
         raise "Could not determine the original GEM_PATH!"
       end
