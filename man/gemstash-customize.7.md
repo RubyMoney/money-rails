@@ -1,3 +1,9 @@
+---
+title: gemstash-customize
+date: October 28, 2015
+section: 7
+...
+
 # Customizing the Server
 
 Although Gemstash is designed for as minimal setup as possible, there may be
@@ -11,33 +17,31 @@ caches certain requests.
 Several customizable options are available via an interactive Gemstash command.
 Run `gemstash setup` and answer the questions it provides (a blank answer will
 use the default value):
-<pre>
-$ gemstash setup
-Where should files go? [~/.gemstash]
-Cache with what? [MEMORY, memcached] <strong>memcached</strong>
-What is the comma separated Memcached servers? [localhost:11211]
-What database adapter? [SQLITE3, postgres] <strong>postgres</strong>
-Where is the database? [postgres:///gemstash]
-Checking that the cache is available
-Checking that the database is available
-The database is not available
-</pre>
+
+> $ gemstash setup  
+> Where should files go? [~/.gemstash]  
+> Cache with what? [MEMORY, memcached] **memcached**  
+> What is the comma separated Memcached servers? [localhost:11211]  
+> What database adapter? [SQLITE3, postgres] **postgres**  
+> Where is the database? [postgres:///gemstash]  
+> Checking that the cache is available  
+> Checking that the database is available  
+> The database is not available
 
 Once you've answered the questsions, some checks will be made to ensure the
 configuration will work. For example, the database didn't exist in the previous
 example, so the command failed and the configuration wasn't saved. If the
 command passes, you may provide the `--redo` option to force configuration to be
 redone:
-<pre>
-$ gemstash setup --redo
-Where should files go? [~/.gemstash]
-Cache with what? [MEMORY, memcached] <strong>memcached</strong>
-What is the comma separated Memcached servers? [localhost:11211]
-What database adapter? [SQLITE3, postgres]
-Checking that the cache is available
-Checking that the database is available
-You are all setup!
-</pre>
+
+> $ gemstash setup --redo  
+> Where should files go? [~/.gemstash]  
+> Cache with what? [MEMORY, memcached] **memcached**  
+> What is the comma separated Memcached servers? [localhost:11211]  
+> What database adapter? [SQLITE3, postgres]  
+> Checking that the cache is available  
+> Checking that the database is available  
+> You are all setup!  
 
 Once all checks have passed, Gemstash will store your answers in the
 configuration file located at `~/.gemstash/config.yml`.
@@ -60,11 +64,11 @@ for the user you run Gemstash with.
 ## Database
 
 The `:db_adapter` configuration key specifies what database you will be using.
-The default `:db_adapter` is [`sqlite3`](https://www.sqlite.org/), which will
+The default `:db_adapter` is [`sqlite3`][SQLITE], which will
 use a database file located within your `:base_path`. The database file will
 always be named `gemstash.db`.
 
-You may also use [`postgres`](http://www.postgresql.org/) for your
+You may also use [`postgres`][POSTGRES] for your
 `:db_adapter`. When using PostgreSQL, you need to specify the `:db_url` to point
 to an existing database. Here is an example configuration to use the `postgres`
 adapter:
@@ -83,7 +87,7 @@ you only need to ensure the database exists and Gemstash will do the rest.
 
 Certain things (like dependencies) are cached in memory. This avoids web calls
 to the gem source, and database calls for private gems. The memory cache can
-optionally be swapped out with a [Memcached](http://memcached.org/) server (or
+optionally be swapped out with a [Memcached][MEMCACHED] server (or
 cluster of servers). To use Memcached, you must update the `:cache_type`
 configuration key to be `memcached`, and provide the servers via the
 `:memcached_servers` configuration key:
@@ -99,10 +103,10 @@ All caching lasts for 30 minutes.
 
 ## Server
 
-Gemstash uses [Puma](http://puma.io/) and [Rack](http://rack.github.io/) as the
+Gemstash uses [Puma][PUMA] and [Rack][RACK] as the
 server. Alternate server configurations are not currently supported, but you can
-take a look at the [Puma configuration](../lib/gemstash/puma.rb) and the [rackup
-file](../lib/gemstash/config.ru) for inspiration.
+take a look at the [Puma configuration][PUMA_CONFIG] and the [rackup file][RACKUP_FILE]
+for inspiration.
 
 While the server is not customizable, the way Gemstash binds the port can be
 changed. To change the binding, update the `:bind` configuration key:
@@ -112,8 +116,7 @@ changed. To change the binding, update the `:bind` configuration key:
 :bind: tcp://0.0.0.0:4242
 ```
 
-This maps directly to the [Puma bind
-flag](https://github.com/puma/puma#binding-tcp--sockets), and will support
+This maps directly to the [Puma bind flag][PUMA_BIND], and will support
 anything valid for that flag.
 
 ## Config File Location
@@ -134,3 +137,12 @@ output to with the provided configuration. **This will overwrite** any existing
 configuration. If the file doesn't exist when providing `--config-file` to
 `gemstash start`, `gemstash stop`, `gemstash status`, and `gemstash authorize`,
 the default configuration will be used.
+
+[SQLITE]: https://www.sqlite.org/
+[POSTGRES]: http://www.postgresql.org/
+[MEMCACHED]: http://memcached.org/
+[PUMA]: http://puma.io/
+[RACK]: http://rack.github.io/
+[PUMA_CONFIG]: https://github.com/bundler/gemstash/blob/master/lib/gemstash/puma.rb
+[RACKUP_FILE]: https://github.com/bundler/gemstash/blob/master/lib/gemstash/config.ru
+[PUMA_BIND]: https://github.com/puma/puma#binding-tcp--sockets

@@ -1,8 +1,14 @@
+---
+title: gemstash-private-gems
+date: October 8, 2015
+section: 7
+...
+
 # Private Gems
 
 Stashing private gems in your Gemstash server requires a bit of additional
 setup. If you haven't read through the [Quickstart
-Guide](../README.md#quickstart-guide), you should do that first. By the end of
+Guide][README_QUICKSTART], you should do that first. By the end of
 this guide, you will be able to interact with your Gemstash server to store and
 retrieve your private gems.
 
@@ -138,3 +144,5 @@ Gemstash you are interacting with private gems. Gemstash will only let you
 unyank from `/private`. Unlike pushing, Rubygems doesn't support `--host` for
 unyank and yank (yet), so you need to specify the host via the `RUBYGEMS_HOST`
 environment variable.
+
+[README_QUICKSTART]: ./gemstash-readme.7.md#quickstart-guide
