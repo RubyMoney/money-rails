@@ -1,3 +1,9 @@
+---
+title: gemstash-mirror
+date: October 25, 2015
+section: 7
+...
+
 # Using Gemstash as a Mirror
 
 If you don't have control over your `Gemfile`, or you don't want to force
@@ -15,8 +21,6 @@ From now on, bundler will fetch gems from those sources via your Gemstash
 server.
 
 # Simpler Gemstash Mirrors
-
-**WARNING: This feature is not yet available.**
 
 **This feature requires Bundler to be at least version `1.11.0`.**
 
