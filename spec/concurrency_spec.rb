@@ -1,7 +1,7 @@
 require "spec_helper"
 
 describe "gemstash concurrency tests" do
-  TIMEOUT = 5
+  let(:timeout) { 5 }
 
   def write_thread(resource_id, content = "unchanging", &block)
     env = Gemstash::Env.current
@@ -50,11 +50,11 @@ describe "gemstash concurrency tests" do
     threads.each do |thread|
       begin
         # Join raises an error if the thread raised an error
-        result = thread.join(TIMEOUT)
+        result = thread.join(timeout)
 
         unless result
           thread.kill
-          raise "Thread #{thread[:name]} did not die in #{TIMEOUT} seconds, possible deadlock!"
+          raise "Thread #{thread[:name]} did not die in #{timeout} seconds, possible deadlock!"
         end
       rescue => e
         error = e unless error
@@ -90,31 +90,44 @@ describe "gemstash concurrency tests" do
       check_for_errors_and_deadlocks(threads)
     end
 
-    it "works with large reads and writes" do
-      threads = []
-      possible_content = [
-        ("One" * 100_000).freeze,
-        ("Two" * 100_000).freeze,
-        ("Three" * 100_000).freeze,
-        ("Four" * 100_000).freeze
-      ].freeze
-
-      50.times do
-        if rand(2) == 0
-          threads << write_thread("large") do |resource|
-            large_content = possible_content[rand(possible_content.size)]
-            resource.save({ file: large_content }, example: true, content: large_content)
-          end
+    context "with large data" do
+      let(:timeout) do
+        if RUBY_PLATFORM == "java"
+          # JRuby seems to take a long time sometimes for this spec... is it
+          # something like the GC kicking in while the threads are running, or
+          # is it a sign of a deadlock, perhaps only on the JRuby platform...?
+          30
         else
-          threads << read_thread("large") do |resource|
-            raise "Property mismatch" unless resource.properties[:example]
-            raise "Property mismatch" unless possible_content.include?(resource.properties[:content])
-            raise "Content mismatch" unless possible_content.include?(resource.content(:file))
-          end
+          5
         end
       end
 
-      check_for_errors_and_deadlocks(threads)
+      it "works with concurrent reads and writes" do
+        threads = []
+        possible_content = [
+          ("One" * 100_000).freeze,
+          ("Two" * 100_000).freeze,
+          ("Three" * 100_000).freeze,
+          ("Four" * 100_000).freeze
+        ].freeze
+
+        50.times do
+          if rand(2) == 0
+            threads << write_thread("large") do |resource|
+              large_content = possible_content[rand(possible_content.size)]
+              resource.save({ file: large_content }, example: true, content: large_content)
+            end
+          else
+            threads << read_thread("large") do |resource|
+              raise "Property mismatch" unless resource.properties[:example]
+              raise "Property mismatch" unless possible_content.include?(resource.properties[:content])
+              raise "Content mismatch" unless possible_content.include?(resource.content(:file))
+            end
+          end
+        end
+
+        check_for_errors_and_deadlocks(threads)
+      end
     end
 
     it "works with concurrent reads and writes with varying content" do
