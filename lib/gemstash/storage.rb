@@ -1,7 +1,7 @@
 require "gemstash"
 require "digest"
-require "pathname"
 require "fileutils"
+require "pathname"
 require "yaml"
 
 module Gemstash
@@ -60,8 +60,10 @@ module Gemstash
       file = gemstash_env.base_file("metadata.yml")
 
       unless File.exist?(file)
-        File.write(file, { storage_version: Gemstash::Storage::VERSION,
-                           gemstash_version: Gemstash::VERSION }.to_yaml)
+        gemstash_env.atomic_write(file) do |f|
+          f.write({ storage_version: Gemstash::Storage::VERSION,
+                    gemstash_version: Gemstash::VERSION }.to_yaml)
+        end
       end
 
       YAML.load_file(file)
@@ -85,6 +87,7 @@ module Gemstash
   # A resource within the storage engine. The resource may have 1 or more files
   # associated with it along with a metadata Hash that is stored in a YAML file.
   class Resource
+    include Gemstash::Env::Helper
     include Gemstash::Logging
     attr_reader :name, :folder
     VERSION = 1
@@ -316,7 +319,7 @@ module Gemstash
 
     def save_file(filename)
       content = yield
-      File.open(filename, "wb") {|f| f.write(content) }
+      gemstash_env.atomic_write(filename) {|f| f.write(content) }
     end
 
     def read_file(filename)

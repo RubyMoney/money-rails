@@ -28,14 +28,15 @@ you push your own private gems as well."
   spec.executables   = spec.files.grep(%r{^exe/}) {|f| File.basename(f) }
   spec.require_paths = ["lib"]
 
+  spec.add_runtime_dependency "activesupport", "~> 4.2"
   spec.add_runtime_dependency "dalli", "~> 2.7"
+  spec.add_runtime_dependency "faraday", "~> 0.9"
+  spec.add_runtime_dependency "faraday_middleware", "~> 0.10"
   spec.add_runtime_dependency "lru_redux", "~> 1.1"
   spec.add_runtime_dependency "puma", "~> 2.14"
   spec.add_runtime_dependency "sequel", "~> 4.26"
   spec.add_runtime_dependency "sinatra", "~> 1.4"
   spec.add_runtime_dependency "thor", "~> 0.19"
-  spec.add_runtime_dependency "faraday", "~> 0.9"
-  spec.add_runtime_dependency "faraday_middleware", "~> 0.10"
 
   if RUBY_PLATFORM == "java"
     spec.add_runtime_dependency "jdbc-sqlite3", "~> 3.8"
