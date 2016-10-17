@@ -1,3 +1,9 @@
+---
+title: gemstash-multiple-sources
+date: October 8, 2015
+section: 7
+...
+
 # Multiple Gem Sources
 
 Gemstash will stash from any amount of gem sources. By the end of this guide,
@@ -7,7 +13,7 @@ Gemstash server.
 ## Default Source
 
 When you don't provide an explicit source (as with the [Quickstart
-Guide](../README.md#quickstart-guide)), your gems will be fetched from
+Guide][README_QUICKSTART]), your gems will be fetched from
 https://rubygems.org. This default source is not set in stone. To change it, you
 need only edit the Gemstash configuration found at `~/.gemstash/config.yml`:
 ```yaml
@@ -66,3 +72,5 @@ Notice the `/redirect` prefix. This prefix tells Gemstash to redirect API calls
 to the provided URL. Redirected calls like this will not be cached by Gemstash,
 and gem files will not be stashed, even if they were previously cached or
 stashed from the same gem source.
+
+[README_QUICKSTART]: ./gemstash-readme.7.md#quickstart-guide

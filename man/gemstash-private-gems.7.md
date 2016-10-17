@@ -1,8 +1,14 @@
+---
+title: gemstash-private-gems
+date: October 8, 2015
+section: 7
+...
+
 # Private Gems
 
 Stashing private gems in your Gemstash server requires a bit of additional
 setup. If you haven't read through the [Quickstart
-Guide](../README.md#quickstart-guide), you should do that first. By the end of
+Guide][README_QUICKSTART], you should do that first. By the end of
 this guide, you will be able to interact with your Gemstash server to store and
 retrieve your private gems.
 
@@ -141,13 +147,16 @@ environment variable.
 
 ## Protected Fetching
 
-By default private gems and specs can be accessed without authentication.
+By default, private gems and specs can be accessed without authentication.
 
-Private gems often require protected fetching. For backwards compatibility this is disabled by default, this can be enabled via `$ gemstash setup` command.
+Private gems often require protected fetching. For backwards compatibility this
+is disabled by default, but can be enabled via `$ gemstash setup` command.
 
-When protected fetching is enabled API keys with the permissions `all` or `fetch` can be used to download gems and specs.
+When protected fetching is enabled API keys with the permissions `all` or
+`fetch` can be used to download gems and specs.
 
-On the Bundler side, there are a few ways to configure credentials for a given gem source:
+On the Bundler side, there are a few ways to configure credentials for a given
+gem source:
 
 Add credentials globally:
 
@@ -161,12 +170,19 @@ Add credentials in Gemfile:
 source "https://api_key@my-gemstash.dev"
 ```
 
-However, it's not a good practice to commit credentials to source control. A recommended solution is to use Bundler's [configuration keys](http://bundler.io/man/bundle-config.1.html#CONFIGURATION-KEYS), e.g.:
+However, it's not a good practice to commit credentials to source control. A
+recommended solution is to use Bundler's [configuration keys][CONFIG_KEYS],
+e.g.:
 
 ```
 $ export BUNDLE_MYGEMSTASH__DEV=api_key
 ```
 
-Behind the scene, Bundler will pickup the ENV var according to the host name (e.g. mygemstash.dev) and add to `URI.userinfo` for making requests.
+Behind the scene, Bundler will pick up the ENV var according to the host name
+(e.g. mygemstash.dev) and add to `URI.userinfo` for making requests.
 
-The API key is treated as a HTTP Basic Auth username and any HTTP Basic password supplied will be ignored.
+The API key is treated as a HTTP Basic Auth username and any HTTP Basic password
+supplied will be ignored.
+
+[README_QUICKSTART]: ./gemstash-readme.7.md#quickstart-guide
+[CONFIG_KEYS]: http://bundler.io/man/bundle-config.1.html#CONFIGURATION-KEYS

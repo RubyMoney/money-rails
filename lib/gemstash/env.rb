@@ -1,4 +1,5 @@
 require "gemstash"
+require "active_support/core_ext/file/atomic"
 require "dalli"
 require "fileutils"
 require "sequel"
@@ -97,6 +98,10 @@ module Gemstash
 
     def log_file
       base_file(config[:log_file] || "server.log")
+    end
+
+    def atomic_write(file, &block)
+      File.atomic_write(file, File.dirname(file), &block)
     end
 
     def rackup

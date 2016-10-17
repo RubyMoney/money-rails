@@ -23,6 +23,7 @@ TEST_CONFIG = Gemstash::Configuration.new(config: {
                                             :base_path => TEST_BASE_PATH
                                           })
 Gemstash::Env.current = Gemstash::Env.new(TEST_CONFIG)
+Thread.current[:test_gemstash_env_set] = true
 TEST_DB = Gemstash::Env.current.db
 Sequel::Model.db = TEST_DB
 

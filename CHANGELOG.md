@@ -1,3 +1,14 @@
+## 1.0.3 (2016-10-15)
+
+### Bugfixes
+
+  - Fix JRuby build ([#110](https://github.com/bundler/gemstash/pull/110), [@smellsblue](https://github.com/smellsblue))
+  - Fix nil error when gems are fetched for the first time concurrently ([#111](https://github.com/bundler/gemstash/pull/111), [@smellsblue](https://github.com/smellsblue))
+
+### Features
+
+  - Embedded documentation via `gemstash help` ([#109](https://github.com/bundler/gemstash/pull/109), [@smellsblue](https://github.com/smellsblue))
+
 ## 1.0.2 (2016-07-07)
 
 ### Bugfixes

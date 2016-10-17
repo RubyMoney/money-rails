@@ -18,7 +18,7 @@ class Changelog
   def ensure_new_version_specified
     tags = `git tag -l`
     return unless tags.include? Changelog.current_version
-    Changelog.error("Please update lib/gemstash/version.rb with the new version first!")
+    abort("Please update lib/gemstash/version.rb with the new version first!")
   end
 
   def parse_changelog
@@ -40,7 +40,7 @@ class Changelog
       version = parsed_last_version.number
 
       unless version =~ /\A\d+(\.\d+)*(\.pre\.\d+)?\z/
-        error("Invalid last version: #{version}, instead use something like 1.1.0, or 1.1.0.pre.2")
+        abort("Invalid last version: #{version}, instead use something like 1.1.0, or 1.1.0.pre.2")
       end
 
       version
@@ -182,17 +182,12 @@ class Changelog
     @current_date ||= Time.now.strftime("%Y-%m-%d")
   end
 
-  def self.error(msg)
-    STDERR.puts(msg)
-    exit(false)
-  end
-
   def self.current_version
     @current_version ||= begin
       require_relative "../lib/gemstash/version.rb"
 
       unless Gemstash::VERSION =~ /\A\d+(\.\d+)*(\.pre\.\d+)?\z/
-        error("Invalid version: #{Gemstash::VERSION}, instead use something like 1.1.0, or 1.1.0.pre.2")
+        abort("Invalid version: #{Gemstash::VERSION}, instead use something like 1.1.0, or 1.1.0.pre.2")
       end
 
       Gemstash::VERSION

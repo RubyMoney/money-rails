@@ -1,3 +1,9 @@
+---
+title: gemstash-deploy
+date: October 25, 2015
+section: 7
+...
+
 # Deploying Gemstash
 
 Bundler is here for the rescue to keep Gemstash up to date! Create a `Gemfile`

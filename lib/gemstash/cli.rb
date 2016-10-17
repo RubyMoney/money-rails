@@ -23,6 +23,29 @@ module Gemstash
       true
     end
 
+    def self.start(args = ARGV)
+      help_flags = %w(-h --help)
+
+      if args.any? {|a| help_flags.include?(a) }
+        super(%w(help) + args.reject {|a| help_flags.include?(a) })
+      else
+        super
+      end
+    end
+
+    def help(command = nil)
+      command ||= "readme"
+      page = manpage(command)
+
+      if page && which("man")
+        exec "man", page
+      elsif page
+        puts File.read("#{page}.txt")
+      else
+        super
+      end
+    end
+
     desc "authorize [PERMISSIONS...]", "Add authorizations to push/yank/unyank private gems"
     method_option :remove, :type => :boolean, :default => false, :desc =>
       "Remove an authorization key"
@@ -73,5 +96,28 @@ module Gemstash
       say "Gemstash version #{Gemstash::VERSION}"
     end
     map %w(-v --version) => :version
+
+  private
+
+    def manpage(command)
+      page = File.expand_path("../man/gemstash-#{command}", __FILE__)
+      return page if File.file?(page)
+
+      1.upto(8) do |section|
+        page = File.expand_path("../man/gemstash-#{command}.#{section}", __FILE__)
+        return page if File.file?(page)
+      end
+
+      nil
+    end
+
+    def which(executable)
+      ENV["PATH"].split(File::PATH_SEPARATOR).each do |path|
+        exe_path = File.join(path, executable)
+        return exe_path if File.file?(exe_path) && File.executable?(exe_path)
+      end
+
+      nil
+    end
   end
 end
