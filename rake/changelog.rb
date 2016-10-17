@@ -10,6 +10,7 @@ class Changelog
 
   def run
     ensure_new_version_specified
+    update_master_version
     parse_changelog
     fetch_missing_pull_requests
     update_changelog
@@ -18,14 +19,36 @@ class Changelog
   def ensure_new_version_specified
     tags = `git tag -l`
     return unless tags.include? Changelog.current_version
-    abort("Please update lib/gemstash/version.rb with the new version first!")
+    print "Are you updating the 'master' CHANELOG? [yes/no] "
+    abort("Please update lib/gemstash/version.rb with the new version first!") unless STDIN.gets.strip.casecmp("yes") == 0
+    @master_update = true
+  end
+
+  def master_update?
+    @master_update
+  end
+
+  def update_master_version
+    return if master_update?
+    contents = File.read(changelog_file)
+    return unless contents =~ /^## master \(unreleased\)$/
+    contents.sub!(/^## master \(unreleased\)$/, "## #{current_version} (#{current_date})")
+    File.write(changelog_file, contents)
+  end
+
+  def current_version
+    if master_update?
+      "master"
+    else
+      Changelog.current_version
+    end
   end
 
   def parse_changelog
     require "citrus"
     Citrus.load(File.expand_path("../changelog.citrus", __FILE__))
     @parsed = Changelog::Grammar.parse(File.read(changelog_file))
-    @parsed_current_version = @parsed.versions.find {|version| version.number == Changelog.current_version }
+    @parsed_current_version = @parsed.versions.find {|version| version.number == current_version }
 
     if @parsed_current_version
       index = @parsed.versions.index(@parsed_current_version)
@@ -85,8 +108,8 @@ class Changelog
       pull_requests = commits.map {|commit| commit[/Merge pull request #(\d+)/, 1].to_i }
       documented = Set.new
 
-      if parsed_current_version
-        parsed_current_version.pull_requests.each do |pr|
+      parsed.versions.each do |version|
+        version.pull_requests.each do |pr|
           documented << pr.number.to_i
         end
       end
@@ -112,7 +135,8 @@ class Changelog
 
   def write_current_version(file)
     pull_requests_by_section = missing_pull_requests.group_by {|pr| section_for(pr) }
-    file.puts "## #{Changelog.current_version} (#{current_date})"
+
+    file.puts "## #{current_version} (#{current_date})"
     file.puts
 
     if parsed_current_version
@@ -179,7 +203,12 @@ class Changelog
   end
 
   def current_date
-    @current_date ||= Time.now.strftime("%Y-%m-%d")
+    @current_date ||=
+      if master_update?
+        "unreleased"
+      else
+        Time.now.strftime("%Y-%m-%d")
+      end
   end
 
   def self.current_version

@@ -1,3 +1,23 @@
+## master (unreleased)
+
+### Bugfixes
+
+  - Gracefully handle empty configuration files ([#97](https://github.com/bundler/gemstash/pull/97), [@rjocoleman](https://github.com/rjocoleman))
+  - Remove bundler-audit since we don't commit our Gemfile.lock ([#98](https://github.com/bundler/gemstash/pull/98), [@smellsblue](https://github.com/smellsblue))
+  - Clarify what is being cached for 30 minutes ([#108](https://github.com/bundler/gemstash/pull/108), [@Nowaker](https://github.com/Nowaker))
+
+### Features
+
+  - Add support for mysql2 adapter ([#71](https://github.com/bundler/gemstash/pull/71), [@chriseckhardt](https://github.com/chriseckhardt))
+  - Allow logging to a different file ([#74](https://github.com/bundler/gemstash/pull/74), [@mrchucho](https://github.com/mrchucho))
+  - Document temporary protected fetch solution ([#80](https://github.com/bundler/gemstash/pull/80), [@taoza](https://github.com/taoza))
+  - Make gem fetch timeout configurable ([#81](https://github.com/bundler/gemstash/pull/81), [@midwire](https://github.com/midwire))
+  - Document fallback timeout for when Gemstash is down ([#88](https://github.com/bundler/gemstash/pull/88), [@parndt](https://github.com/parndt))
+  - Allow ERB parsed config file via `.erb` extension ([#90](https://github.com/bundler/gemstash/pull/90), [@jiexinhuang](https://github.com/jiexinhuang), [@rjocoleman](https://github.com/rjocoleman))
+  - Improve code climate ([#92](https://github.com/bundler/gemstash/pull/92), [@smellsblue](https://github.com/smellsblue))
+  - Refactor authorization ([#93](https://github.com/bundler/gemstash/pull/93), [@smellsblue](https://github.com/smellsblue), [@rjocoleman](https://github.com/rjocoleman))
+  - Add protected fetch for private gems ([#94](https://github.com/bundler/gemstash/pull/94), [@rjocoleman](https://github.com/rjocoleman))
+
 ## 1.0.3 (2016-10-15)
 
 ### Bugfixes

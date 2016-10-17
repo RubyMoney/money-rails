@@ -50,7 +50,7 @@ grammar Changelog::Grammar
   end
 
   rule version_header
-    "## " version_number:(/\d+(\.\d+)*(\.pre\.\d+)?/) " (" date:(/\d{4}-\d{2}-\d{2}/) ")\n\n"
+    "## " version_number:(/(\d+(\.\d+)*(\.pre\.\d+)?)|master/) " (" date:(/(\d{4}-\d{2}-\d{2})|unreleased/) ")\n\n"
     description?
   end
 
