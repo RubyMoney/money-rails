@@ -22,7 +22,7 @@ use the default value):
 > Where should files go? [~/.gemstash]  
 > Cache with what? [MEMORY, memcached] **memcached**  
 > What is the comma separated Memcached servers? [localhost:11211]  
-> What database adapter? [SQLITE3, postgres] **postgres**  
+> What database adapter? [SQLITE3, postgres, mysql, mysql2] **postgres**  
 > Where is the database? [postgres:///gemstash]  
 > Checking that the cache is available  
 > Checking that the database is available  
@@ -38,7 +38,7 @@ redone:
 > Where should files go? [~/.gemstash]  
 > Cache with what? [MEMORY, memcached] **memcached**  
 > What is the comma separated Memcached servers? [localhost:11211]  
-> What database adapter? [SQLITE3, postgres]  
+> What database adapter? [SQLITE3, postgres, mysql, mysql2]  
 > Checking that the cache is available  
 > Checking that the database is available  
 > You are all setup!  
@@ -68,10 +68,10 @@ The default `:db_adapter` is [`sqlite3`][SQLITE], which will
 use a database file located within your `:base_path`. The database file will
 always be named `gemstash.db`.
 
-You may also use [`postgres`][POSTGRES] for your
-`:db_adapter`. When using PostgreSQL, you need to specify the `:db_url` to point
-to an existing database. Here is an example configuration to use the `postgres`
-adapter:
+You may also use [`postgres`][POSTGRES], [`mysql`][MYSQL], or [`mysql2`][MYSQL2]
+for your `:db_adapter`. When using any of these options, you need to specify the
+`:db_url` to point to an existing database. Here is an example configuration to
+use the `postgres` adapter:
 ```yaml
 # ~/.gemstash/config.yml
 ---
@@ -80,8 +80,9 @@ adapter:
 ```
 
 Regardless of the adapter you choose, the database will automatically migrate to
-your version of Gemstash whenever the database is needed. Except for `sqlite3`,
-you only need to ensure the database exists and Gemstash will do the rest.
+your version of Gemstash whenever the database is needed. You only need to
+ensure the database exists and Gemstash will do the rest, except for `sqlite3`
+(for which Gemstash will also create the database for you).
 
 ## Cache
 
@@ -177,6 +178,8 @@ environment variables in the config:
 
 [SQLITE]: https://www.sqlite.org/
 [POSTGRES]: http://www.postgresql.org/
+[MYSQL]: http://www.mysql.com/
+[MYSQL2]: http://sequel.jeremyevans.net/rdoc/files/doc/opening_databases_rdoc.html#label-mysql2
 [MEMCACHED]: http://memcached.org/
 [PUMA]: http://puma.io/
 [RACK]: http://rack.github.io/
