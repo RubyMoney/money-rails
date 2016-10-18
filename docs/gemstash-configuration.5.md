@@ -17,6 +17,9 @@ Synopsis
 :db_url: postgres:///gemstash
 :rubygems_url: https://my.gem-source.local
 :bind: tcp://0.0.0.0:4242
+:protected_fetch: true
+:fetch_timeout: 10
+:log_file: gemstash.log
 ```
 
 Base Path
@@ -171,3 +174,20 @@ Valid values
 ------------
 
 Integer value with a minimum of `1`
+
+Log File
+========
+
+`:log_file`
+
+Indicates the name of the file to use for logging. The file will be placed in the [base path](gemstash-configuration.5.md#base-path).
+
+Default value
+-------------
+
+`server.log`
+
+Valid values
+------------
+
+Any valid file name

@@ -20,6 +20,9 @@ gemstash-configuration
 :db_url: postgres:///gemstash
 :rubygems_url: https://my.gem-source.local
 :bind: tcp://0.0.0.0:4242
+:protected_fetch: true
+:fetch_timeout: 10
+:log_file: gemstash.log
 ```
 
 # Base Path
@@ -171,6 +174,22 @@ this value. The default is `20` seconds.
 
 Integer value with a minimum of `1`
 
+# Log File
+
+`:log_file`
+
+Indicates the name of the file to use for logging. The file will be placed in
+the [base path][BASE_PATH].
+
+## Default value
+
+`server.log`
+
+## Valid values
+
+Any valid file name
+
 [SETUP]: ./gemstash-setup.1.md
 [SEQUEL]: http://sequel.jeremyevans.net/
 [PUMA_BINDING]: https://github.com/puma/puma#binding-tcp--sockets
+[BASE_PATH]: ./gemstash-configuration.5.md#base-path
