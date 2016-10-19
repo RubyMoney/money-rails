@@ -48,7 +48,12 @@ module ExecHelpers
 
     def matches_output?(expected)
       return true unless expected
-      @output == expected
+
+      if expected.is_a?(Regexp)
+        @output =~ expected
+      else
+        @output == expected
+      end
     end
 
   private

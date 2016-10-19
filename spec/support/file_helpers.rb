@@ -19,6 +19,11 @@ module FileHelpers
     File.join(envs_dir, name)
   end
 
+  def clean_env(name)
+    dir = env_path(name)
+    expect(execute("git", ["clean", "-fdx", dir])).to exit_success
+  end
+
   def bundle_path(name)
     bundles_dir = File.expand_path("../../data/bundles", __FILE__)
     File.join(bundles_dir, name)
