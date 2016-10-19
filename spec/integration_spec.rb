@@ -72,7 +72,8 @@ describe "gemstash integration tests" do
   end
 
   describe "interacting with private gems" do
-    let(:env_dir) { env_path("integration_spec/private_gems") }
+    let(:env_name) { "integration_spec/private_gems" }
+    let(:env_dir) { env_path(env_name) }
     let(:host) { "#{@gemstash.url}/private" }
     let(:gem_name) { "speaker" }
     let(:gem) { gem_path(gem_name, gem_version) }
@@ -96,6 +97,11 @@ describe "gemstash integration tests" do
       Gemstash::Authorization.authorize(auth_key, "all")
     end
 
+    after do
+      # Some actions affect files in the environment, like adding and removing sources
+      clean_env env_name
+    end
+
     context "pushing a gem" do
       before do
         expect(deps.fetch(%w(speaker))).to match_dependencies([])
@@ -109,6 +115,37 @@ describe "gemstash integration tests" do
         expect(deps.fetch(%w(speaker))).to match_dependencies([speaker_deps])
         expect(storage.resource("speaker-0.1.0").content(:gem)).to eq(gem_contents)
         expect(http_client.get("gems/speaker-0.1.0")).to eq(gem_contents)
+      end
+    end
+
+    context "searching for a gem" do
+      before do
+        Gemstash::GemPusher.new(auth, gem_contents).serve
+        expect(deps.fetch(%w(speaker))).to match_dependencies([speaker_deps])
+        @gemstash.env.cache.flush
+      end
+
+      it "finds private gems", db_transaction: false do
+        env = { "HOME" => env_dir }
+        expect(execute("gem", ["search", "-ar", "speaker", "--clear-sources", "--source", host], env: env)).
+          to exit_success.and_output(/speaker \(0.1.0\)/)
+      end
+
+      it "finds private gems when just the private source is configured", db_transaction: false do
+        env = { "HOME" => env_dir }
+        expect(execute("gem", ["source", "-r", "https://rubygems.org/"], env: env)).to exit_success
+        expect(execute("gem", ["source", "-a", "#{host}/"], env: env)).to exit_success
+        expect(execute("gem", ["search", "-ar", "speaker"], env: env)).
+          to exit_success.and_output(/speaker \(0.1.0\)/)
+      end
+
+      it "finds private gems when just the private source is configured without a trailing slash", db_transaction: false do
+        skip "this doesn't work because Rubygems sends /specs.4.8.gz instead of /private/specs.4.8.gz"
+        env = { "HOME" => env_dir }
+        expect(execute("gem", ["source", "-r", "https://rubygems.org/"], env: env)).to exit_success
+        expect(execute("gem", ["source", "-a", host], env: env)).to exit_success
+        expect(execute("gem", ["search", "-ar", "speaker"], env: env)).
+          to exit_success.and_output(/speaker \(0.1.0\)/)
       end
     end
 
