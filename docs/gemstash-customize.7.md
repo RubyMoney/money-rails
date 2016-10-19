@@ -17,7 +17,7 @@ Several customizable options are available via an interactive Gemstash command. 
 > Where is the database? \[postgres:///gemstash\]  
 > Checking that the cache is available  
 > Checking that the database is available  
-> The database is not available
+> The database is not available  
 
 Once you've answered the questions, some checks will be made to ensure the configuration will work. For example, the database didn't exist in the previous example, so the command failed and the configuration wasn't saved. If the command passes, you may provide the `--redo` option to force configuration to be redone:
 
@@ -28,7 +28,7 @@ Once you've answered the questions, some checks will be made to ensure the confi
 > What database adapter? \[SQLITE3, postgres, mysql, mysql2\]  
 > Checking that the cache is available  
 > Checking that the database is available  
-> You are all setup!
+> You are all setup!  
 
 Once all checks have passed, Gemstash will store your answers in the configuration file located at `~/.gemstash/config.yml`.
 
