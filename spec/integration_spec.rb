@@ -132,18 +132,18 @@ describe "gemstash integration tests" do
       end
 
       it "finds private gems when just the private source is configured", db_transaction: false do
-        env = { "HOME" => env_dir }
-        expect(execute("gem", ["source", "-r", "https://rubygems.org/"], env: env)).to exit_success
-        expect(execute("gem", ["source", "-a", "#{host}/"], env: env)).to exit_success
-        expect(execute("gem", ["search", "-ar", "speaker"], env: env)).
-          to exit_success.and_output(/speaker \(0.1.0\)/)
-      end
-
-      it "finds private gems when just the private source is configured without a trailing slash", db_transaction: false do
         skip "this doesn't work because Rubygems sends /specs.4.8.gz instead of /private/specs.4.8.gz"
         env = { "HOME" => env_dir }
         expect(execute("gem", ["source", "-r", "https://rubygems.org/"], env: env)).to exit_success
         expect(execute("gem", ["source", "-a", host], env: env)).to exit_success
+        expect(execute("gem", ["search", "-ar", "speaker"], env: env)).
+          to exit_success.and_output(/speaker \(0.1.0\)/)
+      end
+
+      it "finds private gems when just the private source is configured with a trailing slash", db_transaction: false do
+        env = { "HOME" => env_dir }
+        expect(execute("gem", ["source", "-r", "https://rubygems.org/"], env: env)).to exit_success
+        expect(execute("gem", ["source", "-a", "#{host}/"], env: env)).to exit_success
         expect(execute("gem", ["search", "-ar", "speaker"], env: env)).
           to exit_success.and_output(/speaker \(0.1.0\)/)
       end
