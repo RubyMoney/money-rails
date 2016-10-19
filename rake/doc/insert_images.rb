@@ -4,10 +4,14 @@ require "open3"
 require "pandoc_object_filters"
 
 HTML_IMAGES = %(<p align="center"><img src="gemstash.png" /></p>)
-GITHUB_IMAGES = %{[![Build Status](https://travis-ci.org/bundler/gemstash.svg?branch=master)](https://travis-ci.org/bundler/gemstash)
-[![Code Climate](https://codeclimate.com/github/bundler/gemstash/badges/gpa.svg)](https://codeclimate.com/github/bundler/gemstash)
+GITHUB_IMAGES = %([![Build Status][TRAVIS_IMG]][TRAVIS] [![Code Climate][CODE_CLIMATE_IMG]][CODE_CLIMATE]
 
-<p align="center"><img src="gemstash.png" /></p>}
+[TRAVIS_IMG]: https://travis-ci.org/bundler/gemstash.svg?branch=master
+[TRAVIS]: https://travis-ci.org/bundler/gemstash
+[CODE_CLIMATE_IMG]: https://codeclimate.com/github/bundler/gemstash/badges/gpa.svg
+[CODE_CLIMATE]: https://codeclimate.com/github/bundler/gemstash
+
+<p align="center"><img src="gemstash.png" /></p>)
 
 def images_json(markdown)
   pandoc_results = nil
