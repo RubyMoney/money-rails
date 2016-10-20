@@ -21,7 +21,7 @@ module FileHelpers
 
   def clean_env(name)
     dir = env_path(name)
-    expect(execute("git", ["clean", "-fdx", dir])).to exit_success
+    expect(execute("git", ["clean", "-fdx", dir], env: { "PATH" => ENV["PATH"] })).to exit_success
   end
 
   def bundle_path(name)
