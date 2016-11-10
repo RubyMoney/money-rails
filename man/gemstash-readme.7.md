@@ -27,6 +27,9 @@ might want to use Gemstash.
 Are you only using gems from https://rubygems.org, and don't bundle the same
 gems frequently? Well, maybe you don't need Gemstash... yet.
 
+<a href="https://rubytogether.org/"><img src="https://rubytogether.org/images/rubies.svg" width=200></a><br/>
+Gemstash is maintained by <a href="https://rubytogether.org/">Ruby Together</a>, a grassroots initiative committed to supporting the critical Ruby infrastructure you rely on. Contribute today <a href="https://rubytogether.org/developers">as an individual</a> or even better, <a href="https://rubytogether.org/companies">as a company</a>, and ensure that Bundler, RubyGems, Gemstash, and other shared tooling is around for years to come.
+
 ## Quickstart Guide
 
 ### Setup
