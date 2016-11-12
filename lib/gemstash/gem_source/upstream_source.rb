@@ -35,10 +35,6 @@ module Gemstash
         halt 403, "Cannot yank from an upstream server!"
       end
 
-      def serve_unyank
-        halt 403, "Cannot unyank from an upstream server!"
-      end
-
       def serve_add_spec_json
         halt 403, "Cannot add spec to an upstream server!"
       end

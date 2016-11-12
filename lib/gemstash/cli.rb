@@ -46,7 +46,7 @@ module Gemstash
       end
     end
 
-    desc "authorize [PERMISSIONS...]", "Add authorizations to push/yank/unyank private gems"
+    desc "authorize [PERMISSIONS...]", "Add authorizations to push/yank private gems"
     method_option :remove, :type => :boolean, :default => false, :desc =>
       "Remove an authorization key"
     method_option :config_file, :type => :string, :desc =>
