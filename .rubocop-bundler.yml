@@ -47,7 +47,7 @@ Style/StringLiteralsInInterpolation:
 
 # Having these make it easier to *not* forget to add one when adding a new
 # value and you can simply copy the previous line.
-Style/TrailingCommaInLiteral:
+Style/TrailingComma:
   EnforcedStyleForMultiline: comma
 
 # 1.8.7 support
@@ -67,7 +67,7 @@ Style/EachWithObject:
 Style/SpecialGlobalVars:
   Enabled: false
 
-Style/TrailingCommaInArguments:
+Style/TrailingComma:
   Enabled: false
 
 # Metrics
