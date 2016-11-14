@@ -104,6 +104,23 @@ Valid values
 
 A valid database URL for the [Sequel gem](http://sequel.jeremyevans.net/)
 
+DB Connection Options
+=====================
+
+`:db_connection_options`
+
+Specifies additional `Sequel.connect` options to use.
+
+Default value
+-------------
+
+None
+
+Valid values
+------------
+
+A valid connection options Hash for the [Sequel.connect](http://sequel.jeremyevans.net/rdoc/files/doc/opening_databases_rdoc.html#label-General+connection+options) method.
+
 Rubygems URL
 ============
 
