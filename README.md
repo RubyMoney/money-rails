@@ -16,6 +16,8 @@ If you frequently bundle the same set of gems across multiple projects, you migh
 
 Are you only using gems from https://rubygems.org, and don't bundle the same gems frequently? Well, maybe you don't need Gemstash... yet.
 
+<a href="https://rubytogether.org/"><img src="https://rubytogether.org/images/rubies.svg" width=200></a><br/>Gemstash is maintained by [Ruby Together](https://rubytogether.org/), a grassroots initiative committed to supporting the critical Ruby infrastructure you rely on. Contribute today [as an individual](https://rubytogether.org/developers) or even better, [as a company](https://rubytogether.org/companies), and ensure that Bundler, RubyGems, Gemstash, and other shared tooling is around for years to come.
+
 Quickstart Guide
 ----------------
 
