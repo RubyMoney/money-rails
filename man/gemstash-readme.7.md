@@ -27,8 +27,12 @@ might want to use Gemstash.
 Are you only using gems from https://rubygems.org, and don't bundle the same
 gems frequently? Well, maybe you don't need Gemstash... yet.
 
-<a href="https://rubytogether.org/"><img src="https://rubytogether.org/images/rubies.svg" width=200></a><br/>
-Gemstash is maintained by <a href="https://rubytogether.org/">Ruby Together</a>, a grassroots initiative committed to supporting the critical Ruby infrastructure you rely on. Contribute today <a href="https://rubytogether.org/developers">as an individual</a> or even better, <a href="https://rubytogether.org/companies">as a company</a>, and ensure that Bundler, RubyGems, Gemstash, and other shared tooling is around for years to come.
+<a href="https://rubytogether.org/"><img src="https://rubytogether.org/images/rubies.svg" width=200></a><br/>Gemstash
+is maintained by [Ruby Together][RUBY_TOGETHER], a grassroots initiative
+committed to supporting the critical Ruby infrastructure you rely on. Contribute
+today [as an individual][RUBY_TOGETHER_DEVELOPERS] or even better, [as a
+company][RUBY_TOGETHER_COMPANIES], and ensure that Bundler, RubyGems, Gemstash,
+and other shared tooling is around for years to come.
 
 ## Quickstart Guide
 
@@ -191,6 +195,9 @@ The gem is available as open source under the terms of the
 [MIT License][LICENSE].
 
 [BUNDLER]: http://bundler.io/
+[RUBY_TOGETHER]: https://rubytogether.org/
+[RUBY_TOGETHER_DEVELOPERS]: https://rubytogether.org/developers
+[RUBY_TOGETHER_COMPANIES]: https://rubytogether.org/companies
 [CUSTOMIZE_FILES]: ./gemstash-customize.7.md#files
 [SQLITE]: https://www.sqlite.org/
 [CUSTOMIZE_DATABASE]: ./gemstash-customize.7.md#database
