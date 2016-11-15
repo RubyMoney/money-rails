@@ -17,6 +17,9 @@ Synopsis
 :db_url: postgres:///gemstash
 :rubygems_url: https://my.gem-source.local
 :bind: tcp://0.0.0.0:4242
+:protected_fetch: true
+:fetch_timeout: 10
+:log_file: gemstash.log
 ```
 
 Base Path
@@ -75,7 +78,7 @@ DB Adapter
 
 `:db_adapter`
 
-Specifies what database adapter to use. When `sqlite3` is used, the database will be located at `gemstash.db` within the directory specified by `:base_path`. The database will automatically be created when using `sqlite3`. When `postgres` is used, the database to connect to must be specified in the `:db_url` configuration key. The database must already be created when using `postgres`.
+Specifies what database adapter to use. When `sqlite3` is used, the database will be located at `gemstash.db` within the directory specified by `:base_path`. The database will automatically be created when using `sqlite3`. When `postgres`, `mysql`, or `mysql2` is used, the database to connect to must be specified in the `:db_url` configuration key. The database must already be created when using anything other than `sqlite3`.
 
 Default value
 -------------
@@ -85,14 +88,14 @@ Default value
 Valid values
 ------------
 
-`sqlite3`, `postgres`
+`sqlite3`, `postgres`, `mysql`, `mysql2`
 
 DB URL
 ======
 
 `:db_url`
 
-Specifies the database to connect to when using `postgres` for the `:db_adapter`. Only used when `postgres` is used for `:db_adapter`.
+Specifies the database to connect to when using `postgres`, `mysql`, or `mysql2` for the `:db_adapter`. Only used when the `:db_adapter` is not `sqlite3`.
 
 Default value
 -------------
@@ -171,3 +174,20 @@ Valid values
 ------------
 
 Integer value with a minimum of `1`
+
+Log File
+========
+
+`:log_file`
+
+Indicates the name of the file to use for logging. The file will be placed in the [base path](gemstash-configuration.5.md#base-path).
+
+Default value
+-------------
+
+`server.log`
+
+Valid values
+------------
+
+Any valid file name

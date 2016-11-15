@@ -9,26 +9,26 @@ Setup
 
 Several customizable options are available via an interactive Gemstash command. Run `gemstash setup` and answer the questions it provides (a blank answer will use the default value):
 
-> $ gemstash setup
-> Where should files go? \[~/.gemstash\]
-> Cache with what? \[MEMORY, memcached\] **memcached**
-> What is the comma separated Memcached servers? \[localhost:11211\]
-> What database adapter? \[SQLITE3, postgres\] **postgres**
-> Where is the database? \[postgres:///gemstash\]
-> Checking that the cache is available
-> Checking that the database is available
-> The database is not available
+> $ gemstash setup  
+> Where should files go? \[~/.gemstash\]  
+> Cache with what? \[MEMORY, memcached\] **memcached**  
+> What is the comma separated Memcached servers? \[localhost:11211\]  
+> What database adapter? \[SQLITE3, postgres, mysql, mysql2\] **postgres**  
+> Where is the database? \[postgres:///gemstash\]  
+> Checking that the cache is available  
+> Checking that the database is available  
+> The database is not available  
 
 Once you've answered the questions, some checks will be made to ensure the configuration will work. For example, the database didn't exist in the previous example, so the command failed and the configuration wasn't saved. If the command passes, you may provide the `--redo` option to force configuration to be redone:
 
-> $ gemstash setup --redo
-> Where should files go? \[~/.gemstash\]
-> Cache with what? \[MEMORY, memcached\] **memcached**
-> What is the comma separated Memcached servers? \[localhost:11211\]
-> What database adapter? \[SQLITE3, postgres\]
-> Checking that the cache is available
-> Checking that the database is available
-> You are all setup!
+> $ gemstash setup --redo  
+> Where should files go? \[~/.gemstash\]  
+> Cache with what? \[MEMORY, memcached\] **memcached**  
+> What is the comma separated Memcached servers? \[localhost:11211\]  
+> What database adapter? \[SQLITE3, postgres, mysql, mysql2\]  
+> Checking that the cache is available  
+> Checking that the database is available  
+> You are all setup!  
 
 Once all checks have passed, Gemstash will store your answers in the configuration file located at `~/.gemstash/config.yml`.
 
@@ -50,7 +50,7 @@ Database
 
 The `:db_adapter` configuration key specifies what database you will be using. The default `:db_adapter` is [`sqlite3`](https://www.sqlite.org/), which will use a database file located within your `:base_path`. The database file will always be named `gemstash.db`.
 
-You may also use [`postgres`](http://www.postgresql.org/) for your `:db_adapter`. When using PostgreSQL, you need to specify the `:db_url` to point to an existing database. Here is an example configuration to use the `postgres` adapter:
+You may also use [`postgres`](http://www.postgresql.org/), [`mysql`](http://www.mysql.com/), or [`mysql2`](http://sequel.jeremyevans.net/rdoc/files/doc/opening_databases_rdoc.html#label-mysql2) for your `:db_adapter`. When using any of these options, you need to specify the `:db_url` to point to an existing database. Here is an example configuration to use the `postgres` adapter:
 
 ``` yaml
 # ~/.gemstash/config.yml
@@ -59,7 +59,7 @@ You may also use [`postgres`](http://www.postgresql.org/) for your `:db_adapter`
 :db_url: postgres:///gemstash
 ```
 
-Regardless of the adapter you choose, the database will automatically migrate to your version of Gemstash whenever the database is needed. Except for `sqlite3`, you only need to ensure the database exists and Gemstash will do the rest.
+Regardless of the adapter you choose, the database will automatically migrate to your version of Gemstash whenever the database is needed. You only need to ensure the database exists and Gemstash will do the rest, except for `sqlite3` (for which Gemstash will also create the database for you).
 
 Cache
 -----
