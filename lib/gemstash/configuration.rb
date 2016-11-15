@@ -11,7 +11,8 @@ module Gemstash
       bind: "tcp://0.0.0.0:9292",
       rubygems_url: "https://rubygems.org",
       protected_fetch: false,
-      fetch_timeout: 20
+      fetch_timeout: 20,
+      db_connection_options: {}
     }.freeze
 
     DEFAULT_FILE = File.expand_path("~/.gemstash/config.yml").freeze
