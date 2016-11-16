@@ -1,6 +1,6 @@
 source "https://rubygems.org"
 
+# Declare Ruby version so that activesupport gem can notice that
 ruby_version RUBY_VERSION
 
-# Specify your gem's dependencies in gemstash.gemspec
 gemspec
