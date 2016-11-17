@@ -12,7 +12,8 @@ module Gemstash
       rubygems_url: "https://rubygems.org",
       protected_fetch: false,
       fetch_timeout: 20,
-      db_connection_options: {}
+      db_connection_options: {},
+      puma_threads: 16
     }.freeze
 
     DEFAULT_FILE = File.expand_path("~/.gemstash/config.yml").freeze
@@ -49,6 +50,18 @@ module Gemstash
 
     def [](key)
       @config[key]
+    end
+
+    # @return [Hash] Sequel connection configuration hash
+    def database_connection_config
+      case self[:db_adapter]
+      when "sqlite3"
+        { max_connections: 1 }.merge(self[:db_connection_options])
+      when "postgres", "mysql", "mysql2"
+        { max_connections: self[:puma_threads] + 1 }.merge(self[:db_connection_options])
+      else
+        raise "Unsupported DB adapter: '#{self[:db_adapter]}'"
+      end
     end
 
   private

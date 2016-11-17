@@ -115,12 +115,12 @@ module Gemstash
           db_path = base_file("gemstash.db")
 
           db = if RUBY_PLATFORM == "java"
-            Sequel.connect("jdbc:sqlite:#{db_path}", config[:db_connection_options].merge(max_connections: 1))
+            Sequel.connect("jdbc:sqlite:#{db_path}", config.database_connection_config)
           else
-            Sequel.connect("sqlite://#{URI.escape(db_path)}", config[:db_connection_options].merge(max_connections: 1))
+            Sequel.connect("sqlite://#{URI.escape(db_path)}", config.database_connection_config)
           end
         when "postgres", "mysql", "mysql2"
-          db = Sequel.connect(config[:db_url], config[:db_connection_options])
+          db = Sequel.connect(config[:db_url], config.database_connection_config)
         else
           raise "Unsupported DB adapter: '#{config[:db_adapter]}'"
         end
