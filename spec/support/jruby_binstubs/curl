@@ -1,3 +1,3 @@
 require_relative "which"
-system which("git"), *ARGV
+system which("curl"), *ARGV
 exit $?.exitstatus
