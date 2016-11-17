@@ -10,3 +10,4 @@
 /html/
 /lib/gemstash/man/
 .*
+gemfiles/Gemfile.ruby-head.lock
