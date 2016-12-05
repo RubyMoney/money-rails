@@ -141,6 +141,16 @@ product.optional_price # => nil
 product.optional_price_cents # => nil
 ```
 
+#### Allow large numbers
+
+If you foresee that you will be saving large values (range is -2147483648 to +2147483647 for Postgres), increase your integer column limit to bigint:
+
+```ruby
+def change
+  change_column :products, :price_cents, :integer, limit: 8
+end
+```
+
 #### Numericality validation options
 
 You can also pass along
