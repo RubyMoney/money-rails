@@ -77,6 +77,10 @@ use the `postgres` adapter:
 ---
 :db_adapter: postgres
 :db_url: postgres:///gemstash
+:db_connection_options: # Sequel.connect options
+  :connect_timeout: 10
+  :read_timeout: 5
+  :timeout: 30
 ```
 
 Regardless of the adapter you choose, the database will automatically migrate to

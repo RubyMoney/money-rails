@@ -8,6 +8,7 @@ describe Gemstash::Configuration do
 
     it "loads the default config" do
       expect(env.config[:db_adapter]).to eq("sqlite3")
+      expect(env.config.database_connection_config).to match(hash_including(max_connections: 1))
     end
   end
 
@@ -21,6 +22,7 @@ describe Gemstash::Configuration do
     it "interprets the erb, loads yaml and merges with defaults" do
       expect(env.config[:db_adapter]).to eq("postgres")
       expect(env.config[:db_url]).to eq("postgres://rendered-erb")
+      expect(env.config.database_connection_config).to match(hash_including(max_connections: 17))
     end
   end
 

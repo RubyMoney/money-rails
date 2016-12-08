@@ -109,6 +109,20 @@ None
 
 A valid database URL for the [Sequel gem][SEQUEL]
 
+# DB Connection Options
+
+`:db_connection_options`
+
+Specifies additional `Sequel.connect` options to use.
+
+## Default value
+
+None
+
+## Valid values
+
+A valid connection options Hash for the [Sequel.connect](SEQUEL_CONNECT) method.
+
 # Rubygems URL
 
 `:rubygems_url`
@@ -191,5 +205,6 @@ Any valid file name
 
 [SETUP]: ./gemstash-setup.1.md
 [SEQUEL]: http://sequel.jeremyevans.net/
+[SEQUEL_CONNECT]: http://sequel.jeremyevans.net/rdoc/files/doc/opening_databases_rdoc.html#label-General+connection+options
 [PUMA_BINDING]: https://github.com/puma/puma#binding-tcp--sockets
 [BASE_PATH]: ./gemstash-configuration.5.md#base-path
