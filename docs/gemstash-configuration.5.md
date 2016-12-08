@@ -15,7 +15,11 @@ Synopsis
 :memcached_servers: localhost:11211
 :db_adapter: postgres
 :db_url: postgres:///gemstash
+:db_connection_options:
+  :test: true
+  :pool_timeout: 2
 :rubygems_url: https://my.gem-source.local
+:puma_threads: 32
 :bind: tcp://0.0.0.0:4242
 :protected_fetch: true
 :fetch_timeout: 10
@@ -107,6 +111,23 @@ Valid values
 
 A valid database URL for the [Sequel gem](http://sequel.jeremyevans.net/)
 
+DB Connection Options
+=====================
+
+`:db_connection_options`
+
+Specifies additional `Sequel.connect` options to use. Note that any options here are merged in with the default options, so you need not specify the `max_connections` if you customize this option.
+
+Default value
+-------------
+
+`{ max_connections: 1 }` for `sqlite3` adapter, `{ max_connections: config[:puma_threads] + 1 }` for any other adapter.
+
+Valid values
+------------
+
+A valid connection options Hash for the [Sequel.connect](http://sequel.jeremyevans.net/rdoc/files/doc/opening_databases_rdoc.html#label-General+connection+options) method.
+
 Rubygems URL
 ============
 
@@ -123,6 +144,23 @@ Valid values
 ------------
 
 A valid gem source URL
+
+Puma Threads
+============
+
+`:puma_threads`
+
+Specifies the number of threads used for the Gemstash server.
+
+Default value
+-------------
+
+`16`
+
+Valid values
+------------
+
+Integer value with a minimum of `1`
 
 Bind Address
 ============
