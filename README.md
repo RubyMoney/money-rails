@@ -91,7 +91,8 @@ class MonetizeProduct < ActiveRecord::Migration
     # OR
 
     change_table :products do |t|
-      t.money :price
+      t.money :price    # Rails 3
+      t.monetize :price # Rails 4x and above
     end
   end
 end
