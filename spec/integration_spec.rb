@@ -117,7 +117,7 @@ describe "gemstash integration tests" do
 
     context "searching for a gem" do
       before do
-        Gemstash::GemPusher.new(auth, gem_contents).serve
+        Gemstash::GemPusher.new("test-key", gem_contents).push
         expect(deps.fetch(%w(speaker))).to match_dependencies([speaker_deps])
         @gemstash.env.cache.flush
       end
@@ -125,6 +125,12 @@ describe "gemstash integration tests" do
       it "finds private gems", db_transaction: false do
         env = { "HOME" => env_dir }
         expect(execute("gem", ["search", "-ar", "speaker", "--clear-sources", "--source", host], env: env)).
+          to exit_success.and_output(/speaker \(0.1.0\)/)
+      end
+
+      it "finds the latest version of private gems", db_transaction: false do
+        env = { "HOME" => env_dir }
+        expect(execute("gem", ["search", "-r", "speaker", "--clear-sources", "--source", host], env: env)).
           to exit_success.and_output(/speaker \(0.1.0\)/)
       end
 

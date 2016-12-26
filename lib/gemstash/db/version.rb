@@ -19,8 +19,17 @@ module Gemstash
         [rubygem.name, Gem::Version.new(number), platform]
       end
 
-      def self.for_spec_collection(prerelease: false)
-        where(indexed: true, prerelease: prerelease).association_join(:rubygem)
+      def self.for_spec_collection(prerelease: false, latest: false)
+        versions = where(indexed: true, prerelease: prerelease).association_join(:rubygem)
+        latest ? select_latest(versions) : versions
+      end
+
+      def self.select_latest(versions)
+        versions.
+          all.
+          group_by {|version| [version.rubygem_id, version.platform] }.
+          values.
+          map {|gem_versions| gem_versions.max_by {|version| Gem::Version.new(version.number) } }
       end
 
       def self.find_by_spec(gem_id, spec)
