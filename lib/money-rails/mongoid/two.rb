@@ -28,6 +28,9 @@ class Money
       rescue ArgumentError
         raise if MoneyRails.raise_error_on_money_parsing
         nil
+      rescue Monetize::ParseError => e
+        raise ArgumentError, e.message if MoneyRails.raise_error_on_money_parsing
+        nil
       end
     else nil
     end

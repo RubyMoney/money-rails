@@ -44,6 +44,9 @@ class Money
         rescue ArgumentError, Money::Currency::UnknownCurrency
           raise if MoneyRails.raise_error_on_money_parsing
           nil
+        rescue Monetize::ParseError => e
+          raise ArgumentError, e.message if MoneyRails.raise_error_on_money_parsing
+          nil
         end
       else object
       end

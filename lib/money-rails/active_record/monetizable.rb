@@ -232,11 +232,11 @@ module MoneyRails
               money = value.to_money(public_send("currency_for_#{name}"))
             rescue NoMethodError
               return nil
-            rescue ArgumentError
+            rescue ArgumentError, Money::Currency::UnknownCurrency
               raise if MoneyRails.raise_error_on_money_parsing
               return nil
-            rescue Money::Currency::UnknownCurrency
-              raise if MoneyRails.raise_error_on_money_parsing
+            rescue Monetize::ParseError => e
+              raise ArgumentError, e.message if MoneyRails.raise_error_on_money_parsing
               return nil
             end
           end
