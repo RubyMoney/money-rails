@@ -510,6 +510,29 @@ for the chosen money attribute. (You can also combine all the chains.)
 For examples on using the test_helpers look at
 [test_helpers_spec.rb](https://github.com/RubyMoney/money-rails/blob/master/spec/test_helpers_spec.rb)
 
+## Convert to JSON
+Add `as_json` to automaticly get money in JSON output to your model:
+```
+class Transaction < ActiveRecord::Base
+
+  # This model has a separate currency column
+  attr_accessible :amount_cents
+
+  monetize :amount_cents
+
+  def as_json options=nil
+    options ||= {}
+    options[:methods] = ((options[:methods] || []) + [:amount])
+    super options
+  end  
+
+end
+```
+Or write in you controller:
+```
+format.json { render json: @transactions.to_json(:methods => [:amount]) }
+```
+
 ## Supported ORMs/ODMs
 
 * ActiveRecord (>= 3.x)
