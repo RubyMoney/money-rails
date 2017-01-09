@@ -50,7 +50,7 @@ if defined?(Mongoid) && ::Mongoid::VERSION =~ /^2(.*)/
         after { MoneyRails.raise_error_on_money_parsing = false }
 
         it "raises exception if the mongoized value is a String with a hyphen" do
-          expect { priceable_from_string_with_hyphen }.to raise_error ArgumentError
+          expect { priceable_from_string_with_hyphen }.to raise_error Monetize::ParseError
         end
       end
 
