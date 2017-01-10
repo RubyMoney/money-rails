@@ -48,8 +48,6 @@ matrix:
       gemfile: gemfiles/rails4.gemfile
     - rvm: 2.4.0
       gemfile: gemfiles/rails41.gemfile
-    - rvm: 2.4.0
-      gemfile: gemfiles/rails42.gemfile
 notifications:
   recipients:
     - andreas@aloop.org
