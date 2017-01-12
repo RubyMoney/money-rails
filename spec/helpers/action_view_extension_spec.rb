@@ -50,6 +50,14 @@ describe 'MoneyRails::ActionViewExtension', :type => :helper do
     it { is_expected.to include Money.default_currency.symbol }
   end
 
+  describe '#humanized_money_with_iso' do
+    subject { helper.humanized_money_with_iso Money.new(12500) }
+    it { is_expected.to be_a String }
+    it { is_expected.not_to include Money.default_currency.decimal_mark }
+    it { is_expected.to include Money.default_currency.iso_code }
+    it { is_expected.not_to include Money.default_currency.symbol }
+  end
+
   describe '#money_without_cents' do
     let(:options) { {} }
     subject { helper.money_without_cents Money.new(12500), options }
@@ -98,6 +106,15 @@ describe 'MoneyRails::ActionViewExtension', :type => :helper do
         it { is_expected.to include Money.default_currency.symbol }
         it { is_expected.to include "00" }
       end
+
+      describe '#humanized_money_with_iso' do
+        subject { helper.humanized_money_with_iso Money.new(12500) }
+        it { is_expected.to be_a String }
+        it { is_expected.not_to include Money.default_currency.decimal_mark }
+        it { is_expected.to include Money.default_currency.iso_code }
+        it { is_expected.not_to include Money.default_currency.symbol }
+        it { is_expected.to include "00" }
+      end
     end
 
     context 'with no_cents_if_whole: nil' do
@@ -121,6 +138,15 @@ describe 'MoneyRails::ActionViewExtension', :type => :helper do
         it { is_expected.to be_a String }
         it { is_expected.not_to include Money.default_currency.decimal_mark }
         it { is_expected.to include Money.default_currency.symbol }
+        it { is_expected.not_to include "00" }
+      end
+
+      describe '#humanized_money_with_iso' do
+        subject { helper.humanized_money_with_iso Money.new(12500) }
+        it { is_expected.to be_a String }
+        it { is_expected.not_to include Money.default_currency.decimal_mark }
+        it { is_expected.to include Money.default_currency.iso_code }
+        it { is_expected.not_to include Money.default_currency.symbol }
         it { is_expected.not_to include "00" }
       end
     end
@@ -148,6 +174,16 @@ describe 'MoneyRails::ActionViewExtension', :type => :helper do
         it { is_expected.to include Money.default_currency.symbol }
         it { is_expected.not_to include "00" }
       end
+
+      describe '#humanized_money_with_iso' do
+        subject { helper.humanized_money_with_iso Money.new(12500) }
+        it { is_expected.to be_a String }
+        it { is_expected.not_to include Money.default_currency.decimal_mark }
+        it { is_expected.to include Money.default_currency.iso_code }
+        it { is_expected.not_to include Money.default_currency.symbol }
+        it { is_expected.not_to include "00" }
+      end
+
     end
 
 

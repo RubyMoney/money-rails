@@ -30,6 +30,10 @@ module MoneyRails
       humanized_money(value, options.merge(:symbol => true))
     end
 
+    def humanized_money_with_iso(value, options={})
+      humanized_money(value, options.merge(:symbol => value.currency.iso_code + ' '))
+    end
+
     def money_without_cents(value, options={})
       if !options || !options.is_a?(Hash)
         warn "money_without_cents now takes a hash of formatting options, please specify { :symbol => true }"
