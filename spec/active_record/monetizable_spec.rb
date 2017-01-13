@@ -154,7 +154,7 @@ if defined? ActiveRecord
         after { MoneyRails.raise_error_on_money_parsing = false }
 
         it "raises exception when a String value with hyphen is assigned" do
-          expect { product.accessor_price = "10-235" }.to raise_error ArgumentError
+          expect { product.accessor_price = "10-235" }.to raise_error Monetize::ParseError
         end
 
         it "raises an exception if it can't change currency" do
@@ -935,10 +935,10 @@ if defined? ActiveRecord
           before { MoneyRails.raise_error_on_money_parsing = true }
           after { MoneyRails.raise_error_on_money_parsing = false }
 
-          it "raises an ArgumentError when given an invalid value" do
+          it "raises a Monetize::ParseError when given an invalid value" do
             expect {
               product.write_monetized :price, :price_cents, '10-50', false, nil, {}
-            }.to raise_error(ArgumentError)
+            }.to raise_error(Monetize::ParseError)
           end
 
           it "raises a Money::Currency::UnknownCurrency error when trying to set invalid currency" do

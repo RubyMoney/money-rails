@@ -25,7 +25,7 @@ class Money
     when object.respond_to?(:to_money)
       begin
         serialize(object.to_money)
-      rescue ArgumentError
+      rescue Monetize::ParseError
         raise if MoneyRails.raise_error_on_money_parsing
         nil
       end
