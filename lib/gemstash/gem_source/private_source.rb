@@ -80,12 +80,13 @@ module Gemstash
         end
       end
 
-      def serve_latest_specs
-        halt 403, "Not yet supported"
-      end
-
       def serve_specs
         params[:prerelease] = false
+        protected(Gemstash::SpecsBuilder)
+      end
+
+      def serve_latest_specs
+        params[:latest] = true
         protected(Gemstash::SpecsBuilder)
       end
 

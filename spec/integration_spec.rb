@@ -131,6 +131,12 @@ describe "gemstash integration tests" do
           to exit_success.and_output(/speaker \(0.1.0\)/)
       end
 
+      it "finds the latest version of private gems", db_transaction: false do
+        env = { "HOME" => env_dir }
+        expect(execute("gem", ["search", "-r", "speaker", "--clear-sources", "--source", host], env: env)).
+          to exit_success.and_output(/speaker \(0.1.0\)/)
+      end
+
       it "finds private gems when just the private source is configured", db_transaction: false do
         skip "this doesn't work because Rubygems sends /specs.4.8.gz instead of /private/specs.4.8.gz"
         env = { "HOME" => env_dir }

@@ -19,6 +19,11 @@ describe Gemstash::SpecsBuilder do
       expect(Marshal.load(gunzip(result))).to eq([])
     end
 
+    it "returns an empty latest result" do
+      result = Gemstash::SpecsBuilder.new(auth, latest: true).serve
+      expect(Marshal.load(gunzip(result))).to eq([])
+    end
+
     it "returns an empty prerelease result" do
       result = Gemstash::SpecsBuilder.new(auth, prerelease: true).serve
       expect(Marshal.load(gunzip(result))).to eq([])
@@ -29,6 +34,12 @@ describe Gemstash::SpecsBuilder do
     let(:expected_specs) do
       [["example", Gem::Version.new("0.0.1"), "ruby"],
        ["example", Gem::Version.new("0.0.2"), "ruby"],
+       ["example", Gem::Version.new("0.0.2"), "java"],
+       ["other-example", Gem::Version.new("0.1.0"), "ruby"]]
+    end
+
+    let(:expected_latest_specs) do
+      [["example", Gem::Version.new("0.0.2"), "ruby"],
        ["example", Gem::Version.new("0.0.2"), "java"],
        ["other-example", Gem::Version.new("0.1.0"), "ruby"]]
     end
@@ -45,6 +56,11 @@ describe Gemstash::SpecsBuilder do
     it "marshals and gzips the versions" do
       result = Gemstash::SpecsBuilder.new(auth).serve
       expect(Marshal.load(gunzip(result))).to match_array(expected_specs)
+    end
+
+    it "marshals and gzips the latest versions" do
+      result = Gemstash::SpecsBuilder.new(auth, latest: true).serve
+      expect(Marshal.load(gunzip(result))).to match_array(expected_latest_specs)
     end
 
     it "returns an empty prerelease result" do
@@ -75,6 +91,11 @@ describe Gemstash::SpecsBuilder do
       expect(Marshal.load(gunzip(result))).to eq([])
     end
 
+    it "returns an empty latest result" do
+      result = Gemstash::SpecsBuilder.new(auth, latest: true).serve
+      expect(Marshal.load(gunzip(result))).to eq([])
+    end
+
     it "marshals and gzips the prerelease versions" do
       result = Gemstash::SpecsBuilder.new(auth, prerelease: true).serve
       expect(Marshal.load(gunzip(result))).to match_array(expected_prerelease_specs)
@@ -85,6 +106,12 @@ describe Gemstash::SpecsBuilder do
     let(:expected_specs) do
       [["example", Gem::Version.new("0.0.1"), "ruby"],
        ["example", Gem::Version.new("0.0.2"), "ruby"],
+       ["example", Gem::Version.new("0.0.2"), "java"],
+       ["other-example", Gem::Version.new("0.1.0"), "ruby"]]
+    end
+
+    let(:expected_latest_specs) do
+      [["example", Gem::Version.new("0.0.2"), "ruby"],
        ["example", Gem::Version.new("0.0.2"), "java"],
        ["other-example", Gem::Version.new("0.1.0"), "ruby"]]
     end
@@ -114,6 +141,11 @@ describe Gemstash::SpecsBuilder do
       expect(Marshal.load(gunzip(result))).to match_array(expected_specs)
     end
 
+    it "marshals and gzips the latest versions" do
+      result = Gemstash::SpecsBuilder.new(auth, latest: true).serve
+      expect(Marshal.load(gunzip(result))).to match_array(expected_latest_specs)
+    end
+
     it "marshals and gzips the prerelease versions" do
       result = Gemstash::SpecsBuilder.new(auth, prerelease: true).serve
       expect(Marshal.load(gunzip(result))).to match_array(expected_prerelease_specs)
@@ -124,6 +156,12 @@ describe Gemstash::SpecsBuilder do
     let(:expected_specs) do
       [["example", Gem::Version.new("0.0.1"), "ruby"],
        ["example", Gem::Version.new("0.0.2"), "ruby"],
+       ["example", Gem::Version.new("0.0.2"), "java"],
+       ["other-example", Gem::Version.new("0.1.0"), "ruby"]]
+    end
+
+    let(:expected_latest_specs) do
+      [["example", Gem::Version.new("0.0.2"), "ruby"],
        ["example", Gem::Version.new("0.0.2"), "java"],
        ["other-example", Gem::Version.new("0.1.0"), "ruby"]]
     end
@@ -159,6 +197,11 @@ describe Gemstash::SpecsBuilder do
       expect(Marshal.load(gunzip(result))).to match_array(expected_specs)
     end
 
+    it "marshals and gzips the latest versions" do
+      result = Gemstash::SpecsBuilder.new(auth, latest: true).serve
+      expect(Marshal.load(gunzip(result))).to match_array(expected_latest_specs)
+    end
+
     it "marshals and gzips the prerelease versions" do
       result = Gemstash::SpecsBuilder.new(auth, prerelease: true).serve
       expect(Marshal.load(gunzip(result))).to match_array(expected_prerelease_specs)
@@ -167,7 +210,8 @@ describe Gemstash::SpecsBuilder do
 
   context "with a new spec pushed" do
     let(:initial_specs) { [["example", Gem::Version.new("0.0.1"), "ruby"]] }
-    let(:specs_after_push) { initial_specs + [["example", Gem::Version.new("0.1.0"), "ruby"]] }
+    let(:new_specs) { [["example", Gem::Version.new("0.1.0"), "ruby"]] }
+    let(:specs_after_push) { initial_specs + new_specs }
 
     before do
       Gemstash::Authorization.authorize(auth_key, "all")
@@ -181,6 +225,14 @@ describe Gemstash::SpecsBuilder do
       Gemstash::GemPusher.new(auth, read_gem("example", "0.1.0")).serve
       result = Gemstash::SpecsBuilder.new(auth).serve
       expect(Marshal.load(gunzip(result))).to match_array(specs_after_push)
+    end
+
+    it "busts the latest cache" do
+      result = Gemstash::SpecsBuilder.new(auth, latest: true).serve
+      expect(Marshal.load(gunzip(result))).to match_array(initial_specs)
+      Gemstash::GemPusher.new(auth, read_gem("example", "0.1.0")).serve
+      result = Gemstash::SpecsBuilder.new(auth, latest: true).serve
+      expect(Marshal.load(gunzip(result))).to match_array(new_specs)
     end
   end
 
@@ -209,6 +261,8 @@ describe Gemstash::SpecsBuilder do
        ["example", Gem::Version.new("0.1.0"), "ruby"]]
     end
 
+    let(:latest_specs) { [["example", Gem::Version.new("0.1.0"), "ruby"]] }
+
     let(:specs_after_yank) { [["example", Gem::Version.new("0.0.1"), "ruby"]] }
 
     before do
@@ -223,6 +277,14 @@ describe Gemstash::SpecsBuilder do
       expect(Marshal.load(gunzip(result))).to match_array(initial_specs)
       Gemstash::GemYanker.new(auth, "example", "0.1.0").serve
       result = Gemstash::SpecsBuilder.new(auth).serve
+      expect(Marshal.load(gunzip(result))).to match_array(specs_after_yank)
+    end
+
+    it "busts the latest cache" do
+      result = Gemstash::SpecsBuilder.new(auth, latest: true).serve
+      expect(Marshal.load(gunzip(result))).to match_array(latest_specs)
+      Gemstash::GemYanker.new(auth, "example", "0.1.0").serve
+      result = Gemstash::SpecsBuilder.new(auth, latest: true).serve
       expect(Marshal.load(gunzip(result))).to match_array(specs_after_yank)
     end
   end
@@ -253,7 +315,8 @@ describe Gemstash::SpecsBuilder do
 
   context "with a spec unyanked" do
     let(:initial_specs) { [["example", Gem::Version.new("0.0.1"), "ruby"]] }
-    let(:specs_after_unyank) { initial_specs + [["example", Gem::Version.new("0.1.0"), "ruby"]] }
+    let(:new_specs) { [["example", Gem::Version.new("0.1.0"), "ruby"]] }
+    let(:specs_after_unyank) { initial_specs + new_specs }
 
     before do
       Gemstash::Authorization.authorize(auth_key, "all")
@@ -269,6 +332,14 @@ describe Gemstash::SpecsBuilder do
       Gemstash::GemUnyanker.new(auth, "example", "0.1.0").serve
       result = Gemstash::SpecsBuilder.new(auth).serve
       expect(Marshal.load(gunzip(result))).to match_array(specs_after_unyank)
+    end
+
+    it "busts the latest cache" do
+      result = Gemstash::SpecsBuilder.new(auth, latest: true).serve
+      expect(Marshal.load(gunzip(result))).to match_array(initial_specs)
+      Gemstash::GemUnyanker.new(auth, "example", "0.1.0").serve
+      result = Gemstash::SpecsBuilder.new(auth, latest: true).serve
+      expect(Marshal.load(gunzip(result))).to match_array(new_specs)
     end
   end
 
