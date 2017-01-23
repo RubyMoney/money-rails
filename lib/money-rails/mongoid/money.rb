@@ -41,8 +41,8 @@ class Money
       when object.respond_to?(:to_money) then
         begin
           object.to_money.mongoize
-        rescue Money::Currency::UnknownCurrency, Monetize::ParseError
-          raise if MoneyRails.raise_error_on_money_parsing
+        rescue Money::Currency::UnknownCurrency, Monetize::ParseError => e
+          raise MoneyRails::Error, e.message if MoneyRails.raise_error_on_money_parsing
           nil
         end
       else object
