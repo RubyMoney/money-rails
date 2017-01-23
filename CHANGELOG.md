@@ -5,6 +5,12 @@
   - Gracefully handle empty configuration files ([#97](https://github.com/bundler/gemstash/pull/97), [@rjocoleman](https://github.com/rjocoleman))
   - Remove bundler-audit since we don't commit our Gemfile.lock ([#98](https://github.com/bundler/gemstash/pull/98), [@smellsblue](https://github.com/smellsblue))
   - Clarify what is being cached for 30 minutes ([#108](https://github.com/bundler/gemstash/pull/108), [@Nowaker](https://github.com/Nowaker))
+  - Update documentation ([#112](https://github.com/bundler/gemstash/pull/112), [@smellsblue](https://github.com/smellsblue))
+  - Integration tests for searching for gems ([#113](https://github.com/bundler/gemstash/pull/113), [@smellsblue](https://github.com/smellsblue))
+  - Add `ruby-head` Gemfile for Travis ([#121](https://github.com/bundler/gemstash/pull/121), [@olleolleolle](https://github.com/olleolleolle))
+  - Make all Pandoc filters executable ([#122](https://github.com/bundler/gemstash/pull/122), [@olleolleolle](https://github.com/olleolleolle))
+  - Fix `rake doc` to work with newer versions of Pandoc ([#124](https://github.com/bundler/gemstash/pull/124), [@smellsblue](https://github.com/smellsblue))
+  - Use `curl` since `unyank` is removed in newer RubyGems versions ([#125](https://github.com/bundler/gemstash/pull/125), [@smellsblue](https://github.com/smellsblue))
 
 ### Features
 
@@ -17,6 +23,8 @@
   - Improve code climate ([#92](https://github.com/bundler/gemstash/pull/92), [@smellsblue](https://github.com/smellsblue))
   - Refactor authorization ([#93](https://github.com/bundler/gemstash/pull/93), [@smellsblue](https://github.com/smellsblue), [@rjocoleman](https://github.com/rjocoleman))
   - Add protected fetch for private gems ([#94](https://github.com/bundler/gemstash/pull/94), [@rjocoleman](https://github.com/rjocoleman))
+  - Add Ruby Together call to action ([#116](https://github.com/bundler/gemstash/pull/116), [@mrb](https://github.com/mrb))
+  - Configurable options to `Sequel.connect` ([#123](https://github.com/bundler/gemstash/pull/123), [@olleolleolle](https://github.com/olleolleolle))
 
 ## 1.0.3 (2016-10-15)
 

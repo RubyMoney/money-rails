@@ -57,6 +57,10 @@ You may also use [`postgres`](http://www.postgresql.org/), [`mysql`](http://www.
 ---
 :db_adapter: postgres
 :db_url: postgres:///gemstash
+:db_connection_options: # Sequel.connect options
+  :connect_timeout: 10
+  :read_timeout: 5
+  :timeout: 30
 ```
 
 Regardless of the adapter you choose, the database will automatically migrate to your version of Gemstash whenever the database is needed. You only need to ensure the database exists and Gemstash will do the rest, except for `sqlite3` (for which Gemstash will also create the database for you).
@@ -89,6 +93,8 @@ While the server is not customizable, the way Gemstash binds the port can be cha
 ```
 
 This maps directly to the [Puma bind flag](https://github.com/puma/puma#binding-tcp--sockets), and will support anything valid for that flag.
+
+The number of threads Puma uses is also customizable via the `:puma_threads` configuration key. The default is `16`.
 
 Protected Fetch
 ---------------

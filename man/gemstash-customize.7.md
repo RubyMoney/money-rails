@@ -124,6 +124,9 @@ changed. To change the binding, update the `:bind` configuration key:
 This maps directly to the [Puma bind flag][PUMA_BIND], and will support
 anything valid for that flag.
 
+The number of threads Puma uses is also customizable via the `:puma_threads`
+configuration key. The default is `16`.
+
 ## Protected Fetch
 
 Gemstash by default allows unauthenticated access for private
