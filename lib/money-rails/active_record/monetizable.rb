@@ -5,7 +5,7 @@ require 'active_support/deprecation/reporting'
 module MoneyRails
   module ActiveRecord
     module Monetizable
-      class ReadOnlyCurrencyException < StandardError; end
+      class ReadOnlyCurrencyException < MoneyRails::Error; end
       extend ActiveSupport::Concern
 
       module ClassMethods
@@ -232,11 +232,8 @@ module MoneyRails
               money = value.to_money(public_send("currency_for_#{name}"))
             rescue NoMethodError
               return nil
-            rescue ArgumentError
-              raise if MoneyRails.raise_error_on_money_parsing
-              return nil
-            rescue Money::Currency::UnknownCurrency
-              raise if MoneyRails.raise_error_on_money_parsing
+            rescue Money::Currency::UnknownCurrency, Monetize::ParseError => e
+              raise MoneyRails::Error, e.message if MoneyRails.raise_error_on_money_parsing
               return nil
             end
           end

@@ -46,11 +46,11 @@ if defined?(Mongoid) && ::Mongoid::VERSION =~ /^3(.*)/
         after { MoneyRails.raise_error_on_money_parsing = false }
 
         it "raises exception if the mongoized value is a String with a hyphen" do
-          expect { priceable_from_string_with_hyphen }.to raise_error ArgumentError
+          expect { priceable_from_string_with_hyphen }.to raise_error MoneyRails::Error
         end
 
         it "raises exception if the mongoized value is a String with an unknown currency" do
-          expect { priceable_from_string_with_unknown_currency }.to raise_error ArgumentError
+          expect { priceable_from_string_with_unknown_currency }.to raise_error MoneyRails::Error
         end
       end
 
