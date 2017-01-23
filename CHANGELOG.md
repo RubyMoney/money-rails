@@ -5,6 +5,7 @@
 - Ruby 2.4 support
 - Upgrade Money dependency from 6.7 to 6.8.1
 - Upgrade Monetize dependency from 1.4.0 to 1.6.0
+- Raise `MoneyRails::Error` instead of exposing Money and Monetize errors
 
 ## 1.7.0
 
