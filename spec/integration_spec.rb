@@ -61,6 +61,14 @@ describe "gemstash integration tests" do
     @gemstash_empty_rubygems.start
   end
 
+  let(:platform_message) do
+    if RUBY_PLATFORM == "java"
+      "Java"
+    else
+      "Ruby"
+    end
+  end
+
   after(:all) do
     @gemstash.stop
     @gemstash_empty_rubygems.stop
@@ -187,18 +195,26 @@ describe "gemstash integration tests" do
         expect(http_client.get("gems/speaker-0.1.0")).to eq(gem_contents)
       end
     end
+
+    context "installing a gem" do
+      before do
+        Gemstash::GemPusher.new("test-key", gem_contents).push
+        expect(deps.fetch(%w(speaker))).to match_dependencies([speaker_deps])
+        @gemstash.env.cache.flush
+      end
+
+      it "successfully installs the gem", db_transaction: false do
+        env = { "HOME" => env_dir, "RUBYGEMS_HOST" => host, "GEM_HOME" => env_dir, "GEM_PATH" => env_dir }
+        expect(execute("gem", ["install", "speaker", "--clear-sources", "--source", host], dir: env_dir, env: env)).
+          to exit_success
+        expect(execute(File.join(env_dir, "bin/speaker"), %w(hi), dir: env_dir, env: env)).
+          to exit_success.and_output("Hello world, #{platform_message}\n")
+      end
+    end
   end
 
   describe "bundle install against gemstash" do
     let(:dir) { bundle_path(bundle) }
-
-    let(:platform_message) do
-      if RUBY_PLATFORM == "java"
-        "Java"
-      else
-        "Ruby"
-      end
-    end
 
     after do
       clean_bundle bundle
