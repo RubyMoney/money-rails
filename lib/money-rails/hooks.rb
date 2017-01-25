@@ -8,12 +8,12 @@ module MoneyRails
         require 'money-rails/active_model/validator'
         require 'money-rails/active_record/monetizable'
         ::ActiveRecord::Base.send :include, MoneyRails::ActiveRecord::Monetizable
-        if defined?(::Rails) && defined?(::Rails::VERSION)
-          if ::Rails::VERSION::MAJOR >= 4
+        if defined?(::ActiveRecord) && defined?(::ActiveRecord::VERSION)
+          if ::ActiveRecord::VERSION::MAJOR >= 4
             rails42               = case
-                                    when ::Rails::VERSION::MAJOR < 5 && ::Rails::VERSION::MINOR >= 2
+                                    when ::ActiveRecord::VERSION::MAJOR < 5 && ::ActiveRecord::VERSION::MINOR >= 2
                                       true
-                                    when ::Rails::VERSION::MAJOR >= 5
+                                    when ::ActiveRecord::VERSION::MAJOR >= 5
                                       true
                                     else
                                       false
