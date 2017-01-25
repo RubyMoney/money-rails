@@ -146,7 +146,8 @@ class SimpleServer
     end
 
     def do_GET(request, response) # rubocop:disable Style/MethodName
-      @simple_server.routes[request.path].call request, response
+      route = @simple_server.routes.fetch(request.path) { raise "No GET route for #{request.path}" }
+      route.call(request, response)
     end
   end
 end
