@@ -11,7 +11,7 @@ module MoneyRails
   extend Configuration
 end
 
-if defined? Rails
+if defined? ::Rails::Railtie
   require "money-rails/railtie"
   require "money-rails/engine"
 end

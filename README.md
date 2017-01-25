@@ -42,6 +42,12 @@ $ rails g money_rails:initializer
 There, you can define the default currency value and set other
 configuration parameters for the rails app.
 
+Without Rails in rack-based applications, call during initialization:
+
+```ruby
+MoneyRails::Hooks.init
+```
+
 ## Usage
 
 ### ActiveRecord
