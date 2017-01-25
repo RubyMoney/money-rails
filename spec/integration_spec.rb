@@ -83,17 +83,18 @@ describe "gemstash integration tests" do
     let(:gem_name) { "speaker" }
     let(:gem) { gem_path(gem_name, gem_version) }
     let(:gem_version) { "0.1.0" }
-    let(:gem_contents) { read_gem(gem_name, gem_version) }
+    let(:gem_contents) { read_gem(gem_name, gem_version, platform: speaker_platform) }
     let(:deps) { Gemstash::Dependencies.for_private }
     let(:storage) { Gemstash::Storage.for("private").for("gems") }
     let(:http_client) { Gemstash::HTTPClient.for(@gemstash.private_upstream) }
+    let(:speaker_platform) { "ruby" }
 
     let(:speaker_deps) do
       {
-        :name => "speaker",
-        :number => "0.1.0",
-        :platform => "ruby",
-        :dependencies => []
+        name: "speaker",
+        number: "0.1.0",
+        platform: speaker_platform,
+        dependencies: []
       }
     end
 
@@ -187,6 +188,7 @@ describe "gemstash integration tests" do
       end
 
       it "adds valid gems back to the server", db_transaction: false do
+        skip "unyanking has been removed in newer versions of rubygems, and will likely be removed from here eventually"
         env = { "HOME" => env_dir, "RUBYGEMS_HOST" => host }
         expect(execute("gem", ["yank", "--key", "test", gem_name, "--version", gem_version, "--undo"], env: env)).
           to exit_success
@@ -197,6 +199,14 @@ describe "gemstash integration tests" do
     end
 
     context "installing a gem" do
+      let(:speaker_platform) do
+        if RUBY_PLATFORM == "java"
+          "java"
+        else
+          "ruby"
+        end
+      end
+
       before do
         Gemstash::GemPusher.new("test-key", gem_contents).push
         expect(deps.fetch(%w(speaker))).to match_dependencies([speaker_deps])
@@ -222,26 +232,28 @@ describe "gemstash integration tests" do
 
     shared_examples "a bundleable project" do
       it "successfully bundles" do
-        expect(execute("bundle", dir: dir)).to exit_success
-        expect(execute("bundle", %w(exec speaker hi), dir: dir)).
+        env = { "HOME" => dir }
+        expect(execute("bundle", dir: dir, env: env)).to exit_success
+        expect(execute("bundle", %w(exec speaker hi), dir: dir, env: env)).
           to exit_success.and_output("Hello world, #{platform_message}\n")
       end
 
       it "can bundle with full index" do
-        expect(execute("bundle", %w(--full-index), dir: dir)).to exit_success
-        expect(execute("bundle", %w(exec speaker hi), dir: dir)).
+        env = { "HOME" => dir }
+        expect(execute("bundle", %w(--full-index), dir: dir, env: env)).to exit_success
+        expect(execute("bundle", %w(exec speaker hi), dir: dir, env: env)).
           to exit_success.and_output("Hello world, #{platform_message}\n")
       end
 
       it "can bundle with prerelease versions" do
-        env = { "SPEAKER_VERSION" => "= 0.2.0.pre" }
+        env = { "HOME" => dir, "SPEAKER_VERSION" => "= 0.2.0.pre" }
         expect(execute("bundle", dir: dir, env: env)).to exit_success
         expect(execute("bundle", %w(exec speaker hi), dir: dir, env: env)).
           to exit_success.and_output("Hello world, pre, #{platform_message}\n")
       end
 
       it "can bundle with prerelease versions with full index" do
-        env = { "SPEAKER_VERSION" => "= 0.2.0.pre" }
+        env = { "HOME" => dir, "SPEAKER_VERSION" => "= 0.2.0.pre" }
         expect(execute("bundle", %w(--full-index), dir: dir, env: env)).to exit_success
         expect(execute("bundle", %w(exec speaker hi), dir: dir, env: env)).
           to exit_success.and_output("Hello world, pre, #{platform_message}\n")
@@ -264,14 +276,15 @@ describe "gemstash integration tests" do
       it_behaves_like "a bundleable project"
 
       it "can successfully bundle twice" do
-        expect(execute("bundle", dir: dir)).to exit_success
-        expect(execute("bundle", %w(exec speaker hi), dir: dir)).
+        env = { "HOME" => dir }
+        expect(execute("bundle", dir: dir, env: env)).to exit_success
+        expect(execute("bundle", %w(exec speaker hi), dir: dir, env: env)).
           to exit_success.and_output("Hello world, #{platform_message}\n")
 
         clean_bundle bundle
 
-        expect(execute("bundle", dir: dir)).to exit_success
-        expect(execute("bundle", %w(exec speaker hi), dir: dir)).
+        expect(execute("bundle", dir: dir, env: env)).to exit_success
+        expect(execute("bundle", %w(exec speaker hi), dir: dir, env: env)).
           to exit_success.and_output("Hello world, #{platform_message}\n")
       end
     end
@@ -285,9 +298,9 @@ describe "gemstash integration tests" do
       before do
         Gemstash::Authorization.authorize("test-key", "all")
         Gemstash::GemPusher.new("test-key", read_gem("speaker", "0.1.0")).push
-        Gemstash::GemPusher.new("test-key", read_gem("speaker", "0.1.0-java")).push
+        Gemstash::GemPusher.new("test-key", read_gem("speaker", "0.1.0", platform: "java")).push
         Gemstash::GemPusher.new("test-key", read_gem("speaker", "0.2.0.pre")).push
-        Gemstash::GemPusher.new("test-key", read_gem("speaker", "0.2.0.pre-java")).push
+        Gemstash::GemPusher.new("test-key", read_gem("speaker", "0.2.0.pre", platform: "java")).push
         @gemstash.env.cache.flush
       end
 
