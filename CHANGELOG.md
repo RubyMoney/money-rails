@@ -1,3 +1,10 @@
+## 1.0.4 (2017-01-27)
+
+### Features
+
+  - Backport `latest_specs.4.8.gz` endpoint for private gems to the 1.0 branch ([#134](https://github.com/bundler/gemstash/pull/134), [@randycoulman](https://github.com/randycoulman), [@smellsblue](https://github.com/smellsblue))
+  - Improve CHANGELOG generation and prepare for `1.0.4` release ([#135](https://github.com/bundler/gemstash/pull/135), [@smellsblue](https://github.com/smellsblue))
+
 ## 1.0.3 (2016-10-15)
 
 ### Bugfixes

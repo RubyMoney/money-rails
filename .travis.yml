@@ -3,7 +3,7 @@ matrix:
   allow_failures:
   - rvm: ruby-head
   include:
-  - rvm: jruby-9.0.3.0
+  - rvm: jruby-9.1.7.0
     env: JRUBY_OPTS="$JRUBY_OPTS -J-Xmx1536m -J-XX:MaxPermSize=192m"
 rvm:
 - 2.0
