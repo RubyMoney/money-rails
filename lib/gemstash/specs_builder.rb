@@ -20,14 +20,20 @@ module Gemstash
       new(prerelease: true).build
     end
 
+    def self.latest
+      new(latest: true).build
+    end
+
     def self.invalidate_stored
       storage = Gemstash::Storage.for("private").for("specs_collection")
       storage.resource("specs.4.8.gz").delete(:specs)
+      storage.resource("latest_specs.4.8.gz").delete(:specs)
       storage.resource("prerelease_specs.4.8.gz").delete(:specs)
     end
 
-    def initialize(prerelease: false)
+    def initialize(prerelease: false, latest: false)
       @prerelease = prerelease
+      @latest = latest
     end
 
     def build
@@ -47,7 +53,9 @@ module Gemstash
     end
 
     def fetch_resource
-      if @prerelease
+      if @latest
+        storage.resource("latest_specs.4.8.gz")
+      elsif @prerelease
         storage.resource("prerelease_specs.4.8.gz")
       else
         storage.resource("specs.4.8.gz")
@@ -64,7 +72,7 @@ module Gemstash
     end
 
     def fetch_versions
-      @versions = Gemstash::DB::Version.for_spec_collection(prerelease: @prerelease).map(&:to_spec)
+      @versions = Gemstash::DB::Version.for_spec_collection(prerelease: @prerelease, latest: @latest).map(&:to_spec)
     end
 
     def marshal

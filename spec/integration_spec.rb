@@ -61,6 +61,14 @@ describe "gemstash integration tests" do
     @gemstash_empty_rubygems.start
   end
 
+  let(:platform_message) do
+    if RUBY_PLATFORM == "java"
+      "Java"
+    else
+      "Ruby"
+    end
+  end
+
   after(:all) do
     @gemstash.stop
     @gemstash_empty_rubygems.stop
@@ -69,28 +77,35 @@ describe "gemstash integration tests" do
   end
 
   describe "interacting with private gems" do
-    let(:env_dir) { env_path("integration_spec/private_gems") }
+    let(:env_name) { "integration_spec/private_gems" }
+    let(:env_dir) { env_path(env_name) }
     let(:host) { "#{@gemstash.url}/private" }
     let(:gem_name) { "speaker" }
     let(:gem) { gem_path(gem_name, gem_version) }
     let(:gem_version) { "0.1.0" }
-    let(:gem_contents) { read_gem(gem_name, gem_version) }
+    let(:gem_contents) { read_gem(gem_name, gem_version, platform: speaker_platform) }
     let(:deps) { Gemstash::Dependencies.for_private }
     let(:storage) { Gemstash::Storage.for("private").for("gems") }
     let(:http_client) { Gemstash::HTTPClient.for(@gemstash.private_upstream) }
+    let(:speaker_platform) { "ruby" }
 
     let(:speaker_deps) do
       {
-        :name => "speaker",
-        :number => "0.1.0",
-        :platform => "ruby",
-        :dependencies => []
+        name: "speaker",
+        number: "0.1.0",
+        platform: speaker_platform,
+        dependencies: []
       }
     end
 
     before do
       FileUtils.chmod(0600, File.join(env_dir, ".gem/credentials"))
       Gemstash::Authorization.authorize("test-key", "all")
+    end
+
+    after do
+      # Some actions affect files in the environment, like adding and removing sources
+      clean_env env_name
     end
 
     context "pushing a gem" do
@@ -106,6 +121,43 @@ describe "gemstash integration tests" do
         expect(deps.fetch(%w(speaker))).to match_dependencies([speaker_deps])
         expect(storage.resource("speaker-0.1.0").content(:gem)).to eq(gem_contents)
         expect(http_client.get("gems/speaker-0.1.0")).to eq(gem_contents)
+      end
+    end
+
+    context "searching for a gem" do
+      before do
+        Gemstash::GemPusher.new("test-key", gem_contents).push
+        expect(deps.fetch(%w(speaker))).to match_dependencies([speaker_deps])
+        @gemstash.env.cache.flush
+      end
+
+      it "finds private gems", db_transaction: false do
+        env = { "HOME" => env_dir }
+        expect(execute("gem", ["search", "-ar", "speaker", "--clear-sources", "--source", host], env: env)).
+          to exit_success.and_output(/speaker \(0.1.0\)/)
+      end
+
+      it "finds the latest version of private gems", db_transaction: false do
+        env = { "HOME" => env_dir }
+        expect(execute("gem", ["search", "-r", "speaker", "--clear-sources", "--source", host], env: env)).
+          to exit_success.and_output(/speaker \(0.1.0\)/)
+      end
+
+      it "finds private gems when just the private source is configured", db_transaction: false do
+        skip "this doesn't work because Rubygems sends /specs.4.8.gz instead of /private/specs.4.8.gz"
+        env = { "HOME" => env_dir }
+        expect(execute("gem", ["source", "-r", "https://rubygems.org/"], env: env)).to exit_success
+        expect(execute("gem", ["source", "-a", host], env: env)).to exit_success
+        expect(execute("gem", ["search", "-ar", "speaker"], env: env)).
+          to exit_success.and_output(/speaker \(0.1.0\)/)
+      end
+
+      it "finds private gems when just the private source is configured with a trailing slash", db_transaction: false do
+        env = { "HOME" => env_dir }
+        expect(execute("gem", ["source", "-r", "https://rubygems.org/"], env: env)).to exit_success
+        expect(execute("gem", ["source", "-a", "#{host}/"], env: env)).to exit_success
+        expect(execute("gem", ["search", "-ar", "speaker"], env: env)).
+          to exit_success.and_output(/speaker \(0.1.0\)/)
       end
     end
 
@@ -136,6 +188,7 @@ describe "gemstash integration tests" do
       end
 
       it "adds valid gems back to the server", db_transaction: false do
+        skip "unyanking has been removed in newer versions of rubygems, and will likely be removed from here eventually"
         env = { "HOME" => env_dir, "RUBYGEMS_HOST" => host }
         expect(execute("gem", ["yank", "--key", "test", gem_name, "--version", gem_version, "--undo"], env: env)).
           to exit_success
@@ -144,18 +197,34 @@ describe "gemstash integration tests" do
         expect(http_client.get("gems/speaker-0.1.0")).to eq(gem_contents)
       end
     end
+
+    context "installing a gem" do
+      let(:speaker_platform) do
+        if RUBY_PLATFORM == "java"
+          "java"
+        else
+          "ruby"
+        end
+      end
+
+      before do
+        Gemstash::GemPusher.new("test-key", gem_contents).push
+        expect(deps.fetch(%w(speaker))).to match_dependencies([speaker_deps])
+        @gemstash.env.cache.flush
+      end
+
+      it "successfully installs the gem", db_transaction: false do
+        env = { "HOME" => env_dir, "RUBYGEMS_HOST" => host, "GEM_HOME" => env_dir, "GEM_PATH" => env_dir }
+        expect(execute("gem", ["install", "speaker", "--clear-sources", "--source", host], dir: env_dir, env: env)).
+          to exit_success
+        expect(execute(File.join(env_dir, "bin/speaker"), %w(hi), dir: env_dir, env: env)).
+          to exit_success.and_output("Hello world, #{platform_message}\n")
+      end
+    end
   end
 
   describe "bundle install against gemstash" do
     let(:dir) { bundle_path(bundle) }
-
-    let(:platform_message) do
-      if RUBY_PLATFORM == "java"
-        "Java"
-      else
-        "Ruby"
-      end
-    end
 
     after do
       clean_bundle bundle
@@ -163,26 +232,28 @@ describe "gemstash integration tests" do
 
     shared_examples "a bundleable project" do
       it "successfully bundles" do
-        expect(execute("bundle", dir: dir)).to exit_success
-        expect(execute("bundle", %w(exec speaker hi), dir: dir)).
+        env = { "HOME" => dir }
+        expect(execute("bundle", dir: dir, env: env)).to exit_success
+        expect(execute("bundle", %w(exec speaker hi), dir: dir, env: env)).
           to exit_success.and_output("Hello world, #{platform_message}\n")
       end
 
       it "can bundle with full index" do
-        expect(execute("bundle", %w(--full-index), dir: dir)).to exit_success
-        expect(execute("bundle", %w(exec speaker hi), dir: dir)).
+        env = { "HOME" => dir }
+        expect(execute("bundle", %w(--full-index), dir: dir, env: env)).to exit_success
+        expect(execute("bundle", %w(exec speaker hi), dir: dir, env: env)).
           to exit_success.and_output("Hello world, #{platform_message}\n")
       end
 
       it "can bundle with prerelease versions" do
-        env = { "SPEAKER_VERSION" => "= 0.2.0.pre" }
+        env = { "HOME" => dir, "SPEAKER_VERSION" => "= 0.2.0.pre" }
         expect(execute("bundle", dir: dir, env: env)).to exit_success
         expect(execute("bundle", %w(exec speaker hi), dir: dir, env: env)).
           to exit_success.and_output("Hello world, pre, #{platform_message}\n")
       end
 
       it "can bundle with prerelease versions with full index" do
-        env = { "SPEAKER_VERSION" => "= 0.2.0.pre" }
+        env = { "HOME" => dir, "SPEAKER_VERSION" => "= 0.2.0.pre" }
         expect(execute("bundle", %w(--full-index), dir: dir, env: env)).to exit_success
         expect(execute("bundle", %w(exec speaker hi), dir: dir, env: env)).
           to exit_success.and_output("Hello world, pre, #{platform_message}\n")
@@ -205,14 +276,15 @@ describe "gemstash integration tests" do
       it_behaves_like "a bundleable project"
 
       it "can successfully bundle twice" do
-        expect(execute("bundle", dir: dir)).to exit_success
-        expect(execute("bundle", %w(exec speaker hi), dir: dir)).
+        env = { "HOME" => dir }
+        expect(execute("bundle", dir: dir, env: env)).to exit_success
+        expect(execute("bundle", %w(exec speaker hi), dir: dir, env: env)).
           to exit_success.and_output("Hello world, #{platform_message}\n")
 
         clean_bundle bundle
 
-        expect(execute("bundle", dir: dir)).to exit_success
-        expect(execute("bundle", %w(exec speaker hi), dir: dir)).
+        expect(execute("bundle", dir: dir, env: env)).to exit_success
+        expect(execute("bundle", %w(exec speaker hi), dir: dir, env: env)).
           to exit_success.and_output("Hello world, #{platform_message}\n")
       end
     end
@@ -226,9 +298,9 @@ describe "gemstash integration tests" do
       before do
         Gemstash::Authorization.authorize("test-key", "all")
         Gemstash::GemPusher.new("test-key", read_gem("speaker", "0.1.0")).push
-        Gemstash::GemPusher.new("test-key", read_gem("speaker", "0.1.0-java")).push
+        Gemstash::GemPusher.new("test-key", read_gem("speaker", "0.1.0", platform: "java")).push
         Gemstash::GemPusher.new("test-key", read_gem("speaker", "0.2.0.pre")).push
-        Gemstash::GemPusher.new("test-key", read_gem("speaker", "0.2.0.pre-java")).push
+        Gemstash::GemPusher.new("test-key", read_gem("speaker", "0.2.0.pre", platform: "java")).push
         @gemstash.env.cache.flush
       end
 

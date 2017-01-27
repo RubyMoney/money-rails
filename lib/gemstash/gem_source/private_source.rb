@@ -85,13 +85,14 @@ module Gemstash
         gem.content(:gem)
       end
 
-      def serve_latest_specs
-        halt 403, "Not yet supported"
-      end
-
       def serve_specs
         content_type "application/octet-stream"
         Gemstash::SpecsBuilder.all
+      end
+
+      def serve_latest_specs
+        content_type "application/octet-stream"
+        Gemstash::SpecsBuilder.latest
       end
 
       def serve_prerelease_specs

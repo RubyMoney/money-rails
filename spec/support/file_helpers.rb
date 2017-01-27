@@ -4,19 +4,25 @@ require "zlib"
 
 # Helper methods to easily find and manipulate test files.
 module FileHelpers
-  def gem_path(name, version)
+  def gem_path(name, version, platform: "ruby")
     gems_dir = File.expand_path("../../data/gems", __FILE__)
     gem_dir = File.join(gems_dir, name)
+    version = "#{version}-#{platform}" unless platform == "ruby"
     File.join(gem_dir, "pkg/#{name}-#{version}.gem")
   end
 
-  def read_gem(name, version)
-    File.open(gem_path(name, version), "rb", &:read)
+  def read_gem(name, version, platform: "ruby")
+    File.open(gem_path(name, version, platform: platform), "rb", &:read)
   end
 
   def env_path(name)
     envs_dir = File.expand_path("../../data/environments", __FILE__)
     File.join(envs_dir, name)
+  end
+
+  def clean_env(name)
+    dir = env_path(name)
+    expect(execute("git", ["clean", "-fdx", dir], env: { "PATH" => ENV["PATH"] })).to exit_success
   end
 
   def bundle_path(name)
