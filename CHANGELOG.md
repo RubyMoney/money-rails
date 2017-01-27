@@ -1,3 +1,10 @@
+## 1.0.4 (2017-01-27)
+
+### Features
+
+  - Backport `latest_specs.4.8.gz` endpoint for private gems to the 1.0 branch ([#134](https://github.com/bundler/gemstash/pull/134), [@randycoulman](https://github.com/randycoulman), [@smellsblue](https://github.com/smellsblue))
+  - Improve CHANGELOG generation and prepare for `1.0.4` release ([#135](https://github.com/bundler/gemstash/pull/135), [@smellsblue](https://github.com/smellsblue))
+
 ## 1.0.3 (2016-10-15)
 
 ### Bugfixes
@@ -16,6 +23,7 @@
   - Fix broken JRuby build ([#91](https://github.com/bundler/gemstash/pull/91), [@smellsblue](https://github.com/smellsblue))
   - Drop www.rubygems.org in favor of rubygems.org ([#101](https://github.com/bundler/gemstash/pull/101), [@smellsblue](https://github.com/smellsblue))
   - Redirect /versions and /info/* to index.rubygems.org ([#102](https://github.com/bundler/gemstash/pull/102), [@smellsblue](https://github.com/smellsblue))
+  - Backports to the 1.0 branch ([#103](https://github.com/bundler/gemstash/pull/103), [@smellsblue](https://github.com/smellsblue))
 
 ## 1.0.1 (2016-02-23)
 
@@ -79,3 +87,27 @@
   - Push, yank, and unyank private gems
   - Zero setup dependencies
   - Optionally use Memcached for caching or PostgreSQL for the database
+  - Pull strategies and storage from bundler-api ([#5](https://github.com/bundler/gemstash/pull/5), [@pcarranza](https://github.com/pcarranza))
+  - Defer db connection test until sqlite db file exists ([#8](https://github.com/bundler/gemstash/pull/8), [@carpodaster](https://github.com/carpodaster))
+  - Integration specs ([#9](https://github.com/bundler/gemstash/pull/9), [@smellsblue](https://github.com/smellsblue))
+  - Logging all the things to a file ([#10](https://github.com/bundler/gemstash/pull/10), [@pcarranza](https://github.com/pcarranza))
+  - Gem sources ([#11](https://github.com/bundler/gemstash/pull/11), [@smellsblue](https://github.com/smellsblue))
+  - Forward http user agent to the upstream server ([#23](https://github.com/bundler/gemstash/pull/23), [@pcarranza](https://github.com/pcarranza))
+  - Documentation ([#25](https://github.com/bundler/gemstash/pull/25), [@smellsblue](https://github.com/smellsblue), [@pcarranza](https://github.com/pcarranza))
+  - Avoid filesystem limits using a trie ([#26](https://github.com/bundler/gemstash/pull/26), [@smellsblue](https://github.com/smellsblue))
+  - A few tweaks: enable setting the host to bind to, and reduced access for some attributes ([#28](https://github.com/bundler/gemstash/pull/28), [@pcarranza](https://github.com/pcarranza))
+  - Handle upstream connection error correctly and die with dignity ([#29](https://github.com/bundler/gemstash/pull/29), [@pcarranza](https://github.com/pcarranza))
+  - Add many ruby versions to travis configuration ([#31](https://github.com/bundler/gemstash/pull/31), [@pcarranza](https://github.com/pcarranza))
+  - Add rubygems version enforcement ([#32](https://github.com/bundler/gemstash/pull/32), [@pcarranza](https://github.com/pcarranza))
+  - Older RubyGems and Ruby 2.0.0 ([#33](https://github.com/bundler/gemstash/pull/33), [@smellsblue](https://github.com/smellsblue))
+  - Various fixes ([#34](https://github.com/bundler/gemstash/pull/34), [@smellsblue](https://github.com/smellsblue))
+  - Yanking gems ([#36](https://github.com/bundler/gemstash/pull/36), [@smellsblue](https://github.com/smellsblue))
+  - Use Sequel::Model ([#37](https://github.com/bundler/gemstash/pull/37), [@smellsblue](https://github.com/smellsblue))
+  - Build against JRuby ([#38](https://github.com/bundler/gemstash/pull/38), [@smellsblue](https://github.com/smellsblue))
+  - Unyanking gems ([#39](https://github.com/bundler/gemstash/pull/39), [@smellsblue](https://github.com/smellsblue))
+  - Add status command ([#40](https://github.com/bundler/gemstash/pull/40), [@smellsblue](https://github.com/smellsblue))
+  - Cache if gem is indexed in Gemstash::Storage ([#44](https://github.com/bundler/gemstash/pull/44), [@smellsblue](https://github.com/smellsblue))
+  - Full index bundling ([#45](https://github.com/bundler/gemstash/pull/45), [@smellsblue](https://github.com/smellsblue))
+  - Various fixes 2 ([#47](https://github.com/bundler/gemstash/pull/47), [@smellsblue](https://github.com/smellsblue))
+  - Various fixes 3 ([#49](https://github.com/bundler/gemstash/pull/49), [@smellsblue](https://github.com/smellsblue))
+  - Add Gemtash logo ([#50](https://github.com/bundler/gemstash/pull/50), [@jonathanrieta](https://github.com/jonathanrieta))

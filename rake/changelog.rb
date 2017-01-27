@@ -1,3 +1,5 @@
+require "forwardable"
+require "open3"
 require "set"
 
 # Helper class for updating CHANGELOG.md
@@ -71,28 +73,7 @@ class Changelog
   end
 
   def fetch_missing_pull_requests
-    @missing_pull_requests = missing_pull_request_numbers.map {|pr| fetch_pull_request(pr) }
-  end
-
-  def fetch_pull_request(number)
-    puts "Fetching pull request ##{number}"
-    octokit.pull_request("bundler/gemstash", number)
-  end
-
-  def missing_pull_request_numbers
-    @missing_pull_request_numbers ||= begin
-      commits = `git log --oneline HEAD ^v#{last_version} --grep "^Merge pull request"`.split("\n")
-      pull_requests = commits.map {|commit| commit[/Merge pull request #(\d+)/, 1].to_i }
-      documented = Set.new
-
-      if parsed_current_version
-        parsed_current_version.pull_requests.each do |pr|
-          documented << pr.number.to_i
-        end
-      end
-
-      pull_requests.sort.reject {|pr| documented.include?(pr) }
-    end
+    @missing_pull_requests = MissingPullRequestFetcher.new(self).fetch
   end
 
   def update_changelog
@@ -140,9 +121,7 @@ class Changelog
   end
 
   def section_for(pull_request)
-    puts "Fetching issue for ##{pull_request.number}"
-    issue = pull_request.rels[:issue].get.data
-    labels = issue.labels.map(&:name)
+    labels = pull_request.issue.labels.map(&:name)
 
     if labels.include?("bug")
       "Bugfixes"
@@ -155,9 +134,7 @@ class Changelog
 
   def write_pull_requests(file, pull_requests)
     pull_requests.each do |pr|
-      puts "Fetching commits for ##{pr.number}"
-      commits = pr.rels[:commits].get.data
-      authors = commits.map {|commit| author_link(commit) }.uniq
+      authors = pr.commits.map {|commit| author_link(commit) }.uniq
       file.puts "  - #{pr.title} ([##{pr.number}](#{pr.html_url}), #{authors.join(", ")})"
     end
   end
@@ -191,6 +168,79 @@ class Changelog
       end
 
       Gemstash::VERSION
+    end
+  end
+
+  # Wraps a pull request instance from octokit so we can expose obtaining the
+  # commits and issue with a single method call.
+  class PullRequest
+    extend Forwardable
+    def_delegators :@pull_request, :title, :number, :html_url
+
+    def initialize(pull_request)
+      @pull_request = pull_request
+    end
+
+    def commits
+      @commits ||= begin
+        puts "Fetching commits for ##{number}"
+        @pull_request.rels[:commits].get.data
+      end
+    end
+
+    def issue
+      @issue ||= begin
+        puts "Fetching issue for ##{number}"
+        @pull_request.rels[:issue].get.data
+      end
+    end
+  end
+
+  # Helper class to fetch the pull requests that are missing from the CHANGELOG
+  # for this branch.
+  class MissingPullRequestFetcher
+    extend Forwardable
+    def_delegators :@changelog, :octokit, :parsed
+    attr_reader :pull_requests
+
+    def initialize(changelog)
+      @changelog = changelog
+    end
+
+    def fetch
+      fetch_all_pull_requests
+      reject_documented_pull_requests
+      reject_pull_requests_not_in_this_branch
+      pull_requests
+    end
+
+  private
+
+    def fetch_all_pull_requests
+      puts "Fetching all pull requests"
+      @pull_requests = octokit.pull_requests("bundler/gemstash", state: "all").
+        sort_by(&:number).map {|pr| PullRequest.new(pr) }
+    end
+
+    def reject_documented_pull_requests
+      documented_prs = Set.new
+
+      parsed.versions.each do |version|
+        version.pull_requests.each do |pr|
+          documented_prs << pr.number.to_i
+        end
+      end
+
+      pull_requests.reject! {|pr| documented_prs.include?(pr.number) }
+    end
+
+    def reject_pull_requests_not_in_this_branch
+      pull_requests.select! do |pr|
+        pr.commits.all? do |commit|
+          _, status = Open3.capture2e("git rev-list HEAD | grep '#{commit.sha}'")
+          status.success?
+        end
+      end
     end
   end
 end
