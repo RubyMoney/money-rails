@@ -171,6 +171,8 @@ class Changelog
     end
   end
 
+  # Wraps a pull request instance from octokit so we can expose obtaining the
+  # commits and issue with a single method call.
   class PullRequest
     extend Forwardable
     def_delegators :@pull_request, :title, :number, :html_url
@@ -194,6 +196,8 @@ class Changelog
     end
   end
 
+  # Helper class to fetch the pull requests that are missing from the CHANGELOG
+  # for this branch.
   class MissingPullRequestFetcher
     extend Forwardable
     def_delegators :@changelog, :octokit, :parsed
@@ -210,11 +214,12 @@ class Changelog
       pull_requests
     end
 
-    private
+  private
 
     def fetch_all_pull_requests
       puts "Fetching all pull requests"
-      @pull_requests = octokit.pull_requests("bundler/gemstash", state: "all").sort_by(&:number).map {|pr| PullRequest.new(pr) }
+      @pull_requests = octokit.pull_requests("bundler/gemstash", state: "all").
+        sort_by(&:number).map {|pr| PullRequest.new(pr) }
     end
 
     def reject_documented_pull_requests
