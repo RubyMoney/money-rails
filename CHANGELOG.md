@@ -11,6 +11,9 @@
   - Make all Pandoc filters executable ([#122](https://github.com/bundler/gemstash/pull/122), [@olleolleolle](https://github.com/olleolleolle))
   - Fix `rake doc` to work with newer versions of Pandoc ([#124](https://github.com/bundler/gemstash/pull/124), [@smellsblue](https://github.com/smellsblue))
   - Use `curl` since `unyank` is removed in newer RubyGems versions ([#125](https://github.com/bundler/gemstash/pull/125), [@smellsblue](https://github.com/smellsblue))
+  - Touch up docs and update CHANGELOG ([#128](https://github.com/bundler/gemstash/pull/128), [@smellsblue](https://github.com/smellsblue))
+  - Update Travis to use ruby `2.3.3` ([#127](https://github.com/bundler/gemstash/pull/127), [@olleolleolle](https://github.com/olleolleolle))
+  - Add Ruby `2.4.0` to Travis ([#132](https://github.com/bundler/gemstash/pull/132), [@thedrow](https://github.com/thedrow))
 
 ### Features
 
@@ -25,6 +28,8 @@
   - Add protected fetch for private gems ([#94](https://github.com/bundler/gemstash/pull/94), [@rjocoleman](https://github.com/rjocoleman))
   - Add Ruby Together call to action ([#116](https://github.com/bundler/gemstash/pull/116), [@mrb](https://github.com/mrb))
   - Configurable options to `Sequel.connect` ([#123](https://github.com/bundler/gemstash/pull/123), [@olleolleolle](https://github.com/olleolleolle))
+  - Support the `latest_specs.4.8.gz` endpoint for private gems ([#131](https://github.com/bundler/gemstash/pull/131), [@randycoulman](https://github.com/randycoulman))
+  - Merge in the latest 1.0 stable ([#136](https://github.com/bundler/gemstash/pull/136), [@smellsblue](https://github.com/smellsblue), [@randycoulman](https://github.com/randycoulman))
 
 ## 1.0.4 (2017-01-27)
 
