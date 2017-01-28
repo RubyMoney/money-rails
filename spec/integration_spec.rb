@@ -210,7 +210,7 @@ describe "gemstash integration tests" do
       end
 
       before do
-        Gemstash::GemPusher.new(auth_key, gem_contents).push
+        Gemstash::GemPusher.new(auth, gem_contents).serve
         expect(deps.fetch(%w(speaker))).to match_dependencies([speaker_deps])
         @gemstash.env.cache.flush
       end
