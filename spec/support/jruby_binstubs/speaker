@@ -1,0 +1,1 @@
+load Gem.bin_path("speaker", "speaker")

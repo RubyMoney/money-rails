@@ -103,7 +103,7 @@ module ExecHelpers
   class JRubyResult < Result
     def exec
       binstub_dir = File.expand_path("../jruby_binstubs", __FILE__)
-      binstub = File.join(binstub_dir, command)
+      binstub = File.join(binstub_dir, File.basename(command))
       raise "Missing binstub for #{command}" unless File.exist?(binstub)
       exec_in_process(binstub)
     end
