@@ -6,4 +6,5 @@ AllCops:
     - tmp/**/*
     - vendor/**/*
     - gemfiles/vendor/**/*
+    - gemfiles/bin/**/*
   DisplayCopNames: true
