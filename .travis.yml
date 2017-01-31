@@ -1,23 +1,30 @@
 language: ruby
 matrix:
   allow_failures:
-  - rvm: ruby-head
-    gemfile: 'gemfiles/Gemfile.ruby-head'
+    - rvm: ruby-head
+      gemfile: 'gemfiles/Gemfile.ruby-head'
   include:
-  - rvm: jruby-9.1.6.0
-    env: JRUBY_OPTS="$JRUBY_OPTS -J-Xmx1536m -J-XX:MaxPermSize=192m"
-rvm:
-- 2.0
-- 2.1
-- 2.2
-- 2.3.3
-- 2.4.0
-- ruby-head
+    - rvm: 2.0
+    - rvm: 2.1
+    - rvm: 2.2
+    - rvm: 2.3.3
+    - rvm: 2.4.0
+    - rvm: ruby-head
+      gemfile: 'gemfiles/Gemfile.ruby-head'
+    - rvm: jruby-9.1.7.0
+      env: JRUBY_OPTS="$JRUBY_OPTS -J-Xmx1536m -J-XX:MaxPermSize=192m"
+
 bundler_args: "--binstubs --jobs=3 --retry=3"
-before_install: gem install bundler
+
+before_install:
+  - gem update --system
+  - gem install bundler
+
 cache: bundler
+
 script:
-- bundle exec rake spec
+  - bundle exec rake spec
+
 notifications:
   slack:
     secure: zRaFU5A0xPyaxafC4OeGIin/3WPMaFnhSF+NdN2+rpDg1pGo4j/Gdpw2lBljY5W7pK3DzzvNdJlK8F3LkDnFj0F3ox595Pq6cr0kYQP5u7WAv9cBm/Em1Q64++zn04Z2bRFwiTmz61uFQB2SFEuj3ti1BGcDSFXQwzqNZ0V1M4VGn19WEB2rUttvb286jSRHFsGaEUzMP7hXVzdP1iK8rI9nwN5h7uFoT5oz2yeYPExYu/d4j6Jp0gS3LJdtqkGdr1JNQbI4MDvm8mrAXfwG48QUS4ibFm3vOb4iZGRPJn42jDYFdegJfUMFU+Voexsf8epORg0UecLqKFst0c+A6PHY7oz24sSG+e5ZOZdIVudKUoW33t4dudiLq9YbdEgkBm6l8vC07HoJL6sfmCE2n1E+SkwTxa8tCxxWdXh05EIStkncmVNob92B8/9PUvfZRqInlCRQClNVrx+6Ehp6XQE6XWwR2WLJZCM+tWaRh/etfK5lnp4yX98zwzoMx5O1lmmTm6JYJ/9ZyRj6lhiDSL+P09EcnkQLGQ5o6c+uIwqg5cMpW/6VM3DNNsR98lekt+Ah/s6x7dc0k3YwFrU+yxmEyPgEqqMCWh7Ba7BjgDgU3d63iLiffbNJ7Ea1wl5VLTLsjR78AoF0WiAP/eyRdJvBe9sdS14YIV2Ua3sBosA=
