@@ -228,4 +228,4 @@ Default value
 Valid values
 ------------
 
-Any valid file name
+Any valid file name, or `:stdout` to log to `$stdout`

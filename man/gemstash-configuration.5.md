@@ -222,7 +222,7 @@ the [base path][BASE_PATH].
 
 ## Valid values
 
-Any valid file name
+Any valid file name, or `:stdout` to log to `$stdout`
 
 [SETUP]: ./gemstash-setup.1.md
 [SEQUEL]: http://sequel.jeremyevans.net/
