@@ -222,10 +222,13 @@ the [base path][BASE_PATH].
 
 ## Valid values
 
-Any valid file name
+Any valid file name, or `:stdout` to log to `$stdout`
+
+*Note: Using `:stdout` for the `:log_file` requires [running with `--no-daemonize`][NO_DAEMONIZE].*
 
 [SETUP]: ./gemstash-setup.1.md
 [SEQUEL]: http://sequel.jeremyevans.net/
 [SEQUEL_CONNECT]: http://sequel.jeremyevans.net/rdoc/files/doc/opening_databases_rdoc.html#label-General+connection+options
 [PUMA_BINDING]: https://github.com/puma/puma#binding-tcp--sockets
 [BASE_PATH]: ./gemstash-configuration.5.md#base-path
+[NO_DAEMONIZE]: ./gemstash-start.1.md#options
