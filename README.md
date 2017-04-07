@@ -2,6 +2,7 @@
 [![Build Status](https://travis-ci.org/bundler/gemstash.svg?branch=master)](https://travis-ci.org/bundler/gemstash) [![Code Climate](https://codeclimate.com/github/bundler/gemstash/badges/gpa.svg)](https://codeclimate.com/github/bundler/gemstash)
 
 <p align="center"><img src="gemstash.png" /></p>
+
 What is Gemstash?
 -----------------
 
