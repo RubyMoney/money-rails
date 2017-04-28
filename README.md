@@ -92,7 +92,8 @@ helper can be customized inside a ```MoneyRails.configure``` block. You should c
 ```ruby
 class MonetizeProduct < ActiveRecord::Migration
   def change
-    add_money :products, :price
+    add_money :products, :price    # Rails 3
+    add_monetize :products, :price # Rails 4x and above
 
     # OR
 
