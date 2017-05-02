@@ -328,6 +328,17 @@ describe "gemstash integration tests" do
       end
     end
 
+    context "using the heartbeat endpoint" do
+      let(:uri) { URI("#{@gemstash.url}/health/heartbeat") }
+
+      it "succeeds with a valid JSON document" do
+        response = Net::HTTP.get_response(uri)
+        expect(response).to be_a(Net::HTTPSuccess)
+        expect(JSON.parse(response.body)).
+          to eq("status" => { "heartbeat" => "OK" })
+      end
+    end
+
     context "with a failure to read" do
       before do
         resource.save(example: "other_content")
