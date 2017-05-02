@@ -10,4 +10,5 @@ end
 
 use Gemstash::Env::RackMiddleware, Gemstash::Env.current
 use Gemstash::GemSource::RackMiddleware
+use Gemstash::Health::RackMiddleware
 run Gemstash::Web.new(gemstash_env: Gemstash::Env.current)

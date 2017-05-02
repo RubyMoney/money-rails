@@ -1,5 +1,8 @@
 require "spec_helper"
 require "fileutils"
+require "json"
+require "net/http"
+require "uri"
 
 describe "gemstash integration tests" do
   let(:auth) { Gemstash::ApiKeyAuthorization.new(auth_key) }
@@ -308,6 +311,61 @@ describe "gemstash integration tests" do
 
       let(:bundle) { "integration_spec/private_gems" }
       it_behaves_like "a bundleable project"
+    end
+  end
+
+  describe "checking the health of Gemstash" do
+    let(:uri) { URI("#{@gemstash.url}/health") }
+    let(:resource) { Gemstash::Storage.for("health").resource("test") }
+    let(:resource_file) { File.join(resource.folder, "example") }
+
+    context "with a healthy server" do
+      it "succeeds with a valid JSON document" do
+        response = Net::HTTP.get_response(uri)
+        expect(response).to be_a(Net::HTTPSuccess)
+        expect(JSON.parse(response.body)).
+          to eq("status" => { "heartbeat" => "OK", "storage_read" => "OK", "storage_write" => "OK" })
+      end
+    end
+
+    context "with a failure to read" do
+      before do
+        resource.save(example: "other_content")
+        @existing_mode = File.stat(resource_file).mode
+        FileUtils.chmod("a-r", resource_file)
+      end
+
+      after do
+        FileUtils.chmod(@existing_mode, resource_file)
+      end
+
+      it "responds with an appropriate failure" do
+        response = Net::HTTP.get_response(uri)
+        expect(response).to_not be_a(Net::HTTPSuccess)
+        expect(JSON.parse(response.body)["status"]["storage_read"]).to_not eq("OK")
+
+        # The write should have been successful, so verify that
+        FileUtils.chmod(@existing_mode, resource_file)
+        expect(File.read(resource_file)).to match(/\Acontent-\d+\z/)
+      end
+    end
+
+    context "with a failure to write" do
+      before do
+        FileUtils.mkpath(resource.folder) unless Dir.exist?(resource.folder)
+        @existing_mode = File.stat(resource.folder).mode
+        FileUtils.chmod("a-w", resource.folder)
+      end
+
+      after do
+        FileUtils.chmod(@existing_mode, resource.folder)
+      end
+
+      it "responds with an appropriate failure" do
+        response = Net::HTTP.get_response(uri)
+        expect(response).to_not be_a(Net::HTTPSuccess)
+        expect(JSON.parse(response.body)["status"]["storage_write"]).to_not eq("OK")
+      end
     end
   end
 end
