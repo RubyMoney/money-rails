@@ -314,7 +314,7 @@ describe "gemstash integration tests" do
     end
   end
 
-  describe "checking the health of Gemstash" do
+  describe "checking the health of Gemstash", db_transaction: false do
     let(:uri) { URI("#{@gemstash.url}/health") }
     let(:resource) { Gemstash::Storage.for("health").resource("test") }
     let(:resource_file) { File.join(resource.folder, "example") }
@@ -323,8 +323,11 @@ describe "gemstash integration tests" do
       it "succeeds with a valid JSON document" do
         response = Net::HTTP.get_response(uri)
         expect(response).to be_a(Net::HTTPSuccess)
-        expect(JSON.parse(response.body)).
-          to eq("status" => { "heartbeat" => "OK", "storage_read" => "OK", "storage_write" => "OK" })
+        expect(JSON.parse(response.body)).to eq("status" => { "heartbeat" => "OK",
+                                                              "storage_read" => "OK",
+                                                              "storage_write" => "OK",
+                                                              "db_read" => "OK",
+                                                              "db_write" => "OK" })
       end
     end
 
@@ -339,7 +342,7 @@ describe "gemstash integration tests" do
       end
     end
 
-    context "with a failure to read" do
+    context "with a failure to read from storage" do
       before do
         resource.save(example: "other_content")
         @existing_mode = File.stat(resource_file).mode
@@ -361,7 +364,7 @@ describe "gemstash integration tests" do
       end
     end
 
-    context "with a failure to write" do
+    context "with a failure to write to storage" do
       before do
         FileUtils.mkpath(resource.folder) unless Dir.exist?(resource.folder)
         @existing_mode = File.stat(resource.folder).mode

@@ -31,6 +31,7 @@ module Gemstash
 
       def call(env)
         env["gemstash.env"] = @gemstash_env
+        Gemstash::Env.current = @gemstash_env
         @app.call(env)
       end
     end
