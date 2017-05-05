@@ -50,7 +50,10 @@ filter.filter! do |element|
 
   case filter.format
   when "markdown_github"
-    images_json(GITHUB_IMAGES)
+    result = images_json(GITHUB_IMAGES)
+    # Add a newline at the end to preserve the fix in commit bc811ec5030a978f002b552f772a82ec96606db9
+    result << PandocObjectFilters::Element::Para.new
+    result
   when "html"
     images_json(HTML_IMAGES)
   end
