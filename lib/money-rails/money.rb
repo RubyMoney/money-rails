@@ -4,6 +4,13 @@ require "active_support/core_ext/hash/reverse_merge.rb"
 class Money
   alias_method :orig_format, :format
 
+  def self.use_bank(bank)
+    old_bank, ::Money.default_bank = ::Money.default_bank, bank
+    yield
+  ensure
+    ::Money.default_bank = old_bank
+  end
+
   def format(*rules)
     rules = normalize_formatting_rules(rules)
 
