@@ -4,7 +4,7 @@ require "active_support/core_ext/hash/reverse_merge.rb"
 class Money
   alias_method :orig_format, :format
 
-  def self.use_bank(bank)
+  def self.with_bank(bank)
     old_bank, ::Money.default_bank = ::Money.default_bank, bank
     yield
   ensure
@@ -26,8 +26,6 @@ class Money
     unless MoneyRails::Configuration.default_format.nil?
       rules.reverse_merge!(MoneyRails::Configuration.default_format)
     end
-
     orig_format(rules)
   end
-
 end

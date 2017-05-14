@@ -140,6 +140,15 @@ describe "configuration" do
         end
       end
     end
+  end
 
+  describe 'modifying default bank from memory' do
+    it 'creates new banks when needed' do
+      old_bank = Money.default_bank
+      bank = Money::RatesStore::Memory.new
+
+      Money.with_bank(bank) {}
+      expect(Money.default_bank).to eq(old_bank)
+    end
   end
 end

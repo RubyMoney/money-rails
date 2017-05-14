@@ -359,6 +359,30 @@ t = Transaction.new(:amount_cents => 2500, :currency => "CAD")
 t.amount == Money.new(2500, "CAD") # true
 ```
 
+####  Assigning Currencies on the go
+
+If you would like to assign different Currency stores(banks) on the go you can use the following method:
+
+`Money.with_bank(bank_of_america)`
+
+This is to allow the usage of custom currency stores to be loaded per User sessions.
+
+An example would be to use the following in a certain controller
+
+```ruby
+class ApplicationController
+  around_action :currency_store
+
+  def currency_store
+    Money.with_bank(Money::Bank::VariableExchange.new(MyCustomStore.new)) do
+      # Rate will be loaded from the current_user setup.
+      Money.add_rate("USD", "EUR", 0.5)
+      yield
+    end
+  end
+end
+```
+
 ### Configuration parameters
 
 You can handle a bunch of configuration params through ```money.rb``` initializer:
