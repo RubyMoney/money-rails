@@ -37,7 +37,7 @@ module MoneyRails
     end
 
     def set_amount_column_for_default_currency!
-      amount_column.merge! postfix: "_#{default_currency.subunit.downcase.pluralize}" if default_currency.subunit
+      amount_column.merge! postfix: "_cents" if default_currency.subunit
     end
 
     def set_currency_column_for_default_currency!
