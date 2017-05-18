@@ -27,17 +27,12 @@ module MoneyRails
     # Set default currency of money library
     def default_currency=(currency_name)
       Money.default_currency = currency_name
-      set_amount_column_for_default_currency!
       set_currency_column_for_default_currency!
     end
 
     # Register a custom currency
     def register_currency=(currency_options)
       Money::Currency.register(currency_options)
-    end
-
-    def set_amount_column_for_default_currency!
-      amount_column.merge! postfix: "_cents" if default_currency.subunit
     end
 
     def set_currency_column_for_default_currency!
