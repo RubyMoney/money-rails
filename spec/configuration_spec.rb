@@ -93,7 +93,9 @@ describe "configuration" do
       old_currency = MoneyRails.default_currency
       MoneyRails.default_currency = :inr
 
-      expect(MoneyRails.amount_column[:postfix]).to eq("_#{MoneyRails.default_currency.subunit.downcase.pluralize}")
+      expect(MoneyRails.default_currency.subunit).to eq 'Paisa'
+      expect(MoneyRails.amount_column[:postfix]).to eq("_cents") # not localized
+
       expect(MoneyRails.currency_column[:default]).to eq(MoneyRails.default_currency.iso_code)
 
       # Reset global setting
