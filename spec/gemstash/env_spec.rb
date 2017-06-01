@@ -35,6 +35,7 @@ describe Gemstash::Env do
     end
 
     it "defaults the log file to server.log" do
+      env.config = Gemstash::Configuration.new(config: {})
       expect(env.log_file).to eq(env.base_file("server.log"))
     end
 

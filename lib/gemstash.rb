@@ -13,6 +13,7 @@ module Gemstash
   autoload :GemSource,           "gemstash/gem_source"
   autoload :GemUnyanker,         "gemstash/gem_unyanker"
   autoload :GemYanker,           "gemstash/gem_yanker"
+  autoload :Health,              "gemstash/health"
   autoload :HTTPClient,          "gemstash/http_client"
   autoload :Logging,             "gemstash/logging"
   autoload :LruReduxClient,      "gemstash/cache"
