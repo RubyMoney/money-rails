@@ -16,10 +16,12 @@ module MoneyRails
         :symbol => false
       }.merge(options)
       options.delete(:symbol) if options[:disambiguate]
-
+      
       if value.is_a?(Money)
+        value = value.to_d.round.to_money if options[:no_cents] == true && value.present?
         value.format(options)
       elsif value.respond_to?(:to_money)
+        value = value.to_d.round if options[:no_cents] == true && value.present?
         value.to_money.format(options)
       else
         ""
