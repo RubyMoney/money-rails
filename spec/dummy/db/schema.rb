@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150303222230) do
+ActiveRecord::Schema.define(version: 20151026220420) do
 
   create_table "dummy_products", force: :cascade do |t|
     t.string   "currency"
@@ -54,6 +54,7 @@ ActiveRecord::Schema.define(version: 20150303222230) do
     t.string   "currency"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "optional_amount_cents"
   end
 
 end

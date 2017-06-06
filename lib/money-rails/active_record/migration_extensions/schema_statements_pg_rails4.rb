@@ -5,7 +5,7 @@ module MoneyRails
         def add_monetize(table_name, accessor, options={})
           [:amount, :currency].each do |attribute|
             column_present, *opts = OptionsExtractor.extract attribute, table_name, accessor, options
-            add_column *opts if column_present
+            add_column(*opts) if column_present
           end
         end
 

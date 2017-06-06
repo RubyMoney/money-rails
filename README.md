@@ -23,7 +23,7 @@ welcome to contribute to the project.
 
 Add this line to your application's Gemfile:
 
-    gem 'money-rails'
+    gem 'money-rails', '~>1'
 
 And then execute:
 
@@ -41,6 +41,12 @@ $ rails g money_rails:initializer
 
 There, you can define the default currency value and set other
 configuration parameters for the rails app.
+
+Without Rails in rack-based applications, call during initialization:
+
+```ruby
+MoneyRails::Hooks.init
+```
 
 ## Usage
 
@@ -86,12 +92,14 @@ helper can be customized inside a ```MoneyRails.configure``` block. You should c
 ```ruby
 class MonetizeProduct < ActiveRecord::Migration
   def change
-    add_money :products, :price
+    add_money :products, :price    # Rails 3
+    add_monetize :products, :price # Rails 4x and above
 
     # OR
 
     change_table :products do |t|
-      t.money :price
+      t.money :price    # Rails 3
+      t.monetize :price # Rails 4x and above
     end
   end
 end
@@ -139,6 +147,16 @@ product.optional_price = nil
 product.save # returns without errors
 product.optional_price # => nil
 product.optional_price_cents # => nil
+```
+
+#### Allow large numbers
+
+If you foresee that you will be saving large values (range is -2147483648 to +2147483647 for Postgres), increase your integer column limit to bigint:
+
+```ruby
+def change
+  change_column :products, :price_cents, :integer, limit: 8
+end
 ```
 
 #### Numericality validation options
@@ -244,6 +262,19 @@ MoneyRails.configure do |config|
 end
 ```
 
+If you need to set the default currency on a per-request basis, such as in a
+multi-tenant application, you may use a lambda to lazy-load the default currency
+from a field in a configuration model called `Tenant` in this example:
+
+```ruby
+# config/initializers/money.rb
+MoneyRails.configure do |config|
+
+  # set the default currency based on client configuration
+  config.default_currency = -> { Tenant.current.default_currency }
+end
+```
+
 In many cases this is not enough, so there are some other options to
 meet your needs.
 
@@ -268,7 +299,7 @@ end
 Now ```product.discount``` and ```product.bonus``` will return a `Money`
 object using EUR as their currency, instead of the default USD.
 
-(This is not availabe in  Mongoid).
+(This is not available in  Mongoid).
 
 #### Attribute Currency (:with_currency)
 
@@ -299,8 +330,8 @@ currency, whereas ```product.discount.currency_as_string # => EUR ```
 #### Instance Currencies
 
 All the previous options do not require any extra model fields to hold
-the currency values. If the currency of a field with vary from
-once model instance to another, then you should add a column called ```currency```
+the currency values. If the currency of a field will vary from
+one model instance to another, then you should add a column called ```currency```
 to your database table and pass the option ```with_model_currency```
 to the ```monetize``` macro.
 
@@ -317,8 +348,8 @@ class Transaction < ActiveRecord::Base
   # Use model level currency
   register_currency :gbp
 
-  monetize :amount_cents, with_model_currency: :amount_currency
-  monetize :tax_cents, with_model_currency: :tax_currency
+  monetize :amount_cents, with_model_currency: :currency
+  monetize :tax_cents, with_model_currency: :currency
 
 end
 
@@ -455,31 +486,29 @@ So `humanized_money` will ignore `config.default_format = { no_cents_if_whole: f
 
 ### Testing
 
-If you use Rspec there is an test helper implementation.
-Just write `require "money-rails/test_helpers"` in spec_helper.rb and
-`include MoneyRails::TestHelpers` inside a describe block you want to
-use the helper.
+If you use Rspec there is a test helper implementation.
+Just write `require "money-rails/test_helpers"` in spec_helper.rb.
 
 * the `monetize` matcher
 
 ```ruby
-is_expected.to monetize(:price_cents)
+is_expected.to monetize(:price)
 ```
 This will ensure that a column called `price_cents` is being monetized.
 
 ```ruby
-is_expected.to monetize(:price_cents).allow_nil
+is_expected.to monetize(:price).allow_nil
 ```
 By using `allow_nil` you can specify money attributes that accept nil values.
 
 ```ruby
-is_expected.to monetize(:price_cents).as(:discount_value)
+is_expected.to monetize(:price).as(:discount_value)
 ```
 By using `as` chain you can specify the exact name to which a monetized
 column is being mapped.
 
 ```ruby
-is_expected.to monetize(:price_cents).with_currency(:gbp)
+is_expected.to monetize(:price).with_currency(:gbp)
 ```
 
 By using the `with_currency` chain you can specify the expected currency

@@ -21,3 +21,9 @@ test:
       database: dummy_test
       hosts:
         - localhost:27017
+
+  clients:                                                                                                    
+    default:                                                                                                  
+      database: dummy_test   
+      hosts:                                                                                                  
+        - localhost:27017  

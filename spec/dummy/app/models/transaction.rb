@@ -5,6 +5,8 @@ class Transaction < ActiveRecord::Base
 
   monetize :total_cents, :with_model_currency => :currency
 
+  monetize :optional_amount_cents, :with_model_currency => :currency, :allow_nil => true
+
   def total_cents
     return amount_cents + tax_cents
   end

@@ -4,6 +4,7 @@ if defined?(Mongoid) && ::Mongoid::VERSION =~ /^4(.*)/
 
   describe Money do
     let!(:priceable) { Priceable.create(:price => Money.new(100, 'EUR')) }
+    let!(:priceable_from_nil) { Priceable.create(:price => nil) }
     let!(:priceable_from_num) { Priceable.create(:price => 1) }
     let!(:priceable_from_string) { Priceable.create(:price => '1 EUR' )}
     let!(:priceable_from_hash) { Priceable.create(:price => {:cents=>100, :currency_iso=>"EUR"} )}
@@ -21,6 +22,10 @@ if defined?(Mongoid) && ::Mongoid::VERSION =~ /^4(.*)/
     }
 
     context "mongoize" do
+      it "correctly mongoizes nil to nil" do
+        expect(priceable_from_nil.price).to be_nil
+      end
+
       it "correctly mongoizes a Money object to a hash of cents and currency" do
         expect(priceable.price.cents).to eq(100)
         expect(priceable.price.currency).to eq(Money::Currency.find('EUR'))
@@ -41,11 +46,11 @@ if defined?(Mongoid) && ::Mongoid::VERSION =~ /^4(.*)/
         after { MoneyRails.raise_error_on_money_parsing = false }
 
         it "raises exception if the mongoized value is a String with a hyphen" do
-          expect { priceable_from_string_with_hyphen }.to raise_error
+          expect { priceable_from_string_with_hyphen }.to raise_error MoneyRails::Error
         end
 
         it "raises exception if the mongoized value is a String with an unknown currency" do
-          expect { priceable_from_string_with_unknown_currency }.to raise_error
+          expect { priceable_from_string_with_unknown_currency }.to raise_error MoneyRails::Error
         end
       end
 
@@ -96,10 +101,12 @@ if defined?(Mongoid) && ::Mongoid::VERSION =~ /^4(.*)/
       subject { Priceable.first.price }
       it { is_expected.to be_an_instance_of(Money) }
       it { is_expected.to eq(Money.new(100, 'EUR')) }
+
       it "returns nil if a nil value was stored" do
-        nil_priceable = Priceable.create(:price => nil)
+        nil_priceable = Priceable.create(price: nil)
         expect(nil_priceable.price).to be_nil
       end
+
       it 'returns nil if an unknown value was stored' do
         zero_priceable = Priceable.create(:price => [])
         expect(zero_priceable.price).to be_nil

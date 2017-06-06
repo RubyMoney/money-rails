@@ -9,7 +9,7 @@ module MoneyRails
           default[:table_name] = table_name
 
           excluded_keys = [:amount, :currency, :type, :prefix, :postfix, :present, :column_name, :table_name]
-          default[:options] = default.except *excluded_keys
+          default[:options] = default.except(*excluded_keys)
 
           default.slice(:present, :table_name, :column_name, :type, :options).values
         end

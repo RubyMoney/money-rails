@@ -1,10 +1,9 @@
 require 'spec_helper'
 
-if defined?(Mongoid) && ::Mongoid::VERSION =~ /^3(.*)/
+if defined?(Mongoid) && ::Mongoid::VERSION =~ /^5(.*)/
 
   describe Money do
     let!(:priceable) { Priceable.create(:price => Money.new(100, 'EUR')) }
-    let!(:priceable_from_nil) { Priceable.create(:price => nil) }
     let!(:priceable_from_num) { Priceable.create(:price => 1) }
     let!(:priceable_from_string) { Priceable.create(:price => '1 EUR' )}
     let!(:priceable_from_hash) { Priceable.create(:price => {:cents=>100, :currency_iso=>"EUR"} )}
@@ -22,21 +21,17 @@ if defined?(Mongoid) && ::Mongoid::VERSION =~ /^3(.*)/
     }
 
     context "mongoize" do
-      it "mongoizes correctly nil to nil" do
-        expect(priceable_from_nil.price).to be_nil
-      end
-
-      it "mongoizes correctly a Money object to a hash of cents and currency" do
+      it "correctly mongoizes a Money object to a hash of cents and currency" do
         expect(priceable.price.cents).to eq(100)
         expect(priceable.price.currency).to eq(Money::Currency.find('EUR'))
       end
 
-      it "mongoizes correctly a Numeric object to a hash of cents and currency" do
+      it "correctly mongoizes a Numeric object to a hash of cents and currency" do
         expect(priceable_from_num.price.cents).to eq(100)
         expect(priceable_from_num.price.currency).to eq(Money.default_currency)
       end
 
-      it "mongoizes correctly a String object to a hash of cents and currency" do
+      it "correctly mongoizes a String object to a hash of cents and currency" do
         expect(priceable_from_string.price.cents).to eq(100)
         expect(priceable_from_string.price.currency).to eq(Money::Currency.find('EUR'))
       end
@@ -55,21 +50,21 @@ if defined?(Mongoid) && ::Mongoid::VERSION =~ /^3(.*)/
       end
 
       context "when MoneyRails.raise_error_on_money_parsing is false" do
-        it "does not mongoizes correctly a String with hyphen in its middle" do
+        it "does not correctly mongoize a String with a hyphen in its middle" do
           expect(priceable_from_string_with_hyphen.price).to eq(nil)
         end
 
-        it "does not mongoize correctly a String with an unknown currency" do
+        it "does not correctly mongoize a String with an unknown currency" do
           expect(priceable_from_string_with_unknown_currency.price).to eq(nil)
         end
       end
 
-      it "mongoizes correctly a hash of cents and currency" do
+      it "correctly mongoizes a hash of cents and currency" do
         expect(priceable_from_hash.price.cents).to eq(100)
         expect(priceable_from_hash.price.currency).to eq(Money::Currency.find('EUR'))
       end
 
-      it "mongoizes correctly a HashWithIndifferentAccess of cents and currency" do
+      it "correctly mongoizes a HashWithIndifferentAccess of cents and currency" do
         expect(priceable_from_hash_with_indifferent_access.price.cents).to eq(100)
         expect(priceable_from_hash_with_indifferent_access.price.currency).to eq(Money::Currency.find('EUR'))
       end
@@ -83,14 +78,14 @@ if defined?(Mongoid) && ::Mongoid::VERSION =~ /^3(.*)/
           Money.infinite_precision = false
         end
 
-        it "mongoizes correctly a Money object to a hash of cents and currency" do
+        it "correctly mongoizes a Money object to a hash of cents and currency" do
           expect(priceable_with_infinite_precision.price.cents).to eq(BigDecimal.new('100.1'))
           expect(priceable_with_infinite_precision.price.currency).to eq(Money::Currency.find('EUR'))
         end
       end
     end
 
-    it "serializes correctly a Hash field containing Money objects" do
+    it "correctly serializes a Hash field containing Money objects" do
       expect(priceable_with_hash_field.price_hash[:key1][:cents]).to eq(100)
       expect(priceable_with_hash_field.price_hash[:key2][:cents]).to eq(200)
       expect(priceable_with_hash_field.price_hash[:key1][:currency_iso]).to eq('EUR')
@@ -102,11 +97,11 @@ if defined?(Mongoid) && ::Mongoid::VERSION =~ /^3(.*)/
       it { is_expected.to be_an_instance_of(Money) }
       it { is_expected.to eq(Money.new(100, 'EUR')) }
 
-      it "returns nil if a nil value was stored" do
+      it "returns 0 cents in default_currency if a nil value was stored" do
         nil_priceable = Priceable.create(price: nil)
-        expect(nil_priceable.price).to be_nil
+        expect(nil_priceable.price.cents).to eq(0)
+        expect(nil_priceable.price.currency).to eq(Money.default_currency)
       end
-
       it 'returns nil if an unknown value was stored' do
         zero_priceable = Priceable.create(:price => [])
         expect(zero_priceable.price).to be_nil
@@ -114,7 +109,7 @@ if defined?(Mongoid) && ::Mongoid::VERSION =~ /^3(.*)/
     end
 
     context "evolve" do
-      it "transforms correctly a Money object to a Mongo friendly value" do
+      it "correctly transforms a Money object into a Mongo friendly value" do
         expect(Priceable.where(:price => Money.new(100, 'EUR')).first).to eq(priceable)
       end
     end
