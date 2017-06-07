@@ -21,11 +21,12 @@ class Money
         :cents        => object.cents.is_a?(BigDecimal) ? object.cents.to_s : object.cents,
         :currency_iso => object.currency.iso_code
       }
+    when object.nil? then nil
     when object.respond_to?(:to_money)
       begin
         serialize(object.to_money)
-      rescue ArgumentError
-        raise if MoneyRails.raise_error_on_money_parsing
+      rescue Monetize::ParseError => e
+        raise MoneyRails::Error, e.message if MoneyRails.raise_error_on_money_parsing
         nil
       end
     else nil

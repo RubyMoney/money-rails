@@ -28,14 +28,14 @@ class Product < ActiveRecord::Base
   :numericality => {
     :greater_than => 0,
     :less_than_or_equal_to => 100,
-    :message => "Must be greater than zero and less than $100"
+    :message => "must be greater than zero and less than $100"
   }
 
   # Skip validations separately from each other
   monetize :skip_validation_price_cents, subunit_numericality: false, numericality: false, allow_nil: true
 
   # Override default currency (EUR) with a specific one (CAD) for this field only, from a lambda
-  monetize :lambda_price_cents, with_currency: ->(product) { Rails.configuration.lambda_test }, allow_nil: true
+  monetize :lambda_price_cents, with_currency: ->(_product) { Rails.configuration.lambda_test }, allow_nil: true
 
   attr_accessor :accessor_price_cents
   monetize :accessor_price_cents, disable_validation: true
@@ -45,7 +45,7 @@ class Product < ActiveRecord::Base
   validates :validates_method_amount, :money => {
     :greater_than => 0,
     :less_than_or_equal_to => ->(product) { product.optional_price.to_f },
-    :message => 'Must be greater than zero and less than $100',
+    :message => 'must be greater than zero and less than $100',
   }, allow_nil: true
 
   alias_attribute :renamed_cents, :aliased_cents

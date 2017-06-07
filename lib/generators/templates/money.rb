@@ -58,6 +58,21 @@ MoneyRails.configure do |config|
   #   :decimal_mark        => ","
   # }
 
+  # Specify a rounding mode
+  # Any one of:
+  #
+  # BigDecimal::ROUND_UP,
+  # BigDecimal::ROUND_DOWN,
+  # BigDecimal::ROUND_HALF_UP,
+  # BigDecimal::ROUND_HALF_DOWN,
+  # BigDecimal::ROUND_HALF_EVEN,
+  # BigDecimal::ROUND_CEILING,
+  # BigDecimal::ROUND_FLOOR
+  #
+  # set to BigDecimal::ROUND_HALF_EVEN by default
+  #
+  # config.rounding_mode = BigDecimal::ROUND_HALF_UP
+
   # Set default money format globally.
   # Default value is nil meaning "ignore this option".
   # Example:
@@ -67,4 +82,11 @@ MoneyRails.configure do |config|
   #   :symbol => nil,
   #   :sign_before_symbol => nil
   # }
+
+  # Set default raise_error_on_money_parsing option
+  # It will be raise error if assigned different currency
+  # The default value is false
+  #
+  # Example:
+  # config.raise_error_on_money_parsing = false
 end

@@ -13,8 +13,8 @@ describe "configuration" do
     end
 
     it "adds exchange rates given in config initializer" do
-      expect(Money.us_dollar(100).exchange_to("CAD")).to eq(Money.new(124, "CAD"))
-      expect(Money.ca_dollar(100).exchange_to("USD")).to eq(Money.new(80, "USD"))
+      expect(Money.us_dollar(100).bank.get_rate('USD', 'CAD')).to eq(1.24515)
+      expect(Money.ca_dollar(100).bank.get_rate('CAD', 'USD')).to eq(0.803115)
     end
 
     it "sets no_cents_if_whole value for formatted output globally" do
@@ -93,7 +93,9 @@ describe "configuration" do
       old_currency = MoneyRails.default_currency
       MoneyRails.default_currency = :inr
 
-      expect(MoneyRails.amount_column[:postfix]).to eq("_#{MoneyRails.default_currency.subunit.downcase.pluralize}")
+      expect(MoneyRails.default_currency.subunit).to eq 'Paisa'
+      expect(MoneyRails.amount_column[:postfix]).to eq("_cents") # not localized
+
       expect(MoneyRails.currency_column[:default]).to eq(MoneyRails.default_currency.iso_code)
 
       # Reset global setting

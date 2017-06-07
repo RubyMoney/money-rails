@@ -1,12 +1,49 @@
 # Changelog
 
-## master (next release)
+## 1.8.0
+
+- Ruby 2.4 support
+- Upgrade Money dependency from 6.7 to 6.8.1
+- Upgrade Monetize dependency from 1.4.0 to 1.6.0
+- Raise `MoneyRails::Error` instead of exposing Money and Monetize errors
+
+## 1.7.0
+
+- Rails 5 support
+- Mongoid 5 support
+- Do not convert Mongoid money fields from nil to zero
+- Refactor `#monetize` method
+
+## 1.6.2
+
+- Fix attribute order possibly affecting the value of monetized attribute
+- Add support for RailsAdmin (use :money type)
+- Raise error when gem was unable to infer monetized attribute name
+- Revert decimal mark and thousands separator addtion, since formatting should depend on country and locale, instead of currency
+
+## 1.6.1
+
+- View helper now respects currency decimal mark and thousands separator
+- Fix error when monetizing with attribute's name
+- Fix mime-types dependency issue with ruby 1.9
+- Fix issue with gem not updating automatically inferred currency column
+
+## 1.6.0
+
+- Update Money and Monetize gem reqs.
+
+## 1.5.0
+
+- Respect Money.use_i18n when validating.
+- Include attribute in validation messages like Rails does.
+- Respect `raise_error_on_money_parsing` before raising a MoneyRails::ActiveRecord::Monetizable::ReadOnlyCurrencyException.
 
 ## 1.4.1
 
  - validator was looking for monetizable_attributes using a symbol key, when the keys are all strings. Asserted string key values in rspec and changed validator to look for a string key.
  - make monetized_attribute hash comparison order independent
  - Isolate class used for the monetized_attributes tests to prevent cross-contamination
+ - rename `format_with_settings` method to `format`
  - add gem tasks
 
 ## 1.4.0

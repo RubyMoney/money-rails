@@ -8,17 +8,19 @@ module MoneyRails
         require 'money-rails/active_model/validator'
         require 'money-rails/active_record/monetizable'
         ::ActiveRecord::Base.send :include, MoneyRails::ActiveRecord::Monetizable
-        if ::Rails::VERSION::MAJOR >= 4
-          rails42               = case
-                                  when ::Rails::VERSION::MAJOR < 5 && ::Rails::VERSION::MINOR >= 2
-                                    true
-                                  when ::Rails::VERSION::MAJOR >= 5
-                                    true
-                                  else
-                                    false
-                                  end
-          current_adapter = ::ActiveRecord::Base.connection_config[:adapter]
-          postgresql_with_money = rails42 && PG_ADAPTERS.include?(current_adapter)
+        if defined?(::ActiveRecord) && defined?(::ActiveRecord::VERSION)
+          if ::ActiveRecord::VERSION::MAJOR >= 4
+            rails42               = case
+                                    when ::ActiveRecord::VERSION::MAJOR < 5 && ::ActiveRecord::VERSION::MINOR >= 2
+                                      true
+                                    when ::ActiveRecord::VERSION::MAJOR >= 5
+                                      true
+                                    else
+                                      false
+                                    end
+            current_adapter = ::ActiveRecord::Base.connection_config[:adapter]
+            postgresql_with_money = rails42 && PG_ADAPTERS.include?(current_adapter)
+          end
         end
 
         require "money-rails/active_record/migration_extensions/options_extractor"

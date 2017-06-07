@@ -1,7 +1,7 @@
 module MoneyRails
   module ActiveModel
     class MoneyValidator < ::ActiveModel::Validations::NumericalityValidator
-      def validate_each(record, attr, value)
+      def validate_each(record, attr, _value)
         reset_memoized_variables!
         @record = record
         @attr = attr
@@ -22,20 +22,23 @@ module MoneyRails
 
         return if options[:allow_nil] && @raw_value.nil?
 
-        # Skip normalization for Numeric values
-        # which can directly be handled by NumericalityValidator
-        if raw_value_is_non_numeric
-          # remove currency symbol, and negative sign
-          @raw_value = @raw_value.to_s.strip.gsub(symbol, "")
+        # Set this before we modify @raw_value below.
+        stringy = @raw_value.present? && !@raw_value.is_a?(Numeric)
 
-          add_error and return if value_has_too_many_decimal_points
-          add_error if thousand_separator_after_decimal_mark
-          add_error if invalid_thousands_separation
-
+        if stringy
+          # remove currency symbol
+          @raw_value = @raw_value.to_s.gsub(symbol, "")
         end
 
         normalize_raw_value!
         super(@record, @attr, @raw_value)
+
+        if stringy and not @record.errors.added?(@attr, :not_a_number)
+          add_error if
+            value_has_too_many_decimal_points or
+            thousand_separator_after_decimal_mark or
+            invalid_thousands_separation
+        end
       end
 
       private
@@ -43,7 +46,7 @@ module MoneyRails
       def reset_memoized_variables!
         [:currency, :abs_raw_value, :decimal_pieces, :pieces_array].each do |var_name|
           ivar_name = :"@_#{var_name}"
-          remove_instance_variable(ivar_name) if instance_variable_get(ivar_name)
+          remove_instance_variable(ivar_name) if instance_variable_defined?(ivar_name)
         end
       end
 
@@ -52,30 +55,30 @@ module MoneyRails
       end
 
       def decimal_mark
-        currency.decimal_mark
+        currency.decimal_mark || '.'
       end
 
       def thousands_separator
-        currency.thousands_separator
+        currency.thousands_separator || ','
       end
 
       def symbol
         currency.symbol
       end
 
-      def raw_value_is_non_numeric
-        @raw_value.present? && !@raw_value.is_a?(Numeric)
-      end
-
       def abs_raw_value
-        @_abs_raw_value ||= @raw_value.strip.sub(/^-/, "")
+        @_abs_raw_value ||= @raw_value.to_s.sub(/^\s*-/, "").strip
       end
 
       def add_error
-        @record.errors.add(@attr, I18n.t('errors.messages.invalid_currency',
-                                       { :thousands => thousands_separator,
-                                         :decimal => decimal_mark,
-                                         :currency => abs_raw_value }))
+        attr_name = @attr.to_s.tr('.', '_').humanize
+        attr_name = @record.class.human_attribute_name(@attr, default: attr_name)
+
+        @record.errors.add(@attr, :invalid_currency,
+                           { :thousands => thousands_separator,
+                             :decimal => decimal_mark,
+                             :currency => abs_raw_value,
+                             :attribute => attr_name })
       end
 
       def decimal_pieces
@@ -105,6 +108,10 @@ module MoneyRails
       # Remove thousands separators, normalize decimal mark,
       # remove whitespaces and _ (E.g. 99 999 999 or 12_300_200.20)
       def normalize_raw_value!
+        # Cache abs_raw_value before normalizing because it's used in
+        # many places and relies on the original @raw_value.
+        abs_raw_value
+
         @raw_value = @raw_value.to_s
           .gsub(thousands_separator, '')
           .gsub(decimal_mark, '.')
