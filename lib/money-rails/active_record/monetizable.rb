@@ -1,3 +1,4 @@
+require 'money-rails/active_record/predicate_builder/money_handler'
 require 'active_support/concern'
 require 'active_support/core_ext/array/extract_options'
 require 'active_support/deprecation/reporting'
@@ -21,6 +22,12 @@ module MoneyRails
 
         def monetize(*fields)
           options = fields.extract_options!
+
+          if respond_to?(:predicate_builder)
+            self.predicate_builder.register_handler(Money, PredicateBuilder::MoneyHandler.new(self))
+          else
+            ::ActiveRecord::PredicateBuilder.register_handler(Money, PredicateBuilder::MoneyHandler.new)
+          end
 
           fields.each do |field|
             # Stringify model field name

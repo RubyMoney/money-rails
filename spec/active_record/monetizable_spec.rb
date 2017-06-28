@@ -1006,5 +1006,17 @@ if defined? ActiveRecord
         expect(currency).to eq(Money.default_currency)
       end
     end
+
+    describe "custom predicate" do
+      it "constructs a predicate for inferred monetized attribute" do
+        expect(Product.where(price: Money.new(99_00)).to_sql)
+          .to eq('SELECT "products".* FROM "products" WHERE "products"."price_cents" = 9900')
+      end
+
+      it "constructs a predicate for explicitly named monetized attribute" do
+        expect(Product.where(sale_price: Money.new(99_00)).to_sql)
+          .to eq('SELECT "products".* FROM "products" WHERE "products"."sale_price_amount" = 9900')
+      end
+    end
   end
 end
