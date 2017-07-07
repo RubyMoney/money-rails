@@ -193,7 +193,7 @@ module MoneyRails
           if memoized.currency == attr_currency
             result = memoized
           else
-            memoized_amount = memoized.amount.to_money(attr_currency)
+            memoized_amount = Money.new(amount, attr_currency)
             write_attribute subunit_name, memoized_amount.cents
             # Cache the value (it may be nil)
             result = instance_variable_set("@#{name}", memoized_amount)
