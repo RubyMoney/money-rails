@@ -810,14 +810,13 @@ if defined? ActiveRecord
           reduced_price = product.read_monetized(:reduced_price, :reduced_price_cents)
           product.reduced_price_cents = 100
 
-          expect(product.read_monetized(:reduced_price, :reduced_price_cents)).not_to eq(reduced_price)
+          expect(product.read_monetized(:reduced_price, :reduced_price_cents)).to eq(Money.new(100, reduced_price.currency))
         end
 
         it "resets memoized attribute's value if currency has changed" do
           reduced_price = product.read_monetized(:reduced_price, :reduced_price_cents)
-          product.reduced_price_currency = 'CAD'
-
-          expect(product.read_monetized(:reduced_price, :reduced_price_cents)).not_to eq(reduced_price)
+          product.reduced_price_currency = 'JPY'
+          expect(product.read_monetized(:reduced_price, :reduced_price_cents)).to eq(Money.new(reduced_price.cents, 'JPY'))
         end
       end
 
