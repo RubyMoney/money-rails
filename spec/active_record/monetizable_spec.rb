@@ -819,6 +819,16 @@ if defined? ActiveRecord
 
           expect(product.read_monetized(:reduced_price, :reduced_price_cents)).not_to eq(reduced_price)
         end
+
+        it "resets memoized attribute's cents value based on updated currency if currency has changed" do
+          reduced_price = product.read_monetized(:reduced_price, :reduced_price_cents)
+
+          product.reduced_price_currency = 'CAD'
+          expect(product.read_monetized(:reduced_price, :reduced_price_cents).cents).to eq(reduced_price.cents)
+
+          product.reduced_price_currency = 'JPY'
+          expect(product.read_monetized(:reduced_price, :reduced_price_cents).cents).to eq(reduced_price.cents / 100)
+        end
       end
 
       context "with preserve_user_input set" do
@@ -840,6 +850,31 @@ if defined? ActiveRecord
 
           expect(product.save).to be_falsy
           expect(product.read_monetized(:price, :price_cents).to_s).to eq('14,0')
+        end
+      end
+
+      context "treating amounts as cents" do
+        around(:each) do |example|
+          MoneyRails::Configuration.treat_amounts_as_cents = true
+          example.run
+          MoneyRails::Configuration.treat_amounts_as_cents = false
+        end
+
+        it "resets memoized attribute's value if currency has changed" do
+          reduced_price = product.read_monetized(:reduced_price, :reduced_price_cents)
+          product.reduced_price_currency = 'CAD'
+
+          expect(product.read_monetized(:reduced_price, :reduced_price_cents)).not_to eq(reduced_price)
+        end
+
+        it "resets memoized attribute's value as cents value if currency has changed" do
+          reduced_price = product.read_monetized(:reduced_price, :reduced_price_cents)
+
+          product.reduced_price_currency = 'CAD'
+          expect(product.read_monetized(:reduced_price, :reduced_price_cents).cents).to eq(reduced_price.cents)
+
+          product.reduced_price_currency = 'JPY'
+          expect(product.read_monetized(:reduced_price, :reduced_price_cents).cents).to eq(reduced_price.cents)
         end
       end
     end
@@ -963,6 +998,21 @@ if defined? ActiveRecord
             # Can not use public accessor here because currency_for_price is stubbed
             expect(product.instance_variable_get('@price')).to eq(old_price_value)
           end
+        end
+      end
+
+      context "treating amounts as cents" do
+        around(:each) do |example|
+          MoneyRails::Configuration.treat_amounts_as_cents = true
+          example.run
+          MoneyRails::Configuration.treat_amounts_as_cents = false
+        end
+
+        it "sets monetized attribute's value directly from Fixnum amount as cents" do
+          product.write_monetized :price, :price_cents, 10, false, nil, {}
+
+          expect(product.price).to be_an_instance_of(Money)
+          expect(product.price_cents).to eq(10)
         end
       end
     end
