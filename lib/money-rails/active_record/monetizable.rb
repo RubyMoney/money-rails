@@ -193,7 +193,12 @@ module MoneyRails
           if memoized.currency == attr_currency
             result = memoized
           else
-            memoized_amount = memoized.amount.to_money(attr_currency)
+            memoized_amount =
+              if MoneyRails::Configuration.treat_amounts_as_cents
+                Money.new(amount, attr_currency)
+              else
+                memoized.amount.to_money(attr_currency)
+              end
             write_attribute subunit_name, memoized_amount.cents
             # Cache the value (it may be nil)
             result = instance_variable_set("@#{name}", memoized_amount)
@@ -229,7 +234,12 @@ module MoneyRails
             money = value
           else
             begin
-              money = value.to_money(public_send("currency_for_#{name}"))
+              money =
+                if MoneyRails::Configuration.treat_amounts_as_cents
+                  Money.new(value, public_send("currency_for_#{name}"))
+                else
+                  value.to_money(public_send("currency_for_#{name}"))
+                end
             rescue NoMethodError
               return nil
             rescue Money::Currency::UnknownCurrency, Monetize::ParseError => e

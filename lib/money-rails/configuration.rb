@@ -88,6 +88,9 @@ module MoneyRails
     mattr_accessor :default_format
     @@default_format = nil
 
+    mattr_accessor :treat_amounts_as_cents
+    @@treat_amounts_as_cents = false
+
     # Configure whether to raise exception when an improper value
     # is going to be converted to a Money object.
     mattr_accessor :raise_error_on_money_parsing
