@@ -819,6 +819,16 @@ if defined? ActiveRecord
 
           expect(product.read_monetized(:reduced_price, :reduced_price_cents)).not_to eq(reduced_price)
         end
+
+        it "resets memoized attribute's cents value based on updated currency if currency has changed" do
+          reduced_price = product.read_monetized(:reduced_price, :reduced_price_cents)
+
+          product.reduced_price_currency = 'CAD'
+          expect(product.read_monetized(:reduced_price, :reduced_price_cents).cents).to eq(reduced_price.cents)
+
+          product.reduced_price_currency = 'JPY'
+          expect(product.read_monetized(:reduced_price, :reduced_price_cents).cents).to eq(reduced_price.cents / 100)
+        end
       end
 
       context "with preserve_user_input set" do
@@ -854,6 +864,16 @@ if defined? ActiveRecord
           reduced_price = product.read_monetized(:reduced_price, :reduced_price_cents)
           product.reduced_price_currency = 'CAD'
 
+          expect(product.read_monetized(:reduced_price, :reduced_price_cents)).not_to eq(reduced_price)
+        end
+
+        it "resets memoized attribute's value as cents value if currency has changed" do
+          reduced_price = product.read_monetized(:reduced_price, :reduced_price_cents)
+
+          product.reduced_price_currency = 'CAD'
+          expect(product.read_monetized(:reduced_price, :reduced_price_cents).cents).to eq(reduced_price.cents)
+
+          product.reduced_price_currency = 'JPY'
           expect(product.read_monetized(:reduced_price, :reduced_price_cents).cents).to eq(reduced_price.cents)
         end
       end
