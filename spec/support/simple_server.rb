@@ -146,8 +146,12 @@ class SimpleServer
     end
 
     def do_GET(request, response) # rubocop:disable Style/MethodName
-      route = @simple_server.routes.fetch(request.path) { raise "No GET route for #{request.path}" }
-      route.call(request, response)
+      if @simple_server.routes.include?(request.path)
+        @simple_server.routes[request.path].call request, response
+      else
+        STDERR.puts "[SimpleServer] no route found: #{request.path}"
+        raise WEBrick::HTTPStatus::NotFound
+      end
     end
   end
 end

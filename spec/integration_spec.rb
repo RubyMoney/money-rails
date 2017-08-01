@@ -1,5 +1,8 @@
 require "spec_helper"
 require "fileutils"
+require "json"
+require "net/http"
+require "uri"
 
 describe "gemstash integration tests" do
   let(:auth) { Gemstash::ApiKeyAuthorization.new(auth_key) }
@@ -64,6 +67,14 @@ describe "gemstash integration tests" do
     @gemstash_empty_rubygems.start
   end
 
+  let(:platform_message) do
+    if RUBY_PLATFORM == "java"
+      "Java"
+    else
+      "Ruby"
+    end
+  end
+
   after(:all) do
     @gemstash.stop
     @gemstash_empty_rubygems.stop
@@ -78,17 +89,18 @@ describe "gemstash integration tests" do
     let(:gem_name) { "speaker" }
     let(:gem) { gem_path(gem_name, gem_version) }
     let(:gem_version) { "0.1.0" }
-    let(:gem_contents) { read_gem(gem_name, gem_version) }
+    let(:gem_contents) { read_gem(gem_name, gem_version, platform: speaker_platform) }
     let(:deps) { Gemstash::Dependencies.for_private }
     let(:storage) { Gemstash::Storage.for("private").for("gems") }
     let(:http_client) { Gemstash::HTTPClient.for(@gemstash.private_upstream) }
+    let(:speaker_platform) { "ruby" }
 
     let(:speaker_deps) do
       {
-        :name => "speaker",
-        :number => "0.1.0",
-        :platform => "ruby",
-        :dependencies => []
+        name: "speaker",
+        number: "0.1.0",
+        platform: speaker_platform,
+        dependencies: []
       }
     end
 
@@ -169,18 +181,34 @@ describe "gemstash integration tests" do
         expect { http_client.get("gems/speaker-0.1.0") }.to raise_error(Gemstash::WebError)
       end
     end
+
+    context "installing a gem" do
+      let(:speaker_platform) do
+        if RUBY_PLATFORM == "java"
+          "java"
+        else
+          "ruby"
+        end
+      end
+
+      before do
+        Gemstash::GemPusher.new(auth, gem_contents).serve
+        expect(deps.fetch(%w(speaker))).to match_dependencies([speaker_deps])
+        @gemstash.env.cache.flush
+      end
+
+      it "successfully installs the gem", db_transaction: false do
+        env = { "HOME" => env_dir, "RUBYGEMS_HOST" => host, "GEM_HOME" => env_dir, "GEM_PATH" => env_dir }
+        expect(execute("gem", ["install", "speaker", "--clear-sources", "--source", host], dir: env_dir, env: env)).
+          to exit_success
+        expect(execute(File.join(env_dir, "bin/speaker"), %w(hi), dir: env_dir, env: env)).
+          to exit_success.and_output("Hello world, #{platform_message}\n")
+      end
+    end
   end
 
   describe "bundle install against gemstash" do
     let(:dir) { bundle_path(bundle) }
-
-    let(:platform_message) do
-      if RUBY_PLATFORM == "java"
-        "Java"
-      else
-        "Ruby"
-      end
-    end
 
     after do
       clean_bundle bundle
@@ -188,26 +216,28 @@ describe "gemstash integration tests" do
 
     shared_examples "a bundleable project" do
       it "successfully bundles" do
-        expect(execute("bundle", dir: dir)).to exit_success
-        expect(execute("bundle", %w(exec speaker hi), dir: dir)).
+        env = { "HOME" => dir }
+        expect(execute("bundle", dir: dir, env: env)).to exit_success
+        expect(execute("bundle", %w(exec speaker hi), dir: dir, env: env)).
           to exit_success.and_output("Hello world, #{platform_message}\n")
       end
 
       it "can bundle with full index" do
-        expect(execute("bundle", %w(--full-index), dir: dir)).to exit_success
-        expect(execute("bundle", %w(exec speaker hi), dir: dir)).
+        env = { "HOME" => dir }
+        expect(execute("bundle", %w(--full-index), dir: dir, env: env)).to exit_success
+        expect(execute("bundle", %w(exec speaker hi), dir: dir, env: env)).
           to exit_success.and_output("Hello world, #{platform_message}\n")
       end
 
       it "can bundle with prerelease versions" do
-        env = { "SPEAKER_VERSION" => "= 0.2.0.pre" }
+        env = { "HOME" => dir, "SPEAKER_VERSION" => "= 0.2.0.pre" }
         expect(execute("bundle", dir: dir, env: env)).to exit_success
         expect(execute("bundle", %w(exec speaker hi), dir: dir, env: env)).
           to exit_success.and_output("Hello world, pre, #{platform_message}\n")
       end
 
       it "can bundle with prerelease versions with full index" do
-        env = { "SPEAKER_VERSION" => "= 0.2.0.pre" }
+        env = { "HOME" => dir, "SPEAKER_VERSION" => "= 0.2.0.pre" }
         expect(execute("bundle", %w(--full-index), dir: dir, env: env)).to exit_success
         expect(execute("bundle", %w(exec speaker hi), dir: dir, env: env)).
           to exit_success.and_output("Hello world, pre, #{platform_message}\n")
@@ -230,14 +260,15 @@ describe "gemstash integration tests" do
       it_behaves_like "a bundleable project"
 
       it "can successfully bundle twice" do
-        expect(execute("bundle", dir: dir)).to exit_success
-        expect(execute("bundle", %w(exec speaker hi), dir: dir)).
+        env = { "HOME" => dir }
+        expect(execute("bundle", dir: dir, env: env)).to exit_success
+        expect(execute("bundle", %w(exec speaker hi), dir: dir, env: env)).
           to exit_success.and_output("Hello world, #{platform_message}\n")
 
         clean_bundle bundle
 
-        expect(execute("bundle", dir: dir)).to exit_success
-        expect(execute("bundle", %w(exec speaker hi), dir: dir)).
+        expect(execute("bundle", dir: dir, env: env)).to exit_success
+        expect(execute("bundle", %w(exec speaker hi), dir: dir, env: env)).
           to exit_success.and_output("Hello world, #{platform_message}\n")
       end
     end
@@ -251,14 +282,83 @@ describe "gemstash integration tests" do
       before do
         Gemstash::Authorization.authorize(auth_key, "all")
         Gemstash::GemPusher.new(auth, read_gem("speaker", "0.1.0")).serve
-        Gemstash::GemPusher.new(auth, read_gem("speaker", "0.1.0-java")).serve
+        Gemstash::GemPusher.new(auth, read_gem("speaker", "0.1.0", platform: "java")).serve
         Gemstash::GemPusher.new(auth, read_gem("speaker", "0.2.0.pre")).serve
-        Gemstash::GemPusher.new(auth, read_gem("speaker", "0.2.0.pre-java")).serve
+        Gemstash::GemPusher.new(auth, read_gem("speaker", "0.2.0.pre", platform: "java")).serve
         @gemstash.env.cache.flush
       end
 
       let(:bundle) { "integration_spec/private_gems" }
       it_behaves_like "a bundleable project"
+    end
+  end
+
+  describe "checking the health of Gemstash", db_transaction: false do
+    let(:uri) { URI("#{@gemstash.url}/health") }
+    let(:resource) { Gemstash::Storage.for("health").resource("test") }
+    let(:resource_file) { File.join(resource.folder, "example") }
+
+    context "with a healthy server" do
+      it "succeeds with a valid JSON document" do
+        response = Net::HTTP.get_response(uri)
+        expect(response).to be_a(Net::HTTPSuccess)
+        expect(JSON.parse(response.body)).to eq("status" => { "heartbeat" => "OK",
+                                                              "storage_read" => "OK",
+                                                              "storage_write" => "OK",
+                                                              "db_read" => "OK",
+                                                              "db_write" => "OK" })
+      end
+    end
+
+    context "using the heartbeat endpoint" do
+      let(:uri) { URI("#{@gemstash.url}/health/heartbeat") }
+
+      it "succeeds with a valid JSON document" do
+        response = Net::HTTP.get_response(uri)
+        expect(response).to be_a(Net::HTTPSuccess)
+        expect(JSON.parse(response.body)).
+          to eq("status" => { "heartbeat" => "OK" })
+      end
+    end
+
+    context "with a failure to read from storage" do
+      before do
+        resource.save(example: "other_content")
+        @existing_mode = File.stat(resource_file).mode
+        FileUtils.chmod("a-r", resource_file)
+      end
+
+      after do
+        FileUtils.chmod(@existing_mode, resource_file)
+      end
+
+      it "responds with an appropriate failure" do
+        response = Net::HTTP.get_response(uri)
+        expect(response).to_not be_a(Net::HTTPSuccess)
+        expect(JSON.parse(response.body)["status"]["storage_read"]).to_not eq("OK")
+
+        # The write should have been successful, so verify that
+        FileUtils.chmod(@existing_mode, resource_file)
+        expect(File.read(resource_file)).to match(/\Acontent-\d+\z/)
+      end
+    end
+
+    context "with a failure to write to storage" do
+      before do
+        FileUtils.mkpath(resource.folder) unless Dir.exist?(resource.folder)
+        @existing_mode = File.stat(resource.folder).mode
+        FileUtils.chmod("a-w", resource.folder)
+      end
+
+      after do
+        FileUtils.chmod(@existing_mode, resource.folder)
+      end
+
+      it "responds with an appropriate failure" do
+        response = Net::HTTP.get_response(uri)
+        expect(response).to_not be_a(Net::HTTPSuccess)
+        expect(JSON.parse(response.body)["status"]["storage_write"]).to_not eq("OK")
+      end
     end
   end
 end

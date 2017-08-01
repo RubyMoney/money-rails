@@ -31,6 +31,7 @@ module Gemstash
 
       def call(env)
         env["gemstash.env"] = @gemstash_env
+        Gemstash::Env.current = @gemstash_env
         @app.call(env)
       end
     end
@@ -97,7 +98,11 @@ module Gemstash
     end
 
     def log_file
-      base_file(config[:log_file] || "server.log")
+      if config[:log_file] == :stdout
+        $stdout
+      else
+        base_file(config[:log_file] || "server.log")
+      end
     end
 
     def atomic_write(file, &block)
