@@ -178,28 +178,7 @@ describe "gemstash integration tests" do
         env = { "HOME" => env_dir, "RUBYGEMS_HOST" => host }
         expect(execute("gem", ["yank", "--key", "test", gem_name, "--version", gem_version], env: env)).to exit_success
         expect(deps.fetch(%w(speaker))).to match_dependencies([])
-        # It shouldn't actually delete the gem, to support unyank
-        expect(storage.resource("speaker-0.1.0").content(:gem)).to eq(gem_contents)
-        # But it should block downloading the yanked gem
         expect { http_client.get("gems/speaker-0.1.0") }.to raise_error(Gemstash::WebError)
-      end
-    end
-
-    context "unyanking a gem" do
-      before do
-        Gemstash::GemPusher.new(auth, gem_contents).serve
-        Gemstash::GemYanker.new(auth, gem_name, gem_version).serve
-        expect(deps.fetch(%w(speaker))).to match_dependencies([])
-        @gemstash.env.cache.flush
-      end
-
-      it "adds valid gems back to the server", db_transaction: false do
-        env = { "HOME" => env_dir, "PATH" => ENV["PATH"] }
-        url = "#{host}/api/v1/gems/unyank?gem_name=#{gem_name}&version=#{gem_version}"
-        expect(execute("curl", ["-X", "PUT", "-H", "Authorization:#{auth_key}", url], env: env)).to exit_success
-        expect(deps.fetch(%w(speaker))).to match_dependencies([speaker_deps])
-        expect(storage.resource("speaker-0.1.0").content(:gem)).to eq(gem_contents)
-        expect(http_client.get("gems/speaker-0.1.0")).to eq(gem_contents)
       end
     end
 

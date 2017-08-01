@@ -26,7 +26,7 @@ $ gemstash authorize
 Your new key is: e374e237fdf5fa5718d2a21bd63dc911
 ```
 
-This new key can `push`, `yank`, `unyank`, and `fetch` gems from your Gemstash server.
+This new key can `push`, `yank`, and `fetch` gems from your Gemstash server.
 Run `gemstash authorize` with just the permissions you want to limit what the
 key will be allowed to do. You can similarly update a specific key by providing
 it via the `--key` option:
@@ -94,7 +94,7 @@ $ gem push --key test_key --host http://localhost:9292/private pkg/private-examp
 ```
 
 The `/private` portion of the `--host` option tells Gemstash you are interacting
-with the private gems. Gemstash will not let you push, yank, or unyank from
+with the private gems. Gemstash will not let you push, or yank from
 anything except `/private`.
 
 ## Bundling
@@ -128,22 +128,8 @@ $ RUBYGEMS_HOST=http://localhost:9292/private gem yank --key test_key private-ex
 
 Like with pushing, the `/private` portion of the host option tells Gemstash you
 are interacting with private gems. Gemstash will only let you yank from
-`/private`. Unlike pushing, Rubygems doesn't support `--host` for yank and
-unyank (yet), so you need to specify the host via the `RUBYGEMS_HOST`
-environment variable.
-
-## Unyanking
-
-If you yank a private gem by accident, you can unyank the gem with Rubygems:
-```
-$ RUBYGEMS_HOST=http://localhost:9292/private gem yank --key test_key private-example --version 0.1.0 --undo
-```
-
-Like with pushing and yanking, the `/private` portion of the host option tells
-Gemstash you are interacting with private gems. Gemstash will only let you
-unyank from `/private`. Unlike pushing, Rubygems doesn't support `--host` for
-unyank and yank (yet), so you need to specify the host via the `RUBYGEMS_HOST`
-environment variable.
+`/private`. Unlike pushing, Rubygems doesn't support `--host` for yank (yet), so
+you need to specify the host via the `RUBYGEMS_HOST` environment variable.
 
 ## Protected Fetching
 

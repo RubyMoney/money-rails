@@ -31,10 +31,6 @@ module Gemstash
         protected(Gemstash::GemYanker)
       end
 
-      def serve_unyank
-        protected(Gemstash::GemUnyanker)
-      end
-
       def serve_add_spec_json
         halt 403, "Not yet supported"
       end

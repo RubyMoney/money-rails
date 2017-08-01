@@ -46,10 +46,6 @@ module Gemstash
       @gem_source.serve_yank
     end
 
-    put "/api/v1/gems/unyank" do
-      @gem_source.serve_unyank
-    end
-
     post "/api/v1/add_spec.json" do
       @gem_source.serve_add_spec_json
     end

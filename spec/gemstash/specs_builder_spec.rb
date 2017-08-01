@@ -313,57 +313,6 @@ describe Gemstash::SpecsBuilder do
     end
   end
 
-  context "with a spec unyanked" do
-    let(:initial_specs) { [["example", Gem::Version.new("0.0.1"), "ruby"]] }
-    let(:new_specs) { [["example", Gem::Version.new("0.1.0"), "ruby"]] }
-    let(:specs_after_unyank) { initial_specs + new_specs }
-
-    before do
-      Gemstash::Authorization.authorize(auth_key, "all")
-      gem_id = insert_rubygem("example")
-      insert_version(gem_id, "0.0.1")
-      Gemstash::GemPusher.new(auth, read_gem("example", "0.1.0")).serve
-      Gemstash::GemYanker.new(auth, "example", "0.1.0").serve
-    end
-
-    it "busts the cache" do
-      result = Gemstash::SpecsBuilder.new(auth).serve
-      expect(Marshal.load(gunzip(result))).to match_array(initial_specs)
-      Gemstash::GemUnyanker.new(auth, "example", "0.1.0").serve
-      result = Gemstash::SpecsBuilder.new(auth).serve
-      expect(Marshal.load(gunzip(result))).to match_array(specs_after_unyank)
-    end
-
-    it "busts the latest cache" do
-      result = Gemstash::SpecsBuilder.new(auth, latest: true).serve
-      expect(Marshal.load(gunzip(result))).to match_array(initial_specs)
-      Gemstash::GemUnyanker.new(auth, "example", "0.1.0").serve
-      result = Gemstash::SpecsBuilder.new(auth, latest: true).serve
-      expect(Marshal.load(gunzip(result))).to match_array(new_specs)
-    end
-  end
-
-  context "with a prerelease spec unyanked" do
-    let(:initial_specs) { [["example", Gem::Version.new("0.0.1.pre"), "ruby"]] }
-    let(:specs_after_unyank) { initial_specs + [["example", Gem::Version.new("0.1.0.pre"), "ruby"]] }
-
-    before do
-      Gemstash::Authorization.authorize(auth_key, "all")
-      gem_id = insert_rubygem("example")
-      insert_version(gem_id, "0.0.1.pre", prerelease: true)
-      Gemstash::GemPusher.new(auth, read_gem("example", "0.1.0.pre")).serve
-      Gemstash::GemYanker.new(auth, "example", "0.1.0.pre").serve
-    end
-
-    it "busts the cache" do
-      result = Gemstash::SpecsBuilder.new(auth, prerelease: true).serve
-      expect(Marshal.load(gunzip(result))).to match_array(initial_specs)
-      Gemstash::GemUnyanker.new(auth, "example", "0.1.0.pre").serve
-      result = Gemstash::SpecsBuilder.new(auth, prerelease: true).serve
-      expect(Marshal.load(gunzip(result))).to match_array(specs_after_unyank)
-    end
-  end
-
   context "with protected fetch disabled" do
     it "serves specs without authorization" do
       result = Gemstash::SpecsBuilder.new(auth).serve

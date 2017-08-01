@@ -103,8 +103,6 @@ describe Gemstash::Authorization do
       it "raises a Gemstash::NotAuthorizedError" do
         expect { Gemstash::Authorization.check("abc", "push") }.
           to raise_error(Gemstash::NotAuthorizedError, /key doesn't have push access/)
-        expect { Gemstash::Authorization.check("abc", "unyank") }.
-          to raise_error(Gemstash::NotAuthorizedError, /key doesn't have unyank access/)
       end
     end
 
@@ -163,7 +161,6 @@ describe Gemstash::Authorization do
         expect(auth.all?).to be_truthy
         expect(auth.push?).to be_truthy
         expect(auth.yank?).to be_truthy
-        expect(auth.unyank?).to be_truthy
         expect(auth.fetch?).to be_truthy
       end
     end
@@ -175,15 +172,13 @@ describe Gemstash::Authorization do
         expect(auth.all?).to be_falsey
         expect(auth.push?).to be_truthy
         expect(auth.yank?).to be_truthy
-        expect(auth.unyank?).to be_falsey
         expect(auth.fetch?).to be_falsey
 
-        Gemstash::Authorization.authorize("abc", %w(yank unyank fetch))
+        Gemstash::Authorization.authorize("abc", %w(yank fetch))
         auth = Gemstash::Authorization["abc"]
         expect(auth.all?).to be_falsey
         expect(auth.push?).to be_falsey
         expect(auth.yank?).to be_truthy
-        expect(auth.unyank?).to be_truthy
         expect(auth.fetch?).to be_truthy
       end
     end

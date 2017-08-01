@@ -14,14 +14,14 @@ Description
 
 Adds or removes authorization to interact with privately stored gems.
 
-Any arguments will be used as specific permissions. Valid permissions include `push`, `yank`, `unyank`, and `fetch`. If no permissions are provided, then all permissions will be granted (including any that may be added in future versions of Gemstash).
+Any arguments will be used as specific permissions. Valid permissions include `push`, `yank`, and `fetch`. If no permissions are provided, then all permissions will be granted (including any that may be added in future versions of Gemstash).
 
 Usage
 -----
 
     gemstash authorize
     gemstash authorize push yank
-    gemstash authorize yank unyank --key <secure-key>
+    gemstash authorize yank --key <secure-key>
     gemstash authorize --remove --key <secure-key>
 
 Options
