@@ -13,7 +13,7 @@ matrix:
     - rvm: 2.4.1
     - rvm: ruby-head
       gemfile: 'gemfiles/Gemfile.ruby-head'
-    - rvm: jruby-9.1.8.0
+    - rvm: jruby-9.1.12.0
       env: JRUBY_OPTS="$JRUBY_OPTS -J-Xmx1536m -J-XX:MaxPermSize=192m"
 
 bundler_args: "--binstubs --jobs=3 --retry=3"
