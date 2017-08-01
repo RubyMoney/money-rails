@@ -48,7 +48,7 @@ class Changelog
 
   def parse_changelog
     require "citrus"
-    Citrus.load(File.expand_path("../changelog.citrus", __FILE__))
+    Citrus.load(File.expand_path("../../rake/changelog.citrus", __FILE__))
     @parsed = Changelog::Grammar.parse(File.read(changelog_file))
     @parsed_current_version = @parsed.versions.find {|version| version.number == current_version }
 
