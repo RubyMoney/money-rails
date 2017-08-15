@@ -8,10 +8,10 @@ services: mongodb
 rvm:
   - 1.9.3
   - 2.0.0
-  - 2.1.8
-  - 2.2.4
-  - 2.3.0
-  - 2.4.0
+  - 2.1.10
+  - 2.2.7
+  - 2.3.4
+  - 2.4.1
   #  FIXME: failing native extensions
   #- ruby-head
   #  TODO: investigate failure
@@ -34,19 +34,19 @@ matrix:
       gemfile: gemfiles/rails50.gemfile
     - rvm: 2.0.0
       gemfile: gemfiles/rails50.gemfile
-    - rvm: 2.1.8
+    - rvm: 2.1.10
       gemfile: gemfiles/rails50.gemfile
-    - rvm: 2.4.0
+    - rvm: 2.4.1
       gemfile: gemfiles/mongoid2.gemfile
-    - rvm: 2.4.0
+    - rvm: 2.4.1
       gemfile: gemfiles/mongoid3.gemfile
-    - rvm: 2.4.0
+    - rvm: 2.4.1
       gemfile: gemfiles/mongoid4.gemfile
-    - rvm: 2.4.0
+    - rvm: 2.4.1
       gemfile: gemfiles/rails3.gemfile
-    - rvm: 2.4.0
+    - rvm: 2.4.1
       gemfile: gemfiles/rails4.gemfile
-    - rvm: 2.4.0
+    - rvm: 2.4.1
       gemfile: gemfiles/rails41.gemfile
 notifications:
   recipients:
