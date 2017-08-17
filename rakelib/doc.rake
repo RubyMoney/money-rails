@@ -88,7 +88,7 @@ class Doc
          upcase_headers.rb
          fix_links_for_format.rb
          fix_github_line_breaks.rb).map do |filter|
-        ::File.expand_path("../doc/#{filter}", __FILE__)
+        ::File.expand_path("../../rake/doc/#{filter}", __FILE__)
       end
     end
 

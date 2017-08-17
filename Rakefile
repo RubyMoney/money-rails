@@ -1,8 +1,6 @@
 require "bundler/gem_tasks"
 require "rspec/core/rake_task"
 require "rubocop/rake_task"
-require_relative "rake/changelog.rb"
-require_relative "rake/doc.rb"
 
 RuboCop::RakeTask.new
 
