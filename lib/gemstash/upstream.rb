@@ -11,7 +11,7 @@ module Gemstash
     def_delegators :@uri, :scheme, :host, :user, :password, :to_s
 
     def initialize(upstream, user_agent: nil)
-      @uri = URI(URI.decode(upstream.to_s))
+      @uri = URI(CGI.unescape(upstream.to_s))
       @user_agent = user_agent
       raise "URL '#{@uri}' is not valid!" unless @uri.to_s =~ URI.regexp
     end
