@@ -117,6 +117,7 @@ module Gemstash
       digest = Digest::MD5.hexdigest(@name)
       child_folder = "#{safe_name}-#{digest}"
       @folder = File.join(@base_path, *trie_parents, child_folder)
+      @properties = nil
     end
 
     # When +key+ is nil, this will test if this resource exists with any
