@@ -35,7 +35,7 @@ you push your own private gems as well."
   spec.add_runtime_dependency "lru_redux", "~> 1.1"
   spec.add_runtime_dependency "puma", "~> 2.14"
   spec.add_runtime_dependency "server_health_check-rack", "~> 0.1"
-  spec.add_runtime_dependency "sequel", "~> 4.26"
+  spec.add_runtime_dependency "sequel", "~> 5.0"
   spec.add_runtime_dependency "sinatra", "~> 1.4"
   spec.add_runtime_dependency "thor", "~> 0.19"
 
