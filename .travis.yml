@@ -1,6 +1,6 @@
 language: ruby
 sudo: false
-dist: precise
+dist: trusty
 matrix:
   allow_failures:
     - rvm: ruby-head
