@@ -53,7 +53,7 @@ class TestGemstashServer
   def stop
     return if @stopped
     @stopped = true
-    @puma_cli.halt
+    @puma_cli.launcher.stop
   end
 
   def join
