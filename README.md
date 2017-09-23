@@ -261,6 +261,8 @@ MoneyRails.configure do |config|
 
 end
 ```
+For complete list of available currency: [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217)
+
 
 If you need to set the default currency on a per-request basis, such as in a
 multi-tenant application, you may use a lambda to lazy-load the default currency
