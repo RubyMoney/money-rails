@@ -1,4 +1,4 @@
-class AddSalePriceCentsToProduct < ActiveRecord::Migration
+class AddSalePriceCentsToProduct < (Rails::VERSION::MAJOR >= 5 ? ActiveRecord::Migration[4.2] : ActiveRecord::Migration)
   def change
     add_column :products, :sale_price_amount, :integer,
                :default => 0, :null => false
