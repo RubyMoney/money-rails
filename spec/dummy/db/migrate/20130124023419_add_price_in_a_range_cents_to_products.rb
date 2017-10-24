@@ -1,4 +1,4 @@
-class AddPriceInARangeCentsToProducts < ActiveRecord::Migration
+class AddPriceInARangeCentsToProducts < (Rails::VERSION::MAJOR >= 5 ? ActiveRecord::Migration[4.2] : ActiveRecord::Migration)
   def change
     add_column :products, :price_in_a_range_cents, :integer
   end
