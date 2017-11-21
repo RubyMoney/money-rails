@@ -854,6 +854,39 @@ if defined? ActiveRecord
           expect(product.read_monetized(:price, :price_cents).to_s).to eq('14,0')
         end
       end
+
+      context "with a monetized attribute that is nil" do
+        let(:service) do
+          Service.create(discount_cents: nil)
+        end
+        let(:default_currency_lambda) { double("Default Currency Fallback") }
+        subject { service.read_monetized(:discount, :discount_cents, options) }
+
+        around(:each) do |example|
+          service # Instantiate instance which relies on Money.default_currency
+          original_default_currency = Money.default_currency
+          Money.default_currency = -> { default_currency_lambda.read_currency }
+          example.run
+          Money.default_currency = original_default_currency
+        end
+
+        context "when allow_nil options is not set" do
+          let(:options) { {} }
+
+          it "attempts to read the fallback default currency" do
+            expect(default_currency_lambda).to receive(:read_currency).and_return("USD")
+            subject
+          end
+        end
+
+        context "when allow_nil options is set" do
+          let(:options) { { allow_nil: true } }
+          it "attempts to read the fallback default currency" do
+            expect(default_currency_lambda).not_to receive(:read_currency)
+            subject
+          end
+        end
+      end
     end
 
     describe "#write_monetized" do
