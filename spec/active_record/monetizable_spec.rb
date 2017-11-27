@@ -870,18 +870,9 @@ if defined? ActiveRecord
           Money.default_currency = original_default_currency
         end
 
-        context "when allow_nil options is not set" do
-          let(:options) { {} }
-
-          it "attempts to read the fallback default currency" do
-            expect(default_currency_lambda).to receive(:read_currency).and_return("USD")
-            subject
-          end
-        end
-
         context "when allow_nil options is set" do
           let(:options) { { allow_nil: true } }
-          it "attempts to read the fallback default currency" do
+          it "does not attempt to read the fallback default currency" do
             expect(default_currency_lambda).not_to receive(:read_currency)
             subject
           end
