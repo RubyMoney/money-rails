@@ -119,7 +119,7 @@ module MoneyRails
 
             # Getter for monetized attribute
             define_method name do |*args|
-              read_monetized name, subunit_name, *args
+              read_monetized name, subunit_name, options, *args
             end
 
             # Setter for monetized attribute
@@ -178,10 +178,11 @@ module MoneyRails
         end
       end
 
-      def read_monetized(name, subunit_name, *args)
+      def read_monetized(name, subunit_name, options = {}, *args)
         # Get the cents
         amount = public_send(subunit_name, *args)
 
+        return if amount.nil? && options[:allow_nil]
         # Get the currency object
         attr_currency = public_send("currency_for_#{name}")
 
