@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.10.0
+
+- Bump money version to ~> 6.10.0
+- Optimize reading of the attribute when `allow_nil` is set to true
+
 ## 1.9.0
 
 - Allow the use of money-rails with plan ActiveRecord (without Rails)
