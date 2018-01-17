@@ -91,7 +91,7 @@ describe Gemstash::CLI::Authorize do
     let(:cli_options) { { :key => "auth-key" } }
 
     before do
-      Gemstash::Authorization.authorize("auth-key", %w(yank))
+      Gemstash::Authorization.authorize("auth-key", %w[yank])
     end
 
     it "updates the permissions" do
@@ -107,7 +107,7 @@ describe Gemstash::CLI::Authorize do
     let(:cli_options) { { :key => "auth-key", :remove => true } }
 
     before do
-      Gemstash::Authorization.authorize("auth-key", %w(yank))
+      Gemstash::Authorization.authorize("auth-key", %w[yank])
     end
 
     it "removes the authorization" do
@@ -130,7 +130,7 @@ describe Gemstash::CLI::Authorize do
     let(:cli_options) { { :key => "auth-key", :remove => true } }
 
     before do
-      Gemstash::Authorization.authorize("auth-key", %w(yank))
+      Gemstash::Authorization.authorize("auth-key", %w[yank])
     end
 
     it "gives the user an error" do

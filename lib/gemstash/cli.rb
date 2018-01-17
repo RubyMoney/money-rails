@@ -24,10 +24,10 @@ module Gemstash
     end
 
     def self.start(args = ARGV)
-      help_flags = %w(-h --help)
+      help_flags = %w[-h --help]
 
       if args.any? {|a| help_flags.include?(a) }
-        super(%w(help) + args.reject {|a| help_flags.include?(a) })
+        super(%w[help] + args.reject {|a| help_flags.include?(a) })
       else
         super
       end
@@ -95,7 +95,7 @@ module Gemstash
     def version
       say "Gemstash version #{Gemstash::VERSION}"
     end
-    map %w(-v --version) => :version
+    map %w[-v --version] => :version
 
   private
 

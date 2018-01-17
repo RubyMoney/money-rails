@@ -13,7 +13,7 @@ describe "gemstash concurrency tests" do
       resource = storage.resource(resource_id.to_s)
 
       if block
-        block.call(resource)
+        yield(resource)
       else
         resource.save({ file: "Example content: #{content}" }, example: true, content: content)
       end
@@ -31,7 +31,7 @@ describe "gemstash concurrency tests" do
 
       if resource.exist?(:file)
         if block
-          block.call(resource)
+          yield(resource)
         else
           raise "Property mismatch" unless resource.properties[:example]
           raise "Property mismatch" unless resource.properties[:content]
@@ -109,18 +109,18 @@ describe "gemstash concurrency tests" do
         ].freeze
 
         50.times do
-          if rand(2) == 0
-            threads << write_thread("large") do |resource|
-              large_content = possible_content[rand(possible_content.size)]
-              resource.save({ file: large_content }, example: true, content: large_content)
-            end
-          else
-            threads << read_thread("large") do |resource|
-              raise "Property mismatch" unless resource.properties[:example]
-              raise "Property mismatch" unless possible_content.include?(resource.properties[:content])
-              raise "Content mismatch" unless possible_content.include?(resource.content(:file))
-            end
-          end
+          threads << if rand(2) == 0
+                       write_thread("large") do |resource|
+                         large_content = possible_content[rand(possible_content.size)]
+                         resource.save({ file: large_content }, example: true, content: large_content)
+                       end
+                     else
+                       read_thread("large") do |resource|
+                         raise "Property mismatch" unless resource.properties[:example]
+                         raise "Property mismatch" unless possible_content.include?(resource.properties[:content])
+                         raise "Content mismatch" unless possible_content.include?(resource.content(:file))
+                       end
+                     end
         end
 
         check_for_errors_and_deadlocks(threads)

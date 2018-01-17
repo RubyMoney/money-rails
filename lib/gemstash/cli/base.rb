@@ -21,10 +21,11 @@ module Gemstash
       end
 
       def check_rubygems_version
-        @cli.say(@cli.set_color("Rubygems version is too old, " \
-                                 "please update rubygems by running: " \
-                                 "gem update --system", :red)) unless
-        Gem::Requirement.new(">= 2.4").satisfied_by?(Gem::Version.new(Gem::VERSION))
+        unless Gem::Requirement.new(">= 2.4").satisfied_by?(Gem::Version.new(Gem::VERSION))
+          @cli.say(@cli.set_color("Rubygems version is too old, " \
+                                   "please update rubygems by running: " \
+                                   "gem update --system", :red))
+        end
       end
 
       def store_config

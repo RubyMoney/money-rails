@@ -47,7 +47,8 @@ describe Gemstash::Upstream do
 
   it "fails if the uri is not valid" do
     expect { Gemstash::Upstream.new("something_that_is_not_an_uri") }.to raise_error(
-      /URL 'something_that_is_not_an_uri' is not valid/)
+      /URL 'something_that_is_not_an_uri' is not valid/
+    )
   end
 
   it "has a nil user agent if not provided" do

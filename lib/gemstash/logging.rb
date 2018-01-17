@@ -75,11 +75,9 @@ module Gemstash
         @level = level
       end
 
-      def flush
-      end
+      def flush; end
 
-      def sync=(_value)
-      end
+      def sync=(_value); end
 
       def write(message)
         Gemstash::Logging.logger.add(@level, message)

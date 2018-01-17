@@ -4,10 +4,10 @@ task :build do
   version = ENV["SPEC_VERSION"]
   version = "0.1.0" if version.to_s.empty?
   File.write(version_rb, <<-EOF)
-#:nodoc:
-module Example
+ #:nodoc:
+ module Example
   VERSION = "#{version}"
-end
+ end
   EOF
 end
 

@@ -6,7 +6,7 @@ RuboCop::RakeTask.new
 
 desc "Run specs"
 RSpec::Core::RakeTask.new(:spec) do |t|
-  t.rspec_opts = %w(--color)
+  t.rspec_opts = %w[--color]
 end
 
 task spec: :rubocop

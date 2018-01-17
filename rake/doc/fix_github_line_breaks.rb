@@ -7,8 +7,8 @@ require "pandoc_object_filters"
 # formatted properly.
 
 # First test that the problem still exists
-PANDOC_MD_INPUT = "Multiple lines\\\nwith explicit\\\nline breaks"
-INVALID_EXPECTED_MD_OUTPUT = "Multiple lines\nwith explicit\nline breaks\n"
+PANDOC_MD_INPUT = "Multiple lines\\\nwith explicit\\\nline breaks".freeze
+INVALID_EXPECTED_MD_OUTPUT = "Multiple lines\nwith explicit\nline breaks\n".freeze
 
 pandoc_results = nil
 
@@ -35,7 +35,7 @@ filter.filter do |element|
   element.elements.each_with_index do |e, i|
     next unless e.is_a?(PandocObjectFilters::Element::LineBreak)
 
-    if i == 0
+    if i.zero?
       STDERR.puts "[#{File.basename(__FILE__)}][WARNING] Found line break at the beginning of a block!"
       next
     end

@@ -105,7 +105,7 @@ describe "gemstash integration tests" do
     end
 
     before do
-      FileUtils.chmod(0600, File.join(env_dir, ".gem/credentials"))
+      FileUtils.chmod(0o600, File.join(env_dir, ".gem/credentials"))
       Gemstash::Authorization.authorize(auth_key, "all")
     end
 
@@ -116,7 +116,7 @@ describe "gemstash integration tests" do
 
     context "pushing a gem" do
       before do
-        expect(deps.fetch(%w(speaker))).to match_dependencies([])
+        expect(deps.fetch(%w[speaker])).to match_dependencies([])
         expect { storage.resource("speaker-0.1.0").content(:gem) }.to raise_error(RuntimeError)
         @gemstash.env.cache.flush
       end
@@ -124,7 +124,7 @@ describe "gemstash integration tests" do
       it "pushes valid gems to the server", db_transaction: false do
         env = { "HOME" => env_dir }
         expect(execute("gem", ["push", "--key", "test", "--host", host, gem], env: env)).to exit_success
-        expect(deps.fetch(%w(speaker))).to match_dependencies([speaker_deps])
+        expect(deps.fetch(%w[speaker])).to match_dependencies([speaker_deps])
         expect(storage.resource("speaker-0.1.0").content(:gem)).to eq(gem_contents)
         expect(http_client.get("gems/speaker-0.1.0")).to eq(gem_contents)
       end
@@ -133,7 +133,7 @@ describe "gemstash integration tests" do
     context "searching for a gem" do
       before do
         Gemstash::GemPusher.new(auth, gem_contents).serve
-        expect(deps.fetch(%w(speaker))).to match_dependencies([speaker_deps])
+        expect(deps.fetch(%w[speaker])).to match_dependencies([speaker_deps])
         @gemstash.env.cache.flush
       end
 
@@ -170,14 +170,14 @@ describe "gemstash integration tests" do
     context "yanking a gem" do
       before do
         Gemstash::GemPusher.new(auth, gem_contents).serve
-        expect(deps.fetch(%w(speaker))).to match_dependencies([speaker_deps])
+        expect(deps.fetch(%w[speaker])).to match_dependencies([speaker_deps])
         @gemstash.env.cache.flush
       end
 
       it "removes valid gems from the server", db_transaction: false do
         env = { "HOME" => env_dir, "RUBYGEMS_HOST" => host }
         expect(execute("gem", ["yank", "--key", "test", gem_name, "--version", gem_version], env: env)).to exit_success
-        expect(deps.fetch(%w(speaker))).to match_dependencies([])
+        expect(deps.fetch(%w[speaker])).to match_dependencies([])
         expect { http_client.get("gems/speaker-0.1.0") }.to raise_error(Gemstash::WebError)
       end
     end
@@ -193,7 +193,7 @@ describe "gemstash integration tests" do
 
       before do
         Gemstash::GemPusher.new(auth, gem_contents).serve
-        expect(deps.fetch(%w(speaker))).to match_dependencies([speaker_deps])
+        expect(deps.fetch(%w[speaker])).to match_dependencies([speaker_deps])
         @gemstash.env.cache.flush
       end
 
@@ -201,7 +201,7 @@ describe "gemstash integration tests" do
         env = { "HOME" => env_dir, "RUBYGEMS_HOST" => host, "GEM_HOME" => env_dir, "GEM_PATH" => env_dir }
         expect(execute("gem", ["install", "speaker", "--clear-sources", "--source", host], dir: env_dir, env: env)).
           to exit_success
-        expect(execute(File.join(env_dir, "bin/speaker"), %w(hi), dir: env_dir, env: env)).
+        expect(execute(File.join(env_dir, "bin/speaker"), %w[hi], dir: env_dir, env: env)).
           to exit_success.and_output("Hello world, #{platform_message}\n")
       end
     end
@@ -218,28 +218,28 @@ describe "gemstash integration tests" do
       it "successfully bundles" do
         env = { "HOME" => dir }
         expect(execute("bundle", dir: dir, env: env)).to exit_success
-        expect(execute("bundle", %w(exec speaker hi), dir: dir, env: env)).
+        expect(execute("bundle", %w[exec speaker hi], dir: dir, env: env)).
           to exit_success.and_output("Hello world, #{platform_message}\n")
       end
 
       it "can bundle with full index" do
         env = { "HOME" => dir }
-        expect(execute("bundle", %w(--full-index), dir: dir, env: env)).to exit_success
-        expect(execute("bundle", %w(exec speaker hi), dir: dir, env: env)).
+        expect(execute("bundle", %w[--full-index], dir: dir, env: env)).to exit_success
+        expect(execute("bundle", %w[exec speaker hi], dir: dir, env: env)).
           to exit_success.and_output("Hello world, #{platform_message}\n")
       end
 
       it "can bundle with prerelease versions" do
         env = { "HOME" => dir, "SPEAKER_VERSION" => "= 0.2.0.pre" }
         expect(execute("bundle", dir: dir, env: env)).to exit_success
-        expect(execute("bundle", %w(exec speaker hi), dir: dir, env: env)).
+        expect(execute("bundle", %w[exec speaker hi], dir: dir, env: env)).
           to exit_success.and_output("Hello world, pre, #{platform_message}\n")
       end
 
       it "can bundle with prerelease versions with full index" do
         env = { "HOME" => dir, "SPEAKER_VERSION" => "= 0.2.0.pre" }
-        expect(execute("bundle", %w(--full-index), dir: dir, env: env)).to exit_success
-        expect(execute("bundle", %w(exec speaker hi), dir: dir, env: env)).
+        expect(execute("bundle", %w[--full-index], dir: dir, env: env)).to exit_success
+        expect(execute("bundle", %w[exec speaker hi], dir: dir, env: env)).
           to exit_success.and_output("Hello world, pre, #{platform_message}\n")
       end
     end
@@ -262,13 +262,13 @@ describe "gemstash integration tests" do
       it "can successfully bundle twice" do
         env = { "HOME" => dir }
         expect(execute("bundle", dir: dir, env: env)).to exit_success
-        expect(execute("bundle", %w(exec speaker hi), dir: dir, env: env)).
+        expect(execute("bundle", %w[exec speaker hi], dir: dir, env: env)).
           to exit_success.and_output("Hello world, #{platform_message}\n")
 
         clean_bundle bundle
 
         expect(execute("bundle", dir: dir, env: env)).to exit_success
-        expect(execute("bundle", %w(exec speaker hi), dir: dir, env: env)).
+        expect(execute("bundle", %w[exec speaker hi], dir: dir, env: env)).
           to exit_success.and_output("Hello world, #{platform_message}\n")
       end
     end

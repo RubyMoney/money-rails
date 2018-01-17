@@ -52,10 +52,10 @@ class Doc
     end
 
     def export_to_github
-      if base_file == "gemstash-readme.7.md"
-        path = doc.root_dir.join("README.md")
+      path = if base_file == "gemstash-readme.7.md"
+        doc.root_dir.join("README.md")
       else
-        path = to_extension(".md")
+        to_extension(".md")
       end
 
       export "markdown_github", export_path("docs", path)
@@ -73,21 +73,21 @@ class Doc
     end
 
     def export_to_html
-      if base_file == "gemstash-readme.7.md"
-        path = "index.html"
+      path = if base_file == "gemstash-readme.7.md"
+        "index.html"
       else
-        path = to_extension(".html")
+        to_extension(".html")
       end
 
       export "html", export_path("html", path)
     end
 
     def filters
-      %w(insert_github_generation_comment.rb
+      %w[insert_github_generation_comment.rb
          insert_images.rb
          upcase_headers.rb
          fix_links_for_format.rb
-         fix_github_line_breaks.rb).map do |filter|
+         fix_github_line_breaks.rb].map do |filter|
         ::File.expand_path("../../rake/doc/#{filter}", __FILE__)
       end
     end

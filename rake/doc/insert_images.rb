@@ -3,7 +3,7 @@ require "json"
 require "open3"
 require "pandoc_object_filters"
 
-HTML_IMAGES = %(<p align="center"><img src="gemstash.png" /></p>)
+HTML_IMAGES = %(<p align="center"><img src="gemstash.png" /></p>).freeze
 GITHUB_IMAGES = %([![Build Status][TRAVIS_IMG]][TRAVIS] [![Code Climate][CODE_CLIMATE_IMG]][CODE_CLIMATE]
 
 [TRAVIS_IMG]: https://travis-ci.org/bundler/gemstash.svg?branch=master
@@ -11,7 +11,7 @@ GITHUB_IMAGES = %([![Build Status][TRAVIS_IMG]][TRAVIS] [![Code Climate][CODE_CL
 [CODE_CLIMATE_IMG]: https://codeclimate.com/github/bundler/gemstash/badges/gpa.svg
 [CODE_CLIMATE]: https://codeclimate.com/github/bundler/gemstash
 
-<p align="center"><img src="gemstash.png" /></p>)
+<p align="center"><img src="gemstash.png" /></p>).freeze
 
 def images_json(markdown)
   pandoc_results = nil
@@ -41,7 +41,7 @@ filter = PandocObjectFilters::Filter.new
 
 filter.filter! do |element|
   next if found
-  next unless %w(html markdown_github).include?(filter.format)
+  next unless %w[html markdown_github].include?(filter.format)
   next unless filter.doc.meta["insert_images"] && filter.doc.meta["insert_images"].value
   next unless element.is_a?(PandocObjectFilters::Element::Header)
   next unless element.elements.first.is_a?(PandocObjectFilters::Element::Str)

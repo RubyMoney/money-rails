@@ -25,7 +25,7 @@ describe Gemstash::GemPusher do
           to raise_error(Gemstash::NotAuthorizedError)
         expect { Gemstash::GemPusher.new(Gemstash::ApiKeyAuthorization.new(""), gem_contents).serve }.
           to raise_error(Gemstash::NotAuthorizedError)
-        expect(deps.fetch(%w(example))).to eq([])
+        expect(deps.fetch(%w[example])).to eq([])
       end
     end
 
@@ -33,7 +33,7 @@ describe Gemstash::GemPusher do
       it "prevents pushing" do
         expect { Gemstash::GemPusher.new(auth_with_invalid_auth_key, gem_contents).serve }.
           to raise_error(Gemstash::NotAuthorizedError)
-        expect(deps.fetch(%w(example))).to eq([])
+        expect(deps.fetch(%w[example])).to eq([])
       end
     end
 
@@ -41,7 +41,7 @@ describe Gemstash::GemPusher do
       it "prevents pushing" do
         expect { Gemstash::GemPusher.new(auth_without_permission, gem_contents).serve }.
           to raise_error(Gemstash::NotAuthorizedError)
-        expect(deps.fetch(%w(example))).to eq([])
+        expect(deps.fetch(%w[example])).to eq([])
       end
     end
 
@@ -56,9 +56,9 @@ describe Gemstash::GemPusher do
         }]
 
         # Fetch before, asserting cache will be invalidated
-        expect(deps.fetch(%w(example))).to eq([])
+        expect(deps.fetch(%w[example])).to eq([])
         Gemstash::GemPusher.new(auth, gem_contents).serve
-        expect(deps.fetch(%w(example))).to match_dependencies(results)
+        expect(deps.fetch(%w[example])).to match_dependencies(results)
         expect(storage.resource("example-0.1.0").content(:gem)).to eq(gem_contents)
       end
 
@@ -86,9 +86,9 @@ describe Gemstash::GemPusher do
         }]
 
         # Fetch before, asserting cache will be invalidated
-        expect(deps.fetch(%w(example))).to eq([])
+        expect(deps.fetch(%w[example])).to eq([])
         Gemstash::GemPusher.new(auth, gem_contents).serve
-        expect(deps.fetch(%w(example))).to match_dependencies(results)
+        expect(deps.fetch(%w[example])).to match_dependencies(results)
         expect(storage.resource("example-0.1.0-java").content(:gem)).to eq(gem_contents)
       end
 
@@ -125,7 +125,7 @@ describe Gemstash::GemPusher do
         }]
 
         Gemstash::GemPusher.new(auth, gem_contents).serve
-        expect(deps.fetch(%w(example))).to match_dependencies(results)
+        expect(deps.fetch(%w[example])).to match_dependencies(results)
         expect(storage.resource("example-0.1.0").content(:gem)).to eq(gem_contents)
       end
 
