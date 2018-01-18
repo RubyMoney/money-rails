@@ -73,7 +73,7 @@ module Gemstash
 
     def parse_config(file)
       if file.end_with?(".erb")
-        YAML.safe_load(ERB.new(File.read(file)).result) || {}
+        YAML.load(ERB.new(File.read(file)).result) || {}
       else
         YAML.load_file(file) || {}
       end

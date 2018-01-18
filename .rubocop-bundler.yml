@@ -118,6 +118,9 @@ Metrics/LineLength:
 Security/MarshalLoad:
   Enabled: false
 
+Security/YAMLLoad:
+  Enabled: false
+
 #Ignore certain test cases
 Bundler/DuplicatedGem:
   Exclude:
