@@ -129,3 +129,8 @@ Bundler/DuplicatedGem:
 Style/GlobalVars:
   Exclude:
     - spec/support/test_gemstash_server.ru
+
+#changing this causes the jruby build to wedge
+Style/ConditionalAssignment:
+  Exclude:
+    - spec/concurrency_spec.rb

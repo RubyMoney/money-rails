@@ -102,27 +102,29 @@ describe "gemstash concurrency tests" do
 
         threads = []
         possible_content = [
-          ("One" * 100_000).freeze,
-          ("Two" * 100_000).freeze,
-          ("Three" * 100_000).freeze,
-          ("Four" * 100_000).freeze
+          ("One" * 10_000).freeze,
+          ("Two" * 10_000).freeze,
+          ("Three" * 10_000).freeze,
+          ("Four" * 10_000).freeze
         ].freeze
-
+        count = 0
         50.times do
-          threads << if rand(2) == 0
-                       write_thread("large") do |resource|
-                         large_content = possible_content[rand(possible_content.size)]
-                         resource.save({ file: large_content }, example: true, content: large_content)
-                       end
-                     else
-                       read_thread("large") do |resource|
-                         raise "Property mismatch" unless resource.properties[:example]
-                         raise "Property mismatch" unless possible_content.include?(resource.properties[:content])
-                         raise "Content mismatch" unless possible_content.include?(resource.content(:file))
-                       end
-                     end
+          # so travis doesnt timeout from no output
+          print "." if ((count += 1) % 5).zero?
+          if rand(2) == 0
+            threads << write_thread("large") do |resource|
+              large_content = possible_content[rand(possible_content.size)]
+              resource.save({ file: large_content }, example: true, content: large_content)
+            end
+          else
+            threads << read_thread("large") do |resource|
+              raise "Property mismatch" unless resource.properties[:example]
+              raise "Property mismatch" unless possible_content.include?(resource.properties[:content])
+              raise "Content mismatch" unless possible_content.include?(resource.content(:file))
+            end
+          end
         end
-
+        print "done building data"
         check_for_errors_and_deadlocks(threads)
       end
     end
