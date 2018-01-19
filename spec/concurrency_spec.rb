@@ -3,7 +3,7 @@ require "spec_helper"
 describe "gemstash concurrency tests" do
   let(:timeout) { 5 }
 
-  def write_thread(resource_id, content = "unchanging", &block)
+  def write_thread(resource_id, content = "unchanging")
     env = Gemstash::Env.current
 
     Thread.new do
@@ -12,7 +12,7 @@ describe "gemstash concurrency tests" do
       storage = Gemstash::Storage.for("concurrent_test")
       resource = storage.resource(resource_id.to_s)
 
-      if block
+      if block_given?
         yield(resource)
       else
         resource.save({ file: "Example content: #{content}" }, example: true, content: content)
@@ -20,7 +20,7 @@ describe "gemstash concurrency tests" do
     end
   end
 
-  def read_thread(resource_id, &block)
+  def read_thread(resource_id)
     env = Gemstash::Env.current
 
     Thread.new do
@@ -30,7 +30,7 @@ describe "gemstash concurrency tests" do
       resource = storage.resource(resource_id.to_s)
 
       if resource.exist?(:file)
-        if block
+        if block_given?
           yield(resource)
         else
           raise "Property mismatch" unless resource.properties[:example]
