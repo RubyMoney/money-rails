@@ -16,6 +16,11 @@ module MoneyRails
         self
       end
 
+      def with_model_currency(attribute)
+        @currency_attribute = attribute
+        self
+      end
+
       def as(virt_attr)
         @as = virt_attr
         self
@@ -39,7 +44,8 @@ module MoneyRails
         object_responds_to_attributes? &&
           test_allow_nil &&
           is_monetized? &&
-          test_currency_iso
+          test_currency_iso &&
+          test_currency_attribute
       end
 
 
@@ -90,6 +96,14 @@ module MoneyRails
       def test_currency_iso
         if @currency_iso
           @actual.send(@money_attribute).currency.id == @currency_iso
+        else
+          true
+        end
+      end
+
+      def test_currency_attribute
+        if @currency_attribute
+          @actual.send(@money_attribute).currency == @actual.send(@currency_attribute)
         else
           true
         end
