@@ -213,6 +213,12 @@ if defined? ActiveRecord
         expect(product.save).to be_truthy
       end
 
+      it "shouldn't init empty key in errors" do
+        product.price = Money.new(320, "USD")
+        product.valid?
+        expect(product.errors.has_key?(:price)).to be_falsey
+      end
+
       it "fails validation with the proper error message if money value is invalid decimal" do
         product.price = "12.23.24"
         expect(product.save).to be_falsey
