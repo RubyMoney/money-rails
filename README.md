@@ -516,6 +516,13 @@ is_expected.to monetize(:price).with_currency(:gbp)
 By using the `with_currency` chain you can specify the expected currency
 for the chosen money attribute. (You can also combine all the chains.)
 
+```ruby
+is_expected.to monetize(:price).with_model_currency(:currency)
+```
+
+By using the `with_model_currency` chain you can specify the attribute that
+contains the currency to be used for the chosen money attribute.
+
 For examples on using the test_helpers look at
 [test_helpers_spec.rb](https://github.com/RubyMoney/money-rails/blob/master/spec/test_helpers_spec.rb)
 
