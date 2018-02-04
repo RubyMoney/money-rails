@@ -33,7 +33,7 @@ module MoneyRails
         normalize_raw_value!
         super(@record, @attr, @raw_value)
 
-        if stringy and not @record.errors.added?(@attr, :not_a_number)
+        if stringy and record_does_not_have_error?
           add_error if
             value_has_too_many_decimal_points or
             thousand_separator_after_decimal_mark or
@@ -42,6 +42,11 @@ module MoneyRails
       end
 
       private
+
+      def record_does_not_have_error?
+        return true unless @record.errors.has_key?(@attr)
+        !@record.errors.added?(@attr, :not_a_number)
+      end
 
       def reset_memoized_variables!
         [:currency, :decimal_mark, :thousands_separator, :symbol,
