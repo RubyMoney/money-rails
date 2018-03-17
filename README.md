@@ -76,7 +76,7 @@ money attribute, then you can provide an ```as``` argument with a string
 value to the ```monetize``` macro:
 
 ```ruby
-monetize :discount_subunit, :as => "discount"
+monetize :discount_subunit, as: "discount"
 ```
 
 Now the model objects will have a ```discount``` attribute which is a `Money`
@@ -135,7 +135,7 @@ monetized field, you can use the `:allow_nil` parameter:
 
 ```ruby
 # in Product model
-monetize :optional_price_cents, :allow_nil => true
+monetize :optional_price_cents, allow_nil: true
 
 # in Migration
 def change
@@ -166,10 +166,10 @@ You can also pass along
 such as this:
 
 ```ruby
-monetize :price_in_a_range_cents, :allow_nil => true,
-  :numericality => {
-    :greater_than_or_equal_to => 0,
-    :less_than_or_equal_to => 10000
+monetize :price_in_a_range_cents, allow_nil: true,
+  numericality: {
+    greater_than_or_equal_to: 0,
+    less_than_or_equal_to: 10000
   }
 ```
 
@@ -177,14 +177,14 @@ Or, if you prefer, you can skip validations entirely for the attribute. This is 
 are aggregate methods and you wish to avoid executing them on every record save.
 
 ```ruby
-monetize :price_in_a_range_cents, :disable_validation => true
+monetize :price_in_a_range_cents, disable_validation: true
 ```
 
 You can also skip validations independently from each other by simply passing `false`
 to the validation you are willing to skip, like this:
 
 ```ruby
-monetize :price_in_a_range_cents, :numericality => false
+monetize :price_in_a_range_cents, numericality: false
 ```
 
 ### Mongoid 2.x and 3.x
@@ -214,14 +214,14 @@ obj.save
 # => true
 
 obj
-# => #<Product _id: 4fe865699671383656000001, _type: nil, price: {:cents=>100, :currency_iso=>"EUR"}>
+# => #<Product _id: 4fe865699671383656000001, _type: nil, price: {cents: 100, currency_iso: "EUR"}>
 
 obj.price
 #=> #<Money cents:100 currency:EUR>
 
 ## You can access the money hash too:
 obj[:price]
-# => {:cents=>100, :currency_iso=>"EUR"}
+# => {cents: 100, currency_iso: "EUR"}
 ```
 
 The usual options on `field` as `index`, `default`, ..., are available.
@@ -292,7 +292,7 @@ class Product < ActiveRecord::Base
   # Use EUR as model level currency
   register_currency :eur
 
-  monetize :discount_subunit, :as => "discount"
+  monetize :discount_subunit, as: "discount"
   monetize :bonus_cents
 
 end
@@ -320,8 +320,8 @@ class Product < ActiveRecord::Base
   # Use EUR as the model level currency
   register_currency :eur
 
-  monetize :discount_subunit, :as => "discount"
-  monetize :bonus_cents, :with_currency => :gbp
+  monetize :discount_subunit, as: "discount"
+  monetize :bonus_cents, with_currency: :gbp
 
 end
 ```
@@ -357,7 +357,7 @@ end
 
 # Now instantiating with a specific currency overrides
 # the model and global currencies
-t = Transaction.new(:amount_cents => 2500, :currency => "CAD")
+t = Transaction.new(amount_cents: 2500, currency: "CAD")
 t.amount == Money.new(2500, "CAD") # true
 ```
 
@@ -413,15 +413,15 @@ MoneyRails.configure do |config|
   #
   # Example:
   # config.register_currency = {
-  #   :priority            => 1,
-  #   :iso_code            => "EU4",
-  #   :name                => "Euro with subunit of 4 digits",
-  #   :symbol              => "€",
-  #   :symbol_first        => true,
-  #   :subunit             => "Subcent",
-  #   :subunit_to_unit     => 10000,
-  #   :thousands_separator => ".",
-  #   :decimal_mark        => ","
+  #   priority:            1,
+  #   iso_code:            "EU4",
+  #   name:                "Euro with subunit of 4 digits",
+  #   symbol:              "€",
+  #   symbol_first:        true,
+  #   subunit:             "Subcent",
+  #   subunit_to_unit:     10000,
+  #   thousands_separator: ".",
+  #   decimal_mark:        ","
   # }
 
   # Specify a rounding mode
@@ -444,9 +444,9 @@ MoneyRails.configure do |config|
   # Example:
   #
   # config.default_format = {
-  #   :no_cents_if_whole => nil,
-  #   :symbol => nil,
-  #   :sign_before_symbol => nil
+  #   no_cents_if_whole: nil,
+  #   symbol: nil,
+  #   sign_before_symbol: nil
   # }
 end
 ```

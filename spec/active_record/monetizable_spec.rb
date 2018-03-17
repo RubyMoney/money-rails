@@ -7,17 +7,17 @@ class Sub < Product; end
 if defined? ActiveRecord
   describe MoneyRails::ActiveRecord::Monetizable do
     let(:product) do
-      Product.create(:price_cents => 3000, :discount => 150,
-                     :bonus_cents => 200, :optional_price => 100,
-                     :sale_price_amount => 1200, :delivery_fee_cents => 100,
-                     :restock_fee_cents => 2000,
-                     :reduced_price_cents => 1500, :reduced_price_currency => :lvl,
-                     :lambda_price_cents => 4000)
+      Product.create(price_cents: 3000, discount: 150,
+                     bonus_cents: 200, optional_price: 100,
+                     sale_price_amount: 1200, delivery_fee_cents: 100,
+                     restock_fee_cents: 2000,
+                     reduced_price_cents: 1500, reduced_price_currency: :lvl,
+                     lambda_price_cents: 4000)
     end
 
     describe ".monetize" do
       let(:service) do
-        Service.create(:charge_cents => 2000, :discount_cents => 120)
+        Service.create(charge_cents: 2000, discount_cents: 120)
       end
 
       context ".monetized_attributes" do
@@ -66,14 +66,14 @@ if defined? ActiveRecord
       end
 
       it "assigns the correct value from a Money object using create" do
-        product = Product.create(:price => Money.new(3210, "USD"), :discount => 150,
-                                 :bonus_cents => 200, :optional_price => 100)
+        product = Product.create(price: Money.new(3210, "USD"), discount: 150,
+                                 bonus_cents: 200, optional_price: 100)
         expect(product.valid?).to be_truthy
         expect(product.price_cents).to eq(3210)
       end
 
       it "correctly updates from a Money object using update_attributes" do
-        expect(product.update_attributes(:price => Money.new(215, "USD"))).to be_truthy
+        expect(product.update_attributes(price: Money.new(215, "USD"))).to be_truthy
         expect(product.price_cents).to eq(215)
       end
 
@@ -187,8 +187,8 @@ if defined? ActiveRecord
       end
 
       it "respects numericality validation when using update_attributes" do
-        expect(product.update_attributes(:price_cents => "some text")).to be_falsey
-        expect(product.update_attributes(:price_cents => 2000)).to be_truthy
+        expect(product.update_attributes(price_cents: "some text")).to be_falsey
+        expect(product.update_attributes(price_cents: 2000)).to be_truthy
       end
 
       it "uses numericality validation on money attribute" do
@@ -309,9 +309,9 @@ if defined? ActiveRecord
       end
 
       it "fails validation if linked attribute changed" do
-        product = Product.create(:price => Money.new(3210, "USD"), :discount => 150,
-                                 :validates_method_amount => 100,
-                                 :bonus_cents => 200, :optional_price => 100)
+        product = Product.create(price: Money.new(3210, "USD"), discount: 150,
+                                 validates_method_amount: 100,
+                                 bonus_cents: 200, optional_price: 100)
         expect(product.valid?).to be_truthy
         product.optional_price = 50
         expect(product.valid?).to be_falsey
@@ -371,22 +371,22 @@ if defined? ActiveRecord
       end
 
       it "fails validation when a non number string is given" do
-        product = Product.create(:price_in_a_range => "asd")
+        product = Product.create(price_in_a_range: "asd")
         expect(product.valid?).to be_falsey
         expect(product.errors[:price_in_a_range].size).to eq(1)
         expect(product.errors[:price_in_a_range].first).to match(/greater than zero/)
 
-        product = Product.create(:price_in_a_range => "asd23")
+        product = Product.create(price_in_a_range: "asd23")
         expect(product.valid?).to be_falsey
         expect(product.errors[:price_in_a_range].size).to eq(1)
         expect(product.errors[:price_in_a_range].first).to match(/greater than zero/)
 
-        product = Product.create(:price => "asd")
+        product = Product.create(price: "asd")
         expect(product.valid?).to be_falsey
         expect(product.errors[:price].size).to eq(1)
         expect(product.errors[:price].first).to match(/is not a number/)
 
-        product = Product.create(:price => "asd23")
+        product = Product.create(price: "asd23")
         expect(product.valid?).to be_falsey
         expect(product.errors[:price].size).to eq(1)
         expect(product.errors[:price].first).to match(/is not a number/)
@@ -415,8 +415,8 @@ if defined? ActiveRecord
       end
 
       it "respects numericality validation when using update_attributes on money attribute" do
-        expect(product.update_attributes(:price => "some text")).to be_falsey
-        expect(product.update_attributes(:price => Money.new(320, 'USD'))).to be_truthy
+        expect(product.update_attributes(price: "some text")).to be_falsey
+        expect(product.update_attributes(price: Money.new(320, 'USD'))).to be_truthy
       end
 
       it "uses i18n currency format when validating" do
@@ -592,8 +592,8 @@ if defined? ActiveRecord
       end
 
       it "sets field to nil, in instantiation if allow_nil is set" do
-        pr = Product.new(:optional_price => nil, :price_cents => 5320,
-                         :discount => 350, :bonus_cents => 320)
+        pr = Product.new(optional_price: nil, price_cents: 5320,
+                         discount: 350, bonus_cents: 320)
         expect(pr.optional_price).to be_nil
         expect(pr.save).to be_truthy
         expect(pr.optional_price).to be_nil
@@ -615,23 +615,23 @@ if defined? ActiveRecord
 
       context "for column with model currency:" do
         it "has default currency if not specified" do
-          product = Product.create(:sale_price_amount => 1234)
+          product = Product.create(sale_price_amount: 1234)
           product.sale_price.currency_as_string == 'USD'
         end
 
         it "is overridden by instance currency column" do
-          product = Product.create(:sale_price_amount => 1234,
-                                   :sale_price_currency_code => 'CAD')
+          product = Product.create(sale_price_amount: 1234,
+                                   sale_price_currency_code: 'CAD')
           expect(product.sale_price.currency_as_string).to eq('CAD')
         end
 
         it 'can change currency of custom column' do
           product = Product.create!(
-            :price => Money.new(10,'USD'),
-            :bonus => Money.new(10,'GBP'),
-            :discount => 10,
-            :sale_price_amount => 1234,
-            :sale_price_currency_code => 'USD'
+            price: Money.new(10,'USD'),
+            bonus: Money.new(10,'GBP'),
+            discount: 10,
+            sale_price_amount: 1234,
+            sale_price_currency_code: 'USD'
           )
 
           expect(product.sale_price.currency_as_string).to eq('USD')
@@ -647,21 +647,21 @@ if defined? ActiveRecord
 
       context "for model with currency column:" do
         let(:transaction) do
-          Transaction.create(:amount_cents => 2400, :tax_cents => 600,
-                             :currency => :usd)
+          Transaction.create(amount_cents: 2400, tax_cents: 600,
+                             currency: :usd)
         end
 
         let(:dummy_product) do
-          DummyProduct.create(:price_cents => 2400, :currency => :usd)
+          DummyProduct.create(price_cents: 2400, currency: :usd)
         end
 
         let(:dummy_product_with_nil_currency) do
-          DummyProduct.create(:price_cents => 2600) # nil currency
+          DummyProduct.create(price_cents: 2600) # nil currency
         end
 
         let(:dummy_product_with_invalid_currency) do
           # invalid currency
-          DummyProduct.create(:price_cents => 2600, :currency => :foo)
+          DummyProduct.create(price_cents: 2600, currency: :foo)
         end
 
         it "correctly serializes the currency to a new instance of model" do
@@ -697,7 +697,7 @@ if defined? ActiveRecord
         end
 
         it "correctly instantiates Money objects from the mapped attributes" do
-          t = Transaction.new(:amount_cents => 2500, :currency => "CAD")
+          t = Transaction.new(amount_cents: 2500, currency: "CAD")
           expect(t.amount).to eq(Money.new(2500, "CAD"))
         end
 
@@ -732,7 +732,7 @@ if defined? ActiveRecord
 
         context "and field with allow_nil: true" do
           it "doesn't set currency to nil when setting the field to nil" do
-            t = Transaction.new(:amount_cents => 2500, :currency => "CAD")
+            t = Transaction.new(amount_cents: 2500, currency: "CAD")
             t.optional_amount = nil
             expect(t.currency).to eq("CAD")
           end
@@ -913,7 +913,7 @@ if defined? ActiveRecord
       end
 
       it "resets monetized attribute when given blank input" do
-        product.write_monetized :price, :price_cents, nil, false, nil, { :allow_nil => true }
+        product.write_monetized :price, :price_cents, nil, false, nil, { allow_nil: true }
 
         expect(product.price).to eq(nil)
       end
@@ -1011,7 +1011,7 @@ if defined? ActiveRecord
 
     describe "#currency_for" do
       it "detects currency based on instance currency name" do
-        product = Product.new(:sale_price_currency_code => 'CAD')
+        product = Product.new(sale_price_currency_code: 'CAD')
         currency = product.send(:currency_for, :sale_price, :sale_price_currency_code, nil)
 
         expect(currency).to be_an_instance_of(Money::Currency)

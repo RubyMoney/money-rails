@@ -59,10 +59,10 @@ module MoneyRails
     #   MoneyRails.configure do |config|
     #     config.default_bank = EuCentralBank.new
     #   end
-    delegate :default_bank=, :default_bank, :to => :Money
+    delegate :default_bank=, :default_bank, to: :Money
 
     # Provide exchange rates
-    delegate :add_rate, :to => :Money
+    delegate :add_rate, to: :Money
 
     # Use (by default) validation of numericality for each monetized field.
     mattr_accessor :include_validations

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'MoneyRails::ActionViewExtension', :type => :helper do
+describe 'MoneyRails::ActionViewExtension', type: :helper do
   describe '#currency_symbol' do
     subject { helper.currency_symbol }
     it { is_expected.to be_a String }
@@ -16,7 +16,7 @@ describe 'MoneyRails::ActionViewExtension', :type => :helper do
     it { is_expected.not_to include Money.default_currency.decimal_mark }
 
     context 'with symbol options' do
-      let(:options) { { :symbol => true } }
+      let(:options) { { symbol: true } }
       it { is_expected.to include Money.default_currency.symbol }
     end
 
@@ -32,11 +32,11 @@ describe 'MoneyRails::ActionViewExtension', :type => :helper do
       let(:money_object) { Money.new(125_00, 'SGD') }
 
       context 'with symbol options' do
-        let(:options) { { :symbol => true } }
+        let(:options) { { symbol: true } }
         it { is_expected.to include Money::Currency.new(:sgd).symbol }
 
         context 'with disambiguate options' do
-          let(:options) { { :symbol => true, :disambiguate => true } }
+          let(:options) { { symbol: true, disambiguate: true } }
           it { is_expected.to include Money::Currency.new(:sgd).disambiguate_symbol }
         end
       end
