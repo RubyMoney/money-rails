@@ -84,33 +84,33 @@ module MoneyRails
             # All the options which are available for Rails numericality
             # validation, are also available for both types.
             # E.g.
-            #   monetize :price_in_a_range_cents, :allow_nil => true,
-            #     :subunit_numericality => {
-            #       :greater_than_or_equal_to => 0,
-            #       :less_than_or_equal_to => 10000,
+            #   monetize :price_in_a_range_cents, allow_nil: true,
+            #     subunit_numericality: {
+            #       greater_than_or_equal_to: 0,
+            #       less_than_or_equal_to: 10000,
             #     },
-            #     :numericality => {
-            #       :greater_than_or_equal_to => 0,
-            #       :less_than_or_equal_to => 100,
-            #       :message => "must be greater than zero and less than $100"
+            #     numericality: {
+            #       greater_than_or_equal_to: 0,
+            #       less_than_or_equal_to: 100,
+            #       message: "must be greater than zero and less than $100"
             #     }
             #
             # To disable validation entirely, use :disable_validation, E.g:
-            #   monetize :price_in_a_range_cents, :disable_validation => true
+            #   monetize :price_in_a_range_cents, disable_validation: true
             if (validation_enabled = MoneyRails.include_validations && !options[:disable_validation])
 
               # This is a validation for the subunit
               if (subunit_numericality = options.fetch(:subunit_numericality, true))
                 validates subunit_name, {
-                  :allow_nil => options[:allow_nil],
-                  :numericality => subunit_numericality
+                  allow_nil: options[:allow_nil],
+                  numericality: subunit_numericality
                 }
               end
 
               # Allow only Money objects or Numeric values!
               if (numericality = options.fetch(:numericality, true))
                 validates name.to_sym, {
-                  :allow_nil => options[:allow_nil],
+                  allow_nil: options[:allow_nil],
                   'money_rails/active_model/money' => numericality
                 }
               end

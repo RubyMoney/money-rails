@@ -18,8 +18,8 @@ class Money
     case
     when object.is_a?(Money)
       {
-        :cents        => object.cents.is_a?(BigDecimal) ? object.cents.to_s : object.cents,
-        :currency_iso => object.currency.iso_code
+        cents:        object.cents.is_a?(BigDecimal) ? object.cents.to_s : object.cents,
+        currency_iso: object.currency.iso_code
       }
     when object.nil? then nil
     when object.respond_to?(:to_money)

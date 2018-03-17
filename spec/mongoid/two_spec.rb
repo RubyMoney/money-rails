@@ -3,12 +3,12 @@ require 'spec_helper'
 if defined?(Mongoid) && ::Mongoid::VERSION =~ /^2(.*)/
 
   describe Money do
-    let(:priceable) { Priceable.create(:price => Money.new(100, 'EUR')) }
-    let(:priceable_from_nil) { Priceable.create(:price => nil) }
-    let(:priceable_from_num) { Priceable.create(:price => 1) }
-    let(:priceable_from_string) { Priceable.create(:price => '1 EUR' )}
-    let(:priceable_with_infinite_precision) { Priceable.create(:price => Money.new(BigDecimal.new('100.1'), 'EUR')) }
-    let(:priceable_from_string_with_hyphen) { Priceable.create(:price => '1-2 EUR' )}
+    let(:priceable) { Priceable.create(price: Money.new(100, 'EUR')) }
+    let(:priceable_from_nil) { Priceable.create(price: nil) }
+    let(:priceable_from_num) { Priceable.create(price: 1) }
+    let(:priceable_from_string) { Priceable.create(price: '1 EUR' )}
+    let(:priceable_with_infinite_precision) { Priceable.create(price: Money.new(BigDecimal.new('100.1'), 'EUR')) }
+    let(:priceable_from_string_with_hyphen) { Priceable.create(price: '1-2 EUR' )}
 
     context "serialize" do
       it "mongoizes correctly nil to nil" do
@@ -72,7 +72,7 @@ if defined?(Mongoid) && ::Mongoid::VERSION =~ /^2(.*)/
       end
 
       it 'returns nil if an unknown value was stored' do
-        zero_priceable = Priceable.create(:price => [])
+        zero_priceable = Priceable.create(price: [])
         expect(zero_priceable.price).to be_nil
       end
     end

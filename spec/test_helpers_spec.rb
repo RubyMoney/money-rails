@@ -8,9 +8,9 @@ if defined? ActiveRecord
     include MoneyRails::TestHelpers
 
     let(:product) do
-      Product.create(:price_cents => 3000, :discount => 150,
-                     :bonus_cents => 200,
-                     :sale_price_amount => 1200)
+      Product.create(price_cents: 3000, discount: 150,
+                     bonus_cents: 200,
+                     sale_price_amount: 1200)
     end
 
     describe "monetize matcher" do

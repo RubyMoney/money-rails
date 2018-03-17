@@ -14,4 +14,4 @@ platforms :ruby do
   gem "sqlite3"
 end
 
-gemspec :path => '../'
+gemspec path: '../'
