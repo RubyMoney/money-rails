@@ -22,14 +22,15 @@ class Product < ActiveRecord::Base
     with_model_currency: :sale_price_currency_code
 
   monetize :price_in_a_range_cents, allow_nil: true,
-  subunit_numericality: {
-    greater_than: 0,
-  less_than_or_equal_to: 10000 },
-  numericality: {
-    greater_than: 0,
-    less_than_or_equal_to: 100,
-    message: "must be greater than zero and less than $100"
-  }
+                                    subunit_numericality: {
+                                      greater_than: 0,
+                                      less_than_or_equal_to: 10000
+                                    },
+                                    numericality: {
+                                      greater_than: 0,
+                                      less_than_or_equal_to: 100,
+                                      message: "must be greater than zero and less than $100"
+                                    }
 
   # Skip validations separately from each other
   monetize :skip_validation_price_cents, subunit_numericality: false, numericality: false, allow_nil: true
@@ -43,10 +44,11 @@ class Product < ActiveRecord::Base
   monetize :validates_method_amount_cents, allow_nil: true
 
   validates :validates_method_amount, money: {
-    greater_than: 0,
-    less_than_or_equal_to: ->(product) { product.optional_price.to_f },
-    message: 'must be greater than zero and less than $100',
-  }, allow_nil: true
+                                        greater_than: 0,
+                                        less_than_or_equal_to: ->(product) { product.optional_price.to_f },
+                                        message: 'must be greater than zero and less than $100',
+                                      },
+                                      allow_nil: true
 
   alias_attribute :renamed_cents, :aliased_cents
 
