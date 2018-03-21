@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.10.0
+
+- Bump money version to ~> 6.10.0
+- Optimize reading of the attribute when `allow_nil` is set to true
+
+## 1.9.0
+
+- Allow the use of money-rails with plan ActiveRecord (without Rails)
+- Remove translation of postfix for the amount column (always use _cents by default)
+- Push Monetize dependency from 1.6.0 to 1.7.0
+
 ## 1.8.0
 
 - Ruby 2.4 support

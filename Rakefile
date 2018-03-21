@@ -21,9 +21,9 @@ require 'rspec/core/rake_task'
 
 RSpec::Core::RakeTask.new
 
-task :default => "spec:all"
-task :test => :spec
-task :spec => :prepare_test_env
+task default: "spec:all"
+task test: :spec
+task spec: :prepare_test_env
 
 desc "Prepare money-rails engine test environment"
 task :prepare_test_env do
@@ -60,6 +60,9 @@ namespace :spec do
   desc "Run Tests against mongoid (version 2)"
   task(:mongoid2) { run_with_gemfile 'gemfiles/mongoid2.gemfile' }
 
+  desc "Run Tests against rails 5.1"
+  task(:rails51) { run_with_gemfile 'gemfiles/rails51.gemfile' }
+
   desc "Run Tests against rails 5.0"
   task(:rails50) { run_with_gemfile 'gemfiles/rails50.gemfile' }
 
@@ -76,13 +79,13 @@ namespace :spec do
   task(:rails3) { run_with_gemfile 'gemfiles/rails3.gemfile' }
 
   desc "Run Tests against mongoid 2 & 3 & 4, 5"
-  task :mongoid => [:mongoid2, :mongoid3, :mongoid4, :mongoid5]
+  task mongoid: [:mongoid2, :mongoid3, :mongoid4, :mongoid5]
 
   desc "Run Tests against rails 3 & 4 & 4.1 & 4.2 & 5.0"
-  task :rails => [:rails3, :rails4, :rails41, :rails42, :rails50]
+  task rails: [:rails3, :rails4, :rails41, :rails42, :rails50, :rails51]
 
   desc "Run Tests against all ORMs"
-  task :all => [:rails, :mongoid]
+  task all: [:rails, :mongoid]
 
 end
 

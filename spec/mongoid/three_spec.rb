@@ -3,21 +3,21 @@ require 'spec_helper'
 if defined?(Mongoid) && ::Mongoid::VERSION =~ /^3(.*)/
 
   describe Money do
-    let!(:priceable) { Priceable.create(:price => Money.new(100, 'EUR')) }
-    let!(:priceable_from_nil) { Priceable.create(:price => nil) }
-    let!(:priceable_from_num) { Priceable.create(:price => 1) }
-    let!(:priceable_from_string) { Priceable.create(:price => '1 EUR' )}
-    let!(:priceable_from_hash) { Priceable.create(:price => {:cents=>100, :currency_iso=>"EUR"} )}
-    let!(:priceable_from_hash_with_indifferent_access) {
-      Priceable.create(:price => {:cents=>100, :currency_iso=>"EUR"}.with_indifferent_access)
+    let!(:priceable) { Priceable.create(price: Money.new(100, 'EUR')) }
+    let(:priceable_from_nil) { Priceable.create(price: nil) }
+    let(:priceable_from_num) { Priceable.create(price: 1) }
+    let(:priceable_from_string) { Priceable.create(price: '1 EUR' )}
+    let(:priceable_from_hash) { Priceable.create(price: {cents: 100, currency_iso: "EUR"} )}
+    let(:priceable_from_hash_with_indifferent_access) {
+      Priceable.create(price: {cents: 100, currency_iso: "EUR"}.with_indifferent_access)
     }
-    let(:priceable_from_string_with_hyphen) { Priceable.create(:price => '1-2 EUR' )}
-    let(:priceable_from_string_with_unknown_currency) { Priceable.create(:price => '1 TLDR') }
-    let(:priceable_with_infinite_precision) { Priceable.create(:price => Money.new(BigDecimal.new('100.1'), 'EUR')) }
+    let(:priceable_from_string_with_hyphen) { Priceable.create(price: '1-2 EUR' )}
+    let(:priceable_from_string_with_unknown_currency) { Priceable.create(price: '1 TLDR') }
+    let(:priceable_with_infinite_precision) { Priceable.create(price: Money.new(BigDecimal.new('100.1'), 'EUR')) }
     let(:priceable_with_hash_field) {
-      Priceable.create(:price_hash => {
-        :key1 => Money.new(100, "EUR"),
-        :key2 => Money.new(200, "USD")
+      Priceable.create(price_hash: {
+        key1: Money.new(100, "EUR"),
+        key2: Money.new(200, "USD")
       })
     }
 
@@ -108,14 +108,14 @@ if defined?(Mongoid) && ::Mongoid::VERSION =~ /^3(.*)/
       end
 
       it 'returns nil if an unknown value was stored' do
-        zero_priceable = Priceable.create(:price => [])
+        zero_priceable = Priceable.create(price: [])
         expect(zero_priceable.price).to be_nil
       end
     end
 
     context "evolve" do
       it "transforms correctly a Money object to a Mongo friendly value" do
-        expect(Priceable.where(:price => Money.new(100, 'EUR')).first).to eq(priceable)
+        expect(Priceable.where(price: Money.new(100, 'EUR')).first).to eq(priceable)
       end
     end
   end

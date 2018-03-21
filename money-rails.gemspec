@@ -26,7 +26,7 @@ Gem::Specification.new do |s|
 
   s.require_path = "lib"
 
-  s.add_dependency "money",         "~> 6.9.0"
+  s.add_dependency "money",         "~> 6.10.0"
   s.add_dependency "monetize",      "~> 1.7.0"
   s.add_dependency "activesupport", ">= 3.0"
   s.add_dependency "railties",      ">= 3.0"
@@ -34,6 +34,6 @@ Gem::Specification.new do |s|
 
   s.add_development_dependency "rails",       ">= 3.0"
   s.add_development_dependency "rspec-rails", "~> 3.0"
-  s.add_development_dependency 'database_cleaner', ['>= 0.8.0', '< 1.4.0']
+  s.add_development_dependency 'database_cleaner', '~> 1.6.1'
   s.add_development_dependency 'test-unit', '~> 3.0' if RUBY_VERSION >= '2.2'
 end

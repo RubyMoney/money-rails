@@ -3,6 +3,6 @@ class DummyProduct < ActiveRecord::Base
   register_currency :gbp
 
   # Use money-rails macros
-  monetize :price_cents, :with_model_currency => :currency
+  monetize :price_cents, with_model_currency: :currency
 end
 

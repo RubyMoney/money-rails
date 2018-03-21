@@ -1,9 +1,11 @@
 class Transaction < ActiveRecord::Base
-  monetize :amount_cents, :with_model_currency => :currency
+  monetize :amount_cents, with_model_currency: :currency
 
-  monetize :tax_cents, :with_model_currency => :currency
+  monetize :tax_cents, with_model_currency: :currency
 
-  monetize :total_cents, :with_model_currency => :currency
+  monetize :total_cents, with_model_currency: :currency
+
+  monetize :optional_amount_cents, with_model_currency: :currency, allow_nil: true
 
   monetize :optional_amount_cents, :with_model_currency => :currency, :allow_nil => true
 

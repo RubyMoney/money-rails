@@ -76,11 +76,11 @@ describe "configuration" do
       value = Money.new(-12345600, "EUR")
       symbol = Money::Currency.find(:eur).symbol
 
-      MoneyRails.default_format = {:symbol_position => :after}
+      MoneyRails.default_format = {symbol_position: :after}
       expect(value.format).to match(/#{symbol}\z/)
 
       # Override with "classic" format options for backward compatibility
-      MoneyRails.default_format = {:sign_before_symbol => :false}
+      MoneyRails.default_format = {sign_before_symbol: :false}
       MoneyRails.sign_before_symbol = true
       expect(value.format).to match(/-#{symbol}/)
 

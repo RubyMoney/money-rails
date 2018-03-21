@@ -33,7 +33,7 @@ module MoneyRails
         normalize_raw_value!
         super(@record, @attr, @raw_value)
 
-        if stringy and not @record.errors.added?(@attr, :not_a_number)
+        if stringy and record_does_not_have_error?
           add_error if
             value_has_too_many_decimal_points or
             thousand_separator_after_decimal_mark or
@@ -42,6 +42,11 @@ module MoneyRails
       end
 
       private
+
+      def record_does_not_have_error?
+        return true unless @record.errors.has_key?(@attr)
+        !@record.errors.added?(@attr, :not_a_number)
+      end
 
       def reset_memoized_variables!
         [:currency, :abs_raw_value, :decimal_pieces, :pieces_array].each do |var_name|
@@ -55,15 +60,17 @@ module MoneyRails
       end
 
       def decimal_mark
-        currency.decimal_mark || '.'
+        character = currency.decimal_mark || '.'
+        @_decimal_mark ||= Money.use_i18n ? I18n.t('number.currency.format.separator', default: character) : character
       end
 
       def thousands_separator
-        currency.thousands_separator || ','
+        character = currency.thousands_separator || ','
+        @_thousands_separator ||= Money.use_i18n ? I18n.t('number.currency.format.delimiter', default: character) : character
       end
 
       def symbol
-        currency.symbol
+        @_symbol ||= Money.use_i18n ? I18n.t('number.currency.format.unit', default: currency.symbol) : currency.symbol
       end
 
       def abs_raw_value
@@ -75,10 +82,10 @@ module MoneyRails
         attr_name = @record.class.human_attribute_name(@attr, default: attr_name)
 
         @record.errors.add(@attr, :invalid_currency,
-                           { :thousands => thousands_separator,
-                             :decimal => decimal_mark,
-                             :currency => abs_raw_value,
-                             :attribute => attr_name })
+                           { thousands: thousands_separator,
+                             decimal: decimal_mark,
+                             currency: abs_raw_value,
+                             attribute: attr_name })
       end
 
       def decimal_pieces

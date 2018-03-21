@@ -8,9 +8,9 @@ if defined? ActiveRecord
     include MoneyRails::TestHelpers
 
     let(:product) do
-      Product.create(:price_cents => 3000, :discount => 150,
-                     :bonus_cents => 200,
-                     :sale_price_amount => 1200)
+      Product.create(price_cents: 3000, discount: 150,
+                     bonus_cents: 200,
+                     sale_price_amount: 1200)
     end
 
     describe "monetize matcher" do
@@ -35,6 +35,14 @@ if defined? ActiveRecord
 
         it "matches model attribute with currency specified by :with_currency chain" do
           is_expected.to monetize(:bonus).with_currency(:gbp)
+        end
+
+        it "matches model attribute with currency attribute specified by :with_model_currency chain" do
+          is_expected.to(
+            monetize(:sale_price_amount)
+              .as(:sale_price)
+              .with_model_currency(:sale_price_currency_code)
+          )
         end
 
         it "does not match non existed attribute" do
