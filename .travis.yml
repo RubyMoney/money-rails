@@ -32,32 +32,50 @@ gemfile:
   - gemfiles/rails42.gemfile
   - gemfiles/rails50.gemfile
   - gemfiles/rails51.gemfile
+
 matrix:
   exclude:
     - rvm: 1.9.3
       gemfile: gemfiles/rails50.gemfile
-    - rvm: 2.0.0
-      gemfile: gemfiles/rails50.gemfile
-    - rvm: 2.1.10
-      gemfile: gemfiles/rails50.gemfile
     - rvm: 1.9.3
       gemfile: gemfiles/rails51.gemfile
+
+    - rvm: 2.0.0
+      gemfile: gemfiles/rails50.gemfile
     - rvm: 2.0.0
       gemfile: gemfiles/rails51.gemfile
+
+    - rvm: 2.1.10
+      gemfile: gemfiles/rails50.gemfile
     - rvm: 2.1.10
       gemfile: gemfiles/rails51.gemfile
-    - rvm: 2.4.1
-      gemfile: gemfiles/mongoid2.gemfile
-    - rvm: 2.4.1
-      gemfile: gemfiles/mongoid3.gemfile
-    - rvm: 2.4.1
-      gemfile: gemfiles/mongoid4.gemfile
-    - rvm: 2.4.1
+
+    - rvm: 2.4.3
       gemfile: gemfiles/rails3.gemfile
-    - rvm: 2.4.1
+    - rvm: 2.4.3
       gemfile: gemfiles/rails4.gemfile
-    - rvm: 2.4.1
+    - rvm: 2.4.3
       gemfile: gemfiles/rails41.gemfile
+    - rvm: 2.4.3
+      gemfile: gemfiles/mongoid2.gemfile
+    - rvm: 2.4.3
+      gemfile: gemfiles/mongoid3.gemfile
+    - rvm: 2.4.3
+      gemfile: gemfiles/mongoid4.gemfile
+
+    - rvm: 2.5.0
+      gemfile: gemfiles/rails3.gemfile
+    - rvm: 2.5.0
+      gemfile: gemfiles/rails4.gemfile
+    - rvm: 2.5.0
+      gemfile: gemfiles/rails41.gemfile
+    - rvm: 2.5.0
+      gemfile: gemfiles/mongoid2.gemfile
+    - rvm: 2.5.0
+      gemfile: gemfiles/mongoid3.gemfile
+    - rvm: 2.5.0
+      gemfile: gemfiles/mongoid4.gemfile
+
 notifications:
   recipients:
     - andreas@aloop.org
