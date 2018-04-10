@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.11.0
+
+- Bump money version to ~> 6.11.0
+- Add test helper for with_model_currency
+- Fix empty validation errors from being assigned
+
 ## 1.10.0
 
 - Bump money version to ~> 6.10.0
