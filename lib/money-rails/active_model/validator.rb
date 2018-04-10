@@ -23,7 +23,7 @@ module MoneyRails
         return if options[:allow_nil] && @raw_value.nil?
 
         # Set this before we modify @raw_value below.
-        stringy = @raw_value.present? && !@raw_value.is_a?(Numeric)
+        stringy = @raw_value.present? && !@raw_value.is_a?(Numeric) && !@raw_value.is_a?(Money)
 
         if stringy
           # remove currency symbol
