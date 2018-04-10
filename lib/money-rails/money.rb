@@ -2,25 +2,23 @@ require "active_support/core_ext/module/aliasing.rb"
 require "active_support/core_ext/hash/reverse_merge.rb"
 
 class Money
-  alias_method :orig_format, :format
+  class <<self
+    alias_method :orig_default_formatting_rules, :default_formatting_rules
 
-  def format(*rules)
-    rules = normalize_formatting_rules(rules)
+    def default_formatting_rules
+      rules = orig_default_formatting_rules || {}
+      defaults = {
+        no_cents_if_whole: MoneyRails::Configuration.no_cents_if_whole,
+        symbol: MoneyRails::Configuration.symbol,
+        sign_before_symbol: MoneyRails::Configuration.sign_before_symbol
+      }.reject { |_k, v| v.nil? }
 
-    # Apply global defaults for money only for non-nil values
-    defaults = {
-      no_cents_if_whole: MoneyRails::Configuration.no_cents_if_whole,
-      symbol: MoneyRails::Configuration.symbol,
-      sign_before_symbol: MoneyRails::Configuration.sign_before_symbol
-    }.reject { |_k, v| v.nil? }
+      rules.reverse_merge!(defaults)
 
-    rules.reverse_merge!(defaults)
-
-    unless MoneyRails::Configuration.default_format.nil?
-      rules.reverse_merge!(MoneyRails::Configuration.default_format)
+      unless MoneyRails::Configuration.default_format.nil?
+        rules.reverse_merge!(MoneyRails::Configuration.default_format)
+      end
+      rules
     end
-
-    orig_format(rules)
   end
-
 end
