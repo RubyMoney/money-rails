@@ -306,7 +306,7 @@ object using EUR as their currency, instead of the default USD.
 #### Attribute Currency (:with_currency)
 
 By passing the option ```:with_currency``` to the ```monetize``` macro call,
-with a currency code as its value, you can define a currency in a more granular
+with a currency code (symbol or string) or a callable object (object that responds to the method ```call```) that returns a currency code, as its value, you can define a currency in a more granular
 way. This will you attach the given currency only to the specified monetized model
 attribute (allowing you to, for example, monetize different attributes of the same model with different currencies.).
 
@@ -328,6 +328,30 @@ end
 
 In this case ```product.bonus``` will return a Money object with GBP as its
 currency, whereas ```product.discount.currency_as_string # => EUR ```
+
+As mentioned earlier you can use an object that responds to the method ```call``` and accepts the model instance as a parameter. That means you can use a ```Proc``` or ```lambda``` (we would recommend ```lambda``` over ```Proc``` because of their [different control flow characteristics](https://stackoverflow.com/questions/1740046/whats-the-difference-between-a-proc-and-a-lambda-in-ruby)) or even define a separate ```class``` with an instance or class method (maybe even a ```module```) to return the currency code:
+
+```ruby
+class DeliveryFee
+  def call(product)
+    # some logic here that will return a currency code
+  end
+end
+
+module OptionalPrice
+  def self.call(product)
+    # some logic here that will return a currency code
+  end
+end
+
+# app/models/product.rb
+class Product < ActiveRecord::Base
+
+  monetize :price_cents, with_currency: ->(_product) { :gbp }
+  monetize :delivery_fee_cents, with_currency: DeliveryFee.new
+  monetize :optional_price_cents, with_currency: OptionalPrice
+end
+```
 
 #### Instance Currencies
 
