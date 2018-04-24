@@ -13,7 +13,7 @@ matrix:
     - rvm: 2.4.1
     - rvm: ruby-head
       gemfile: 'gemfiles/Gemfile.ruby-head'
-    - rvm: jruby-9.1.15.0
+    - rvm: jruby-9.1.17.0
       env: JRUBY_OPTS="--client -J-XX:+TieredCompilation -J-XX:TieredStopAtLevel=1 -J-Xss2m -Xcompile.invokedynamic=false -J-Xmx1536m"
 
 bundler_args: "--binstubs --jobs=3 --retry=3"
