@@ -36,7 +36,7 @@ you push your own private gems as well."
   spec.add_runtime_dependency "puma", "~> 3.10"
   spec.add_runtime_dependency "server_health_check-rack", "~> 0.1"
   spec.add_runtime_dependency "sequel", "~> 5.0"
-  spec.add_runtime_dependency "sinatra", "~> 1.4"
+  spec.add_runtime_dependency "sinatra", ">= 1.4", "< 3.0"
   spec.add_runtime_dependency "thor", "~> 0.19"
 
   # Run Gemstash with the mysql adapter
