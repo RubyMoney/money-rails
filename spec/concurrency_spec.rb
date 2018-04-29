@@ -91,18 +91,15 @@ describe "gemstash concurrency tests" do
     end
 
     context "with large data" do
-      let(:timeout) do
-        if RUBY_PLATFORM == "java"
-          # JRuby seems to take a long time sometimes for this spec... is it
-          # something like the GC kicking in while the threads are running, or
-          # is it a sign of a deadlock, perhaps only on the JRuby platform...?
-          30
-        else
-          5
-        end
-      end
+      let(:timeout) { 5 }
 
       it "works with concurrent reads and writes" do
+        if RUBY_PLATFORM == "java"
+          skip "JRuby seems to take a long time sometimes for this spec... is it " \
+            "something like the GC kicking in while the threads are running, or " \
+            "is it a sign of a deadlock, perhaps only on the JRuby platform...?"
+        end
+
         threads = []
         possible_content = [
           ("One" * 100_000).freeze,
