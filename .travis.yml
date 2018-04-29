@@ -11,6 +11,7 @@ matrix:
     - rvm: 2.2
     - rvm: 2.3.4
     - rvm: 2.4.1
+    - rvm: 2.5.1
     - rvm: ruby-head
       gemfile: 'gemfiles/Gemfile.ruby-head'
     - rvm: jruby-9.1.13.0
