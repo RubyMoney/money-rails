@@ -24,8 +24,10 @@ module Gemstash
       end
 
       def remove_authorization
-        raise Gemstash::CLI::Error.new(@cli, "To remove individual permissions, you do not need --remove
-Instead just authorize with the new set of permissions") unless @args.empty?
+        unless @args.empty?
+          raise Gemstash::CLI::Error.new(@cli, "To remove individual permissions, you do not need --remove
+Instead just authorize with the new set of permissions")
+        end
         Gemstash::Authorization.remove(auth_key(false))
       end
 

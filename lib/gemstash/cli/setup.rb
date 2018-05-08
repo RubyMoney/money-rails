@@ -72,7 +72,7 @@ module Gemstash
 
       def ask_cache
         say_current_config(:cache_type, "Current cache")
-        @config[:cache_type] = ask_with_default("Cache with what?", %w(memory memcached), "memory")
+        @config[:cache_type] = ask_with_default("Cache with what?", %w[memory memcached], "memory")
         ask_memcached_details if @config[:cache_type] == "memcached"
       end
 
@@ -85,7 +85,7 @@ module Gemstash
 
       def ask_database
         say_current_config(:db_adapter, "Current database adapter")
-        @config[:db_adapter] = ask_with_default("What database adapter?", %w(sqlite3 postgres mysql mysql2), "sqlite3")
+        @config[:db_adapter] = ask_with_default("What database adapter?", %w[sqlite3 postgres mysql mysql2], "sqlite3")
         ask_database_details(@config[:db_adapter]) unless @config[:db_adapter] == "sqlite3"
       end
 

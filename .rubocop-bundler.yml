@@ -13,23 +13,23 @@ Lint/AssignmentInCondition:
   Enabled: false
 
 Lint/EndAlignment:
-  AlignWith: variable
+  EnforcedStyleAlignWith: variable
 
 Lint/UnusedMethodArgument:
   Enabled: false
 
 # Style
 
-Style/AccessModifierIndentation:
+Layout/AccessModifierIndentation:
   EnforcedStyle: outdent
 
-Style/AlignParameters:
+Layout/AlignParameters:
   EnforcedStyle: with_fixed_indentation
 
-Style/MultilineOperationIndentation:
+Layout/MultilineOperationIndentation:
   EnforcedStyle: indented
 
-Style/SpaceInsideBlockBraces:
+Layout/SpaceInsideBlockBraces:
   SpaceBeforeBlockParameters: false
 
 Style/TrivialAccessors:
@@ -47,7 +47,10 @@ Style/StringLiteralsInInterpolation:
 
 # Having these make it easier to *not* forget to add one when adding a new
 # value and you can simply copy the previous line.
-Style/TrailingComma:
+Style/TrailingCommaInLiteral:
+  EnforcedStyleForMultiline: comma
+
+Style/TrailingCommaInArguments:
   EnforcedStyleForMultiline: comma
 
 # 1.8.7 support
@@ -58,7 +61,7 @@ Style/HashSyntax:
 Style/Lambda:
   Enabled: false
 
-Style/DotPosition:
+Layout/DotPosition:
   EnforcedStyle: trailing
 
 Style/EachWithObject:
@@ -67,7 +70,17 @@ Style/EachWithObject:
 Style/SpecialGlobalVars:
   Enabled: false
 
-Style/TrailingComma:
+Style/TrailingCommaInArguments:
+  Enabled: false
+
+Style/TrailingCommaInLiteral:
+  Enabled: false
+
+Style/VariableNumber:
+  EnforcedStyle: 'snake_case'
+
+#alerts on some large if blocks
+Style/GuardClause:
   Enabled: false
 
 # Metrics
@@ -93,3 +106,31 @@ Metrics/CyclomaticComplexity:
 
 Metrics/PerceivedComplexity:
   Enabled: false
+
+Metrics/BlockLength:
+  Enabled: false
+
+Metrics/LineLength:
+  Enabled: false
+
+#Security
+
+Security/MarshalLoad:
+  Enabled: false
+
+Security/YAMLLoad:
+  Enabled: false
+
+#Ignore certain test cases
+Bundler/DuplicatedGem:
+  Exclude:
+    - spec/data/bundles/**/Gemfile
+
+Style/GlobalVars:
+  Exclude:
+    - spec/support/test_gemstash_server.ru
+
+#changing this causes the jruby build to wedge
+Style/ConditionalAssignment:
+  Exclude:
+    - spec/concurrency_spec.rb

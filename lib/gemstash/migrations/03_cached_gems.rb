@@ -17,7 +17,7 @@ Sequel.migration do
       String :resource_type, size: 191, null: false
       DateTime :created_at, null: false
       DateTime :updated_at, null: false
-      index [:upstream_id, :resource_type, :name], unique: true
+      index %i[upstream_id resource_type name], unique: true
       index [:name]
     end
   end

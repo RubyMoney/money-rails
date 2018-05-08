@@ -10,10 +10,10 @@ class TestGemstashServer
     raise "Port is required" unless port
     raise "Config is required" unless config
     @port = port
-    args = %w(--config -)
-    args += %w(--workers 0)
-    args += %w(--threads 0:4)
-    args += %w(--environment test)
+    args = %w[--config -]
+    args += %w[--workers 0]
+    args += %w[--threads 0:4]
+    args += %w[--environment test]
     args += ["--port", port.to_s]
     args << File.expand_path("../test_gemstash_server.ru", __FILE__)
     config = Gemstash::Configuration.new(config: config)

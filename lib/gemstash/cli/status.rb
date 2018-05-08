@@ -14,7 +14,7 @@ module Gemstash
     private
 
       def args
-        pidfile_args + %w(status)
+        pidfile_args + %w[status]
       end
     end
   end

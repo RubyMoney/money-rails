@@ -19,9 +19,9 @@ Sequel.migration do
       TrueClass :prerelease, :null => false
       DateTime :created_at, :null => false
       DateTime :updated_at, :null => false
-      index [:rubygem_id, :number, :platform], :unique => true
+      index %i[rubygem_id number platform], :unique => true
       index [:indexed]
-      index [:indexed, :prerelease]
+      index %i[indexed prerelease]
       index [:number]
       index [:full_name], :unique => true
       index [:storage_id], :unique => true

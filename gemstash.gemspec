@@ -1,4 +1,5 @@
 # coding: utf-8
+
 lib = File.expand_path("../lib", __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require "gemstash/version"
@@ -57,5 +58,5 @@ you push your own private gems as well."
   spec.add_development_dependency "rack-test", "~> 0.6"
   spec.add_development_dependency "rake", "~> 10.0"
   spec.add_development_dependency "rspec", "~> 3.3"
-  spec.add_development_dependency "rubocop", "0.35.1"
+  spec.add_development_dependency "rubocop", "0.49"
 end

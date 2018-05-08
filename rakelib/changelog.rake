@@ -22,7 +22,7 @@ class Changelog
     tags = `git tag -l`
     return unless tags.include? Changelog.current_version
     print "Are you updating the 'master' CHANGELOG? [yes/no] "
-    abort("Please update lib/gemstash/version.rb with the new version first!") unless STDIN.gets.strip.casecmp("yes") == 0
+    abort("Please update lib/gemstash/version.rb with the new version first!") unless STDIN.gets.strip.casecmp("yes").zero?
     @master_update = true
   end
 
@@ -85,7 +85,7 @@ class Changelog
         puts "And store it at: #{token_path}"
         puts "Otherwise you might hit rate limits while running this"
         print "Continue without token? [yes/no] "
-        abort("Please create your token and retry") unless STDIN.gets.strip.casecmp("yes") == 0
+        abort("Please create your token and retry") unless STDIN.gets.strip.casecmp("yes").zero?
         options = {}
       end
 
@@ -248,7 +248,7 @@ class Changelog
     def fetch_all_pull_requests
       puts "Fetching all pull requests"
       @pull_requests = octokit.pull_requests("bundler/gemstash", state: "all").
-        sort_by(&:number).map {|pr| PullRequest.new(pr) }
+                       sort_by(&:number).map {|pr| PullRequest.new(pr) }
     end
 
     def reject_documented_pull_requests

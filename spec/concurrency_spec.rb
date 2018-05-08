@@ -3,7 +3,7 @@ require "spec_helper"
 describe "gemstash concurrency tests" do
   let(:timeout) { 5 }
 
-  def write_thread(resource_id, content = "unchanging", &block)
+  def write_thread(resource_id, content = "unchanging")
     env = Gemstash::Env.current
 
     Thread.new do
@@ -12,15 +12,15 @@ describe "gemstash concurrency tests" do
       storage = Gemstash::Storage.for("concurrent_test")
       resource = storage.resource(resource_id.to_s)
 
-      if block
-        block.call(resource)
+      if block_given?
+        yield(resource)
       else
         resource.save({ file: "Example content: #{content}" }, example: true, content: content)
       end
     end
   end
 
-  def read_thread(resource_id, &block)
+  def read_thread(resource_id)
     env = Gemstash::Env.current
 
     Thread.new do
@@ -30,8 +30,8 @@ describe "gemstash concurrency tests" do
       resource = storage.resource(resource_id.to_s)
 
       if resource.exist?(:file)
-        if block
-          block.call(resource)
+        if block_given?
+          yield(resource)
         else
           raise "Property mismatch" unless resource.properties[:example]
           raise "Property mismatch" unless resource.properties[:content]
@@ -102,13 +102,15 @@ describe "gemstash concurrency tests" do
 
         threads = []
         possible_content = [
-          ("One" * 100_000).freeze,
-          ("Two" * 100_000).freeze,
-          ("Three" * 100_000).freeze,
-          ("Four" * 100_000).freeze
+          ("One" * 10_000).freeze,
+          ("Two" * 10_000).freeze,
+          ("Three" * 10_000).freeze,
+          ("Four" * 10_000).freeze
         ].freeze
-
+        count = 0
         50.times do
+          # so travis doesnt timeout from no output
+          print "." if ((count += 1) % 5).zero?
           if rand(2) == 0
             threads << write_thread("large") do |resource|
               large_content = possible_content[rand(possible_content.size)]
@@ -122,7 +124,7 @@ describe "gemstash concurrency tests" do
             end
           end
         end
-
+        print "done building data"
         check_for_errors_and_deadlocks(threads)
       end
     end

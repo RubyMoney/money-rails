@@ -4,25 +4,25 @@ task :build do
 
   if RUBY_PLATFORM == "java"
     File.write(platform_rb, <<-EOF)
-module Speaker
+ module Speaker
   #:nodoc:
   module Platform
     def self.name
       "Java"
     end
   end
-end
+ end
     EOF
   else
     File.write(platform_rb, <<-EOF)
-module Speaker
+ module Speaker
   #:nodoc:
   module Platform
     def self.name
       "Ruby"
     end
   end
-end
+ end
     EOF
   end
 
@@ -31,10 +31,10 @@ end
   version = ENV["SPEC_VERSION"]
   version = "0.1.0" if version.to_s.empty?
   File.write(version_rb, <<-EOF)
-#:nodoc:
-module Speaker
-  VERSION = "#{version}"
-end
+ #:nodoc:
+ module Speaker
+   VERSION = "#{version}"
+ end
   EOF
 end
 

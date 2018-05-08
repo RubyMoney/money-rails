@@ -23,11 +23,11 @@ describe Gemstash::Dependencies do
         }]
 
         expect(http_client).to receive(:get) {|url|
-          valid_url(url, %w(foo))
+          valid_url(url, %w[foo])
           Marshal.dump(result)
         }
 
-        expect(web_deps.fetch(%w(foo))).to eq(result)
+        expect(web_deps.fetch(%w[foo])).to eq(result)
       end
     end
 
@@ -46,11 +46,11 @@ describe Gemstash::Dependencies do
         }]
 
         expect(http_client).to receive(:get) {|url|
-          valid_url(url, %w(foo bar))
+          valid_url(url, %w[foo bar])
           Marshal.dump(result)
         }
 
-        expect(web_deps.fetch(%w(foo bar))).to match_dependencies(result)
+        expect(web_deps.fetch(%w[foo bar])).to match_dependencies(result)
       end
     end
 
@@ -69,11 +69,11 @@ describe Gemstash::Dependencies do
         }]
 
         expect(http_client).to receive(:get) {|url|
-          valid_url(url, %w(foo bar baz))
+          valid_url(url, %w[foo bar baz])
           Marshal.dump(result)
         }
 
-        expect(web_deps.fetch(%w(foo bar baz))).to match_dependencies(result)
+        expect(web_deps.fetch(%w[foo bar baz])).to match_dependencies(result)
       end
     end
 
@@ -94,15 +94,15 @@ describe Gemstash::Dependencies do
         }
 
         expect(http_client).to receive(:get) {|url|
-          valid_url(url, %w(foo bar baz))
+          valid_url(url, %w[foo bar baz])
           Marshal.dump([foo, bar])
         }.once
 
-        expect(web_deps.fetch(%w(foo bar baz))).to match_dependencies([foo, bar])
-        expect(web_deps.fetch(%w(baz foo bar))).to match_dependencies([foo, bar])
-        expect(web_deps.fetch(%w(foo))).to match_dependencies([foo])
-        expect(web_deps.fetch(%w(bar))).to match_dependencies([bar])
-        expect(web_deps.fetch(%w(baz))).to match_dependencies([])
+        expect(web_deps.fetch(%w[foo bar baz])).to match_dependencies([foo, bar])
+        expect(web_deps.fetch(%w[baz foo bar])).to match_dependencies([foo, bar])
+        expect(web_deps.fetch(%w[foo])).to match_dependencies([foo])
+        expect(web_deps.fetch(%w[bar])).to match_dependencies([bar])
+        expect(web_deps.fetch(%w[baz])).to match_dependencies([])
       end
     end
 
@@ -121,7 +121,7 @@ describe Gemstash::Dependencies do
           :dependencies => [["foo", "~> 1.0"]]
         }
 
-        expect(db_deps.fetch(%w(foo bar baz custom))).to match_dependencies([custom])
+        expect(db_deps.fetch(%w[foo bar baz custom])).to match_dependencies([custom])
       end
     end
 
@@ -157,15 +157,15 @@ describe Gemstash::Dependencies do
           :dependencies => [["foo", "~> 1.1"]]
         }
 
-        custom2 = {
+        custom_2 = {
           :name         => "custom2",
           :number       => "0.2.0",
           :platform     => "ruby",
           :dependencies => []
         }
 
-        expect(db_deps.fetch(%w(custom1 custom2))).
-          to match_dependencies([custom1_0_0_1, custom1_0_2_1, custom2])
+        expect(db_deps.fetch(%w[custom1 custom2])).
+          to match_dependencies([custom1_0_0_1, custom1_0_2_1, custom_2])
       end
     end
   end
