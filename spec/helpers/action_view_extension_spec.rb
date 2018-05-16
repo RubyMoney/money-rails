@@ -125,6 +125,38 @@ describe 'MoneyRails::ActionViewExtension', type: :helper do
       end
     end
 
+    context 'with no_cents_if_whole: false' do
+
+      before do
+        MoneyRails.configure do |config|
+          config.no_cents_if_whole = false
+        end
+      end
+
+      around(:each) do |example|
+        I18n.with_locale(:it) do
+          example.run
+        end
+      end
+
+      describe '#humanized_money' do
+        subject { helper.humanized_money Money.new(12500) }
+        it { is_expected.to be_a String }
+        it { is_expected.to include Money.default_currency.decimal_mark }
+        it { is_expected.not_to include Money.default_currency.symbol }
+        it { is_expected.to include "00" }
+      end
+
+      describe '#humanized_money_with_symbol' do
+        subject { helper.humanized_money_with_symbol Money.new(12500) }
+        it { is_expected.to be_a String }
+        it { is_expected.to include Money.default_currency.decimal_mark }
+        it { is_expected.to include Money.default_currency.symbol }
+        it { is_expected.to include "00" }
+      end
+    end
+
+
     context 'with no_cents_if_whole: true' do
 
       before do

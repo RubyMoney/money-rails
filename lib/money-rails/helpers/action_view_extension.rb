@@ -9,14 +9,13 @@ module MoneyRails
       if !options || !options.is_a?(Hash)
         warn "humanized_money now takes a hash of formatting options, please specify { symbol: true }"
         options = { symbol: options }
+      else
+        options = {
+          no_cents_if_whole: MoneyRails::Configuration.no_cents_if_whole == false ? false : true,
+          symbol: false
+        }.merge(options)
       end
-
-      options = {
-        no_cents_if_whole: MoneyRails::Configuration.no_cents_if_whole.nil? ? true : MoneyRails::Configuration.no_cents_if_whole,
-        symbol: false
-      }.merge(options)
       options.delete(:symbol) if options[:disambiguate]
-
       if value.is_a?(Money)
         value.format(options)
       elsif value.respond_to?(:to_money)
