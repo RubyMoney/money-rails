@@ -12,7 +12,7 @@ module MoneyRails
       end
 
       options = {
-        no_cents_if_whole: MoneyRails::Configuration.no_cents_if_whole.nil? ? true : MoneyRails::Configuration.no_cents_if_whole,
+        no_cents_if_whole: MoneyRails::Configuration.no_cents_if_whole == false ? false : true,
         symbol: false
       }.merge(options)
       options.delete(:symbol) if options[:disambiguate]
