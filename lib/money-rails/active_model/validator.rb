@@ -33,10 +33,10 @@ module MoneyRails
         normalize_raw_value!
         super(@record, @attr, @raw_value)
 
-        if stringy and record_does_not_have_error?
+        if stringy && record_does_not_have_error?
           add_error if
-            value_has_too_many_decimal_points or
-            thousand_separator_after_decimal_mark or
+            value_has_too_many_decimal_points ||
+            thousand_separator_after_decimal_mark ||
             invalid_thousands_separation
         end
       end
