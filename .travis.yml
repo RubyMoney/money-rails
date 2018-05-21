@@ -1,5 +1,6 @@
 sudo: false
 before_install:
+  - gem update --system
   - gem update bundler
 before_script:
   - "bundle exec rake prepare_test_env"
