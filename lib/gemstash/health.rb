@@ -33,9 +33,9 @@ module Gemstash
 
     def self.check_db_write
       Gemstash::Env.current.db.transaction do
-        Gemstash::Env.current.db[:rubygems].insert(name: "health_check:fake_gem_name",
-                                                   created_at: DateTime.now,
-                                                   updated_at: DateTime.now)
+        health_tests = Gemstash::Env.current.db[:health_tests]
+        health_tests.truncate
+        health_tests.insert(string: "test_string")
         # We don't want to actually write to the database
         raise Sequel::Rollback
       end
