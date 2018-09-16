@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.12.0
+
+- Bump money version to ~> 6.12.0
+- Bump monetize version to ~> 1.9.0
+
 ## 1.11.0
 
 - Bump money version to ~> 6.11.0
