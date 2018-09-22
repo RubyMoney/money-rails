@@ -13,6 +13,7 @@ rescue Bundler::BundlerError => e
 end
 
 APP_RAKEFILE = File.expand_path("../spec/dummy/Rakefile", __FILE__)
+GEMFILES_PATH = 'gemfiles/*.gemfile'.freeze
 
 load 'rails/tasks/engine.rake' if File.exist?(APP_RAKEFILE)
 
@@ -47,46 +48,27 @@ def run_with_gemfile(gemfile)
 end
 
 namespace :spec do
+  frameworks_versions = {}
 
-  desc "Run Tests against mongoid (version 5)"
-  task(:mongoid5) { run_with_gemfile 'gemfiles/mongoid5.gemfile' }
+  Dir[GEMFILES_PATH].each do |gemfile|
+    file_name = File.basename(gemfile, '.gemfile')
+    framework, version = file_name.split(/(\d+)/)
+    major, minor = version.split(//)
 
-  desc "Run Tests against mongoid (version 4)"
-  task(:mongoid4) { run_with_gemfile 'gemfiles/mongoid4.gemfile' }
+    frameworks_versions[framework] ||= []
+    frameworks_versions[framework] << file_name
 
-  desc "Run Tests against mongoid (version 3)"
-  task(:mongoid3) { run_with_gemfile 'gemfiles/mongoid3.gemfile' }
+    desc "Run Tests against #{framework} #{[major, minor].compact.join('.')}"
+    task(file_name) { run_with_gemfile gemfile }
+  end
 
-  desc "Run Tests against mongoid (version 2)"
-  task(:mongoid2) { run_with_gemfile 'gemfiles/mongoid2.gemfile' }
+  frameworks_versions.each do |framework, versions|
+    desc "Run Tests against all supported #{framework} versions"
+    task framework => versions
+  end
 
-  desc "Run Tests against rails 5.1"
-  task(:rails51) { run_with_gemfile 'gemfiles/rails51.gemfile' }
-
-  desc "Run Tests against rails 5.0"
-  task(:rails50) { run_with_gemfile 'gemfiles/rails50.gemfile' }
-
-  desc "Run Tests against rails 4.2"
-  task(:rails42) { run_with_gemfile 'gemfiles/rails42.gemfile' }
-
-  desc "Run Tests against rails 4.1"
-  task(:rails41) { run_with_gemfile 'gemfiles/rails41.gemfile' }
-
-  desc "Run Tests against rails 4"
-  task(:rails4) { run_with_gemfile 'gemfiles/rails4.gemfile' }
-
-  desc "Run Tests against rails 3"
-  task(:rails3) { run_with_gemfile 'gemfiles/rails3.gemfile' }
-
-  desc "Run Tests against mongoid 2 & 3 & 4, 5"
-  task mongoid: [:mongoid2, :mongoid3, :mongoid4, :mongoid5]
-
-  desc "Run Tests against rails 3 & 4 & 4.1 & 4.2 & 5.0"
-  task rails: [:rails3, :rails4, :rails41, :rails42, :rails50, :rails51]
-
-  desc "Run Tests against all ORMs"
-  task all: [:rails, :mongoid]
-
+  desc 'Run Tests against all ORMs'
+  task all: frameworks_versions.keys
 end
 
 desc "Update CONTRIBUTORS file"
