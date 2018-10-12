@@ -155,6 +155,12 @@ If you foresee that you will be saving large values (range is -2147483648 to +21
 ```ruby
 def change
   change_column :products, :price_cents, :integer, limit: 8
+  
+  # OR
+
+  change_table :products do |t|
+    t.monetize :price, amount: { limit: 8 } # Rails 4x and above
+  end
 end
 ```
 
