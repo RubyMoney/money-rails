@@ -166,7 +166,9 @@ describe Gemstash::GemPusher do
       end
 
       it "does not overwrite the gem content" do
-        Gemstash::GemPusher.new(auth, gem_contents).serve rescue nil
+        expect { Gemstash::GemPusher.new(auth, gem_contents).serve }.
+          to raise_error(Gemstash::GemPusher::ExistingVersionError)
+
         expect(storage.resource("example-0.1.0").content(:gem)).
           to eq("zapatito")
       end
