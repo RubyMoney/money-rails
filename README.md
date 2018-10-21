@@ -22,7 +22,7 @@ welcome to contribute to the project.
 
 Add this line to your application's Gemfile:
 
-    gem 'money-rails', '~>1'
+    gem 'money-rails', '~>1.12'
 
 And then execute:
 
