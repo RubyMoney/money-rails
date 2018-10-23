@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.13.0
+
+- Bump money version to ~> 6.13.0
+
 ## 1.12.0
 
 - Bump money version to ~> 6.12.0
