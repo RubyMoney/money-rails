@@ -494,31 +494,31 @@ if defined? ActiveRecord
         product.price = Money.new(2500, :USD)
         expect(product.save).to be_truthy
         expect(product.price.cents).to eq(2500)
-        expect(product.price.currency_as_string).to eq("USD")
+        expect(product.price.currency.to_s).to eq("USD")
       end
 
       it "correctly assigns Fixnum objects to the attribute" do
         product.price = 25
         expect(product.save).to be_truthy
         expect(product.price.cents).to eq(2500)
-        expect(product.price.currency_as_string).to eq("USD")
+        expect(product.price.currency.to_s).to eq("USD")
 
         service.discount = 2
         expect(service.save).to be_truthy
         expect(service.discount.cents).to eq(200)
-        expect(service.discount.currency_as_string).to eq("EUR")
+        expect(service.discount.currency.to_s).to eq("EUR")
       end
 
       it "correctly assigns String objects to the attribute" do
         product.price = "25"
         expect(product.save).to be_truthy
         expect(product.price.cents).to eq(2500)
-        expect(product.price.currency_as_string).to eq("USD")
+        expect(product.price.currency.to_s).to eq("USD")
 
         service.discount = "2"
         expect(service.save).to be_truthy
         expect(service.discount.cents).to eq(200)
-        expect(service.discount.currency_as_string).to eq("EUR")
+        expect(service.discount.currency.to_s).to eq("EUR")
       end
 
       it "correctly assigns objects to a accessor attribute" do
@@ -532,57 +532,57 @@ if defined? ActiveRecord
         product.bonus = 25
         expect(product.save).to be_truthy
         expect(product.bonus.cents).to eq(2500)
-        expect(product.bonus.currency_as_string).to eq("GBP")
+        expect(product.bonus.currency.to_s).to eq("GBP")
 
         service.charge = 2
         expect(service.save).to be_truthy
         expect(service.charge.cents).to eq(200)
-        expect(service.charge.currency_as_string).to eq("USD")
+        expect(service.charge.currency.to_s).to eq("USD")
       end
 
       it "overrides default, model currency with the value of :with_currency in string assignments" do
         product.bonus = "25"
         expect(product.save).to be_truthy
         expect(product.bonus.cents).to eq(2500)
-        expect(product.bonus.currency_as_string).to eq("GBP")
+        expect(product.bonus.currency.to_s).to eq("GBP")
 
         service.charge = "2"
         expect(service.save).to be_truthy
         expect(service.charge.cents).to eq(200)
-        expect(service.charge.currency_as_string).to eq("USD")
+        expect(service.charge.currency.to_s).to eq("USD")
 
         product.lambda_price = "32"
         expect(product.save).to be_truthy
         expect(product.lambda_price.cents).to eq(3200)
-        expect(product.lambda_price.currency_as_string).to eq("CAD")
+        expect(product.lambda_price.currency.to_s).to eq("CAD")
       end
 
       it "overrides default currency with model currency, in fixnum assignments" do
         product.discount_value = 5
         expect(product.save).to be_truthy
         expect(product.discount_value.cents).to eq(500)
-        expect(product.discount_value.currency_as_string).to eq("USD")
+        expect(product.discount_value.currency.to_s).to eq("USD")
       end
 
       it "overrides default currency with model currency, in string assignments" do
         product.discount_value = "5"
         expect(product.save).to be_truthy
         expect(product.discount_value.cents).to eq(500)
-        expect(product.discount_value.currency_as_string).to eq("USD")
+        expect(product.discount_value.currency.to_s).to eq("USD")
       end
 
       it "falls back to default currency, in fixnum assignments" do
         service.discount = 5
         expect(service.save).to be_truthy
         expect(service.discount.cents).to eq(500)
-        expect(service.discount.currency_as_string).to eq("EUR")
+        expect(service.discount.currency.to_s).to eq("EUR")
       end
 
       it "falls back to default currency, in string assignments" do
         service.discount = "5"
         expect(service.save).to be_truthy
         expect(service.discount.cents).to eq(500)
-        expect(service.discount.currency_as_string).to eq("EUR")
+        expect(service.discount.currency.to_s).to eq("EUR")
       end
 
       it "sets field to nil, in nil assignments if allow_nil is set" do
@@ -616,13 +616,13 @@ if defined? ActiveRecord
       context "for column with model currency:" do
         it "has default currency if not specified" do
           product = Product.create(sale_price_amount: 1234)
-          product.sale_price.currency_as_string == 'USD'
+          product.sale_price.currency.to_s == 'USD'
         end
 
         it "is overridden by instance currency column" do
           product = Product.create(sale_price_amount: 1234,
                                    sale_price_currency_code: 'CAD')
-          expect(product.sale_price.currency_as_string).to eq('CAD')
+          expect(product.sale_price.currency.to_s).to eq('CAD')
         end
 
         it 'can change currency of custom column' do
@@ -634,14 +634,14 @@ if defined? ActiveRecord
             sale_price_currency_code: 'USD'
           )
 
-          expect(product.sale_price.currency_as_string).to eq('USD')
+          expect(product.sale_price.currency.to_s).to eq('USD')
 
           product.sale_price = Money.new 456, 'CAD'
           product.save
           product.reload
 
-          expect(product.sale_price.currency_as_string).to eq('CAD')
-          expect(product.discount_value.currency_as_string).to eq('USD')
+          expect(product.sale_price.currency.to_s).to eq('CAD')
+          expect(product.discount_value.currency.to_s).to eq('USD')
         end
       end
 
@@ -705,12 +705,12 @@ if defined? ActiveRecord
           transaction.amount = Money.new(2500, :eur)
           expect(transaction.save).to be_truthy
           expect(transaction.amount.cents).to eq(Money.new(2500, :eur).cents)
-          expect(transaction.amount.currency_as_string).to eq("EUR")
+          expect(transaction.amount.currency.to_s).to eq("EUR")
         end
 
         it "uses default currency if a non Money object is assigned to the attribute" do
           transaction.amount = 234
-          expect(transaction.amount.currency_as_string).to eq("USD")
+          expect(transaction.amount.currency.to_s).to eq("USD")
         end
 
         it "constructs the money object from the mapped method value" do
