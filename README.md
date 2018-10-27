@@ -326,7 +326,7 @@ end
 ```
 
 In this case ```product.bonus``` will return a Money object with GBP as its
-currency, whereas ```product.discount.currency_as_string # => EUR ```
+currency, whereas ```product.discount.currency.to_s # => EUR ```
 
 As mentioned earlier you can use an object that responds to the method ```call``` and accepts the model instance as a parameter. That means you can use a ```Proc``` or ```lambda``` (we would recommend ```lambda``` over ```Proc``` because of their [different control flow characteristics](https://stackoverflow.com/questions/1740046/whats-the-difference-between-a-proc-and-a-lambda-in-ruby)) or even define a separate ```class``` with an instance or class method (maybe even a ```module```) to return the currency code:
 
