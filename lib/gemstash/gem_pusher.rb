@@ -53,6 +53,13 @@ module Gemstash
     end
 
     def store_gem
+      resource_exist = storage.resource(full_name).exist?
+      resource_is_indexed = storage.resource(full_name).properties[:indexed] if resource_exist
+
+      if resource_exist && resource_is_indexed
+        raise ExistingVersionError, "Cannot push to an existing version!"
+      end
+
       storage.resource(full_name).save({ gem: @content }, indexed: true)
     end
 

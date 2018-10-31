@@ -26,6 +26,11 @@ module Gemstash
       body JSON.dump("error" => "Not found", "code" => 404)
     end
 
+    error GemPusher::ExistingVersionError do
+      status 422
+      body JSON.dump("error" => "Version already exists", "code" => 422)
+    end
+
     get "/" do
       @gem_source.serve_root
     end
