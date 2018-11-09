@@ -1,6 +1,7 @@
 source 'https://rubygems.org'
 
 gem 'mongoid', '~> 4.0'
+gem 'rails',   '~> 4.0'
 gem 'i18n',    '~> 0.6.9'
 
 platforms :jruby do

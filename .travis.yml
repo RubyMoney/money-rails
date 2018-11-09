@@ -36,22 +36,36 @@ matrix:
   exclude:
     - rvm: 1.9.3
       gemfile: gemfiles/rails5.gemfile
+    - rvm: 1.9.3
+      gemfile: gemfiles/mongoid5.gemfile
 
     - rvm: 2.0.0
       gemfile: gemfiles/rails5.gemfile
+    - rvm: 2.0.0
+      gemfile: gemfiles/mongoid5.gemfile
 
     - rvm: 2.1.10
       gemfile: gemfiles/rails5.gemfile
+    - rvm: 2.1.10
+      gemfile: gemfiles/mongoid5.gemfile
 
     - rvm: 2.4.4
       gemfile: gemfiles/rails3.gemfile
     - rvm: 2.4.4
       gemfile: gemfiles/rails4.gemfile
+    - rvm: 2.4.4
+      gemfile: gemfiles/mongoid2.gemfile
+    - rvm: 2.4.4
+      gemfile: gemfiles/mongoid3.gemfile
 
     - rvm: 2.5.1
       gemfile: gemfiles/rails3.gemfile
     - rvm: 2.5.1
       gemfile: gemfiles/rails4.gemfile
+    - rvm: 2.5.1
+      gemfile: gemfiles/mongoid2.gemfile
+    - rvm: 2.5.1
+      gemfile: gemfiles/mongoid3.gemfile
 
 notifications:
   recipients:
