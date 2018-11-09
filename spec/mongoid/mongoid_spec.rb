@@ -1,13 +1,14 @@
 require 'spec_helper'
 
-if defined?(Mongoid) && ::Mongoid::VERSION =~ /^5(.*)/
+if defined?(Mongoid) && ::Mongoid::VERSION.split('.').first.to_i > 2
 
   describe Money do
     let!(:priceable) { Priceable.create(price: Money.new(100, 'EUR')) }
-    let!(:priceable_from_num) { Priceable.create(price: 1) }
-    let!(:priceable_from_string) { Priceable.create(price: '1 EUR' )}
-    let!(:priceable_from_hash) { Priceable.create(price: {cents: 100, currency_iso: "EUR"} )}
-    let!(:priceable_from_hash_with_indifferent_access) {
+    let(:priceable_from_nil) { Priceable.create(price: nil) }
+    let(:priceable_from_num) { Priceable.create(price: 1) }
+    let(:priceable_from_string) { Priceable.create(price: '1 EUR' )}
+    let(:priceable_from_hash) { Priceable.create(price: {cents: 100, currency_iso: "EUR"} )}
+    let(:priceable_from_hash_with_indifferent_access) {
       Priceable.create(price: {cents: 100, currency_iso: "EUR"}.with_indifferent_access)
     }
     let(:priceable_from_string_with_hyphen) { Priceable.create(price: '1-2 EUR' )}
@@ -21,6 +22,10 @@ if defined?(Mongoid) && ::Mongoid::VERSION =~ /^5(.*)/
     }
 
     context "mongoize" do
+      it "correctly mongoizes nil to nil" do
+        expect(priceable_from_nil.price).to be_nil
+      end
+
       it "correctly mongoizes a Money object to a hash of cents and currency" do
         expect(priceable.price.cents).to eq(100)
         expect(priceable.price.currency).to eq(Money::Currency.find('EUR'))
@@ -94,6 +99,7 @@ if defined?(Mongoid) && ::Mongoid::VERSION =~ /^5(.*)/
 
     context "demongoize" do
       subject { Priceable.first.price }
+
       it { is_expected.to be_an_instance_of(Money) }
       it { is_expected.to eq(Money.new(100, 'EUR')) }
 
