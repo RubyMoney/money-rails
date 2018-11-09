@@ -28,6 +28,8 @@ gemfile:
   - gemfiles/mongoid3.gemfile
   - gemfiles/mongoid4.gemfile
   - gemfiles/mongoid5.gemfile
+  - gemfiles/mongoid6.gemfile
+  - gemfiles/mongoid7.gemfile
   - gemfiles/rails3.gemfile
   - gemfiles/rails4.gemfile
   - gemfiles/rails5.gemfile
@@ -38,16 +40,28 @@ matrix:
       gemfile: gemfiles/rails5.gemfile
     - rvm: 1.9.3
       gemfile: gemfiles/mongoid5.gemfile
+    - rvm: 1.9.3
+      gemfile: gemfiles/mongoid6.gemfile
+    - rvm: 1.9.3
+      gemfile: gemfiles/mongoid7.gemfile
 
     - rvm: 2.0.0
       gemfile: gemfiles/rails5.gemfile
     - rvm: 2.0.0
       gemfile: gemfiles/mongoid5.gemfile
+    - rvm: 2.0.0
+      gemfile: gemfiles/mongoid6.gemfile
+    - rvm: 2.0.0
+      gemfile: gemfiles/mongoid7.gemfile
 
     - rvm: 2.1.10
       gemfile: gemfiles/rails5.gemfile
     - rvm: 2.1.10
       gemfile: gemfiles/mongoid5.gemfile
+    - rvm: 2.1.10
+      gemfile: gemfiles/mongoid6.gemfile
+    - rvm: 2.1.10
+      gemfile: gemfiles/mongoid7.gemfile
 
     - rvm: 2.4.4
       gemfile: gemfiles/rails3.gemfile
