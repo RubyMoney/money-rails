@@ -102,6 +102,7 @@ if defined?(Mongoid) && ::Mongoid::VERSION =~ /^5(.*)/
         expect(nil_priceable.price.cents).to eq(0)
         expect(nil_priceable.price.currency).to eq(Money.default_currency)
       end
+
       it 'returns nil if an unknown value was stored' do
         zero_priceable = Priceable.create(price: [])
         expect(zero_priceable.price).to be_nil
