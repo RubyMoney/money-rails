@@ -552,7 +552,7 @@ For examples on using the test_helpers look at
 ## Supported ORMs/ODMs
 
 * ActiveRecord (>= 3.x)
-* Mongoid (2.x, 3.x)
+* Mongoid (>= 2.x)
 
 ## Supported Ruby interpreters
 
