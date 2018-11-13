@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'mongoid', '~> 2.4.0'
+gem 'mongoid', '~> 2.5'
 gem 'i18n',    '~> 0.6.9'
 
 platforms :jruby do

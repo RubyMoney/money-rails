@@ -1,8 +1,8 @@
 source 'https://rubygems.org'
 
-gem 'mongoid', '~> 5.0.0'
-gem 'i18n',    '~> 0.6.9'
-gem 'database_cleaner', '~> 1.5.3'
+gem 'mongoid', '~> 5.0'
+gem 'rails',   '~> 4.0'
+gem 'i18n',    '~> 0.7'
 
 platforms :jruby do
   gem "activerecord-jdbc-adapter"
