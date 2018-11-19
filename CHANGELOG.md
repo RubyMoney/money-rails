@@ -1,3 +1,37 @@
+## 2.0.0 (2018-11-18)
+
+### Changes
+
+  - Breaking change: remove unyank support ([#119](https://github.com/bundler/gemstash/pull/119), [@olleolleolle](https://github.com/olleolleolle))
+  - Travis: JRuby 9.1.7.0, gem update --system, format the buildfile ([#138](https://github.com/bundler/gemstash/pull/138), [@olleolleolle](https://github.com/olleolleolle))
+  - Travis: 2.4.1, 2.3.4, jruby-9.1.8.0 ([#142](https://github.com/bundler/gemstash/pull/142), [@olleolleolle](https://github.com/olleolleolle))
+  - Add a health check ([#146](https://github.com/bundler/gemstash/pull/146), [@smellsblue](https://github.com/smellsblue))
+  - Travis: jruby-9.1.12.0 ([#147](https://github.com/bundler/gemstash/pull/147), [@olleolleolle](https://github.com/olleolleolle))
+  - Typo fix in changelog tool ([#152](https://github.com/bundler/gemstash/pull/152), [@olleolleolle](https://github.com/olleolleolle))
+  - Rake: Turn rake task files into .rake files, auto-loaded ([#153](https://github.com/bundler/gemstash/pull/153), [@olleolleolle](https://github.com/olleolleolle))
+  - Travis: JRUBY_OPTS w/o invalid option jruby.cext.enabled ([#156](https://github.com/bundler/gemstash/pull/156), [@olleolleolle](https://github.com/olleolleolle))
+  - Suppress deprecation warnings in production code ([#162](https://github.com/bundler/gemstash/pull/162), [@koic](https://github.com/koic))
+  - Travis: jruby-9.1.13.0; use dist: "trusty" ([#167](https://github.com/bundler/gemstash/pull/167), [@olleolleolle](https://github.com/olleolleolle))
+  - Allow puma_workers configuration ([#168](https://github.com/bundler/gemstash/pull/168), [@HParker](https://github.com/HParker))
+  - Update Puma dependency to ~> 3.10 ([#169](https://github.com/bundler/gemstash/pull/169), [@premist](https://github.com/premist))
+  - gem: sequel v5.0.0 ([#170](https://github.com/bundler/gemstash/pull/170), [@olleolleolle](https://github.com/olleolleolle))
+  - Travis: Avoid jruby warning about MaxPermSize ([#171](https://github.com/bundler/gemstash/pull/171), [@olleolleolle](https://github.com/olleolleolle))
+  - Travis: use JRuby, 9.1.17.0 avoid double gem update --system ([#173](https://github.com/bundler/gemstash/pull/173), [@olleolleolle](https://github.com/olleolleolle))
+  - Update rubocop to .49 to fix CVE-2017-8418 ([#174](https://github.com/bundler/gemstash/pull/174), [@matthewalbani](https://github.com/matthewalbani))
+  - Add Ruby 2.5.1 to Travis build matrix ([#177](https://github.com/bundler/gemstash/pull/177), [@greysteil](https://github.com/greysteil))
+  - Skip stale jruby spec ([#178](https://github.com/bundler/gemstash/pull/178), [@bronzdoc](https://github.com/bronzdoc))
+  - Update sinatra dependency to >= 1.4, < 3.0 ([#179](https://github.com/bundler/gemstash/pull/179), [@bronzdoc](https://github.com/bronzdoc))
+  - gemspec: use Thor 0.20.0 ([#180](https://github.com/bundler/gemstash/pull/180), [@olleolleolle](https://github.com/olleolleolle))
+  - Travis: jruby-9.2.0.0 ([#181](https://github.com/bundler/gemstash/pull/181), [@olleolleolle](https://github.com/olleolleolle))
+  - do not set puma worker config when running jruby ([#183](https://github.com/bundler/gemstash/pull/183), [@andreaseger](https://github.com/andreaseger))
+  - Add health_tests table, and use in Gemstash::Health for idempotency ([#186](https://github.com/bundler/gemstash/pull/186), [@kurtzur](https://github.com/kurtzur))
+  - Pushing an existing version of a gem should not overwrite the gem con… ([#190](https://github.com/bundler/gemstash/pull/190), [@bronzdoc](https://github.com/bronzdoc), [@mzruya](https://github.com/mzruya))
+  - Fix jruby builds ([#193](https://github.com/bundler/gemstash/pull/193), [@bronzdoc](https://github.com/bronzdoc))
+
+### Features
+
+  - Allow stdout logging when running --no-daemonize ([#140](https://github.com/bundler/gemstash/pull/140), [@smellsblue](https://github.com/smellsblue))
+
 ## 1.1.0 (2017-07-31)
 
 ### Bugfixes
