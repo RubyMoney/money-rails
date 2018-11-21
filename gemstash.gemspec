@@ -56,7 +56,7 @@ you push your own private gems as well."
   spec.add_development_dependency "octokit", "~> 4.2"
   spec.add_development_dependency "pandoc_object_filters", "~> 0.2"
   spec.add_development_dependency "rack-test", "~> 0.6"
-  spec.add_development_dependency "rake", "~> 10.0"
+  spec.add_development_dependency "rake", "~> 12.3"
   spec.add_development_dependency "rspec", "~> 3.3"
   spec.add_development_dependency "rubocop", "0.49"
 end
