@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "speaker/version"
 require "speaker/platform"
 

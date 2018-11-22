@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "gemstash"
 require "puma/cli"
 require "support/server_check"

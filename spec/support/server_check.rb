@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Helper class to see when a test server is ready to receive requests.
 class ServerCheck
   MAX_WAIT = 10

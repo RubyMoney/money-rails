@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class SlowSimpleServer < SimpleServer
   def initialize(hostname, port: nil)
     @port = port || SimpleServer.next_port

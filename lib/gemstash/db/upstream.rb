@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gemstash
   module DB
     # Sequel model for upstreams table.

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 task :build do
   version_rb = File.expand_path("../lib/example/version.rb", __FILE__)
   puts "Generating #{version_rb}"

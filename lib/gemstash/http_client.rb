@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "gemstash"
 require "faraday"
 require "faraday_middleware"

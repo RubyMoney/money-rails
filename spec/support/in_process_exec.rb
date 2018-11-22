@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Run a JRuby program in process.
 class InProcessExec
   attr_reader :status, :output

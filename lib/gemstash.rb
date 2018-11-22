@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 #:nodoc:
 module Gemstash
   autoload :ApiKeyAuthorization, "gemstash/api_key_authorization"

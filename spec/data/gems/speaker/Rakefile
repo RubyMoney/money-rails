@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 task :build do
   platform_rb = File.expand_path("../lib/speaker/platform.rb", __FILE__)
   puts "Generating #{platform_rb}"

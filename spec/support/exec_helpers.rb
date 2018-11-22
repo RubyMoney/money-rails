@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "bundler/version"
 require "open3"
 require "pathname"

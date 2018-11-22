@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "gemstash"
 require "date"
 require "server_health_check_rack"

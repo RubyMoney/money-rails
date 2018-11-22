@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "gemstash"
 require "active_support/core_ext/file/atomic"
 require "dalli"

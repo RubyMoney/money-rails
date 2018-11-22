@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 #:nodoc:
 module DBHelpers
   def find_rubygem_id(name)

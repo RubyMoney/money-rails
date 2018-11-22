@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gemstash
   module GemSource
     # Module for caching dependencies in a GemSource.
