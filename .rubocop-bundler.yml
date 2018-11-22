@@ -70,6 +70,9 @@ Style/SafeNavigation:
 Style/RedundantBegin:
   Enabled: false
 
+Style/MutableConstant:
+  Enabled: false
+
 # 1.8.7 support
 
 Style/HashSyntax:
