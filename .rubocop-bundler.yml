@@ -83,6 +83,9 @@ Style/TrailingCommaInArguments:
 Naming/VariableNumber:
   EnforcedStyle: 'snake_case'
 
+Naming/MemoizedInstanceVariableName:
+  Enabled: false
+
 #alerts on some large if blocks
 Style/GuardClause:
   Enabled: false
