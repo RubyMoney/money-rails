@@ -96,6 +96,12 @@ Naming/MemoizedInstanceVariableName:
 Naming/HeredocDelimiterNaming:
   Enabled: false
 
+# This should be enabled, but test broke if so, see:
+# spec/support/simple_server.rb:149:20
+# spec/support/slow_simple_server.rb:15:20
+Naming/UncommunicativeMethodParamName:
+  Enabled: false
+
 #alerts on some large if blocks
 Style/GuardClause:
   Enabled: false
