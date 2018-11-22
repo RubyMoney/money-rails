@@ -15,6 +15,10 @@ Lint/AssignmentInCondition:
 Lint/UnusedMethodArgument:
   Enabled: false
 
+Lint/UriEscapeUnescape:
+  Enabled: true
+
+
 # Style
 
 Layout/EndAlignment:
