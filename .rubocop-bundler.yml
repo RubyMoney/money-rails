@@ -12,13 +12,13 @@ AllCops:
 Lint/AssignmentInCondition:
   Enabled: false
 
-Lint/EndAlignment:
-  EnforcedStyleAlignWith: variable
-
 Lint/UnusedMethodArgument:
   Enabled: false
 
 # Style
+
+Layout/EndAlignment:
+  EnforcedStyleAlignWith: variable
 
 Layout/AccessModifierIndentation:
   EnforcedStyle: outdent
@@ -74,7 +74,7 @@ Style/SpecialGlobalVars:
 Style/TrailingCommaInArguments:
   Enabled: false
 
-Style/VariableNumber:
+Naming/VariableNumber:
   EnforcedStyle: 'snake_case'
 
 #alerts on some large if blocks
