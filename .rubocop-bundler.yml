@@ -35,6 +35,9 @@ Layout/SpaceInsideBlockBraces:
 Style/TrivialAccessors:
   Enabled: false
 
+Style/NumericPredicate:
+  Enabled: false
+
 # We adopted raise instead of fail.
 Style/SignalException:
   EnforcedStyle: only_raise
