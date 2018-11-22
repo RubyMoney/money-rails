@@ -35,8 +35,15 @@ module Gemstash
       def rewrite
         check_match
         log_start = "Rewriting '#{@rack_env["REQUEST_URI"]}'"
-        @rack_env["REQUEST_URI"][@request_uri_match.begin(0)...@request_uri_match.end(0)] = ""
-        @rack_env["PATH_INFO"][@path_info_match.begin(0)...@path_info_match.end(0)] = ""
+
+        new_request_uri = @rack_env["REQUEST_URI"].dup
+        new_request_uri[@request_uri_match.begin(0)...@request_uri_match.end(0)] = ""
+
+        new_path_info = @rack_env["PATH_INFO"].dup
+        new_path_info[@path_info_match.begin(0)...@path_info_match.end(0)] = ""
+
+        @rack_env["REQUEST_URI"] = new_request_uri
+        @rack_env["PATH_INFO"]   = new_path_info
         log.info "#{log_start} to '#{@rack_env["REQUEST_URI"]}'"
       end
 
