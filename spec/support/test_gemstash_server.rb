@@ -11,13 +11,14 @@ class TestGemstashServer
   def initialize(port: nil, config: nil)
     raise "Port is required" unless port
     raise "Config is required" unless config
+
     @port = port
     args = %w[--config -]
     args += %w[--workers 0]
     args += %w[--threads 0:4]
     args += %w[--environment test]
     args += ["--port", port.to_s]
-    args << File.expand_path("../test_gemstash_server.ru", __FILE__)
+    args << File.expand_path("test_gemstash_server.ru", __dir__)
     config = Gemstash::Configuration.new(config: config)
     cache = Gemstash::Env.current.cache
     db = Gemstash::Env.current.db
@@ -43,6 +44,7 @@ class TestGemstashServer
 
   def start
     raise "Already started!" if @started
+
     @started = true
 
     @thread = Thread.new do
@@ -54,6 +56,7 @@ class TestGemstashServer
 
   def stop
     return if @stopped
+
     @stopped = true
     @puma_cli.launcher.stop
   end
@@ -61,6 +64,7 @@ class TestGemstashServer
   def join
     raise "Only join if stopping!" unless @stopped
     return if @thread.join(10)
+
     puts "WARNING: TestGemstashServer is not stopping!"
   end
 

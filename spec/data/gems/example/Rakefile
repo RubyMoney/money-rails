@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 task :build do
-  version_rb = File.expand_path("../lib/example/version.rb", __FILE__)
+  version_rb = File.expand_path("lib/example/version.rb", __dir__)
   puts "Generating #{version_rb}"
   version = ENV["SPEC_VERSION"]
   version = "0.1.0" if version.to_s.empty?

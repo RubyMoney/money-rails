@@ -103,7 +103,9 @@ end
 
 FILTER.filter do |element|
   next unless element.is_a?(PandocObjectFilters::Element::Link)
+
   match = %r{\A\./(gemstash-.*)\z}.match(element.target.url)
   next unless match
+
   element.target.url = DocLinkUrl.new(match[1]).to_s
 end

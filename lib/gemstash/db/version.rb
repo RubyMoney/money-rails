@@ -54,6 +54,7 @@ module Gemstash
       def self.find_by_full_name(full_name)
         result = self[full_name: full_name]
         return result if result
+
         # Try again with the default platform, in case it is implied
         self[full_name: "#{full_name}-ruby"]
       end

@@ -19,9 +19,7 @@ module Gemstash
 
       unless permissions == "all"
         permissions.each do |permission|
-          unless VALID_PERMISSIONS.include?(permission)
-            raise "Invalid permission '#{permission}'"
-          end
+          raise "Invalid permission '#{permission}'" unless VALID_PERMISSIONS.include?(permission)
         end
 
         permissions = permissions.join(",")
@@ -35,6 +33,7 @@ module Gemstash
     def self.remove(auth_key)
       record = Gemstash::DB::Authorization[auth_key: auth_key]
       return unless record
+
       record.destroy
       gemstash_env.cache.invalidate_authorization(auth_key)
       log.info "Authorization '#{auth_key}' with access to '#{record.permissions}' removed"
@@ -42,6 +41,7 @@ module Gemstash
 
     def self.check(auth_key, permission)
       raise NotAuthorizedError, "Authorization key required" if auth_key.to_s.strip.empty?
+
       auth = self[auth_key]
       raise NotAuthorizedError, "Authorization key is invalid" unless auth
       raise NotAuthorizedError, "Authorization key doesn't have #{permission} access" unless auth.can?(permission)
@@ -50,6 +50,7 @@ module Gemstash
     def self.[](auth_key)
       cached_auth = gemstash_env.cache.authorization(auth_key)
       return cached_auth if cached_auth
+
       record = Gemstash::DB::Authorization[auth_key: auth_key]
 
       if record
@@ -67,6 +68,7 @@ module Gemstash
 
     def can?(permission)
       raise "Invalid permission '#{permission}'" unless VALID_PERMISSIONS.include?(permission)
+
       all? || @permissions.include?(permission)
     end
 

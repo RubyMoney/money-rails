@@ -6,7 +6,7 @@ require "speaker/platform"
 #:nodoc:
 module Speaker
   def self.usage
-    $stderr.puts "Usage: speaker [hi|bye]"
+    warn "Usage: speaker [hi|bye]"
     exit(1)
   end
 
@@ -22,9 +22,7 @@ module Speaker
       usage
     end
 
-    if Gem::Version.new(Speaker::VERSION).prerelease?
-      phrases << Speaker::VERSION.split(".").last
-    end
+    phrases << Speaker::VERSION.split(".").last if Gem::Version.new(Speaker::VERSION).prerelease?
 
     phrases << Speaker::Platform.name
     puts phrases.join(", ")

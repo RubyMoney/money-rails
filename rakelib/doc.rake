@@ -13,11 +13,13 @@ class Doc
 
   def check_for_pandoc
     return if which?("pandoc")
+
     abort("You need to install pandoc to generate documentation")
   end
 
   def check_for_groff
     return if which?("groff")
+
     abort("You need to install groff to generate documentation")
   end
 

@@ -7,7 +7,7 @@ require "zlib"
 # Helper methods to easily find and manipulate test files.
 module FileHelpers
   def gem_path(name, version, platform: "ruby")
-    gems_dir = File.expand_path("../../data/gems", __FILE__)
+    gems_dir = File.expand_path("../data/gems", __dir__)
     gem_dir = File.join(gems_dir, name)
     version = "#{version}-#{platform}" unless platform == "ruby"
     File.join(gem_dir, "pkg/#{name}-#{version}.gem")
@@ -18,7 +18,7 @@ module FileHelpers
   end
 
   def env_path(name)
-    envs_dir = File.expand_path("../../data/environments", __FILE__)
+    envs_dir = File.expand_path("../data/environments", __dir__)
     File.join(envs_dir, name)
   end
 
@@ -28,12 +28,12 @@ module FileHelpers
   end
 
   def bundle_path(name)
-    bundles_dir = File.expand_path("../../data/bundles", __FILE__)
+    bundles_dir = File.expand_path("../data/bundles", __dir__)
     File.join(bundles_dir, name)
   end
 
   def config_path(name)
-    configs_dir = File.expand_path("../../data/configurations", __FILE__)
+    configs_dir = File.expand_path("../data/configurations", __dir__)
     File.join(configs_dir, name)
   end
 
@@ -59,7 +59,7 @@ module FileHelpers
 
   def gunzip(content)
     gz = Zlib::GzipReader.new(StringIO.new(content))
-    return gz.read
+    gz.read
   ensure
     gz.close if gz
   end

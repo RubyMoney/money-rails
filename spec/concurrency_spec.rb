@@ -37,6 +37,7 @@ describe "gemstash concurrency tests" do
         else
           raise "Property mismatch" unless resource.properties[:example]
           raise "Property mismatch" unless resource.properties[:content]
+
           expected_content = "Example content: #{resource.properties[:content]}"
           actual_content = resource.content(:file)
           raise "Content mismatch:\n  #{actual_content}\n  #{expected_content}" unless actual_content == expected_content
@@ -50,17 +51,15 @@ describe "gemstash concurrency tests" do
     error = nil
 
     threads.each do |thread|
-      begin
-        # Join raises an error if the thread raised an error
-        result = thread.join(timeout)
+      # Join raises an error if the thread raised an error
+      result = thread.join(timeout)
 
-        unless result
-          thread.kill
-          raise "Thread #{thread[:name]} did not die in #{timeout} seconds, possible deadlock!"
-        end
-      rescue => e
-        error = e unless error
+      unless result
+        thread.kill
+        raise "Thread #{thread[:name]} did not die in #{timeout} seconds, possible deadlock!"
       end
+    rescue StandardError => e
+      error ||= e
     end
 
     raise error if error

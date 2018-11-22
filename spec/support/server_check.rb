@@ -13,6 +13,7 @@ class ServerCheck
 
     until server_online?
       raise "Waiting too long for server to come up!" if waited >= MAX_WAIT
+
       sleep(0.1)
       waited += 0.1
     end

@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-# coding: utf-8
 
 version = ENV["SPEC_VERSION"]
 version = "0.1.0" if version.to_s.empty?

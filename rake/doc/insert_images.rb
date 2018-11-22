@@ -5,7 +5,7 @@ require "json"
 require "open3"
 require "pandoc_object_filters"
 
-HTML_IMAGES = %(<p align="center"><img src="gemstash.png" /></p>).freeze
+HTML_IMAGES = %(<p align="center"><img src="gemstash.png" /></p>)
 GITHUB_IMAGES = %([![Build Status][TRAVIS_IMG]][TRAVIS] [![Code Climate][CODE_CLIMATE_IMG]][CODE_CLIMATE]
 
 [TRAVIS_IMG]: https://travis-ci.org/bundler/gemstash.svg?branch=master
@@ -13,7 +13,7 @@ GITHUB_IMAGES = %([![Build Status][TRAVIS_IMG]][TRAVIS] [![Code Climate][CODE_CL
 [CODE_CLIMATE_IMG]: https://codeclimate.com/github/bundler/gemstash/badges/gpa.svg
 [CODE_CLIMATE]: https://codeclimate.com/github/bundler/gemstash
 
-<p align="center"><img src="gemstash.png" /></p>).freeze
+<p align="center"><img src="gemstash.png" /></p>)
 
 def images_json(markdown)
   pandoc_results = nil
@@ -26,6 +26,7 @@ def images_json(markdown)
   end
 
   raise "Invalid results!" unless pandoc_results
+
   pandoc_results = JSON.parse(pandoc_results)
   pandoc_results = PandocObjectFilters::Element::Document.new(pandoc_results)
   pandoc_results = pandoc_results.contents
@@ -48,6 +49,7 @@ filter.filter! do |element|
   next unless element.is_a?(PandocObjectFilters::Element::Header)
   next unless element.elements.first.is_a?(PandocObjectFilters::Element::Str)
   next unless element.elements.first.value == "Gemstash"
+
   found = true
 
   case filter.format

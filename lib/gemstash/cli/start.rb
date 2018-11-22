@@ -20,6 +20,7 @@ module Gemstash
 
       def setup_logging
         return unless daemonize?
+
         Gemstash::Logging.setup_logger(gemstash_env.log_file)
       end
 
@@ -32,7 +33,7 @@ module Gemstash
       end
 
       def puma_config
-        File.expand_path("../../puma.rb", __FILE__)
+        File.expand_path("../puma.rb", __dir__)
       end
 
       def args

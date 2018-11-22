@@ -35,6 +35,7 @@ module Gemstash
       check_auth if gemstash_env.config[:protected_fetch]
       fetch_from_storage
       return result if result
+
       fetch_versions
       marshal
       gzip
@@ -61,8 +62,9 @@ module Gemstash
     def fetch_from_storage
       specs = fetch_resource
       return unless specs.exist?(:specs)
+
       @result = specs.load(:specs).content(:specs)
-    rescue
+    rescue StandardError
       # On the off-chance of a race condition between specs.exist? and specs.load
       @result = nil
     end

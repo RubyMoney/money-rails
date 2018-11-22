@@ -50,6 +50,7 @@ module Gemstash
 
     def self.current
       raise EnvNotSetError unless Thread.current[:gemstash_env]
+
       Thread.current[:gemstash_env]
     end
 
@@ -59,6 +60,7 @@ module Gemstash
 
     def self.daemonized?
       raise "Daemonized hasn't been set yet!" if @daemonized.nil?
+
       @daemonized
     end
 
@@ -112,7 +114,7 @@ module Gemstash
     end
 
     def rackup
-      File.expand_path("../config.ru", __FILE__)
+      File.expand_path("config.ru", __dir__)
     end
 
     def db
@@ -139,7 +141,7 @@ module Gemstash
 
     def self.migrate(db)
       Sequel.extension :migration
-      migrations_dir = File.expand_path("../migrations", __FILE__)
+      migrations_dir = File.expand_path("migrations", __dir__)
       Sequel::Migrator.run(db, migrations_dir, :use_transactions => true)
     end
 

@@ -46,9 +46,9 @@ describe Gemstash::Web do
 
   let(:rack) do
     {
-      :name         => "rack",
-      :number       => "1.0.0",
-      :platform     => "ruby",
+      :name => "rack",
+      :number => "1.0.0",
+      :platform => "ruby",
       :dependencies => []
     }
   end
@@ -160,9 +160,9 @@ describe Gemstash::Web do
     context "there are gems" do
       let(:rack) do
         {
-          :name         => "rack",
-          :number       => "1.0.0",
-          :platform     => "ruby",
+          :name => "rack",
+          :number => "1.0.0",
+          :platform => "ruby",
           :dependencies => []
         }
       end
@@ -173,9 +173,9 @@ describe Gemstash::Web do
 
       it "returns a marshal dump" do
         result = [{
-          "name"         => "rack",
-          "number"       => "1.0.0",
-          "platform"     => "ruby",
+          "name" => "rack",
+          "number" => "1.0.0",
+          "platform" => "ruby",
           "dependencies" => []
         }]
 
@@ -192,7 +192,7 @@ describe Gemstash::Web do
       it "returns a 422" do
         error = {
           "error" => "Too many gems (use --full-index instead)",
-          "code"  => 422
+          "code" => 422
         }.to_json
 
         get "#{request}?gems=#{gems}", {}, rack_env

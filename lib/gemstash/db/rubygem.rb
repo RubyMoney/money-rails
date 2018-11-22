@@ -9,6 +9,7 @@ module Gemstash
       def self.find_or_insert(spec)
         record = self[name: spec.name]
         return record.id if record
+
         new(name: spec.name).tap(&:save).id
       end
     end

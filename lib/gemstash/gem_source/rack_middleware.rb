@@ -13,6 +13,7 @@ module Gemstash
       def call(env)
         Gemstash::GemSource.sources.each do |source|
           next unless source.matches?(env)
+
           env["gemstash.gem_source"] = source
           break
         end

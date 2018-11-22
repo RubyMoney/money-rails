@@ -26,6 +26,7 @@ class SimpleServer
 
   def start
     raise "Already started!" if @started
+
     @started = true
 
     @thread = Thread.new do
@@ -37,6 +38,7 @@ class SimpleServer
 
   def stop
     return if @stopped
+
     @stopped = true
     @server.stop
   end
@@ -47,6 +49,7 @@ class SimpleServer
 
   def join
     raise "Only join if stopping!" unless @stopped
+
     puts "WARNING: SimpleServer is not stopping!" unless @thread.join(10)
   end
 
@@ -112,6 +115,7 @@ class SimpleServer
 
     return if name.nil?
     raise "Gem dependencies for '#{name}' already mounted!" if @gem_deps.include?(name)
+
     @gem_deps[name] = deps
   end
 

@@ -54,9 +54,11 @@ module Gemstash
     def update_database
       gemstash_env.db.transaction do
         raise UnknownGemError, "Cannot yank an unknown gem!" unless Gemstash::DB::Rubygem[name: @gem_name]
+
         version = Gemstash::DB::Version.find_by_full_name(full_name)
         raise UnknownVersionError, "Cannot yank an unknown version!" unless version
         raise YankedVersionError, "Cannot yank an already yanked version!" unless version.indexed
+
         version.deindex
         storage.resource(version.storage_id).update_properties(indexed: false)
       end

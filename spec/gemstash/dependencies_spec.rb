@@ -18,9 +18,9 @@ describe Gemstash::Dependencies do
     context "one gem" do
       it "finds the gem" do
         result = [{
-          :name         => "foo",
-          :number       => "1.0.0",
-          :platform     => "ruby",
+          :name => "foo",
+          :number => "1.0.0",
+          :platform => "ruby",
           :dependencies => []
         }]
 
@@ -36,14 +36,14 @@ describe Gemstash::Dependencies do
     context "multiple gems" do
       it "finds the gems" do
         result = [{
-          :name         => "foo",
-          :number       => "1.0.0",
-          :platform     => "ruby",
+          :name => "foo",
+          :number => "1.0.0",
+          :platform => "ruby",
           :dependencies => []
         }, {
-          :name         => "bar",
-          :number       => "1.0.0",
-          :platform     => "ruby",
+          :name => "bar",
+          :number => "1.0.0",
+          :platform => "ruby",
           :dependencies => []
         }]
 
@@ -59,14 +59,14 @@ describe Gemstash::Dependencies do
     context "some missing gems" do
       it "finds the available gems" do
         result = [{
-          :name         => "foo",
-          :number       => "1.0.0",
-          :platform     => "ruby",
+          :name => "foo",
+          :number => "1.0.0",
+          :platform => "ruby",
           :dependencies => []
         }, {
-          :name         => "bar",
-          :number       => "1.0.0",
-          :platform     => "ruby",
+          :name => "bar",
+          :number => "1.0.0",
+          :platform => "ruby",
           :dependencies => []
         }]
 
@@ -82,16 +82,16 @@ describe Gemstash::Dependencies do
     context "multiple similar requests" do
       it "caches the results" do
         foo = {
-          :name         => "foo",
-          :number       => "1.0.0",
-          :platform     => "ruby",
+          :name => "foo",
+          :number => "1.0.0",
+          :platform => "ruby",
           :dependencies => []
         }
 
         bar = {
-          :name         => "bar",
-          :number       => "1.0.0",
-          :platform     => "ruby",
+          :name => "bar",
+          :number => "1.0.0",
+          :platform => "ruby",
           :dependencies => []
         }
 
@@ -117,9 +117,9 @@ describe Gemstash::Dependencies do
 
       it "finds the available gems" do
         custom = {
-          :name         => "custom",
-          :number       => "0.0.1",
-          :platform     => "ruby",
+          :name => "custom",
+          :number => "0.0.1",
+          :platform => "ruby",
           :dependencies => [["foo", "~> 1.0"]]
         }
 
@@ -145,24 +145,24 @@ describe Gemstash::Dependencies do
 
       it "finds the available gems" do
         custom1_0_0_1 = {
-          :name         => "custom1",
-          :number       => "0.0.1",
-          :platform     => "ruby",
+          :name => "custom1",
+          :number => "0.0.1",
+          :platform => "ruby",
           :dependencies => [["foo", "~> 1.0"],
                             ["bar", ">= 0.9"]]
         }
 
         custom1_0_2_1 = {
-          :name         => "custom1",
-          :number       => "0.2.1",
-          :platform     => "ruby",
+          :name => "custom1",
+          :number => "0.2.1",
+          :platform => "ruby",
           :dependencies => [["foo", "~> 1.1"]]
         }
 
         custom_2 = {
-          :name         => "custom2",
-          :number       => "0.2.0",
-          :platform     => "ruby",
+          :name => "custom2",
+          :number => "0.2.0",
+          :platform => "ruby",
           :dependencies => []
         }
 

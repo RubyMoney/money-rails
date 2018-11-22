@@ -17,6 +17,7 @@ module Gemstash
       def self.matches?(env)
         rewriter = rack_env_rewriter.for(env)
         return false unless rewriter.matches?
+
         rewriter.rewrite
         true
       end

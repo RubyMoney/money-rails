@@ -37,6 +37,7 @@ module Gemstash
       end
 
       raise MissingFileError, file if file && !File.exist?(file)
+
       file ||= default_file
 
       if File.exist?(file)

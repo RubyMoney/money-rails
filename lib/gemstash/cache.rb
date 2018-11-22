@@ -70,6 +70,7 @@ module Gemstash
         # Atomic fetch... don't rely on nil meaning missing
         value = @cache.fetch(key) { found = false }
         next unless found
+
         yield(key, value)
       end
     end

@@ -34,9 +34,7 @@ Instead just authorize with the new set of permissions")
       end
 
       def save_authorization
-        if @args.include?("all")
-          raise Gemstash::CLI::Error.new(@cli, "Don't specify permissions to authorize for all")
-        end
+        raise Gemstash::CLI::Error.new(@cli, "Don't specify permissions to authorize for all") if @args.include?("all")
 
         @args.each do |arg|
           unless Gemstash::Authorization::VALID_PERMISSIONS.include?(arg)
