@@ -89,6 +89,9 @@ Naming/VariableNumber:
 Naming/MemoizedInstanceVariableName:
   Enabled: false
 
+Naming/HeredocDelimiterNaming:
+  Enabled: false
+
 #alerts on some large if blocks
 Style/GuardClause:
   Enabled: false
