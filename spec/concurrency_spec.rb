@@ -51,15 +51,17 @@ describe "gemstash concurrency tests" do
     error = nil
 
     threads.each do |thread|
-      # Join raises an error if the thread raised an error
-      result = thread.join(timeout)
+      begin
+        # Join raises an error if the thread raised an error
+        result = thread.join(timeout)
 
-      unless result
-        thread.kill
-        raise "Thread #{thread[:name]} did not die in #{timeout} seconds, possible deadlock!"
+        unless result
+          thread.kill
+          raise "Thread #{thread[:name]} did not die in #{timeout} seconds, possible deadlock!"
+        end
+      rescue StandardError => e
+        error ||= e
       end
-    rescue StandardError => e
-      error ||= e
     end
 
     raise error if error

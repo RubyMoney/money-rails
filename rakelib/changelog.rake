@@ -106,12 +106,14 @@ class Changelog
     return if missing_pull_requests.empty?
 
     File.open(changelog_file, "w") do |file|
-      write_current_version(file)
-    ensure
-      parsed.versions.each do |version|
-        next if version == parsed_current_version
+      begin
+        write_current_version(file)
+      ensure
+        parsed.versions.each do |version|
+          next if version == parsed_current_version
 
-        file.write version.value
+          file.write version.value
+        end
       end
     end
   end

@@ -67,6 +67,9 @@ Style/FrozenStringLiteralComment:
 Style/SafeNavigation:
   Enabled: false
 
+Style/RedundantBegin:
+  Enabled: false
+
 # 1.8.7 support
 
 Style/HashSyntax:
