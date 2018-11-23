@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "set"
 
 RSpec::Matchers.define :redirect_to do |expected|
@@ -37,6 +39,7 @@ RSpec::Matchers.define :match_dependencies do |expected|
         next if expected_dep[:name] != actual_dep[:name]
         next if expected_dep[:number] != actual_dep[:number]
         next if expected_dep[:platform] != actual_dep[:platform]
+
         exp_dep = Set.new(expected_dep[:dependencies])
         act_dep = Set.new(actual_dep[:dependencies])
         exp_dep == act_dep

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "forwardable"
 require "open3"
 require "set"
@@ -7,7 +9,7 @@ class Changelog
   attr_reader :changelog_file, :parsed, :parsed_current_version, :parsed_last_version, :missing_pull_requests
 
   def initialize
-    @changelog_file = File.expand_path("../../CHANGELOG.md", __FILE__)
+    @changelog_file = File.expand_path("../CHANGELOG.md", __dir__)
   end
 
   def run
@@ -21,6 +23,7 @@ class Changelog
   def ensure_new_version_specified
     tags = `git tag -l`
     return unless tags.include? Changelog.current_version
+
     print "Are you updating the 'master' CHANGELOG? [yes/no] "
     abort("Please update lib/gemstash/version.rb with the new version first!") unless STDIN.gets.strip.casecmp("yes").zero?
     @master_update = true
@@ -32,8 +35,10 @@ class Changelog
 
   def update_master_version
     return if master_update?
+
     contents = File.read(changelog_file)
     return unless contents =~ /^## master \(unreleased\)$/
+
     contents.sub!(/^## master \(unreleased\)$/, "## #{current_version} (#{current_date})")
     File.write(changelog_file, contents)
   end
@@ -48,7 +53,7 @@ class Changelog
 
   def parse_changelog
     require "citrus"
-    Citrus.load(File.expand_path("../../rake/changelog.citrus", __FILE__))
+    Citrus.load(File.expand_path("../rake/changelog.citrus", __dir__))
     @parsed = Changelog::Grammar.parse(File.read(changelog_file))
     @parsed_current_version = @parsed.versions.find {|version| version.number == current_version }
 
@@ -64,9 +69,7 @@ class Changelog
     @last_version ||= begin
       version = parsed_last_version.number
 
-      unless version =~ /\A\d+(\.\d+)*(\.pre\.\d+)?\z/
-        abort("Invalid last version: #{version}, instead use something like 1.1.0, or 1.1.0.pre.2")
-      end
+      abort("Invalid last version: #{version}, instead use something like 1.1.0, or 1.1.0.pre.2") unless /\A\d+(\.\d+)*(\.pre\.\d+)?\z/.match?(version)
 
       version
     end
@@ -75,7 +78,7 @@ class Changelog
   def octokit
     @octokit ||= begin
       require "octokit"
-      token_path = File.expand_path("../../.rake_github_token", __FILE__)
+      token_path = File.expand_path("../.rake_github_token", __dir__)
 
       if File.exist?(token_path)
         options = { access_token: File.read(token_path).strip }
@@ -108,6 +111,7 @@ class Changelog
       ensure
         parsed.versions.each do |version|
           next if version == parsed_current_version
+
           file.write version.value
         end
       end
@@ -192,9 +196,7 @@ class Changelog
     @current_version ||= begin
       require_relative "../lib/gemstash/version.rb"
 
-      unless Gemstash::VERSION =~ /\A\d+(\.\d+)*(\.pre\.\d+)?\z/
-        abort("Invalid version: #{Gemstash::VERSION}, instead use something like 1.1.0, or 1.1.0.pre.2")
-      end
+      abort("Invalid version: #{Gemstash::VERSION}, instead use something like 1.1.0, or 1.1.0.pre.2") unless Gemstash::VERSION.match?(/\A\d+(\.\d+)*(\.pre\.\d+)?\z/)
 
       Gemstash::VERSION
     end

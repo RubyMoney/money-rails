@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "gemstash"
 
 module Gemstash
@@ -38,6 +40,7 @@ module Gemstash
       def check_gemstash_version
         version = Gem::Version.new(Gemstash::Storage.metadata[:gemstash_version])
         return if Gem::Requirement.new("<= #{Gemstash::VERSION}").satisfied_by?(Gem::Version.new(version))
+
         raise Gemstash::CLI::Error.new(@cli, "Gemstash version #{Gemstash::VERSION} does not support version " \
                                              "#{version}.\nIt appears you may have downgraded Gemstash, please " \
                                              "install version #{version} or later.")

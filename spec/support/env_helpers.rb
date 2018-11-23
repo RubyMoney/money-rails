@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "gemstash"
 
 # Helper to ensure the test Gemstash environment is set.

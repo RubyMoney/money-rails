@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "cgi"
 source "http://localhost:9042/redirect/#{CGI.escape("http://127.0.0.1:9043")}"
 

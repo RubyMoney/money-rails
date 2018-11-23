@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 #:nodoc:
 module LogHelpers
   def the_log

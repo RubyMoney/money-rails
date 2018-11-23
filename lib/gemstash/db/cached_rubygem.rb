@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "gemstash"
 
 module Gemstash
@@ -9,6 +11,7 @@ module Gemstash
           upstream_id = Gemstash::DB::Upstream.find_or_insert(upstream)
           record = self[upstream_id: upstream_id, name: gem_name.name, resource_type: resource_type.to_s]
           return record.id if record
+
           new(upstream_id: upstream_id, name: gem_name.name, resource_type: resource_type.to_s).tap(&:save).id
         end
       end

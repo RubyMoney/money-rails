@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "gemstash"
 require "digest"
 require "fileutils"
@@ -74,12 +76,14 @@ module Gemstash
     def check_storage_version
       version = Gemstash::Storage.metadata[:storage_version]
       return if version <= Gemstash::Storage::VERSION
+
       raise Gemstash::Storage::VersionTooNew.new(@folder, version)
     end
 
     def path_valid?(path)
       return false if path.nil?
       return false unless File.writable?(path)
+
       true
     end
   end
@@ -247,17 +251,17 @@ module Gemstash
 
       begin
         File.delete(content_filename(key))
-      rescue => e
+      rescue StandardError => e
         log_error "Failed to delete stored content at #{content_filename(key)}", e, level: :warn
       end
 
       begin
         File.delete(properties_filename) unless content?
-      rescue => e
+      rescue StandardError => e
         log_error "Failed to delete stored properties at #{properties_filename}", e, level: :warn
       end
 
-      return self
+      self
     ensure
       reset
     end
@@ -266,6 +270,7 @@ module Gemstash
 
     def load(key)
       raise "Resource #{@name} has no #{key.inspect} content to load" unless exist?(key)
+
       load_properties # Ensures storage version is checked
       @content ||= {}
       @content[key] = read_file(content_filename(key))
@@ -274,6 +279,7 @@ module Gemstash
     def load_properties(force = false)
       return if @properties && !force
       return unless File.exist?(properties_filename)
+
       @properties = YAML.load_file(properties_filename) || {}
       check_resource_version
     end
@@ -281,6 +287,7 @@ module Gemstash
     def check_resource_version
       version = @properties[:gemstash_resource_version]
       return if version <= Gemstash::Resource::VERSION
+
       reset
       raise Gemstash::Resource::VersionTooNew.new(name, folder, version)
     end
@@ -292,6 +299,7 @@ module Gemstash
 
     def content?
       return false unless Dir.exist?(@folder)
+
       entries = Dir.entries(@folder).reject {|file| file =~ /\A\.\.?\z/ || file == "properties.yaml" }
       !entries.empty?
     end
@@ -330,6 +338,7 @@ module Gemstash
     def content_filename(key)
       name = sanitize(key.to_s)
       raise "Invalid content key #{key.inspect}" if name.empty?
+
       File.join(@folder, name)
     end
 

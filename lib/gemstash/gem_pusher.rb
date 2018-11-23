@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "gemstash"
 require "rubygems/package"
 require "stringio"
@@ -56,9 +58,7 @@ module Gemstash
       resource_exist = storage.resource(full_name).exist?
       resource_is_indexed = storage.resource(full_name).properties[:indexed] if resource_exist
 
-      if resource_exist && resource_is_indexed
-        raise ExistingVersionError, "Cannot push to an existing version!"
-      end
+      raise ExistingVersionError, "Cannot push to an existing version!" if resource_exist && resource_is_indexed
 
       storage.resource(full_name).save({ gem: @content }, indexed: true)
     end
@@ -78,6 +78,7 @@ module Gemstash
         existing = Gemstash::DB::Version.find_by_spec(gem_id, spec)
         raise ExistingVersionError, "Cannot push to an existing version!" if existing && existing.indexed
         raise YankedVersionError, "Cannot push to a yanked version!" if existing && !existing.indexed
+
         version_id = Gemstash::DB::Version.insert_by_spec(gem_id, spec)
         Gemstash::DB::Dependency.insert_by_spec(version_id, spec)
       end
@@ -120,6 +121,7 @@ module Gemstash
 
       def cleanup
         return unless @tempfile
+
         @tempfile.close
         @tempfile.unlink
       end

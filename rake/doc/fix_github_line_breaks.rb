@@ -1,4 +1,6 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
+
 require "open3"
 require "pandoc_object_filters"
 
@@ -7,8 +9,8 @@ require "pandoc_object_filters"
 # formatted properly.
 
 # First test that the problem still exists
-PANDOC_MD_INPUT = "Multiple lines\\\nwith explicit\\\nline breaks".freeze
-INVALID_EXPECTED_MD_OUTPUT = "Multiple lines\nwith explicit\nline breaks\n".freeze
+PANDOC_MD_INPUT = "Multiple lines\\\nwith explicit\\\nline breaks"
+INVALID_EXPECTED_MD_OUTPUT = "Multiple lines\nwith explicit\nline breaks\n"
 
 pandoc_results = nil
 
@@ -19,9 +21,7 @@ Open3.popen2("pandoc -f markdown -t markdown_github") do |stdin, stdout, wait_th
   raise "Failure from pandoc while checking for line break problem!" unless wait_thr.value.success?
 end
 
-if pandoc_results != INVALID_EXPECTED_MD_OUTPUT
-  raise "Pandoc may have fixed incorrect line break output for GitHub Markdown"
-end
+raise "Pandoc may have fixed incorrect line break output for GitHub Markdown" if pandoc_results != INVALID_EXPECTED_MD_OUTPUT
 
 filter = PandocObjectFilters::Filter.new
 
@@ -30,6 +30,7 @@ filter.filter do |element|
   next unless element.is_a?(PandocObjectFilters::Element::Block)
   next unless element.respond_to?(:elements)
   next unless element.elements.find {|e| e.is_a?(PandocObjectFilters::Element::LineBreak) }
+
   spaces_indexes_to_add = []
 
   element.elements.each_with_index do |e, i|

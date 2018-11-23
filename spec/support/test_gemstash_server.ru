@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "gemstash"
 use Rack::Deflater
 use Gemstash::Env::RackMiddleware, $test_gemstash_server_env

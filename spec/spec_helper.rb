@@ -1,4 +1,6 @@
-$LOAD_PATH.unshift File.expand_path("../../lib", __FILE__)
+# frozen_string_literal: true
+
+$LOAD_PATH.unshift File.expand_path("../lib", __dir__)
 ENV["RACK_ENV"] = "test"
 require "gemstash"
 require "dalli"
@@ -15,7 +17,7 @@ require "support/simple_server"
 require "support/slow_simple_server"
 require "support/test_gemstash_server"
 
-TEST_BASE_PATH = File.expand_path("../../tmp/test_base", __FILE__)
+TEST_BASE_PATH = File.expand_path("../tmp/test_base", __dir__)
 FileUtils.mkpath(TEST_BASE_PATH) unless Dir.exist?(TEST_BASE_PATH)
 Pathname.new(TEST_BASE_PATH).children.each(&:rmtree)
 TEST_LOG_FILE = File.join(TEST_BASE_PATH, "server.log")
@@ -55,6 +57,7 @@ RSpec.configure do |config|
 
     Pathname.new(TEST_BASE_PATH).children.each do |path|
       next if path.basename.to_s.end_with?(".db")
+
       path.rmtree
     end
 

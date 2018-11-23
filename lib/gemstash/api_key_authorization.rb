@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "gemstash"
 
 module Gemstash
@@ -19,6 +21,7 @@ module Gemstash
     def self.parse_authorization(request_env)
       http_auth = Rack::Auth::Basic::Request.new(request_env)
       return http_auth.credentials.first if http_auth.provided? && http_auth.basic?
+
       request_env["HTTP_AUTHORIZATION"]
     end
 

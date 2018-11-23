@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gemstash
   module GemSource
     # Module for caching dependencies in a GemSource.
@@ -7,9 +9,7 @@ module Gemstash
       def serve_dependencies
         gems = gems_from_params
 
-        if gems.length > API_REQUEST_LIMIT
-          halt 422, "Too many gems (use --full-index instead)"
-        end
+        halt 422, "Too many gems (use --full-index instead)" if gems.length > API_REQUEST_LIMIT
 
         content_type "application/octet-stream"
         Marshal.dump dependencies.fetch(gems)
@@ -21,7 +21,7 @@ module Gemstash
         if gems.length > API_REQUEST_LIMIT
           halt 422, {
             "error" => "Too many gems (use --full-index instead)",
-            "code"  => 422
+            "code" => 422
           }.to_json
         end
 

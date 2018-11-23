@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "gemstash"
 require "faraday"
 require "faraday_middleware"
@@ -25,7 +27,7 @@ module Gemstash
     extend Gemstash::Env::Helper
     include Gemstash::Logging
 
-    DEFAULT_USER_AGENT = "Gemstash/#{Gemstash::VERSION}".freeze
+    DEFAULT_USER_AGENT = "Gemstash/#{Gemstash::VERSION}"
 
     def self.for(upstream)
       client = Faraday.new(upstream.to_s) do |config|
@@ -71,6 +73,7 @@ module Gemstash
         rescue Faraday::ConnectionFailed => e
           log_error("Connection failure", e)
           raise(ConnectionError, e.message) unless times > 0
+
           log.info "retrying... #{times} more times"
         end
       end

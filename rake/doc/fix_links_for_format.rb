@@ -1,4 +1,6 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
+
 require "json"
 require "open3"
 require "pandoc_object_filters"
@@ -101,7 +103,9 @@ end
 
 FILTER.filter do |element|
   next unless element.is_a?(PandocObjectFilters::Element::Link)
+
   match = %r{\A\./(gemstash-.*)\z}.match(element.target.url)
   next unless match
+
   element.target.url = DocLinkUrl.new(match[1]).to_s
 end

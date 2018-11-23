@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "lru_redux"
 require "forwardable"
 
@@ -68,6 +70,7 @@ module Gemstash
         # Atomic fetch... don't rely on nil meaning missing
         value = @cache.fetch(key) { found = false }
         next unless found
+
         yield(key, value)
       end
     end

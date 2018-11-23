@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 def which(executable)
   ENV["PATH"].split(File::PATH_SEPARATOR).each do |path|
     exe_path = File.join(path, executable)

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "gemstash"
 require "cgi"
 
@@ -12,6 +14,7 @@ module Gemstash
       def self.matches?(env)
         rewriter = rack_env_rewriter.for(env)
         return false unless rewriter.matches?
+
         rewriter.rewrite
         env["gemstash.upstream"] = rewriter.captures["upstream_url"]
         capture_user_agent(env)
@@ -135,6 +138,7 @@ module Gemstash
 
       def set_gem_headers(gem, resource_type)
         return unless gem.property?(:headers, resource_type)
+
         gem_headers = gem.properties[:headers][resource_type]
         headers["Content-Type"] = gem_headers["content-type"] if gem_headers.include?("content-type")
         headers["Last-Modified"] = gem_headers["last-modified"] if gem_headers.include?("last-modified")

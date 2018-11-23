@@ -12,13 +12,17 @@ AllCops:
 Lint/AssignmentInCondition:
   Enabled: false
 
-Lint/EndAlignment:
-  EnforcedStyleAlignWith: variable
-
 Lint/UnusedMethodArgument:
   Enabled: false
 
+Lint/UriEscapeUnescape:
+  Enabled: true
+
+
 # Style
+
+Layout/EndAlignment:
+  EnforcedStyleAlignWith: variable
 
 Layout/AccessModifierIndentation:
   EnforcedStyle: outdent
@@ -35,6 +39,9 @@ Layout/SpaceInsideBlockBraces:
 Style/TrivialAccessors:
   Enabled: false
 
+Style/NumericPredicate:
+  Enabled: false
+
 # We adopted raise instead of fail.
 Style/SignalException:
   EnforcedStyle: only_raise
@@ -45,13 +52,26 @@ Style/StringLiterals:
 Style/StringLiteralsInInterpolation:
   EnforcedStyle: double_quotes
 
-# Having these make it easier to *not* forget to add one when adding a new
-# value and you can simply copy the previous line.
-Style/TrailingCommaInLiteral:
-  EnforcedStyleForMultiline: comma
+Style/TrailingCommaInArrayLiteral:
+  Enabled: true
+
+Style/TrailingCommaInHashLiteral:
+  Enabled: true
 
 Style/TrailingCommaInArguments:
   EnforcedStyleForMultiline: comma
+
+Style/FrozenStringLiteralComment:
+  EnforcedStyle: always
+
+Style/SafeNavigation:
+  Enabled: false
+
+Style/RedundantBegin:
+  Enabled: false
+
+Style/MutableConstant:
+  Enabled: false
 
 # 1.8.7 support
 
@@ -73,11 +93,20 @@ Style/SpecialGlobalVars:
 Style/TrailingCommaInArguments:
   Enabled: false
 
-Style/TrailingCommaInLiteral:
+Naming/VariableNumber:
+  EnforcedStyle: 'snake_case'
+
+Naming/MemoizedInstanceVariableName:
   Enabled: false
 
-Style/VariableNumber:
-  EnforcedStyle: 'snake_case'
+Naming/HeredocDelimiterNaming:
+  Enabled: false
+
+# This should be enabled, but test broke if so, see:
+# spec/support/simple_server.rb:149:20
+# spec/support/slow_simple_server.rb:15:20
+Naming/UncommunicativeMethodParamName:
+  Enabled: false
 
 #alerts on some large if blocks
 Style/GuardClause:

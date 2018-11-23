@@ -1,9 +1,12 @@
+# frozen_string_literal: true
+
 # Run a JRuby program in process.
 class InProcessExec
   attr_reader :status, :output
 
   def initialize(env, dir, args)
     raise "InProcessExec is only valid on JRuby!" unless RUBY_PLATFORM == "java"
+
     @env = env
     @dir = dir
     @args = args.dup

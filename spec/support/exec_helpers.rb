@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "bundler/version"
 require "open3"
 require "pathname"
@@ -21,7 +23,7 @@ module ExecHelpers
       @args = args
       @env = env
       @original_dir = dir
-      @dir = dir || File.expand_path("../../..", __FILE__)
+      @dir = dir || File.expand_path("../..", __dir__)
       exec
       fix_jruby_output
     end
@@ -36,7 +38,7 @@ module ExecHelpers
 
     def display_command
       display_args = args.map do |x|
-        if x =~ /\s/
+        if /\s/.match?(x)
           "'#{x}'"
         else
           x
@@ -60,6 +62,7 @@ module ExecHelpers
 
     def fix_jruby_output
       return unless RUBY_PLATFORM == "java"
+
       # Travis builds or runs JRuby in a way that outputs the following warning for some reason
       @output.gsub!(/^.*warning: unknown property jruby.cext.enabled\n/, "")
     end
@@ -102,9 +105,10 @@ module ExecHelpers
   # process with a separate JRuby instance rather than a process.
   class JRubyResult < Result
     def exec
-      binstub_dir = File.expand_path("../jruby_binstubs", __FILE__)
+      binstub_dir = File.expand_path("jruby_binstubs", __dir__)
       binstub = File.join(binstub_dir, File.basename(command))
       raise "Missing binstub for #{command}" unless File.exist?(binstub)
+
       exec_in_process(binstub)
     end
 

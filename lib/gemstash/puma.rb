@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "gemstash"
 
 threads 0, Gemstash::Env.current.config[:puma_threads].to_i

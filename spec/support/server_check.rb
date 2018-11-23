@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Helper class to see when a test server is ready to receive requests.
 class ServerCheck
   MAX_WAIT = 10
@@ -11,6 +13,7 @@ class ServerCheck
 
     until server_online?
       raise "Waiting too long for server to come up!" if waited >= MAX_WAIT
+
       sleep(0.1)
       waited += 0.1
     end

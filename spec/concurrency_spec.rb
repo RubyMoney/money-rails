@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "spec_helper"
 
 describe "gemstash concurrency tests" do
@@ -35,6 +37,7 @@ describe "gemstash concurrency tests" do
         else
           raise "Property mismatch" unless resource.properties[:example]
           raise "Property mismatch" unless resource.properties[:content]
+
           expected_content = "Example content: #{resource.properties[:content]}"
           actual_content = resource.content(:file)
           raise "Content mismatch:\n  #{actual_content}\n  #{expected_content}" unless actual_content == expected_content
@@ -56,8 +59,8 @@ describe "gemstash concurrency tests" do
           thread.kill
           raise "Thread #{thread[:name]} did not die in #{timeout} seconds, possible deadlock!"
         end
-      rescue => e
-        error = e unless error
+      rescue StandardError => e
+        error ||= e
       end
     end
 

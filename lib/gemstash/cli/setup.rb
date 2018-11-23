@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "gemstash"
 require "fileutils"
 require "yaml"
@@ -44,11 +46,13 @@ module Gemstash
 
       def say_current_config(option, label)
         return if gemstash_env.config.default?(option)
+
         @cli.say "#{label}: #{gemstash_env.config[option]}"
       end
 
       def ask_with_default(prompt, options, default)
         raise "The options must all be lower case" if options.any? {|x| x.downcase != x }
+
         result = nil
         displayed_options = options.map {|x| x == default ? x.upcase : x }
         prompt = "#{prompt} [#{displayed_options.join(", ")}]"
@@ -135,8 +139,10 @@ module Gemstash
             # we don't want to store metadata just yet
             metadata_file = gemstash_env.base_file("metadata.yml")
             break unless File.exist?(metadata_file)
+
             version = Gem::Version.new(YAML.load_file(metadata_file)[:gemstash_version])
             break if Gem::Requirement.new("<= #{Gemstash::VERSION}").satisfied_by?(Gem::Version.new(version))
+
             raise Gemstash::CLI::Error.new(@cli, "The base path already exists with a newer version of Gemstash")
           else
             @cli.say "Creating the file storage path '#{dir}'"
@@ -160,6 +166,7 @@ module Gemstash
 
       def say_error(title, error)
         return unless @cli.options[:debug]
+
         @cli.say @cli.set_color("#{title}: #{error}", :red)
 
         error.backtrace.each do |line|
@@ -177,7 +184,7 @@ module Gemstash
       def try(thing)
         @cli.say "Checking that the #{thing} is available"
         with_new_config { yield }
-      rescue => e
+      rescue StandardError => e
         say_error "Error checking #{thing}", e
         raise Gemstash::CLI::Error.new(@cli, "The #{thing} is not available")
       end
