@@ -74,6 +74,14 @@ describe 'MoneyRails::ActionViewExtension', type: :helper do
     it { is_expected.not_to include "00" }
   end
 
+  describe '#money_only_cents' do
+    subject { helper.money_only_cents Money.new(12500) }
+    it { is_expected.to be_a String }
+    it { is_expected.not_to include Money.default_currency.decimal_mark }
+    it { is_expected.not_to include Money.default_currency.symbol }
+    it { is_expected.to include "00" }
+  end
+
   context 'respects MoneyRails::Configuration settings' do
     context 'with no_cents_if_whole: false' do
 
