@@ -50,12 +50,9 @@ module MoneyRails
     end
 
     def money_only_cents(value)
-      if value.is_a?(Money)
-      elsif value.respond_to?(:to_money)
-        value = value.to_money
-      else
-        return '00'
-      end
+      return '00' unless value.respond_to?(:to_money)
+
+      value = value.to_money
 
       format "%0#{value.currency.exponent}d", (value % value.currency.subunit_to_unit).cents
     end
