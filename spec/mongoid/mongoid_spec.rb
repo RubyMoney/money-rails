@@ -8,6 +8,9 @@ if defined?(Mongoid) && ::Mongoid::VERSION.split('.').first.to_i > 2
     let(:priceable_from_num) { Priceable.create(price: 1) }
     let(:priceable_from_string) { Priceable.create(price: '1 EUR' )}
     let(:priceable_from_hash) { Priceable.create(price: {cents: 100, currency_iso: "EUR"} )}
+    let(:priceable_from_blank_strings_hash) {
+      Priceable.create(price: {cents: '', currency_iso: ''})
+    }
     let(:priceable_from_hash_with_indifferent_access) {
       Priceable.create(price: {cents: 100, currency_iso: "EUR"}.with_indifferent_access)
     }
@@ -67,6 +70,10 @@ if defined?(Mongoid) && ::Mongoid::VERSION.split('.').first.to_i > 2
       it "correctly mongoizes a hash of cents and currency" do
         expect(priceable_from_hash.price.cents).to eq(100)
         expect(priceable_from_hash.price.currency).to eq(Money::Currency.find('EUR'))
+      end
+
+      it "mongoizes a hash of blank strings for cents and currency to nil" do
+        expect(priceable_from_blank_strings_hash.price).to eq(nil)
       end
 
       it "correctly mongoizes a HashWithIndifferentAccess of cents and currency" do
