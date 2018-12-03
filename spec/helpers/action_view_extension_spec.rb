@@ -75,11 +75,28 @@ describe 'MoneyRails::ActionViewExtension', type: :helper do
   end
 
   describe '#money_only_cents' do
-    subject { helper.money_only_cents Money.new(12500) }
+    let(:monetizable_object){ Money.new(125_00) }
+    subject { helper.money_only_cents monetizable_object }
     it { is_expected.to be_a String }
     it { is_expected.not_to include Money.default_currency.decimal_mark }
     it { is_expected.not_to include Money.default_currency.symbol }
     it { is_expected.to include "00" }
+
+    context 'with a non-money object' do
+      let(:monetizable_object){ 125 }
+      it { is_expected.to be_a String }
+      it { is_expected.not_to include Money.default_currency.decimal_mark }
+      it { is_expected.not_to include Money.default_currency.symbol }
+      it { is_expected.to include "00" }
+    end
+
+    context 'with less than 10 cents' do
+      let(:monetizable_object){ Money.new(8) }
+      it { is_expected.to be_a String }
+      it { is_expected.not_to include Money.default_currency.decimal_mark }
+      it { is_expected.not_to include Money.default_currency.symbol }
+      it { is_expected.to include "08" }
+    end
   end
 
   context 'respects MoneyRails::Configuration settings' do
