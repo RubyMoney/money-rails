@@ -62,7 +62,7 @@ class Doc
         to_extension(".md")
       end
 
-      export "markdown_github", export_path("docs", path)
+      export "gfm", export_path("docs", path)
     end
 
     def system(command)
@@ -90,8 +90,7 @@ class Doc
       %w[insert_github_generation_comment.rb
          insert_images.rb
          upcase_headers.rb
-         fix_links_for_format.rb
-         fix_github_line_breaks.rb].map do |filter|
+         fix_links_for_format.rb].map do |filter|
         ::File.expand_path("../../rake/doc/#{filter}", __FILE__)
       end
     end

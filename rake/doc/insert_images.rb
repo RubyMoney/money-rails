@@ -18,7 +18,7 @@ GITHUB_IMAGES = %([![Build Status][TRAVIS_IMG]][TRAVIS] [![Code Climate][CODE_CL
 def images_json(markdown)
   pandoc_results = nil
 
-  Open3.popen2("pandoc -f markdown_github -t json") do |stdin, stdout, wait_thr|
+  Open3.popen2("pandoc -f gfm -t json") do |stdin, stdout, wait_thr|
     stdin.write(markdown)
     stdin.close
     pandoc_results = stdout.read
@@ -44,7 +44,7 @@ filter = PandocObjectFilters::Filter.new
 
 filter.filter! do |element|
   next if found
-  next unless %w[html markdown_github].include?(filter.format)
+  next unless %w[html gfm].include?(filter.format)
   next unless filter.doc.meta["insert_images"] && filter.doc.meta["insert_images"].value
   next unless element.is_a?(PandocObjectFilters::Element::Header)
   next unless element.elements.first.is_a?(PandocObjectFilters::Element::Str)
@@ -53,7 +53,7 @@ filter.filter! do |element|
   found = true
 
   case filter.format
-  when "markdown_github"
+  when "gfm"
     result = images_json(GITHUB_IMAGES)
     # Add a newline at the end to preserve the fix in commit bc811ec5030a978f002b552f772a82ec96606db9
     result << PandocObjectFilters::Element::Para.new

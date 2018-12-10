@@ -34,7 +34,7 @@ example, so the command failed and the configuration wasn't saved. If the
 command passes, you may provide the `--redo` option to force configuration to be
 redone:
 
-> $ gemstash setup --redo\
+> `$ gemstash setup --redo`\
 > Where should files go? [~/.gemstash]\
 > Cache with what? [MEMORY, memcached] **memcached**\
 > What is the comma separated Memcached servers? [localhost:11211]\
