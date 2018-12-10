@@ -19,7 +19,7 @@ module Gemstash
       puma_threads: 16,
       puma_workers: 1,
       cache_expiration: 30 * 60,
-      cache_max_size: 500,
+      cache_max_size: 500
     }.freeze
 
     DEFAULT_FILE = File.expand_path("~/.gemstash/config.yml").freeze
