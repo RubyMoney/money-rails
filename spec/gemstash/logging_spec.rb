@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-describe Gemstash::Logging do
+RSpec.describe Gemstash::Logging do
   it "builds a logger in the right place" do
     expect(File.exist?(TEST_LOG_FILE)).to be_truthy
   end
@@ -20,7 +20,7 @@ describe Gemstash::Logging do
   end
 end
 
-describe Gemstash::Logging::StreamLogger do
+RSpec.describe Gemstash::Logging::StreamLogger do
   let(:logger) { Gemstash::Logging::StreamLogger.new(Logger::INFO) }
   let(:error_logger) { Gemstash::Logging::StreamLogger.new(Logger::ERROR) }
 

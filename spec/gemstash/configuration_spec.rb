@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-describe Gemstash::Configuration do
+RSpec.describe Gemstash::Configuration do
   let(:config_dir) { config_path("configuration_spec") }
 
   context "no config file" do

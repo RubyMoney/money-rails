@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-describe Gemstash::Authorization do
+RSpec.describe Gemstash::Authorization do
   describe "#remove" do
     context "with an existing authoriation" do
       before do

@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-describe Gemstash::Env do
+RSpec.describe Gemstash::Env do
   context ".log_file" do
     let(:dir) { __dir__ }
 

@@ -5,7 +5,7 @@ require "faraday"
 require "fileutils"
 require "rack/test"
 
-describe Gemstash::Web do
+RSpec.describe Gemstash::Web do
   include Rack::Test::Methods
 
   let(:http_client_builder) do

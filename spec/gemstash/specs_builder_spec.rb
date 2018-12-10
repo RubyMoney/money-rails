@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-describe Gemstash::SpecsBuilder do
+RSpec.describe Gemstash::SpecsBuilder do
   let(:auth) { Gemstash::ApiKeyAuthorization.new(auth_key) }
   let(:auth_with_invalid_auth_key) { Gemstash::ApiKeyAuthorization.new(invalid_auth_key) }
   let(:auth_without_permission) { Gemstash::ApiKeyAuthorization.new(auth_key_without_permission) }
