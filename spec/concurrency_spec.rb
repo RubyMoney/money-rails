@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-describe "gemstash concurrency tests" do
+RSpec.describe "gemstash concurrency tests" do
   let(:timeout) { 5 }
 
   def write_thread(resource_id, content = "unchanging")

@@ -3,7 +3,7 @@
 require "spec_helper"
 require "yaml"
 
-describe Gemstash::Storage do
+RSpec.describe Gemstash::Storage do
   before do
     @folder = Dir.mktmpdir
   end

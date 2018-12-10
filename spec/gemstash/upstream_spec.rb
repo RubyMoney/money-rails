@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-describe Gemstash::Upstream do
+RSpec.describe Gemstash::Upstream do
   it "parses an escaped uri" do
     upstream_uri = Gemstash::Upstream.new("https%3A%2F%2Frubygems.org%2F")
     expect(upstream_uri.to_s).to eq("https://rubygems.org/")
@@ -94,7 +94,7 @@ describe Gemstash::Upstream do
   end
 end
 
-describe Gemstash::Upstream::GemName do
+RSpec.describe Gemstash::Upstream::GemName do
   context "With a simple upstream" do
     let(:upstream) { Gemstash::Upstream.new("https://rubygems.org/") }
 

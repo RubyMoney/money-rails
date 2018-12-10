@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-describe Gemstash::HTTPClient do
+RSpec.describe Gemstash::HTTPClient do
   before(:all) do
     @server = SimpleServer.new("localhost")
     @other_server = SimpleServer.new("127.0.0.1")

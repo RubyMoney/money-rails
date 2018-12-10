@@ -3,7 +3,7 @@
 require "spec_helper"
 require "zlib"
 
-describe Gemstash::GemPusher do
+RSpec.describe Gemstash::GemPusher do
   let(:auth) { Gemstash::ApiKeyAuthorization.new(auth_key) }
   let(:auth_with_invalid_auth_key) { Gemstash::ApiKeyAuthorization.new(invalid_auth_key) }
   let(:auth_without_permission) { Gemstash::ApiKeyAuthorization.new(auth_key_without_permission) }

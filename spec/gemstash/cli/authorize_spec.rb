@@ -4,7 +4,7 @@ require "spec_helper"
 require "securerandom"
 require "yaml"
 
-describe Gemstash::CLI::Authorize do
+RSpec.describe Gemstash::CLI::Authorize do
   before do
     # Don't let the environment change, else we get a separate test db
     # connection, which messes up the tests

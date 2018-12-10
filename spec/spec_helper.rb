@@ -30,6 +30,8 @@ TEST_DB = Gemstash::Env.current.db
 Sequel::Model.db = TEST_DB
 
 RSpec.configure do |config|
+  config.disable_monkey_patching!
+
   config.around(:each) do |example|
     test_env.config = TEST_CONFIG unless test_env.config == TEST_CONFIG
 

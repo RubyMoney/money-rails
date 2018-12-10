@@ -6,7 +6,7 @@ require "json"
 require "net/http"
 require "uri"
 
-describe "gemstash integration tests" do
+RSpec.describe "gemstash integration tests" do
   let(:auth) { Gemstash::ApiKeyAuthorization.new(auth_key) }
   let(:auth_key) { "test-key" }
 
