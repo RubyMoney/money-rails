@@ -142,25 +142,25 @@ this point.
 
 Deep dive into more subjects:
 
-  - [Private gems](gemstash-private-gems.7.md)
-  - [Multiple gem sources](gemstash-multiple-sources.7.md)
-  - [Using Gemstash as a mirror](gemstash-mirror.7.md)
+  - [Private gems](docs/gemstash-private-gems.7.md)
+  - [Multiple gem sources](docs/gemstash-multiple-sources.7.md)
+  - [Using Gemstash as a mirror](docs/gemstash-mirror.7.md)
   - [Customizing the server (database, storage, caching, and
-    more)](gemstash-customize.7.md)
-  - [Deploying Gemstash](gemstash-deploy.7.md)
-  - [Debugging Gemstash](gemstash-debugging.7.md)
+    more)](docs/gemstash-customize.7.md)
+  - [Deploying Gemstash](docs/gemstash-deploy.7.md)
+  - [Debugging Gemstash](docs/gemstash-debugging.7.md)
 
 ## Reference
 
 An anatomy of various configuration and commands:
 
-  - [Configuration](gemstash-configuration.5.md)
-  - [Authorize](gemstash-authorize.1.md)
-  - [Start](gemstash-start.1.md)
-  - [Stop](gemstash-stop.1.md)
-  - [Status](gemstash-status.1.md)
-  - [Setup](gemstash-setup.1.md)
-  - [Version](gemstash-version.1.md)
+  - [Configuration](docs/gemstash-configuration.5.md)
+  - [Authorize](docs/gemstash-authorize.1.md)
+  - [Start](docs/gemstash-start.1.md)
+  - [Stop](docs/gemstash-stop.1.md)
+  - [Status](docs/gemstash-status.1.md)
+  - [Setup](docs/gemstash-setup.1.md)
+  - [Version](docs/gemstash-version.1.md)
 
 To see what has changed in recent versions of Gemstash, see the
 [CHANGELOG](https://github.com/bundler/gemstash/blob/master/CHANGELOG.md).
