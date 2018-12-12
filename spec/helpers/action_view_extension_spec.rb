@@ -77,17 +77,14 @@ describe 'MoneyRails::ActionViewExtension', type: :helper do
   describe '#money_only_cents' do
     let(:monetizable_object){ Money.new(125_00) }
     subject { helper.money_only_cents monetizable_object }
-    it { is_expected.to be_a String }
-    it { is_expected.not_to include Money.default_currency.decimal_mark }
-    it { is_expected.not_to include Money.default_currency.symbol }
-    it { is_expected.to include "00" }
+    it { is_expected.to eq "00" }
 
     context 'with a non-money object' do
       let(:monetizable_object){ 125 }
       it { is_expected.to be_a String }
       it { is_expected.not_to include Money.default_currency.decimal_mark }
       it { is_expected.not_to include Money.default_currency.symbol }
-      it { is_expected.to include "00" }
+      it { is_expected.to eq "00" }
     end
 
     context 'with less than 10 cents' do
@@ -95,7 +92,15 @@ describe 'MoneyRails::ActionViewExtension', type: :helper do
       it { is_expected.to be_a String }
       it { is_expected.not_to include Money.default_currency.decimal_mark }
       it { is_expected.not_to include Money.default_currency.symbol }
-      it { is_expected.to include "08" }
+      it { is_expected.to eq "08" }
+    end
+
+    context 'with a non monetizable object' do
+      let(:monetizable_object){ false }
+      it { is_expected.to be_a String }
+      it { is_expected.not_to include Money.default_currency.decimal_mark }
+      it { is_expected.not_to include Money.default_currency.symbol }
+      it { is_expected.to eq "00" }
     end
   end
 
