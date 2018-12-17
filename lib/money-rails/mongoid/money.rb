@@ -28,25 +28,12 @@ class Money
     # Takes any possible object and converts it to how it would be
     # stored in the database.
     def mongoize(object)
-      case
-      when object.is_a?(Money) then object.mongoize
-      when object.is_a?(Hash) then
-        if object.respond_to?(:deep_symbolize_keys!)
-          object.deep_symbolize_keys!
-        elsif object.respond_to?(:symbolize_keys!)
-          object.symbolize_keys!
-        end
-        ::Money.new(object[:cents], object[:currency_iso]).mongoize
-      when object.nil? then nil
-      when object.respond_to?(:to_money) then
-        begin
-          object.to_money.mongoize
-        rescue Money::Currency::UnknownCurrency, Monetize::ParseError => e
-          raise MoneyRails::Error, e.message if MoneyRails.raise_error_on_money_parsing
-          nil
-        end
-      else object
-      end
+      return object.mongoize if object.is_a?(Money)
+      return mongoize_hash(object) if object.is_a?(Hash)
+      return nil if object.nil?
+      return mongoize_castable(object) if object.respond_to?(:to_money)
+
+      object
     end
 
     # Converts the object that was supplied to a criteria and converts it
@@ -56,6 +43,28 @@ class Money
       when Money then object.mongoize
       else object
       end
+    end
+
+    private
+
+    def mongoize_hash(hash)
+      if hash.respond_to?(:deep_symbolize_keys!)
+        hash.deep_symbolize_keys!
+      elsif hash.respond_to?(:symbolize_keys!)
+        hash.symbolize_keys!
+      end
+
+      # Guard for a blank form
+      return nil if hash[:cents] == '' && hash[:currency_iso] == ''
+
+      ::Money.new(hash[:cents], hash[:currency_iso]).mongoize
+    end
+
+    def mongoize_castable(object)
+      object.to_money.mongoize
+    rescue Money::Currency::UnknownCurrency, Monetize::ParseError => e
+      return nil unless MoneyRails.raise_error_on_money_parsing
+      raise MoneyRails::Error, e.message
     end
   end
 end
