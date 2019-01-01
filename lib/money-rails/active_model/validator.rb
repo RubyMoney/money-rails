@@ -44,8 +44,7 @@ module MoneyRails
       private
 
       def record_does_not_have_error?
-        return true unless @record.errors.has_key?(@attr)
-        !@record.errors.added?(@attr, :not_a_number)
+        !@record.errors.added?(@attr, :not_a_number, value: @raw_value)
       end
 
       def reset_memoized_variables!
