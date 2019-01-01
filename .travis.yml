@@ -1,6 +1,7 @@
 sudo: false
 before_install:
-  - gem update --system
+  # Rubygems > 3.0.0 no longer supported rubies < 2.3
+  - gem install "rubygems-update:<3.0.0" --no-document && update_rubygems
   - gem update bundler
 before_script:
   - "bundle exec rake prepare_test_env"
