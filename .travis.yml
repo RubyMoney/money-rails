@@ -2,7 +2,9 @@ sudo: false
 before_install:
   # Rubygems > 3.0.0 no longer supported rubies < 2.3
   - gem install "rubygems-update:<3.0.0" --no-document && update_rubygems
-  - gem update bundler
+  # Bundler 2.0 is not supported by Rails < 5
+  - gem list -i bundler -v '>= 2.0.0' && rvm @global do gem uninstall bundler -x || true
+  - gem install bundler -v '~> 1.17'
 before_script:
   - "bundle exec rake prepare_test_env"
 script: "bundle exec rspec"
