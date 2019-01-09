@@ -767,9 +767,42 @@ if defined? ActiveRecord
             end
           end
 
+          context "when locale_backend is true" do
+            around(:each) do |example|
+              begin
+                Money.locale_backend = :i18n
+                Money.use_i18n = false
+                example.run
+              ensure
+                Money.locale_backend = nil
+                Money.use_i18n = true
+              end
+            end
+            it "validates with the locale's decimal mark" do
+              transaction.amount = "123,45"
+              expect(transaction.valid?).to be_truthy
+            end
+
+            it "does not validate with the currency's decimal mark" do
+              transaction.amount = "123.45"
+              expect(transaction.valid?).to be_falsey
+            end
+
+            it "validates with the locale's currency symbol" do
+              transaction.amount = "€123"
+              expect(transaction.valid?).to be_truthy
+            end
+
+            it "does not validate with the transaction's currency symbol" do
+              transaction.amount = "$123.45"
+              expect(transaction.valid?).to be_falsey
+            end
+          end
+
           context "when use_i18n is false" do
             around(:each) do |example|
               begin
+                Money.locale_backend = nil
                 Money.use_i18n = false
                 example.run
               ensure

@@ -18,8 +18,8 @@ describe "configuration" do
     end
 
     it "sets no_cents_if_whole value for formatted output globally" do
-      # Disable the usage of I18n (to avoid default symbols for :en)
-      Money.use_i18n = false
+      # Enable formatting to depend only on currency (to avoid default symbols for :en)
+      Money.locale_backend = :currency
 
       value = Money.new(12345600, "EUR")
       mark = Money::Currency.find(:eur).decimal_mark
@@ -35,7 +35,7 @@ describe "configuration" do
 
       # Reset global settings
       MoneyRails.no_cents_if_whole = nil
-      Money.use_i18n = true
+      Money.locale_backend = :i18n
     end
 
     it "sets symbol for formatted output globally" do

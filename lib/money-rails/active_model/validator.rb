@@ -61,16 +61,20 @@ module MoneyRails
 
       def decimal_mark
         character = currency.decimal_mark || '.'
-        @_decimal_mark ||= Money.use_i18n ? I18n.t('number.currency.format.separator', default: character) : character
+        @_decimal_mark ||= use_backend_locale? ? I18n.t('number.currency.format.separator', default: character) : character
       end
 
       def thousands_separator
         character = currency.thousands_separator || ','
-        @_thousands_separator ||= Money.use_i18n ? I18n.t('number.currency.format.delimiter', default: character) : character
+        @_thousands_separator ||= use_backend_locale? ? I18n.t('number.currency.format.delimiter', default: character) : character
       end
 
       def symbol
-        @_symbol ||= Money.use_i18n ? I18n.t('number.currency.format.unit', default: currency.symbol) : currency.symbol
+        @_symbol ||= use_backend_locale? ? I18n.t('number.currency.format.unit', default: currency.symbol) : currency.symbol
+      end
+
+      def use_backend_locale?
+        Money.locale_backend.present? || Money.use_i18n
       end
 
       def abs_raw_value
