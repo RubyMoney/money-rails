@@ -74,6 +74,27 @@ describe 'MoneyRails::ActionViewExtension', type: :helper do
     it { is_expected.not_to include "00" }
   end
 
+  describe '#money_only_cents' do
+    let(:monetizable_object){ Money.new(125_00) }
+    subject { helper.money_only_cents monetizable_object }
+    it { is_expected.to eq "00" }
+
+    context 'with a non-money object' do
+      let(:monetizable_object){ 125 }
+      it { is_expected.to eq "00" }
+    end
+
+    context 'with less than 10 cents' do
+      let(:monetizable_object){ Money.new(8) }
+      it { is_expected.to eq "08" }
+    end
+
+    context 'with a non monetizable object' do
+      let(:monetizable_object){ false }
+      it { is_expected.to eq "00" }
+    end
+  end
+
   context 'respects MoneyRails::Configuration settings' do
     context 'with no_cents_if_whole: false' do
 

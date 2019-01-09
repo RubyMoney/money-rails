@@ -48,5 +48,13 @@ module MoneyRails
     def money_without_cents_and_with_symbol(value)
       money_without_cents(value, symbol: true)
     end
+
+    def money_only_cents(value)
+      return '00' unless value.respond_to?(:to_money)
+
+      value = value.to_money
+
+      format "%0#{value.currency.exponent}d", (value % value.currency.subunit_to_unit).cents
+    end
   end
 end

@@ -502,6 +502,7 @@ _For examples below, `@money_object == <Money fractional:650 currency:USD>`_
 | `humanized_money_with_symbol @money_object`           | $6.50                                     |
 | `money_without_cents @money_object`                   | 6                                         |
 | `money_without_cents_and_with_symbol @money_object`   | $6                                        |
+| `money_only_cents @money_object`                      | 50                                        |
 
 #### `no_cents_if_whole`
 
