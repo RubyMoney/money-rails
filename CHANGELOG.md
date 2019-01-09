@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.13.1
+
+Add a guard clause for "blank form" input (Mongoid)
+Do not add extra errors in case attribute is not a number
+Use Money.locale_backend instead of Money.use_i18n
+Add money_only_cents helper method
+
 ## 1.13.0
 
 - Bump money version to ~> 6.13.0

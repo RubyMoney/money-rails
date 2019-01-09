@@ -1,3 +1,3 @@
 module MoneyRails
-  VERSION = '1.13.0'
+  VERSION = '1.13.1'
 end
