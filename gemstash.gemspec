@@ -51,7 +51,7 @@ you push your own private gems as well."
     spec.add_runtime_dependency "sqlite3", "~> 1.3"
   end
 
-  spec.add_development_dependency "bundler", "~> 1.11"
+  spec.add_development_dependency "bundler", [">= 1.11", "< 3.0"]
   spec.add_development_dependency "citrus", "~> 3.0"
   spec.add_development_dependency "octokit", "~> 4.2"
   spec.add_development_dependency "pandoc_object_filters", "~> 0.2"
