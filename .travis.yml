@@ -1,21 +1,21 @@
 language: ruby
-sudo: false
 dist: trusty
 matrix:
   allow_failures:
     - rvm: ruby-head
       gemfile: 'gemfiles/Gemfile.ruby-head'
   include:
-    - rvm: 2.3.4
-    - rvm: 2.4.1
-    - rvm: 2.5.1
+    - rvm: 2.3.8
+    - rvm: 2.4.5
+    - rvm: 2.5.3
+    - rvm: 2.6.1
     - rvm: ruby-head
       gemfile: 'gemfiles/Gemfile.ruby-head'
 
     - language: generic
       env:
         - JRUBY_OPTS="--client -J-XX:+TieredCompilation -J-XX:TieredStopAtLevel=1 -J-Xss2m -Xcompile.invokedynamic=false -J-Xmx1536m"
-        - JRUBY_VERSION="jruby-9.2.5.0"
+        - JRUBY_VERSION="jruby-9.2.6.0"
       before_install:
         - ./ci/build/rvm_setup.sh
         - rm -f ${HOME}/.rvm/gemsets/jruby/global.gems
