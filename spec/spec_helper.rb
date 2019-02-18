@@ -2,6 +2,7 @@
 
 $LOAD_PATH.unshift File.expand_path("../lib", __dir__)
 ENV["RACK_ENV"] = "test"
+require "aruba/rspec"
 require "gemstash"
 require "dalli"
 require "fileutils"
