@@ -1,15 +1,11 @@
-require 'spec_helper'
+# frozen_string_literal: true
 
-RSpec.describe 'CLI executable', type: :aruba do
-  let(:content) { 'Hello, Aruba!' }
+require "spec_helper"
 
+RSpec.describe "CLI executable", type: :aruba do
   before do
-    run_command('exe/gemstash')
+    run_command("exe/gemstash --version")
   end
 
-  # Full string
-  it { expect(last_command_started).to have_output(content) }
-
-  # Substring
-  it { expect(last_command_started).to have_output(/Hello/) }
+  it { expect(last_command_started).to have_output(/Gemstash version \d\.\d\.\d/) }
 end
