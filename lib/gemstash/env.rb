@@ -17,9 +17,9 @@ module Gemstash
 
     # Little module to provide easy access to the current Gemstash::Env.
     module Helper
-    # RuboCop 0.66.0 can not decide where to put that "private"
+      # RuboCop 0.66.0 can not decide where to put that "private"
 
-    private # rubocop:disable Layout/IndentationWidth
+      private # rubocop:disable Layout/AccessModifierIndentation
 
       def gemstash_env
         Gemstash::Env.current
