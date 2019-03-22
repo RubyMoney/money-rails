@@ -17,7 +17,7 @@ module Gemstash
 
     # Little module to provide easy access to the current Gemstash::Env.
     module Helper
-    private
+      private # rubocop:disable Layout/AccessModifierIndentation
 
       def gemstash_env
         Gemstash::Env.current
