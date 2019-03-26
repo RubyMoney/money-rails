@@ -1,6 +1,12 @@
 module MoneyRails
   module ActiveModel
-    class MoneyValidator < ::ActiveModel::Validations::NumericalityValidator
+    class MoneyValidator < ::ActiveModel::EachValidator
+      def initialize(options)
+        @numericality_validator =
+          ::ActiveModel::Validations::NumericalityValidator.new(options.dup)
+        super(options)
+      end
+
       def validate_each(record, attr, _value)
         reset_memoized_variables!
         @record = record
@@ -31,7 +37,7 @@ module MoneyRails
         end
 
         normalize_raw_value!
-        super(@record, @attr, @raw_value)
+        numericality_validator.validate_each(@record, @attr, @raw_value)
 
         if stringy && record_does_not_have_error?
           add_error if
@@ -42,6 +48,8 @@ module MoneyRails
       end
 
       private
+
+      attr_reader :numericality_validator
 
       def record_does_not_have_error?
         !@record.errors.added?(@attr, :not_a_number, value: @raw_value)
