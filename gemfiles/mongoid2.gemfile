@@ -12,7 +12,7 @@ end
 
 platforms :ruby do
   gem "bson_ext"
-  gem "sqlite3"
+  gem "sqlite3", "~> 1.3.6"
 end
 
 gemspec path: '../'
