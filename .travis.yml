@@ -6,7 +6,7 @@ matrix:
       gemfile: 'gemfiles/Gemfile.ruby-head'
   include:
     - rvm: 2.3.8
-    - rvm: 2.4.5
+    - rvm: 2.4.6
     - rvm: 2.5.5
     - rvm: 2.6.2
     - rvm: ruby-head
