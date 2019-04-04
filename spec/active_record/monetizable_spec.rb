@@ -738,6 +738,8 @@ if defined? ActiveRecord
           end
         end
 
+        # TODO: these specs should mock locale_backend with expected values
+        #       instead of manipulating it directly
         context "and an Italian locale" do
           around(:each) do |example|
             I18n.with_locale(:it) do
@@ -745,7 +747,7 @@ if defined? ActiveRecord
             end
           end
 
-          context "when use_i18n is true" do
+          context "when using :i18n locale backend" do
             it "validates with the locale's decimal mark" do
               transaction.amount = "123,45"
               expect(transaction.valid?).to be_truthy
@@ -767,46 +769,13 @@ if defined? ActiveRecord
             end
           end
 
-          context "when locale_backend is true" do
+          context "when using :currency locale backend" do
             around(:each) do |example|
               begin
+                Money.locale_backend = :currency
+                example.run
+              ensure
                 Money.locale_backend = :i18n
-                Money.use_i18n = false
-                example.run
-              ensure
-                Money.locale_backend = nil
-                Money.use_i18n = true
-              end
-            end
-            it "validates with the locale's decimal mark" do
-              transaction.amount = "123,45"
-              expect(transaction.valid?).to be_truthy
-            end
-
-            it "does not validate with the currency's decimal mark" do
-              transaction.amount = "123.45"
-              expect(transaction.valid?).to be_falsey
-            end
-
-            it "validates with the locale's currency symbol" do
-              transaction.amount = "€123"
-              expect(transaction.valid?).to be_truthy
-            end
-
-            it "does not validate with the transaction's currency symbol" do
-              transaction.amount = "$123.45"
-              expect(transaction.valid?).to be_falsey
-            end
-          end
-
-          context "when use_i18n is false" do
-            around(:each) do |example|
-              begin
-                Money.locale_backend = nil
-                Money.use_i18n = false
-                example.run
-              ensure
-                Money.use_i18n = true
               end
             end
 
