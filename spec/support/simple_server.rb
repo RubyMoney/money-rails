@@ -155,7 +155,7 @@ class SimpleServer
       if @simple_server.routes.include?(request.path)
         @simple_server.routes[request.path].call request, response
       else
-        STDERR.puts "[SimpleServer] no route found: #{request.path}"
+        warn "[SimpleServer] no route found: #{request.path}"
         raise WEBrick::HTTPStatus::NotFound
       end
     end
