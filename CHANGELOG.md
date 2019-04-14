@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.13.2
+
+- Make validation compatible with Money.locale_backend
+
 ## 1.13.1
 
 - Add a guard clause for "blank form" input (Mongoid)
