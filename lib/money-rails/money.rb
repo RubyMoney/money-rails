@@ -2,7 +2,7 @@ require "active_support/core_ext/module/aliasing.rb"
 require "active_support/core_ext/hash/reverse_merge.rb"
 
 class Money
-  class <<self
+  class << self
     alias_method :orig_default_formatting_rules, :default_formatting_rules
 
     def default_formatting_rules

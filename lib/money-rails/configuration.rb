@@ -7,7 +7,6 @@ module MoneyRails
   # MoneyRails configuration module.
   # This is extended by MoneyRails to provide configuration settings.
   module Configuration
-
     # Start a MoneyRails configuration block in an initializer.
     #
     # example: Provide a default currency for the application
@@ -59,7 +58,7 @@ module MoneyRails
     #   MoneyRails.configure do |config|
     #     config.default_bank = EuCentralBank.new
     #   end
-    delegate :default_bank=, :default_bank, to: :Money
+    delegate :default_bank=, :default_bank, :locale_backend, :locale_backend=, to: :Money
 
     # Provide exchange rates
     delegate :add_rate, to: :Money

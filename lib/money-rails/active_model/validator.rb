@@ -43,6 +43,11 @@ module MoneyRails
 
       private
 
+      DEFAULTS = {
+        decimal_mark: '.',
+        thousands_separator: ','
+      }.freeze
+
       def record_does_not_have_error?
         !@record.errors.added?(@attr, :not_a_number, value: @raw_value)
       end
@@ -60,21 +65,17 @@ module MoneyRails
       end
 
       def decimal_mark
-        character = currency.decimal_mark || '.'
-        @_decimal_mark ||= use_backend_locale? ? I18n.t('number.currency.format.separator', default: character) : character
+        @_decimal_mark ||= lookup(:decimal_mark)
       end
 
       def thousands_separator
-        character = currency.thousands_separator || ','
-        @_thousands_separator ||= use_backend_locale? ? I18n.t('number.currency.format.delimiter', default: character) : character
+        @_thousands_separator ||= lookup(:thousands_separator)
       end
 
+      # TODO: This is supporting legacy behaviour where a symbol can come from a i18n locale,
+      #       however practical implications of that are most likely non-existent
       def symbol
-        @_symbol ||= use_backend_locale? ? I18n.t('number.currency.format.unit', default: currency.symbol) : currency.symbol
-      end
-
-      def use_backend_locale?
-        Money.locale_backend.present? || Money.use_i18n
+        @_symbol ||= lookup(:symbol) || currency.symbol
       end
 
       def abs_raw_value
@@ -127,6 +128,18 @@ module MoneyRails
           .gsub(thousands_separator, '')
           .gsub(decimal_mark, '.')
           .gsub(/[\s_]/, '')
+      end
+
+      def lookup(key)
+        if locale_backend
+          locale_backend.lookup(key, currency) || DEFAULTS[key]
+        else
+          DEFAULTS[key]
+        end
+      end
+
+      def locale_backend
+        Money.locale_backend
       end
     end
   end
