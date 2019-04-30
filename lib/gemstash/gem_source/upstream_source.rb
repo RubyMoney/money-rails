@@ -93,8 +93,10 @@ module Gemstash
     private
 
       def upstream
-        @upstream ||= Gemstash::Upstream.new(env["gemstash.upstream"],
-          user_agent: env["gemstash.user-agent"])
+        @upstream ||= Gemstash::Upstream.new(
+          env["gemstash.upstream"],
+          user_agent: env["gemstash.user-agent"]
+        )
       end
 
       def index_upstream
