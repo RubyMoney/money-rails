@@ -1,5 +1,6 @@
 inherit_from: .rubocop-bundler.yml
-
+require:
+  - rubocop-performance
 AllCops:
   Exclude:
     - bin/**/*

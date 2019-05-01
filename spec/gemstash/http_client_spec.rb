@@ -82,7 +82,7 @@ RSpec.describe Gemstash::HTTPClient do
       context "with a client that specifies a user agent" do
         let(:http_client) do
           Gemstash::HTTPClient.new(faraday_client,
-            user_agent: "my-agent 6.6.6")
+                                   user_agent: "my-agent 6.6.6")
         end
 
         it "forwards the user agent to the remote server" do
