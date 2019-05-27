@@ -8,8 +8,8 @@ require "pandoc_object_filters"
 HTML_IMAGES = %(<p align="center"><img src="gemstash.png" /></p>)
 GITHUB_IMAGES = %([![Build Status][TRAVIS_IMG]][TRAVIS] [![Code Climate][CODE_CLIMATE_IMG]][CODE_CLIMATE]
 
-[TRAVIS_IMG]: https://travis-ci.org/bundler/gemstash.svg?branch=master
-[TRAVIS]: https://travis-ci.org/bundler/gemstash
+[TRAVIS_IMG]: https://travis-ci.org/rubygems/gemstash.svg?branch=master
+[TRAVIS]: https://travis-ci.org/rubygems/gemstash
 [CODE_CLIMATE_IMG]: https://codeclimate.com/github/bundler/gemstash/badges/gpa.svg
 [CODE_CLIMATE]: https://codeclimate.com/github/bundler/gemstash
 
