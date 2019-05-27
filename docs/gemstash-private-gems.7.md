@@ -25,8 +25,7 @@ key:
 This new key can `push`, `yank`, and `fetch` gems from your Gemstash
 server. Run `gemstash authorize` with just the permissions you want to
 limit what the key will be allowed to do. You can similarly update a
-specific key by providing it via the `--key`
-    option:
+specific key by providing it via the `--key` option:
 
     $ gemstash authorize push yank --key e374e237fdf5fa5718d2a21bd63dc911
 
@@ -81,8 +80,7 @@ If your Gemstash server isn’t running, go ahead and start it:
 
     $ gemstash start
 
-Push your test gem using
-    Rubygems:
+Push your test gem using Rubygems:
 
     $ gem push --key test_key --host http://localhost:9292/private pkg/private-example-0.1.0.gem
 
