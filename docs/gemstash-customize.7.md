@@ -95,22 +95,36 @@ for you).
 ## Cache
 
 Certain things (like dependencies) are cached in memory. This avoids web
-calls to the gem source, and database calls for private gems. The memory
-cache can optionally be swapped out with a
-[Memcached](http://memcached.org/) server (or cluster of servers). To
-use Memcached, you must update the `:cache_type` configuration key to be
-`memcached`, and provide the servers via the `:memcached_servers`
-configuration key:
+calls to the gem source, and database calls for private gems.
+
+``` yaml
+# ~/.gemstash/config.yml
+---
+:cache_type: memory
+:cache_max_size: 2000
+```
+
+This configuration uses the default `memory` cache, and has increased
+the `cache_max_size` setting from its default of 500 items.
+
+The memory cache can optionally be swapped out with a
+[Memcached](http://memcached.org/) server (or cluster of servers).
+
+To use Memcached, use the `memcached` `:cache_type` configuration.
+
+Provide the servers as a comma-separated list to the
+`:memcached_servers` configuration key:
 
 ``` yaml
 # ~/.gemstash/config.yml
 ---
 :cache_type: memcached
 :memcached_servers: memcached1.local:11211,memcached2.local:11211
+:cache_expiration: 1800
 ```
 
-Note that the `:memcached_servers` requires a comma separated list of
-servers. All caching lasts for 30 minutes.
+All caching expires in `cache_expiration` number of seconds. Default is
+1800 seconds (30 minutes). This option applies to all caching.
 
 ## Server
 
