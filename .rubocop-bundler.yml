@@ -60,6 +60,7 @@ Style/TrailingCommaInHashLiteral:
 
 Style/TrailingCommaInArguments:
   EnforcedStyleForMultiline: comma
+  Enabled: false
 
 Style/FrozenStringLiteralComment:
   EnforcedStyle: always
@@ -88,9 +89,6 @@ Style/EachWithObject:
   Enabled: false
 
 Style/SpecialGlobalVars:
-  Enabled: false
-
-Style/TrailingCommaInArguments:
   Enabled: false
 
 Naming/VariableNumber:
