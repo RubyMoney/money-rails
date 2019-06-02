@@ -36,4 +36,10 @@ Gem::Specification.new do |s|
   s.add_development_dependency "rspec-rails", "~> 3.0"
   s.add_development_dependency 'database_cleaner', '~> 1.6.1'
   s.add_development_dependency 'test-unit', '~> 3.0' if RUBY_VERSION >= '2.2'
+
+  if s.respond_to?(:metadata)
+    s.metadata['changelog_uri'] = 'https://github.com/RubyMoney/money-rails/blob/master/CHANGELOG.md'
+    s.metadata['source_code_uri'] = 'https://github.com/RubyMoney/money-rails/'
+    s.metadata['bug_tracker_uri'] = 'https://github.com/RubyMoney/money-rails/issues'
+  end
 end
