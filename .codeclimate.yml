@@ -1,16 +1,19 @@
 ---
-engines:
+version: "2"
+
+plugins:
   duplication:
     enabled: true
     config:
       languages:
-      - ruby
+        - ruby
   fixme:
     enabled: true
   rubocop:
     enabled: true
-ratings:
-  paths:
-  - "**.rb"
-exclude_paths:
-- spec/
+    # Available channels: https://docs.codeclimate.com/docs/rubocop
+    channel: "rubocop-0-67"
+
+exclude_patterns:
+  - vendor/
+  - '*.log'

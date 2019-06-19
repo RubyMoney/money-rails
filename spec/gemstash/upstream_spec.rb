@@ -59,7 +59,7 @@ RSpec.describe Gemstash::Upstream do
 
   it "supports getting user agent" do
     expect(Gemstash::Upstream.new("https://rubygems.org/",
-                                  user_agent: "my_user_agent").user_agent).to eq("my_user_agent")
+      user_agent: "my_user_agent").user_agent).to eq("my_user_agent")
   end
 
   describe ".url" do
