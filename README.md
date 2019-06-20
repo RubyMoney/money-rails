@@ -118,17 +118,17 @@ You might wonder where the gems are stored. After running the commands
 above, you will find a new directory at `~/.gemstash`. This directory
 holds all the cached and private gems. It also has a server log, the
 database, and configuration for Gemstash. If you prefer, you can [point
-to a different directory](gemstash-customize.7.md#files).
+to a different directory](docs/gemstash-customize.7.md#files).
 
 Gemstash uses [SQLite](https://www.sqlite.org/) to store details about
 private gems. The database will be located in `~/.gemstash`, however you
 won’t see the database appear until you start using private gems. If you
 prefer, you can [use a different
-database](gemstash-customize.7.md#database).
+database](docs/gemstash-customize.7.md#database).
 
 Gemstash temporarily caches things like gem dependencies in memory.
 Anything cached in memory will last for 30 minutes before being
-retrieved again. You can [use memcached](gemstash-customize.7.md#cache)
+retrieved again. You can [use memcached](docs/gemstash-customize.7.md#cache)
 instead of caching in memory. Gem files are always cached permanently,
 so bundling with a `Gemfile.lock` with all gems cached will never call
 out to https://rubygems.org.
