@@ -73,4 +73,4 @@ to the provided URL. Redirected calls like this will not be cached by Gemstash,
 and gem files will not be stashed, even if they were previously cached or
 stashed from the same gem source.
 
-[README_QUICKSTART]: ./gemstash-readme.7.md#quickstart-guide
+[README_QUICKSTART]: ../readme.md#quickstart-guide
