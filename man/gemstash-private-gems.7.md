@@ -170,5 +170,5 @@ Behind the scene, Bundler will pick up the ENV var according to the host name
 The API key is treated as a HTTP Basic Auth username and any HTTP Basic password
 supplied will be ignored.
 
-[README_QUICKSTART]: ./gemstash-readme.7.md#quickstart-guide
+[README_QUICKSTART]: ../readme.md#quickstart-guide
 [CONFIG_KEYS]: http://bundler.io/man/bundle-config.1.html#CONFIGURATION-KEYS

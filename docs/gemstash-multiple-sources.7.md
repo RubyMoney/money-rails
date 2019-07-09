@@ -9,10 +9,10 @@ stashed within your Gemstash server.
 ## Default Source
 
 When you don’t provide an explicit source (as with the [Quickstart
-Guide](gemstash-readme.7.md#quickstart-guide)), your gems will be
-fetched from https://rubygems.org. This default source is not set in
-stone. To change it, you need only edit the Gemstash configuration found
-at `~/.gemstash/config.yml`:
+Guide](../readme.md#quickstart-guide)), your gems will be fetched from
+https://rubygems.org. This default source is not set in stone. To change
+it, you need only edit the Gemstash configuration found at
+`~/.gemstash/config.yml`:
 
 ``` yaml
 # ~/.gemstash/config.yml
