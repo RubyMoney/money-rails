@@ -226,24 +226,25 @@ RSpec.describe Gemstash::Web do
       it "keeps headers for specs that have been previously fetched" do
         get "/quick/Marshal.4.8/rack.gemspec.rz", {}, rack_env
         get "/gems/rack", {}, rack_env
-        expect(storage.resource("rack").properties[:headers][:spec]).to be
-        expect(storage.resource("rack").properties[:headers][:gem]).to be
+        expect(storage.resource("rack").properties[:headers][:spec]).to eq("content-type" => "octet/stream")
+        expect(storage.resource("rack").properties[:headers][:gem]).to eq("content-type" => "octet/stream")
       end
 
       it "indexes the cached gem" do
         get "/gems/rack", {}, rack_env
         db_upstream = Gemstash::DB::Upstream[uri: upstream.to_s]
-        expect(db_upstream).to be
-        expect(Gemstash::DB::CachedRubygem[upstream_id: db_upstream.id, name: "rack", resource_type: "gem"]).to be
+        expect(db_upstream).to be_an_instance_of(Gemstash::DB::Upstream)
+        expect(Gemstash::DB::CachedRubygem[upstream_id: db_upstream.id, name: "rack", resource_type: "gem"]).to be_an_instance_of(Gemstash::DB::CachedRubygem)
       end
 
       it "indexes specs of different versions separately" do
         get "/gems/rack-1.0.0.gem", {}, rack_env
         get "/gems/rack-1.1.0.gem", {}, rack_env
         db_upstream = Gemstash::DB::Upstream[uri: upstream.to_s]
-        expect(db_upstream).to be
-        expect(Gemstash::DB::CachedRubygem[upstream_id: db_upstream.id, name: "rack-1.0.0", resource_type: "gem"]).to be
-        expect(Gemstash::DB::CachedRubygem[upstream_id: db_upstream.id, name: "rack-1.1.0", resource_type: "gem"]).to be
+        expect(db_upstream).to be_an_instance_of(Gemstash::DB::Upstream)
+        expect(Gemstash::DB::CachedRubygem.count).to eq(2)
+        expect(Gemstash::DB::CachedRubygem[upstream_id: db_upstream.id, name: "rack-1.0.0", resource_type: "gem"]).to be_an_instance_of(Gemstash::DB::CachedRubygem)
+        expect(Gemstash::DB::CachedRubygem[upstream_id: db_upstream.id, name: "rack-1.1.0", resource_type: "gem"]).to be_an_instance_of(Gemstash::DB::CachedRubygem)
       end
 
       it "can be called multiple times without error" do
@@ -329,39 +330,39 @@ RSpec.describe Gemstash::Web do
       it "keeps headers for gems that have been previously fetched" do
         get "/gems/rack", {}, rack_env
         get "/quick/Marshal.4.8/rack.gemspec.rz", {}, rack_env
-        expect(storage.resource("rack").properties[:headers][:gem]).to be
-        expect(storage.resource("rack").properties[:headers][:spec]).to be
+        expect(storage.resource("rack").properties[:headers][:gem]).to eq("content-type" => "octet/stream")
+        expect(storage.resource("rack").properties[:headers][:spec]).to eq("content-type" => "octet/stream")
       end
 
       it "indexes the cached spec" do
         get "/quick/Marshal.4.8/rack.gemspec.rz", {}, rack_env
         db_upstream = Gemstash::DB::Upstream[uri: upstream.to_s]
-        expect(db_upstream).to be
-        expect(Gemstash::DB::CachedRubygem[upstream_id: db_upstream.id, name: "rack", resource_type: "spec"]).to be
+        expect(db_upstream).to be_an_instance_of(Gemstash::DB::Upstream)
+        expect(Gemstash::DB::CachedRubygem[upstream_id: db_upstream.id, name: "rack", resource_type: "spec"]).to be_an_instance_of(Gemstash::DB::CachedRubygem)
       end
 
       it "indexes specs of different versions separately" do
         get "/quick/Marshal.4.8/rack-1.0.0.gemspec.rz", {}, rack_env
         get "/quick/Marshal.4.8/rack-1.1.0.gemspec.rz", {}, rack_env
         db_upstream = Gemstash::DB::Upstream[uri: upstream.to_s]
-        expect(db_upstream).to be
-        expect(Gemstash::DB::CachedRubygem[upstream_id: db_upstream.id, name: "rack-1.0.0", resource_type: "spec"]).to be
-        expect(Gemstash::DB::CachedRubygem[upstream_id: db_upstream.id, name: "rack-1.1.0", resource_type: "spec"]).to be
+        expect(db_upstream).to be_an_instance_of(Gemstash::DB::Upstream)
+        expect(Gemstash::DB::CachedRubygem[upstream_id: db_upstream.id, name: "rack-1.0.0", resource_type: "spec"]).to be_an_instance_of(Gemstash::DB::CachedRubygem)
+        expect(Gemstash::DB::CachedRubygem[upstream_id: db_upstream.id, name: "rack-1.1.0", resource_type: "spec"]).to be_an_instance_of(Gemstash::DB::CachedRubygem)
       end
 
       it "can be called multiple times without error" do
         get "/quick/Marshal.4.8/rack.gemspec.rz", {}, rack_env
-        get "/quick/Marshal.4.8/rack.gemspec.rz", {}, rack_env
+        expect { get "/quick/Marshal.4.8/rack.gemspec.rz", {}, rack_env }.not_to raise_error
       end
 
       it "can be called after the spec has been deleted" do
         get "/quick/Marshal.4.8/rack.gemspec.rz", {}, rack_env
         storage.resource("rack").delete(:spec)
-        expect(storage.resource("rack").exist?(:spec)).to be_falsey
+        expect(storage.resource("rack").exist?(:spec)).to eq(false)
         get "/quick/Marshal.4.8/rack.gemspec.rz", {}, rack_env
         expect(last_response.body).to eq("specatito")
         expect(last_response.header["CONTENT-TYPE"]).to eq("octet/stream")
-        expect(storage.resource("rack").exist?(:spec)).to be_truthy
+        expect(storage.resource("rack").exist?(:spec)).to eq(true)
       end
     end
 
