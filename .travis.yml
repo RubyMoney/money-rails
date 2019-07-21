@@ -16,9 +16,10 @@ rvm:
   - 2.0.0
   - 2.1.10
   - 2.2.10
-  - 2.3.7
-  - 2.4.4
-  - 2.5.1
+  - 2.3.8
+  - 2.4.6
+  - 2.5.5
+  - 2.6.3
   #  FIXME: failing native extensions
   #- ruby-head
   #  TODO: investigate failure
@@ -66,22 +67,31 @@ matrix:
     - rvm: 2.1.10
       gemfile: gemfiles/mongoid7.gemfile
 
-    - rvm: 2.4.4
+    - rvm: 2.4.6
       gemfile: gemfiles/rails3.gemfile
-    - rvm: 2.4.4
+    - rvm: 2.4.6
       gemfile: gemfiles/rails4.gemfile
-    - rvm: 2.4.4
+    - rvm: 2.4.6
       gemfile: gemfiles/mongoid2.gemfile
-    - rvm: 2.4.4
+    - rvm: 2.4.6
       gemfile: gemfiles/mongoid3.gemfile
 
-    - rvm: 2.5.1
+    - rvm: 2.5.5
       gemfile: gemfiles/rails3.gemfile
-    - rvm: 2.5.1
+    - rvm: 2.5.5
       gemfile: gemfiles/rails4.gemfile
-    - rvm: 2.5.1
+    - rvm: 2.5.5
       gemfile: gemfiles/mongoid2.gemfile
-    - rvm: 2.5.1
+    - rvm: 2.5.5
+      gemfile: gemfiles/mongoid3.gemfile
+
+    - rvm: 2.6.3
+      gemfile: gemfiles/rails3.gemfile
+    - rvm: 2.6.3
+      gemfile: gemfiles/rails4.gemfile
+    - rvm: 2.6.3
+      gemfile: gemfiles/mongoid2.gemfile
+    - rvm: 2.6.3
       gemfile: gemfiles/mongoid3.gemfile
 
 notifications:
