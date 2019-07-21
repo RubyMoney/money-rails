@@ -20,8 +20,7 @@ rvm:
   - 2.4.6
   - 2.5.5
   - 2.6.3
-  #  FIXME: failing native extensions
-  #- ruby-head
+  - ruby-head
   #  TODO: investigate failure
   #  This is an arbitrary failure on travis
   #- jruby-19mode
@@ -92,6 +91,15 @@ matrix:
     - rvm: 2.6.3
       gemfile: gemfiles/mongoid2.gemfile
     - rvm: 2.6.3
+      gemfile: gemfiles/mongoid3.gemfile
+
+    - rvm: ruby-head
+      gemfile: gemfiles/rails3.gemfile
+    - rvm: ruby-head
+      gemfile: gemfiles/rails4.gemfile
+    - rvm: ruby-head
+      gemfile: gemfiles/mongoid2.gemfile
+    - rvm: ruby-head
       gemfile: gemfiles/mongoid3.gemfile
 
 notifications:
