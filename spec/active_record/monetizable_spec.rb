@@ -12,7 +12,9 @@ if defined? ActiveRecord
                      sale_price_amount: 1200, delivery_fee_cents: 100,
                      restock_fee_cents: 2000,
                      reduced_price_cents: 1500, reduced_price_currency: :lvl,
-                     lambda_price_cents: 4000)
+                     lambda_price_cents: 4000,
+                     unit_cost_cents: 1234.8765
+                    )
     end
 
     describe ".monetize" do
@@ -139,6 +141,16 @@ if defined? ActiveRecord
 
       it "respects :as argument" do
         expect(product.discount_value).to eq(Money.new(150, "USD"))
+      end
+
+      it "assigns instance precision based on the column type of the attribute" do
+        expect(product.unit_cost.infinite_precision?).to eq(true)
+        expect(product.unit_cost).to eq(Money.new(1234.8765, "USD", infinite_precision: true))
+        expect(product.unit_cost.to_s).to eq("12.348765")
+
+        expect(product.price.infinite_precision?).to eq(false)
+        expect(product.price).to eq(Money.new(3000, "USD", infinite_precision: false))
+        expect(product.price.to_s).to eq("30.00")
       end
 
       it "uses numericality validation" do

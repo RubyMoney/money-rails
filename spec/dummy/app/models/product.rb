@@ -56,4 +56,7 @@ class Product < ActiveRecord::Base
 
   # Using postfix to determine currency column (reduced_price_currency)
   monetize :reduced_price_cents, allow_nil: true
+
+  # Enable infinite_precision on this attribute
+  monetize :unit_cost_cents, allow_nil: true
 end
