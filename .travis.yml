@@ -14,7 +14,7 @@ matrix:
     - language: generic
       env:
         - JRUBY_OPTS="--client -J-XX:+TieredCompilation -J-XX:TieredStopAtLevel=1 -J-Xss2m -Xcompile.invokedynamic=false -J-Xmx1536m"
-        - JRUBY_VERSION="jruby-9.2.7.0"
+        - JRUBY_VERSION="jruby-9.2.8.0"
       before_install:
         - ./ci/build/rvm_setup.sh
         - rm -f ${HOME}/.rvm/gemsets/jruby/global.gems
