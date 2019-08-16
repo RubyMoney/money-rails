@@ -63,6 +63,15 @@ module MoneyRails
     # Provide exchange rates
     delegate :add_rate, to: :Money
 
+    # Set infinite precision behavior
+    # If infer_precision? is set to true, will set the precision based on the column type
+    delegate :default_infinite_precision=, :default_infinite_precision, to: :Money
+    mattr_accessor :infer_precision
+    @@infer_precision = false 
+    def infer_precision?
+      @@infer_precision
+    end
+
     # Use (by default) validation of numericality for each monetized field.
     mattr_accessor :include_validations
     @@include_validations = true

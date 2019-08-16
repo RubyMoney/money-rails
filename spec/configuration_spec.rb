@@ -125,6 +125,19 @@ describe "configuration" do
       MoneyRails.default_bank = old_bank
     end
 
+    it "assigns a default infinite precision" do
+      old_precision = MoneyRails.default_infinite_precision
+
+      MoneyRails.default_infinite_precision = true
+      expect(Money.default_infinite_precision).to eq(true)
+
+      MoneyRails.default_infinite_precision = old_precision
+    end
+
+    it "sets infer_precision? to false by default" do
+      expect(MoneyRails.infer_precision?).to eq(false)
+    end
+
     describe "rounding mode" do
       [BigDecimal::ROUND_UP, BigDecimal::ROUND_DOWN, BigDecimal::ROUND_HALF_UP, BigDecimal::ROUND_HALF_DOWN,
        BigDecimal::ROUND_HALF_EVEN, BigDecimal::ROUND_CEILING, BigDecimal::ROUND_FLOOR].each do |mode|

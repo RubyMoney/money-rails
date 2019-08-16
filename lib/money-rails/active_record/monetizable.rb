@@ -56,7 +56,14 @@ module MoneyRails
             end
 
             # Assigns infinite_precision based on the field's column type, if available
-            options[:infinite_precision] = self.columns_hash[subunit_name].try(:type) == :decimal
+            unless options.has_key?(:infinite_precision)
+              if MoneyRails.infer_precision?
+                column_definition = self.columns_hash[subunit_name]
+                options[:infinite_precision] = column_definition && column_definition.type == :decimal
+              else
+                options[:infinite_precision] = MoneyRails.default_infinite_precision
+              end
+            end
 
             # Optional accessor to be run on an instance to detect currency
             instance_currency_name = options[:with_model_currency] ||

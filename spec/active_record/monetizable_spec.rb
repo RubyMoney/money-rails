@@ -143,16 +143,6 @@ if defined? ActiveRecord
         expect(product.discount_value).to eq(Money.new(150, "USD"))
       end
 
-      it "assigns instance precision based on the column type of the attribute" do
-        expect(product.unit_cost.infinite_precision?).to eq(true)
-        expect(product.unit_cost).to eq(Money.new(1234.8765, "USD", infinite_precision: true))
-        expect(product.unit_cost.to_s).to eq("12.348765")
-
-        expect(product.price.infinite_precision?).to eq(false)
-        expect(product.price).to eq(Money.new(3000, "USD", infinite_precision: false))
-        expect(product.price.to_s).to eq("30.00")
-      end
-
       it "uses numericality validation" do
         product.price_cents = "foo"
         expect(product.save).to be_falsey
@@ -171,6 +161,132 @@ if defined? ActiveRecord
         expect(product).not_to be_valid
         product.price_in_a_range_cents = 500
         expect(product).to be_valid
+      end
+
+      context "when infinite_precision option" do
+        before(:example) do
+          @prior_default_infinite_precision = MoneyRails.default_infinite_precision
+          @prior_infer_precision = MoneyRails.infer_precision
+        end
+        after(:example) do
+          MoneyRails.default_infinite_precision = @prior_default_infinite_precision
+          MoneyRails.infer_precision = @prior_infer_precision
+        end
+
+        context "is specified as true" do
+          it "returns infinite_precision money objects regardless of false default or column type" do
+            MoneyRails.default_infinite_precision = false
+            MoneyRails.infer_precision = true
+            class PreciseProduct < Product
+              monetize :price_cents, infinite_precision: true
+              monetize :unit_cost_cents, infinite_precision: true
+              monetize :skip_validation_price_cents, infinite_precision: true
+            end
+            precise_product = PreciseProduct.new(price: 11.1051, unit_cost: 100.2387, skip_validation_price: "5.0065")
+            expect(precise_product.price.infinite_precision?).to eq(true)
+            # Price is an integer column so the value is truncated on assignment
+            expect(precise_product.price).to eq(Money.new(1110.0, "EUR", infinite_precision: true))
+            expect(precise_product.price.to_s).to eq("11.10")
+            expect(precise_product.unit_cost.infinite_precision?).to eq(true)
+            expect(precise_product.unit_cost).to eq(Money.new(10023.87, "EUR", infinite_precision: true))
+            expect(precise_product.unit_cost.to_s).to eq("100.2387")
+            expect(precise_product.skip_validation_price.infinite_precision?).to eq(true)
+            expect(precise_product.skip_validation_price).to eq(Money.new(500.65, "EUR", infinite_precision: true))
+            expect(precise_product.skip_validation_price.to_s).to eq("5.0065")
+          end
+        end
+
+        context "is specified as false" do
+          it "returns subunit precision money objects regardless of true default or column type" do
+            MoneyRails.default_infinite_precision = true
+            MoneyRails.infer_precision = true
+            class ImpreciseProduct < Product
+              monetize :price_cents, infinite_precision: false
+              monetize :unit_cost_cents, infinite_precision: false
+              monetize :skip_validation_price_cents, infinite_precision: false
+            end
+            imprecise_product = ImpreciseProduct.new(price: 11.1051, unit_cost: 100.2387, skip_validation_price: "5.0065")
+            expect(imprecise_product.price.infinite_precision?).to eq(false)
+            expect(imprecise_product.price).to eq(Money.new(1111, "EUR", infinite_precision: false))
+            expect(imprecise_product.price.to_s).to eq("11.11")
+            expect(imprecise_product.unit_cost.infinite_precision?).to eq(false)
+            expect(imprecise_product.unit_cost).to eq(Money.new(10024, "EUR", infinite_precision: false))
+            expect(imprecise_product.unit_cost.to_s).to eq("100.24")
+            expect(imprecise_product.skip_validation_price.infinite_precision?).to eq(false)
+            expect(imprecise_product.skip_validation_price).to eq(Money.new(501, "EUR", infinite_precision: false))
+            expect(imprecise_product.skip_validation_price.to_s).to eq("5.01")
+          end
+        end
+
+        context "is not specified" do
+            let(:unspecified_precision_product) {
+              unspecified_precision_klass = Class.new(Product) do
+                monetize :price_cents
+                monetize :unit_cost_cents
+                monetize :skip_validation_price_cents
+              end
+              unspecified_precision_klass.new(price: 11.1051, unit_cost: 100.238765, skip_validation_price: "5.0065")
+            }
+            context "and infer_precision? is false" do
+              it "uses the specified default precision when false" do
+                MoneyRails.infer_precision = false
+                MoneyRails.default_infinite_precision = false
+                expect(unspecified_precision_product.price.infinite_precision?).to eq(false)
+                expect(unspecified_precision_product.price).to eq(Money.new(1111, "EUR", infinite_precision: false))
+                expect(unspecified_precision_product.price.to_s).to eq("11.11")
+                expect(unspecified_precision_product.unit_cost.infinite_precision?).to eq(false)
+                expect(unspecified_precision_product.unit_cost).to eq(Money.new(10024, "EUR", infinite_precision: false))
+                expect(unspecified_precision_product.unit_cost.to_s).to eq("100.24")
+                expect(unspecified_precision_product.skip_validation_price.infinite_precision?).to eq(false)
+                expect(unspecified_precision_product.skip_validation_price).to eq(Money.new(501, "EUR", infinite_precision: false))
+                expect(unspecified_precision_product.skip_validation_price.to_s).to eq("5.01")
+              end
+              
+              it "uses the specified default precision when true" do
+                MoneyRails.infer_precision = false
+                MoneyRails.default_infinite_precision = true
+                expect(unspecified_precision_product.price.infinite_precision?).to eq(true)
+                expect(unspecified_precision_product.price).to eq(Money.new(1110.0, "EUR", infinite_precision: true))
+                expect(unspecified_precision_product.price.to_s).to eq("11.10")
+                expect(unspecified_precision_product.unit_cost.infinite_precision?).to eq(true)
+                expect(unspecified_precision_product.unit_cost).to eq(Money.new(10023.8765, "EUR", infinite_precision: true))
+                expect(unspecified_precision_product.unit_cost.to_s).to eq("100.238765")
+                expect(unspecified_precision_product.skip_validation_price.infinite_precision?).to eq(true)
+                expect(unspecified_precision_product.skip_validation_price).to eq(Money.new(500.65, "EUR", infinite_precision: true))
+                expect(unspecified_precision_product.skip_validation_price.to_s).to eq("5.0065")
+              end
+            end
+
+            context "and infer_precision? is true" do
+              it "assigns instance precision based on the column type regardless of false default" do
+                MoneyRails.infer_precision = true
+                MoneyRails.default_infinite_precision = false
+                expect(unspecified_precision_product.price.infinite_precision?).to eq(false)
+                expect(unspecified_precision_product.price).to eq(Money.new(1111, "EUR", infinite_precision: true))
+                expect(unspecified_precision_product.price.to_s).to eq("11.11")
+                expect(unspecified_precision_product.unit_cost.infinite_precision?).to eq(true)
+                expect(unspecified_precision_product.unit_cost).to eq(Money.new(10023.8765, "EUR", infinite_precision: true))
+                expect(unspecified_precision_product.unit_cost.to_s).to eq("100.238765")
+                expect(unspecified_precision_product.skip_validation_price.infinite_precision?).to eq(false)
+                expect(unspecified_precision_product.skip_validation_price).to eq(Money.new(501, "EUR", infinite_precision: false))
+                expect(unspecified_precision_product.skip_validation_price.to_s).to eq("5.01")
+              end
+              
+              it "assigns instance precision based on the column type regardless of true default" do
+                MoneyRails.infer_precision = true
+                MoneyRails.default_infinite_precision = true
+                expect(unspecified_precision_product.price.infinite_precision?).to eq(false)
+                expect(unspecified_precision_product.price).to eq(Money.new(1111, "EUR", infinite_precision: true))
+                expect(unspecified_precision_product.price.to_s).to eq("11.11")
+                expect(unspecified_precision_product.unit_cost.infinite_precision?).to eq(true)
+                expect(unspecified_precision_product.unit_cost).to eq(Money.new(10023.8765, "EUR", infinite_precision: true))
+                expect(unspecified_precision_product.unit_cost.to_s).to eq("100.238765")
+                expect(unspecified_precision_product.skip_validation_price.infinite_precision?).to eq(false)
+                expect(unspecified_precision_product.skip_validation_price).to eq(Money.new(501, "EUR", infinite_precision: false))
+                expect(unspecified_precision_product.skip_validation_price.to_s).to eq("5.01")
+              end
+            end
+        end
       end
 
       context "when MoneyRails.raise_error_on_money_parsing is true" do
