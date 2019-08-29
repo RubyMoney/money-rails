@@ -60,8 +60,6 @@ module MoneyRails
               if MoneyRails.infer_precision?
                 column_definition = self.columns_hash[subunit_name]
                 options[:infinite_precision] = column_definition && column_definition.type == :decimal
-              else
-                options[:infinite_precision] = MoneyRails.default_infinite_precision
               end
             end
 
