@@ -55,9 +55,10 @@ module MoneyRails
                                    "Use :as option to explicitly specify the name or change the amount column postfix in the initializer."
             end
 
-            # Assigns infinite_precision based on the field's column type, if available
-            unless options.has_key?(:infinite_precision)
-              if MoneyRails.infer_precision?
+            # Infers precision based on field's column type when desired
+            if !options.has_key?(:infinite_precision) && MoneyRails.infer_precision?
+              # Only attempt column introspection when backing table exists
+              if self.table_exists?
                 column_definition = self.columns_hash[subunit_name]
                 options[:infinite_precision] = column_definition && column_definition.type == :decimal
               end
