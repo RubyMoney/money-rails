@@ -1,3 +1,4 @@
 #!/usr/bin/env ruby
 require "bundler/setup"
-exec "exe/gemstash", *ARGV
+require "gemstash/cli"
+Gemstash::CLI.start
