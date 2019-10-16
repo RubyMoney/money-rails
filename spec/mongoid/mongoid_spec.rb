@@ -16,7 +16,7 @@ if defined?(Mongoid) && ::Mongoid::VERSION.split('.').first.to_i > 2
     }
     let(:priceable_from_string_with_hyphen) { Priceable.create(price: '1-2 EUR' )}
     let(:priceable_from_string_with_unknown_currency) { Priceable.create(price: '1 TLDR') }
-    let(:priceable_with_infinite_precision) { Priceable.create(price: Money.new(BigDecimal.new('100.1'), 'EUR')) }
+    let(:priceable_with_infinite_precision) { Priceable.create(price: Money.new(BigDecimal('100.1'), 'EUR')) }
     let(:priceable_with_hash_field) {
       Priceable.create(price_hash: {
         key1: Money.new(100, "EUR"),
@@ -91,7 +91,7 @@ if defined?(Mongoid) && ::Mongoid::VERSION.split('.').first.to_i > 2
         end
 
         it "correctly mongoizes a Money object to a hash of cents and currency" do
-          expect(priceable_with_infinite_precision.price.cents).to eq(BigDecimal.new('100.1'))
+          expect(priceable_with_infinite_precision.price.cents).to eq(BigDecimal('100.1'))
           expect(priceable_with_infinite_precision.price.currency).to eq(Money::Currency.find('EUR'))
         end
       end
