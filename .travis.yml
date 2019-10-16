@@ -40,6 +40,8 @@ gemfile:
   - gemfiles/rails6.gemfile
 
 matrix:
+  allow_failures:
+    - rvm: ruby-head
   exclude:
     - rvm: 1.9.3
       gemfile: gemfiles/rails6.gemfile
