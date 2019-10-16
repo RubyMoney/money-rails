@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.13.3
+
+- Add Money#to_hash for JSON serialization
+- Update initializer template with #locale_backend config
+- Rollback support for remove_monetize / remove_money DB helpers
+- Rails 6 support
+
 ## 1.13.2
 
 - Make validation compatible with Money.locale_backend
