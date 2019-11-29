@@ -8,3 +8,4 @@ AllCops:
     - vendor/**/*
     - gemfiles/**/*
   DisplayCopNames: true
+  TargetRubyVersion: 2.4
