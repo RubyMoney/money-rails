@@ -57,6 +57,7 @@ module MoneyRails
           :abs_raw_value, :decimal_pieces, :pieces_array].each do |var_name|
           ivar_name = :"@_#{var_name}"
           remove_instance_variable(ivar_name) if instance_variable_defined?(ivar_name)
+          rescue NameError => e
         end
       end
 
