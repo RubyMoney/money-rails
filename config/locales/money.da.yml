@@ -1,0 +1,4 @@
+da:
+  errors:
+    messages:
+      invalid_currency: skal være en gyldig valuta  (f.eks. '100', '5%{decimal}24', eller '123%{thousands}456%{decimal}78'). Fik %{currency}
