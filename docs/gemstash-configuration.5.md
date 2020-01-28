@@ -149,6 +149,20 @@ already gems stashed for the previous value.
 
 A valid gem source URL
 
+# Ignore Gemfile source
+
+`:ignore_gemfile_source`
+
+Ignore the source specified in Gemfile and always use `:rubygems_url` as gems upstream.
+
+## Default value
+
+`false`
+
+## Valid values
+
+Boolean: `true` or `false`
+
 # Puma Threads
 
 `:puma_threads`

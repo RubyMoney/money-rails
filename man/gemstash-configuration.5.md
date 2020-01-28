@@ -22,6 +22,7 @@ gemstash-configuration
   :test: true
   :pool_timeout: 2
 :rubygems_url: https://my.gem-source.local
+:ignore_gemfile_source: false
 :puma_threads: 32
 :bind: tcp://0.0.0.0:4242
 :protected_fetch: true
@@ -146,6 +147,20 @@ for the previous value.
 ## Valid values
 
 A valid gem source URL
+
+# Ignore Gemfile source
+
+`:ignore_gemfile_source`
+
+Ignore the source specified in Gemfile and always use `:rubygems_url` as gems upstream.
+
+## Default value
+
+`false`
+
+## Valid values
+
+Boolean: `true` or `false`
 
 # Puma Threads
 
