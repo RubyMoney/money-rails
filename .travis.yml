@@ -1,6 +1,3 @@
-language: ruby
-dist: trusty
-matrix:
   allow_failures:
     - rvm: ruby-head
       gemfile: 'gemfiles/Gemfile.ruby-head'
@@ -19,14 +16,11 @@ matrix:
         - ./ci/build/rvm_setup.sh
         - rm -f ${HOME}/.rvm/gemsets/jruby/global.gems
         - rvm use ${JRUBY_VERSION} --install --binary --fuzzy
-        - gem install bundler
+        - gem install bundler -v 1.17.3
       install: bundle install --binstubs --jobs=3 --retry=3 --path=${BUNDLE_PATH:-vendor/bundle}
       script: bundle exec rake
 
 bundler_args: "--binstubs --jobs=3 --retry=3"
-
-before_install:
-  - gem install bundler
 
 cache: bundler
 
