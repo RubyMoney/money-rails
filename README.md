@@ -3,7 +3,7 @@
 [![Build
 Status](https://travis-ci.org/rubygems/gemstash.svg?branch=master)](https://travis-ci.org/rubygems/gemstash)
 [![Code
-Climate](https://codeclimate.com/github/bundler/gemstash/badges/gpa.svg)](https://codeclimate.com/github/bundler/gemstash)
+Climate](https://codeclimate.com/github/rubygems/gemstash/badges/gpa.svg)](https://codeclimate.com/github/rubygems/gemstash)
 
 <p align="center"><img src="gemstash.png" /></p>
 
@@ -12,7 +12,7 @@ Climate](https://codeclimate.com/github/bundler/gemstash/badges/gpa.svg)](https:
 Gemstash is both a cache for remote servers such as
 https://rubygems.org, and a private gem source.
 
-If you are using [bundler](http://bundler.io/) across many machines that
+If you are using [bundler](http://rubygems.io/) across many machines that
 have access to a server within your control, you might want to use
 Gemstash.
 
@@ -162,7 +162,7 @@ An anatomy of various configuration and commands:
   - [Version](docs/gemstash-version.1.md)
 
 To see what has changed in recent versions of Gemstash, see the
-[CHANGELOG](https://github.com/bundler/gemstash/blob/master/CHANGELOG.md).
+[CHANGELOG](https://github.com/rubygems/gemstash/blob/master/CHANGELOG.md).
 
 ## Development
 
@@ -174,10 +174,10 @@ an interactive prompt that will allow you to experiment.
 ## Contributing
 
 Bug reports and pull requests are welcome on GitHub at
-https://github.com/bundler/gemstash. This project is intended to be a
+https://github.com/rubygems/gemstash. This project is intended to be a
 safe, welcoming space for collaboration, and contributors are expected
 to adhere to the [Contributor
-Covenant](https://github.com/bundler/gemstash/blob/master/CODE_OF_CONDUCT.md)
+Covenant](https://github.com/rubygems/gemstash/blob/master/CODE_OF_CONDUCT.md)
 code of conduct.
 
 ## License
