@@ -15,7 +15,7 @@ Gem::Specification.new do |spec|
   spec.description   = "Gemstash acts as a local RubyGems server, caching \
 copies of gems from RubyGems.org automatically, and eventually letting \
 you push your own private gems as well."
-  spec.homepage      = "https://github.com/bundler/gemstash"
+  spec.homepage      = "https://github.com/rubygems/gemstash"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files -z`.split("\x0").select {|f|
