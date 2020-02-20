@@ -12,6 +12,7 @@ module Gemstash
       db_adapter: "sqlite3",
       bind: "tcp://0.0.0.0:9292",
       rubygems_url: "https://rubygems.org",
+      ignore_gemfile_source: false,
       protected_fetch: false,
       fetch_timeout: 20,
       # Actual default for db_connection_options is dynamic based on the adapter

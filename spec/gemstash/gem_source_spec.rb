@@ -76,6 +76,34 @@ RSpec.describe Gemstash::GemSource do
     end
   end
 
+  context "ignoring an upstream defined in a header" do
+    let(:env) do
+      config = Gemstash::Configuration.new(config: { ignore_gemfile_source: true })
+      current_env = Gemstash::Env.new(config)
+
+      {
+        "gemstash.env" => current_env,
+        "REQUEST_URI" => "/some/path?arg=abc",
+        "PATH_INFO" => "/some/path",
+        "HTTP_X_GEMFILE_SOURCE" => upstream_url
+      }
+    end
+
+    let(:upstream_url) { "https://some.gemsite.com" }
+    let(:default_upstream_url) { "https://rubygems.org" }
+    let(:result) { double }
+
+    it "sets the source to RubygemsSource" do
+      expect(app).to receive(:call).with(env).and_return(result)
+      expect(middleware.call(env)).to eq(result)
+      expect(env["gemstash.gem_source"]).to eq(Gemstash::GemSource::RubygemsSource)
+      expect(env["gemstash.upstream"]).to eq(default_upstream_url)
+      expect(env["REQUEST_URI"]).to eq("/some/path?arg=abc")
+      expect(env["PATH_INFO"]).to eq("/some/path")
+      expect(the_log).to_not include("Rewriting ")
+    end
+  end
+
   context "using the default upstream" do
     let(:env) do
       {

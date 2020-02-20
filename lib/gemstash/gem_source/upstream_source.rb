@@ -198,7 +198,7 @@ module Gemstash
     # default upstream).
     class RubygemsSource < Gemstash::GemSource::UpstreamSource
       def self.matches?(env)
-        env["gemstash.upstream"] = if env["HTTP_X_GEMFILE_SOURCE"].to_s.empty?
+        env["gemstash.upstream"] = if env["gemstash.env"].config[:ignore_gemfile_source] || env["HTTP_X_GEMFILE_SOURCE"].to_s.empty?
           env["gemstash.env"].config[:rubygems_url]
         else
           env["HTTP_X_GEMFILE_SOURCE"]
