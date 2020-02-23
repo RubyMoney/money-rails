@@ -9,5 +9,5 @@
 /tmp/
 /html/
 /lib/gemstash/man/
-.*
+.ruby-version
 gemfiles/Gemfile.ruby-head.lock
