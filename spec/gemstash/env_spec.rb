@@ -25,6 +25,28 @@ RSpec.describe Gemstash::Env do
     end
   end
 
+  context ".pidfile" do
+    let(:dir) { __dir__ }
+
+    it "has default pidfile path" do
+      config = Gemstash::Configuration.new(config: { base_path: dir })
+      env = Gemstash::Env.new(config)
+      expect(env.pidfile).to eq(File.join(dir, "puma.pid"))
+    end
+
+    it "supports relative path" do
+      config = Gemstash::Configuration.new(config: { base_path: dir, pidfile: "custom/puma.pid" })
+      env = Gemstash::Env.new(config)
+      expect(env.pidfile).to eq(File.join(dir, "custom", "puma.pid"))
+    end
+
+    it "supports absolute path" do
+      config = Gemstash::Configuration.new(config: { base_path: dir, pidfile: "/var/run/gemstash.pid" })
+      env = Gemstash::Env.new(config)
+      expect(env.pidfile).to eq("/var/run/gemstash.pid")
+    end
+  end
+
   context "with a base path other than default" do
     let(:env) { Gemstash::Env.new }
 

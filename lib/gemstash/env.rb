@@ -6,6 +6,7 @@ require "dalli"
 require "fileutils"
 require "sequel"
 require "uri"
+require "pathname"
 
 module Gemstash
   # Storage for application-wide variables and configuration.
@@ -106,6 +107,19 @@ module Gemstash
         $stdout
       else
         base_file(config[:log_file] || "server.log")
+      end
+    end
+
+    def pidfile
+      if config[:pidfile]
+        pathname = Pathname.new(config[:pidfile])
+        if pathname.relative?
+          base_file(pathname.to_s)
+        else
+          pathname.to_s
+        end
+      else
+        base_file("puma.pid")
       end
     end
 

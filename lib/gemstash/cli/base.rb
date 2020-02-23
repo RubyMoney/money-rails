@@ -47,7 +47,7 @@ module Gemstash
       end
 
       def pidfile_args
-        ["--pidfile", gemstash_env.base_file("puma.pid")]
+        ["--pidfile", gemstash_env.pidfile]
       end
     end
   end
