@@ -12,7 +12,7 @@ Climate](https://codeclimate.com/github/rubygems/gemstash/badges/gpa.svg)](https
 Gemstash is both a cache for remote servers such as
 https://rubygems.org, and a private gem source.
 
-If you are using [bundler](http://rubygems.io/) across many machines that
+If you are using [bundler](http://bundler.io/) across many machines that
 have access to a server within your control, you might want to use
 Gemstash.
 
@@ -128,10 +128,11 @@ database](docs/gemstash-customize.7.md#database).
 
 Gemstash temporarily caches things like gem dependencies in memory.
 Anything cached in memory will last for 30 minutes before being
-retrieved again. You can [use memcached](docs/gemstash-customize.7.md#cache)
-instead of caching in memory. Gem files are always cached permanently,
-so bundling with a `Gemfile.lock` with all gems cached will never call
-out to https://rubygems.org.
+retrieved again. You can [use
+memcached](docs/gemstash-customize.7.md#cache) instead of caching in
+memory. Gem files are always cached permanently, so bundling with a
+`Gemfile.lock` with all gems cached will never call out to
+https://rubygems.org.
 
 The server you ran is provided via [Puma](http://puma.io/) and
 [Rack](http://rack.github.io/), however they are not customizable at
