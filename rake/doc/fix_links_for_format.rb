@@ -55,7 +55,6 @@ class DocLinkUrl
   end
 
   def relative_path
-    current = Pathname.new(current_path)
     Pathname.new(path).join(filename)
   end
 
