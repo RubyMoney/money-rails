@@ -10,8 +10,8 @@ GITHUB_IMAGES = %([![Build Status][TRAVIS_IMG]][TRAVIS] [![Code Climate][CODE_CL
 
 [TRAVIS_IMG]: https://travis-ci.org/rubygems/gemstash.svg?branch=master
 [TRAVIS]: https://travis-ci.org/rubygems/gemstash
-[CODE_CLIMATE_IMG]: https://codeclimate.com/github/bundler/gemstash/badges/gpa.svg
-[CODE_CLIMATE]: https://codeclimate.com/github/bundler/gemstash
+[CODE_CLIMATE_IMG]: https://codeclimate.com/github/rubygems/gemstash/badges/gpa.svg
+[CODE_CLIMATE]: https://codeclimate.com/github/rubygems/gemstash
 
 <p align="center"><img src="gemstash.png" /></p>)
 
