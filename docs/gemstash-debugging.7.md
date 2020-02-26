@@ -8,12 +8,14 @@ at `server.log` within your base directory. By default, this will be at
 `~/.gemstash/server.log`.
 
 You might find it easier to view the log directly in your terminal. If
-you run Gemstash [in non-daemonized form](gemstash-start.1.md#options),
-the log will be output directly to standard out:
+you run Gemstash [in non-daemonized
+form](docs/gemstash-start.1.md#options), the log will be output directly
+to standard out:
 
     $ gemstash start --no-daemonize
 
-You can also [check the status](gemstash-status.1.md) of the server:
+You can also [check the status](docs/gemstash-status.1.md) of the
+server:
 
     $ gemstash status
 
@@ -21,4 +23,4 @@ The server status is checked by passing through to
 [pumactl](https://github.com/puma/puma#pumactl).
 
 If you find a bug, please don’t hesitate to [open a bug
-report](https://github.com/bundler/gemstash#contributing)\!
+report](https://github.com/rubygems/gemstash#contributing)\!

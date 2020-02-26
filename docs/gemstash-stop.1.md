@@ -16,5 +16,5 @@ Stops the Gemstash server.
 
   - `--config-file FILE`: Specify the config file to use. If you aren’t
     using the default config file at `~/.gemstash/config.yml` or
-    [`~/.gemstash/config.yml.erb`](gemstash-customize.7.md#erb-parsed-config),
+    [`~/.gemstash/config.yml.erb`](docs/gemstash-customize.7.md#erb-parsed-config),
     then you must specify the config file via this option.

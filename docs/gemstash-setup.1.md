@@ -36,5 +36,5 @@ answers.
     `~/.gemstash/config.yml`. If you write to a custom location, you
     will need to pass the `--config-file` option to all Gemstash
     commands. If you plan to use [ERB in your config
-    file](gemstash-customize.7.md#erb-parsed-config), you might want to
-    use `~/.gemstash/config.yml.erb`.
+    file](docs/gemstash-customize.7.md#erb-parsed-config), you might
+    want to use `~/.gemstash/config.yml.erb`.
