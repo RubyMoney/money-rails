@@ -206,7 +206,7 @@ environment variables in the config:
 [MEMCACHED]: http://memcached.org/
 [PUMA]: http://puma.io/
 [RACK]: http://rack.github.io/
-[PUMA_CONFIG]: https://github.com/bundler/gemstash/blob/master/lib/gemstash/puma.rb
-[RACKUP_FILE]: https://github.com/bundler/gemstash/blob/master/lib/gemstash/config.ru
+[PUMA_CONFIG]: https://github.com/rubygems/gemstash/blob/master/lib/gemstash/puma.rb
+[RACKUP_FILE]: https://github.com/rubygems/gemstash/blob/master/lib/gemstash/config.ru
 [PUMA_BIND]: https://github.com/puma/puma#binding-tcp--sockets
 [PROTECTED_FETCH]: ./gemstash-private-gems.7.md#protected-fetching

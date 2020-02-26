@@ -185,7 +185,7 @@ interactive prompt that will allow you to experiment.
 ## Contributing
 
 Bug reports and pull requests are welcome on GitHub at
-https://github.com/bundler/gemstash. This project is intended to be a safe,
+https://github.com/rubygems/gemstash. This project is intended to be a safe,
 welcoming space for collaboration, and contributors are expected to adhere to
 the [Contributor Covenant][CODE_OF_CONDUCT] code of conduct.
 
@@ -217,6 +217,6 @@ The gem is available as open source under the terms of the
 [STATUS]: ./gemstash-status.1.md
 [SETUP]: ./gemstash-setup.1.md
 [VERSION]: ./gemstash-version.1.md
-[CHANGELOG]: https://github.com/bundler/gemstash/blob/master/CHANGELOG.md
-[CODE_OF_CONDUCT]: https://github.com/bundler/gemstash/blob/master/CODE_OF_CONDUCT.md
+[CHANGELOG]: https://github.com/rubygems/gemstash/blob/master/CHANGELOG.md
+[CODE_OF_CONDUCT]: https://github.com/rubygems/gemstash/blob/master/CODE_OF_CONDUCT.md
 [LICENSE]: http://opensource.org/licenses/MIT
