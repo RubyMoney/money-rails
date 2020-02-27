@@ -1,3 +1,60 @@
+## 2.1.0 (2020-02-26)
+
+### Bugfixes
+
+  - Shebang should be the first thing in the file ([#222](https://github.com/rubygems/gemstash/pull/222), [@bronzdoc](https://github.com/bronzdoc))
+
+### Changes
+
+  - Update rack-test requirement from ~> 0.6 to ~> 1.1 ([#199](https://github.com/rubygems/gemstash/pull/199), [@dependabot](https://github.com/dependabot))
+  - Update rake requirement from ~> 10.0 to ~> 12.3 ([#200](https://github.com/rubygems/gemstash/pull/200), [@dependabot](https://github.com/dependabot))
+  - CI matrix: Drop 2.0, 2.1, 2.2 ([#201](https://github.com/rubygems/gemstash/pull/201), [@olleolleolle](https://github.com/olleolleolle))
+  - Update rubocop version and update files to be inline with new cops ([#202](https://github.com/rubygems/gemstash/pull/202), [@bronzdoc](https://github.com/bronzdoc))
+  - Update rubocop requirement from = 0.60.0 to = 0.61.0 ([#208](https://github.com/rubygems/gemstash/pull/208), [@dependabot](https://github.com/dependabot))
+  - Update rubocop requirement from = 0.61.0 to = 0.61.1 ([#209](https://github.com/rubygems/gemstash/pull/209), [@dependabot](https://github.com/dependabot))
+  - Avoid Rubocop warnings ([#210](https://github.com/rubygems/gemstash/pull/210), [@olleolleolle](https://github.com/olleolleolle))
+  - RSpec: config.disable_monkey_patching! ([#211](https://github.com/rubygems/gemstash/pull/211), [@olleolleolle](https://github.com/olleolleolle))
+  - Travis: update JRuby to 9.2.5.0 ([#212](https://github.com/rubygems/gemstash/pull/212), [@olleolleolle](https://github.com/olleolleolle))
+  - Update rubocop requirement from = 0.61.1 to = 0.62.0 ([#213](https://github.com/rubygems/gemstash/pull/213), [@dependabot](https://github.com/dependabot))
+  - Update rubocop requirement from = 0.62.0 to = 0.63.0 ([#215](https://github.com/rubygems/gemstash/pull/215), [@dependabot](https://github.com/dependabot))
+  - gemspec: Allow Bundler 2 ([#217](https://github.com/rubygems/gemstash/pull/217), [@olleolleolle](https://github.com/olleolleolle))
+  - Update rubocop requirement from = 0.63.0 to = 0.63.1 ([#218](https://github.com/rubygems/gemstash/pull/218), [@dependabot](https://github.com/dependabot))
+  - Update rubocop requirement from = 0.63.1 to = 0.64.0 ([#220](https://github.com/rubygems/gemstash/pull/220), [@dependabot](https://github.com/dependabot))
+  - CI: matrix updates - update JRuby, add 2.6.1 ([#221](https://github.com/rubygems/gemstash/pull/221), [@olleolleolle](https://github.com/olleolleolle))
+  - Add a failing Aruba-based RSpec test for the CLI client output ([#223](https://github.com/rubygems/gemstash/pull/223), [@olleolleolle](https://github.com/olleolleolle))
+  - Update rubocop requirement from = 0.64.0 to = 0.65.0 ([#224](https://github.com/rubygems/gemstash/pull/224), [@dependabot](https://github.com/dependabot))
+  - CI: use 2.5.5, 2.6.2 ([#225](https://github.com/rubygems/gemstash/pull/225), [@olleolleolle](https://github.com/olleolleolle))
+  - Update rubocop requirement from = 0.65.0 to = 0.66.0 ([#226](https://github.com/rubygems/gemstash/pull/226), [@dependabot](https://github.com/dependabot), [@olleolleolle](https://github.com/olleolleolle), [@bronzdoc](https://github.com/bronzdoc))
+  - CI: Use 2.4.6 ([#228](https://github.com/rubygems/gemstash/pull/228), [@olleolleolle](https://github.com/olleolleolle))
+  - Update rubocop requirement from = 0.66.0 to = 0.67.1 ([#229](https://github.com/rubygems/gemstash/pull/229), [@dependabot](https://github.com/dependabot), [@olleolleolle](https://github.com/olleolleolle))
+  - CI: Drop 2.3.8 ([#230](https://github.com/rubygems/gemstash/pull/230), [@olleolleolle](https://github.com/olleolleolle))
+  - Update rubocop requirement from = 0.67.1 to = 0.67.2 ([#231](https://github.com/rubygems/gemstash/pull/231), [@dependabot](https://github.com/dependabot))
+  - CI: Use JRuby 9.2.7.0 ([#232](https://github.com/rubygems/gemstash/pull/232), [@olleolleolle](https://github.com/olleolleolle))
+  - Update rubocop requirement from = 0.67.2 to = 0.68.0 ([#233](https://github.com/rubygems/gemstash/pull/233), [@dependabot](https://github.com/dependabot), [@olleolleolle](https://github.com/olleolleolle))
+  - Update rubocop requirement from = 0.68.1 to = 0.69.0 ([#234](https://github.com/rubygems/gemstash/pull/234), [@dependabot](https://github.com/dependabot))
+  - Update rubocop requirement from = 0.69.0 to = 0.70.0 ([#235](https://github.com/rubygems/gemstash/pull/235), [@dependabot](https://github.com/dependabot))
+  - Set Travis badge to /rubygems user ([#236](https://github.com/rubygems/gemstash/pull/236), [@olleolleolle](https://github.com/olleolleolle))
+  - Fix broken links ([#240](https://github.com/rubygems/gemstash/pull/240), [@Aliciawyse](https://github.com/Aliciawyse))
+  - Fix various rubocop/codeclimate issues ([#241](https://github.com/rubygems/gemstash/pull/241), [@tchia04](https://github.com/tchia04))
+  - Fix some broken links in readme ([#243](https://github.com/rubygems/gemstash/pull/243), [@Aliciawyse](https://github.com/Aliciawyse))
+  - Improve webspec tests ([#244](https://github.com/rubygems/gemstash/pull/244), [@Aliciawyse](https://github.com/Aliciawyse))
+  - CI: Use jruby-9.2.8.0 ([#245](https://github.com/rubygems/gemstash/pull/245), [@olleolleolle](https://github.com/olleolleolle))
+  - CI: Use ruby 2.4.7, 2.5.6, 2.6.4 ([#246](https://github.com/rubygems/gemstash/pull/246), [@olleolleolle](https://github.com/olleolleolle))
+  - Add puma server pidfile configuration option ([#248](https://github.com/rubygems/gemstash/pull/248), [@krists](https://github.com/krists))
+  - CI: Use jruby-9.2.9.0 ([#249](https://github.com/rubygems/gemstash/pull/249), [@olleolleolle](https://github.com/olleolleolle))
+  - Officially drop support for older rubies ([#250](https://github.com/rubygems/gemstash/pull/250), [@deivid-rodriguez](https://github.com/deivid-rodriguez))
+  - Add config to ignore Gemfile source ([#253](https://github.com/rubygems/gemstash/pull/253), [@zpdcodes](https://github.com/zpdcodes))
+  - Update Puma gem ([#255](https://github.com/rubygems/gemstash/pull/255), [@bronzdoc](https://github.com/bronzdoc))
+  - Spec failures might be due to a bundler version ([#256](https://github.com/rubygems/gemstash/pull/256), [@bronzdoc](https://github.com/bronzdoc))
+  - Update spec homepage ([#257](https://github.com/rubygems/gemstash/pull/257), [@bronzdoc](https://github.com/bronzdoc))
+  - Update README.md links ([#258](https://github.com/rubygems/gemstash/pull/258), [@bronzdoc](https://github.com/bronzdoc))
+  - Add PR template ([#259](https://github.com/rubygems/gemstash/pull/259), [@bronzdoc](https://github.com/bronzdoc))
+  - Update docs ([#260](https://github.com/rubygems/gemstash/pull/260), [@bronzdoc](https://github.com/bronzdoc))
+
+### Features
+
+  - Add configuration options cache_expiration, cache_max_size ([#207](https://github.com/rubygems/gemstash/pull/207), [@optix2000](https://github.com/optix2000), [@olleolleolle](https://github.com/olleolleolle))
+
 ## 2.0.0 (2018-11-18)
 
 ### Changes
