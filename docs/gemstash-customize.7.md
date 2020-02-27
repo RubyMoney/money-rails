@@ -131,9 +131,9 @@ All caching expires in `cache_expiration` number of seconds. Default is
 Gemstash uses [Puma](http://puma.io/) and [Rack](http://rack.github.io/)
 as the server. Alternate server configurations are not currently
 supported, but you can take a look at the [Puma
-configuration](https://github.com/bundler/gemstash/blob/master/lib/gemstash/puma.rb)
+configuration](https://github.com/rubygems/gemstash/blob/master/lib/gemstash/puma.rb)
 and the [rackup
-file](https://github.com/bundler/gemstash/blob/master/lib/gemstash/config.ru)
+file](https://github.com/rubygems/gemstash/blob/master/lib/gemstash/config.ru)
 for inspiration.
 
 While the server is not customizable, the way Gemstash binds the port
@@ -166,7 +166,7 @@ configuration key.
 ```
 
 More details on [protected\_fetch are
-here](gemstash-private-gems.7.md#protected-fetching).
+here](docs/gemstash-private-gems.7.md#protected-fetching).
 
 ## Fetch Timeout
 

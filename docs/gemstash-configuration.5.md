@@ -18,6 +18,7 @@ gemstash-configuration
   :test: true
   :pool_timeout: 2
 :rubygems_url: https://my.gem-source.local
+:ignore_gemfile_source: false
 :puma_threads: 32
 :bind: tcp://0.0.0.0:4242
 :protected_fetch: true
@@ -34,7 +35,7 @@ files, and the database (when using SQLite). If the default is being
 used, the directory will be created if it does not exist. Any other
 directory needs to be created ahead of time and be writable to the
 Gemstash server process. Specifying the `:base_path` via [`gemstash
-setup`](gemstash-setup.1.md) will create the directory for you.
+setup`](docs/gemstash-setup.1.md) will create the directory for you.
 
 ## Default value
 
@@ -153,7 +154,8 @@ A valid gem source URL
 
 `:ignore_gemfile_source`
 
-Ignore the source specified in Gemfile and always use `:rubygems_url` as gems upstream.
+Ignore the source specified in Gemfile and always use `:rubygems_url` as
+gems upstream.
 
 ## Default value
 
@@ -232,7 +234,7 @@ Integer value with a minimum of `1`
 `:log_file`
 
 Indicates the name of the file to use for logging. The file will be
-placed in the [base path](gemstash-configuration.5.md#base-path).
+placed in the [base path](docs/gemstash-configuration.5.md#base-path).
 
 ## Default value
 
@@ -243,4 +245,4 @@ placed in the [base path](gemstash-configuration.5.md#base-path).
 Any valid file name, or `:stdout` to log to `$stdout`
 
 *Note: Using `:stdout` for the `:log_file` requires [running with
-`--no-daemonize`](gemstash-start.1.md#options).*
+`--no-daemonize`](docs/gemstash-start.1.md#options).*
