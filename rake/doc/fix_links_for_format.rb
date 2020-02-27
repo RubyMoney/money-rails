@@ -54,7 +54,7 @@ class DocLinkUrl
     end
   end
 
-  def relative_path
+  def full_path
     Pathname.new(path).join(filename)
   end
 
@@ -65,9 +65,9 @@ class DocLinkUrl
   def to_s
     case FILTER.format
     when "gfm"
-      "#{relative_path}#{heading}"
+      "#{full_path}#{heading}"
     when "html"
-      "#{relative_path.sub(/\.md\z/, ".html")}#{heading}"
+      "#{full_path.sub(/\.md\z/, ".html")}#{heading}"
     when "man"
       "gemstash help #{filename.sub(/\Agemstash-/, "")}"
     else
