@@ -56,4 +56,11 @@ class Product < ActiveRecord::Base
 
   # Using postfix to determine currency column (reduced_price_currency)
   monetize :reduced_price_cents, allow_nil: true
+
+  attr_accessible :price_cents, :discount
+
+  # Use money-rails macros
+  monetize :price_cents
+  monetize :discount, target_name: "discount_value"
+
 end
