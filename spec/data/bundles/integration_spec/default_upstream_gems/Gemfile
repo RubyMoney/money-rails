@@ -1,0 +1,9 @@
+# frozen_string_literal: true
+
+source "http://localhost:9042"
+
+if ENV["SPEAKER_VERSION"].to_s.empty?
+  gem "speaker"
+else
+  gem "speaker", ENV["SPEAKER_VERSION"]
+end

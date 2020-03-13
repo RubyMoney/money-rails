@@ -1,0 +1,157 @@
+# Resulting structure:
+#
+# versions[]
+#   number
+#   date
+#   description
+#   sections[]
+#     title
+#     description
+#     changes[]
+#       comment
+#       pull_requests[]
+#         number
+#         url
+#       authors[]
+#         username
+#         url
+grammar Changelog::Grammar
+  rule versions
+    (version+) {
+      def versions
+        captures[:version]
+      end
+    }
+  end
+
+  rule version
+    (version_header version_section*) {
+      def number
+        capture(:version_header).capture(:version_number).value
+      end
+
+      def date
+        capture(:version_header).capture(:date).value
+      end
+
+      def description
+        result = capture(:version_header).capture(:description)
+        result.value if result
+      end
+
+      def sections
+        captures[:version_section]
+      end
+
+      def pull_requests
+        sections.map(&:changes).flatten.map(&:pull_requests).flatten
+      end
+    }
+  end
+
+  rule version_header
+    "## " version_number:(/(\d+(\.\d+)*(\.pre\.\d+)?)|master/) " (" date:(/(\d{4}-\d{2}-\d{2})|unreleased/) ")\n\n"
+    description?
+  end
+
+  rule version_section
+    ("### " title:(/[^\n]*/) "\n\n" description? changes?) {
+      def title
+        capture(:title).value
+      end
+
+      def heading
+        "### #{title}\n\n#{description}"
+      end
+
+      def description
+        capture(:description).value if capture(:description)
+      end
+
+      def changes
+        if capture(:changes)
+          capture(:changes).captures[:change]
+        else
+          []
+        end
+      end
+    }
+  end
+
+  rule description
+    paragraph+
+  end
+
+  rule paragraph
+    ("  " !"- " /(\w|`)[^\n]*/ "\n")+ "\n"
+  end
+
+  rule changes
+    change+ "\n"?
+  end
+
+  rule change
+    ("  - " comment:(/[^()\n]*/) pull_requests_and_authors? "\n") {
+      def comment
+        capture(:comment).value
+      end
+
+      def pull_requests
+        pull_requests_and_authors(:pull_requests)
+      end
+
+      def authors
+        pull_requests_and_authors(:authors)
+      end
+
+    private
+
+      def pull_requests_and_authors(type)
+        return [] unless capture(:pull_requests_and_authors)
+        return [] unless capture(:pull_requests_and_authors).capture(type)
+        singular = type.to_s.sub(/s$/, "").to_sym
+        capture(:pull_requests_and_authors).capture(type).capture(singular) || []
+      end
+    }
+  end
+
+  rule pull_requests_and_authors
+    "(" pull_requests ", " authors ")"
+  end
+
+  rule pull_requests
+    pull_request (", " pull_request)*
+  end
+
+  rule pull_request
+    ("[#" number:(/\d+/) "](" github_url ")") {
+      def number
+        capture(:number).value
+      end
+
+      def url
+        capture(:github_url).value
+      end
+    }
+  end
+
+  rule authors
+    author (", " author)*
+  end
+
+  rule author
+    ("[@" username:(/\w+/) "](" github_url ")") {
+      def username
+        capture(:username).value
+      end
+
+      def url
+        capture(:github_url).value
+      end
+    }
+  end
+
+  rule github_url
+    "https://github.com" path:(/\/\w*/)*
+  end
+end

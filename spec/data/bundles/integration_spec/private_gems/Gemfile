@@ -1,0 +1,10 @@
+# frozen_string_literal: true
+
+require "cgi"
+source "http://localhost:9042/private"
+
+if ENV["SPEAKER_VERSION"].to_s.empty?
+  gem "speaker"
+else
+  gem "speaker", ENV["SPEAKER_VERSION"]
+end

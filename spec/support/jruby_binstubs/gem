@@ -1,0 +1,10 @@
+# Based on jgem
+require "rubygems"
+require "rubygems/gem_runner"
+require "rubygems/exceptions"
+
+begin
+  Gem::GemRunner.new.run ARGV.clone
+rescue Gem::SystemExitException => e
+  exit e.exit_code
+end

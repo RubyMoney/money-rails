@@ -1,0 +1,4 @@
+#!/usr/bin/env ruby
+require "bundler/setup"
+require "gemstash/cli"
+Gemstash::CLI.start

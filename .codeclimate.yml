@@ -1,0 +1,19 @@
+---
+version: "2"
+
+plugins:
+  duplication:
+    enabled: true
+    config:
+      languages:
+        - ruby
+  fixme:
+    enabled: true
+  rubocop:
+    enabled: true
+    # Available channels: https://docs.codeclimate.com/docs/rubocop
+    channel: "rubocop-0-67"
+
+exclude_patterns:
+  - vendor/
+  - '*.log'

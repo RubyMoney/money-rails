@@ -1,0 +1,3 @@
+require_relative "which"
+system which("curl"), *ARGV
+exit $?.exitstatus

@@ -1,0 +1,10 @@
+# frozen_string_literal: true
+
+def which(executable)
+  ENV["PATH"].split(File::PATH_SEPARATOR).each do |path|
+    exe_path = File.join(path, executable)
+    return exe_path if File.file?(exe_path) && File.executable?(exe_path)
+  end
+
+  nil
+end

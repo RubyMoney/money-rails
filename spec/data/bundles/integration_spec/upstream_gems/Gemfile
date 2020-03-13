@@ -1,0 +1,10 @@
+# frozen_string_literal: true
+
+require "cgi"
+source "http://localhost:9042/upstream/#{CGI.escape("http://127.0.0.1:9043")}"
+
+if ENV["SPEAKER_VERSION"].to_s.empty?
+  gem "speaker"
+else
+  gem "speaker", ENV["SPEAKER_VERSION"]
+end

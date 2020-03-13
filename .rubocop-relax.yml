@@ -1,0 +1,11 @@
+# Offense count: 65
+# Configuration parameters: AllowURI, URISchemes.
+Metrics/LineLength:
+  Max: 122
+
+# Offense count: 85
+# Cop supports --auto-correct.
+# Configuration parameters: EnforcedStyle, SupportedStyles, UseHashRocketsWithSymbolValues.
+Style/HashSyntax:
+  Enabled: false
+
