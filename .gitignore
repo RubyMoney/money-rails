@@ -11,3 +11,61 @@
 /lib/gemstash/man/
 .ruby-version
 gemfiles/Gemfile.ruby-head.lock
+# multiple gemfiles
+gemfiles/*.lock
+Gemfile.lock
+
+# RVM / rbenv version files
+.rvmrc
+.rbenv-version
+.ruby-version
+
+# dummy dbs
+*.sqlite3
+
+# rcov generated
+coverage
+
+# rdoc generated
+rdoc
+
+# yard generated
+doc
+.yardoc
+
+# bundler
+.bundle
+vendor/bundle
+bin
+
+# logging
+*.log
+
+# jeweler generated
+pkg
+
+## MAC OS
+.DS_Store
+
+## TEXTMATE
+*.tmproj
+tmtags
+
+## EMACS
+*~
+\#*
+.\#*
+
+## VIM
+*.swp
+
+## Rubymine
+.idea
+
+## PROJECT::GENERAL
+*.rbc
+
+## PROJECT::SPECIFIC
+.rbx
+
+/tmp

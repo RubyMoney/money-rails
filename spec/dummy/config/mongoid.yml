@@ -1,0 +1,29 @@
+development:
+  # For Mongoid 2.x
+  host: localhost
+  database: dummy_development
+
+  # For Mongoid 3.x
+  sessions:
+    default:
+      database: dummy_development
+      hosts:
+        - localhost:27017
+
+test:
+  # For Mongoid 2.x
+  host: localhost
+  database: dummy_test
+
+  # For Mongoid 3.x
+  sessions:
+    default:
+      database: dummy_test
+      hosts:
+        - localhost:27017
+
+  clients:                                                                                                    
+    default:                                                                                                  
+      database: dummy_test   
+      hosts:                                                                                                  
+        - localhost:27017  

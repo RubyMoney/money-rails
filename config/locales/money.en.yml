@@ -1,0 +1,5 @@
+en:
+  errors:
+    messages:
+      invalid_currency: must be a valid currency (eg. '100', '5%{decimal}24', or '123%{thousands}456%{decimal}78'). Got %{currency}
+
