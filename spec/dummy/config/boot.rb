@@ -1,5 +1,3 @@
-require 'rubygems'
-
 # The default gemfile is rails4
 gemfile = File.expand_path('../../../../gemfiles/rails4.gemfile', __FILE__)
 

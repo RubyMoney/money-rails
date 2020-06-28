@@ -1,11 +1,7 @@
 sudo: false
 dist: trusty
 before_install:
-  # Rubygems > 3.0.0 no longer supported rubies < 2.3
-  - gem install "rubygems-update:<3.0.0" --no-document && update_rubygems
-  # Bundler 2.0 is not supported by Rails < 5
-  - gem list -i bundler -v '>= 2.0.0' && rvm @global do gem uninstall bundler -x || true
-  - gem install bundler -v '~> 1.17'
+  - gem install bundler --version '~> 1.17'
 before_script:
   - "bundle exec rake prepare_test_env"
 script: "bundle exec rspec"
@@ -13,7 +9,6 @@ language: ruby
 cache: bundler
 services: mongodb
 rvm:
-  - 1.9.3
   - 2.0.0
   - 2.1.10
   - 2.2.10
@@ -21,6 +16,7 @@ rvm:
   - 2.4.9
   - 2.5.7
   - 2.6.5
+  - 2.7.1
   - ruby-head
   #  TODO: investigate failure
   #  This is an arbitrary failure on travis
@@ -43,17 +39,6 @@ matrix:
   allow_failures:
     - rvm: ruby-head
   exclude:
-    - rvm: 1.9.3
-      gemfile: gemfiles/rails6.gemfile
-    - rvm: 1.9.3
-      gemfile: gemfiles/rails5.gemfile
-    - rvm: 1.9.3
-      gemfile: gemfiles/mongoid5.gemfile
-    - rvm: 1.9.3
-      gemfile: gemfiles/mongoid6.gemfile
-    - rvm: 1.9.3
-      gemfile: gemfiles/mongoid7.gemfile
-
     - rvm: 2.0.0
       gemfile: gemfiles/rails6.gemfile
     - rvm: 2.0.0
@@ -111,14 +96,39 @@ matrix:
     - rvm: 2.6.5
       gemfile: gemfiles/mongoid3.gemfile
 
+    - rvm: 2.7.1
+      gemfile: gemfiles/rails3.gemfile
+    - rvm: 2.7.1
+      gemfile: gemfiles/rails4.gemfile
+    - rvm: 2.7.1
+      gemfile: gemfiles/rails5.gemfile
+    - rvm: 2.7.1
+      gemfile: gemfiles/mongoid2.gemfile
+    - rvm: 2.7.1
+      gemfile: gemfiles/mongoid3.gemfile
+    - rvm: 2.7.1
+      gemfile: gemfiles/mongoid4.gemfile
+    - rvm: 2.7.1
+      gemfile: gemfiles/mongoid5.gemfile
+    - rvm: 2.7.1
+      gemfile: gemfiles/mongoid6.gemfile
+
     - rvm: ruby-head
       gemfile: gemfiles/rails3.gemfile
     - rvm: ruby-head
       gemfile: gemfiles/rails4.gemfile
     - rvm: ruby-head
+      gemfile: gemfiles/rails5.gemfile
+    - rvm: ruby-head
       gemfile: gemfiles/mongoid2.gemfile
     - rvm: ruby-head
       gemfile: gemfiles/mongoid3.gemfile
+    - rvm: ruby-head
+      gemfile: gemfiles/mongoid4.gemfile
+    - rvm: ruby-head
+      gemfile: gemfiles/mongoid5.gemfile
+    - rvm: ruby-head
+      gemfile: gemfiles/mongoid6.gemfile
 
 notifications:
   recipients:
