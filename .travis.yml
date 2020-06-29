@@ -9,9 +9,6 @@ language: ruby
 cache: bundler
 services: mongodb
 rvm:
-  - 2.0.0
-  - 2.1.10
-  - 2.2.10
   - 2.3.8
   - 2.4.9
   - 2.5.7
@@ -39,31 +36,6 @@ matrix:
   allow_failures:
     - rvm: ruby-head
   exclude:
-    - rvm: 2.0.0
-      gemfile: gemfiles/rails6.gemfile
-    - rvm: 2.0.0
-      gemfile: gemfiles/rails5.gemfile
-    - rvm: 2.0.0
-      gemfile: gemfiles/mongoid5.gemfile
-    - rvm: 2.0.0
-      gemfile: gemfiles/mongoid6.gemfile
-    - rvm: 2.0.0
-      gemfile: gemfiles/mongoid7.gemfile
-
-    - rvm: 2.1.10
-      gemfile: gemfiles/rails6.gemfile
-    - rvm: 2.1.10
-      gemfile: gemfiles/rails5.gemfile
-    - rvm: 2.1.10
-      gemfile: gemfiles/mongoid5.gemfile
-    - rvm: 2.1.10
-      gemfile: gemfiles/mongoid6.gemfile
-    - rvm: 2.1.10
-      gemfile: gemfiles/mongoid7.gemfile
-
-    - rvm: 2.2.10
-      gemfile: gemfiles/rails6.gemfile
-
     - rvm: 2.3.8
       gemfile: gemfiles/rails6.gemfile
 
