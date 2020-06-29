@@ -10,6 +10,7 @@ require 'rspec/rails'
 Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].each {|f| require f}
 
 # Silence warnings
+Money.locale_backend = :i18n
 if Money.respond_to?(:silence_core_extensions_deprecations=)
   Money.silence_core_extensions_deprecations = true
 end
