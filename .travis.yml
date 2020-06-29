@@ -10,9 +10,9 @@ cache: bundler
 services: mongodb
 rvm:
   - 2.3.8
-  - 2.4.9
-  - 2.5.7
-  - 2.6.5
+  - 2.4.10
+  - 2.5.8
+  - 2.6.6
   - 2.7.1
   - ruby-head
   #  TODO: investigate failure
@@ -39,33 +39,33 @@ matrix:
     - rvm: 2.3.8
       gemfile: gemfiles/rails6.gemfile
 
-    - rvm: 2.4.9
+    - rvm: 2.4.10
       gemfile: gemfiles/rails6.gemfile
-    - rvm: 2.4.9
+    - rvm: 2.4.10
       gemfile: gemfiles/rails3.gemfile
-    - rvm: 2.4.9
+    - rvm: 2.4.10
       gemfile: gemfiles/rails4.gemfile
-    - rvm: 2.4.9
+    - rvm: 2.4.10
       gemfile: gemfiles/mongoid2.gemfile
-    - rvm: 2.4.9
+    - rvm: 2.4.10
       gemfile: gemfiles/mongoid3.gemfile
 
-    - rvm: 2.5.7
+    - rvm: 2.5.8
       gemfile: gemfiles/rails3.gemfile
-    - rvm: 2.5.7
+    - rvm: 2.5.8
       gemfile: gemfiles/rails4.gemfile
-    - rvm: 2.5.7
+    - rvm: 2.5.8
       gemfile: gemfiles/mongoid2.gemfile
-    - rvm: 2.5.7
+    - rvm: 2.5.8
       gemfile: gemfiles/mongoid3.gemfile
 
-    - rvm: 2.6.5
+    - rvm: 2.6.6
       gemfile: gemfiles/rails3.gemfile
-    - rvm: 2.6.5
+    - rvm: 2.6.6
       gemfile: gemfiles/rails4.gemfile
-    - rvm: 2.6.5
+    - rvm: 2.6.6
       gemfile: gemfiles/mongoid2.gemfile
-    - rvm: 2.6.5
+    - rvm: 2.6.6
       gemfile: gemfiles/mongoid3.gemfile
 
     - rvm: 2.7.1
