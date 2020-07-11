@@ -11,6 +11,7 @@ Gem::Specification.new do |s|
   s.description   = "This library provides integration of RubyMoney - Money gem with Rails"
   s.summary       = "Money gem integration with Rails"
   s.homepage      = "https://github.com/RubyMoney/money-rails"
+  s.required_ruby_version = Gem::Requirement.new('>= 2.3.0')
 
   s.files         =  Dir.glob("{lib,spec,config}/**/*")
   s.files         += %w(CHANGELOG.md LICENSE README.md)
@@ -30,12 +31,11 @@ Gem::Specification.new do |s|
   s.add_dependency "monetize",      "~> 1.9.0"
   s.add_dependency "activesupport", ">= 3.0"
   s.add_dependency "railties",      ">= 3.0"
-  s.add_dependency "mime-types",    "< 3" if RUBY_VERSION < '2.0' # mime-types > 3 depends on mime-types-data, which doesn't support ruby 1.9
 
   s.add_development_dependency "rails",       ">= 3.0"
   s.add_development_dependency "rspec-rails", "~> 3.0"
   s.add_development_dependency 'database_cleaner', '~> 1.6.1'
-  s.add_development_dependency 'test-unit', '~> 3.0' if RUBY_VERSION >= '2.2'
+  s.add_development_dependency 'test-unit', '~> 3.0'
 
   if s.respond_to?(:metadata)
     s.metadata['changelog_uri'] = 'https://github.com/RubyMoney/money-rails/blob/master/CHANGELOG.md'
