@@ -4,6 +4,10 @@ gem 'mongoid', '~> 4.0'
 gem 'rails',   '~> 4.2'
 gem 'i18n',    '~> 0.7'
 
+if RUBY_VERSION <= '2.0.0'
+  gem 'connection_pool', '2.2.2'
+end
+
 platforms :jruby do
   gem "activerecord-jdbc-adapter"
   gem "activerecord-jdbcsqlite3-adapter"
