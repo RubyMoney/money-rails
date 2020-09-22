@@ -28,6 +28,7 @@ if defined? ActiveRecord
             postfix: :currency_postfix,
             column_name: :currency
           }
+          t.money :price_with_null_option_for_both, null: true
         end
 
         Item.reset_column_information
@@ -74,6 +75,11 @@ if defined? ActiveRecord
         describe 'currency' do
           it { expect(Item.columns_hash['currency']).not_to be nil }
         end
+      end
+
+      describe 'null option for both' do 
+        it { expect(Item.columns_hash['price_with_null_option_for_both_cents'].null).to be(true) }
+        it { expect(Item.columns_hash['price_with_null_option_for_both_currency'].null).to be(true) }
       end
     end
 
