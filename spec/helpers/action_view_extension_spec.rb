@@ -5,6 +5,18 @@ describe 'MoneyRails::ActionViewExtension', type: :helper do
     subject { helper.currency_symbol }
     it { is_expected.to be_a String }
     it { is_expected.to include Money.default_currency.symbol }
+
+    context 'with given currency' do
+      subject { helper.currency_symbol(Money::Currency.find(:brl)) }
+      it { is_expected.to include Money::Currency.find(:brl).symbol }
+      it { is_expected.to include Money::Currency.find(:brl).symbol }
+    end
+
+    context 'with given currency symbol' do
+      subject { helper.currency_symbol(:brl) }
+      it { is_expected.to include Money::Currency.find(:brl).symbol }
+      it { is_expected.to include Money::Currency.find(:brl).symbol }
+    end
   end
 
   describe '#humanized_money' do
