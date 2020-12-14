@@ -37,14 +37,17 @@ gemfile:
   - gemfiles/rails3.gemfile
   - gemfiles/rails4.gemfile
   - gemfiles/rails5.gemfile
-  - gemfiles/rails6.gemfile
+  - gemfiles/rails6.0.gemfile
+  - gemfiles/rails6.1.gemfile
 
 matrix:
   allow_failures:
     - rvm: ruby-head
   exclude:
     - rvm: 1.9.3
-      gemfile: gemfiles/rails6.gemfile
+      gemfile: gemfiles/rails6.1.gemfile
+    - rvm: 1.9.3
+      gemfile: gemfiles/rails6.0.gemfile
     - rvm: 1.9.3
       gemfile: gemfiles/rails5.gemfile
     - rvm: 1.9.3
@@ -55,7 +58,9 @@ matrix:
       gemfile: gemfiles/mongoid7.gemfile
 
     - rvm: 2.0.0
-      gemfile: gemfiles/rails6.gemfile
+      gemfile: gemfiles/rails6.1.gemfile
+    - rvm: 2.0.0
+      gemfile: gemfiles/rails6.0.gemfile
     - rvm: 2.0.0
       gemfile: gemfiles/rails5.gemfile
     - rvm: 2.0.0
@@ -66,7 +71,9 @@ matrix:
       gemfile: gemfiles/mongoid7.gemfile
 
     - rvm: 2.1.10
-      gemfile: gemfiles/rails6.gemfile
+      gemfile: gemfiles/rails6.1.gemfile
+    - rvm: 2.1.10
+      gemfile: gemfiles/rails6.0.gemfile
     - rvm: 2.1.10
       gemfile: gemfiles/rails5.gemfile
     - rvm: 2.1.10
@@ -77,13 +84,17 @@ matrix:
       gemfile: gemfiles/mongoid7.gemfile
 
     - rvm: 2.2.10
-      gemfile: gemfiles/rails6.gemfile
-
+      gemfile: gemfiles/rails6.1.gemfile
+    - rvm: 2.2.10
+      gemfile: gemfiles/rails6.0.gemfile
     - rvm: 2.3.8
-      gemfile: gemfiles/rails6.gemfile
-
+      gemfile: gemfiles/rails6.1.gemfile
+    - rvm: 2.3.8
+      gemfile: gemfiles/rails6.0.gemfile
     - rvm: 2.4.9
-      gemfile: gemfiles/rails6.gemfile
+      gemfile: gemfiles/rails6.1.gemfile
+    - rvm: 2.4.9
+      gemfile: gemfiles/rails6.0.gemfile
     - rvm: 2.4.9
       gemfile: gemfiles/rails3.gemfile
     - rvm: 2.4.9
