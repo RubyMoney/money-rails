@@ -7,7 +7,7 @@ module MoneyRails
             column_present, _, *opts = OptionsExtractor.extract attribute, :no_table, accessor, options
             if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('3')
               constraints = opts.pop
-              column(*opts, options: constraints) if column_present
+              column(*opts, **constraints) if column_present
             else
               column(*opts) if column_present
             end

@@ -79,12 +79,12 @@ module MoneyRails
         attr_name = attr.to_s.tr('.', '_').humanize
         attr_name = record.class.human_attribute_name(attr, default: attr_name)
 
-        record.errors.add(attr, :invalid_currency, {
+        record.errors.add(attr, :invalid_currency,
           thousands: details.thousands_separator,
           decimal: details.decimal_mark,
           currency: details.abs_raw_value,
           attribute: attr_name
-        })
+        )
       end
 
       def value_has_too_many_decimal_points(details)
