@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.13.4
+
+- Fix validator race condition
+- Add Danish translation for errors
+- Change Money fields to Decimal in Rails Admin
+- Run hooks after active_record.initialize_database
+- Add optional currency argument to "#currency_symbol" helper
+- Rails 6.1 support
+
 ## 1.13.3
 
 - Add Money#to_hash for JSON serialization
