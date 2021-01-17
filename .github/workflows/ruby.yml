@@ -22,6 +22,7 @@ jobs:
         # ruby-version: ['2.6', '2.7', '3.0']
         ruby-version: ['2.6']
         mongodb-version: ['4.4']
+        sqlite-version: ['3.0']
 
     steps:
     - uses: actions/checkout@v2
