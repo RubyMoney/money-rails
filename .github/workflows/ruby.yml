@@ -21,6 +21,7 @@ jobs:
       matrix:
         # ruby-version: ['2.6', '2.7', '3.0']
         ruby-version: ['2.6']
+        mongodb-version: ['4.4']
 
     steps:
     - uses: actions/checkout@v2
