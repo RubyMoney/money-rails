@@ -31,8 +31,7 @@ module MoneyRails
 
         require "money-rails/active_record/migration_extensions/options_extractor"
         %w{schema_statements table}.each do |file|
-          filename = [file, '_pg_rails4', ('_ruby3' if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('3'))].compact.join
-          require "money-rails/active_record/migration_extensions/#{filename}"
+          require "money-rails/active_record/migration_extensions/#{file}_pg_rails4"
           if !postgresql_with_money
             require "money-rails/active_record/migration_extensions/#{file}"
           end
