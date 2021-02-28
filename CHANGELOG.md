@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.40.0
+## 1.14.0
 
 - Tweaks to support Ruby 3.0
 
