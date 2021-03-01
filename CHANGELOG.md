@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.14.0
+
+- Tweaks to support Ruby 3.0
+
 ## 1.13.4
 
 - Fix validator race condition
