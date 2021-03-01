@@ -5,6 +5,13 @@ class Money
   class << self
     alias_method :orig_default_formatting_rules, :default_formatting_rules
 
+    def with_bank(bank)
+      old_bank, ::Money.default_bank = ::Money.default_bank, bank
+      yield
+    ensure
+      ::Money.default_bank = old_bank
+    end
+
     def default_formatting_rules
       rules = orig_default_formatting_rules || {}
       defaults = {
