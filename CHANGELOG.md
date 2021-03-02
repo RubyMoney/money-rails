@@ -39,7 +39,7 @@
 
 - Bump money version to ~> 6.12.0
 - Bump monetize version to ~> 1.9.0
-- BREAKING CHANGE: Rounding logic changed in this version from 1.11.0, see [the issue](https://github.com/RubyMoney/money-rails/issues/608) for details.
+- BREAKING CHANGE: Fix to rounding logic in this version from 1.11.0 can cause breaking changes for those relying on the incorrect behavior. Eee [the issue](https://github.com/RubyMoney/money-rails/issues/608) for details.
 
 ## 1.11.0
 
