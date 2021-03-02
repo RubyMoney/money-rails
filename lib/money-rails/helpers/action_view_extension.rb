@@ -1,8 +1,7 @@
 module MoneyRails
   module ActionViewExtension
-
-    def currency_symbol
-      content_tag(:span, Money.default_currency.symbol, class: "currency_symbol")
+    def currency_symbol(currency = Money.default_currency)
+      content_tag(:span, Money::Currency.find(currency).symbol, class: "currency_symbol")
     end
 
     def humanized_money(value, options={})

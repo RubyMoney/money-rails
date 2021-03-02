@@ -55,6 +55,13 @@ namespace :spec do
     framework, version = file_name.split(/(\d+)/)
     major, minor = version.split(//)
 
+    # Ruby 3 exclusions
+    if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('3.0.0')
+      # Rails 5 does not support ruby-3.0.0 https://github.com/rails/rails/issues/40938#issuecomment-751569171
+      # Mongoid gem does not yet support ruby-3.0.0 https://github.com/mongodb/mongoid#compatibility
+      next if framework == 'mongoid' || (framework == 'rails' && version == "5")
+    end
+
     frameworks_versions[framework] ||= []
     frameworks_versions[framework] << file_name
 

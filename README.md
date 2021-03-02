@@ -593,4 +593,4 @@ If you are testing against mongoid, make sure to have the mongod process running
 
 ## License
 
-MIT License. Copyright 2012-2014 RubyMoney.
+MIT License. Copyright 2021 RubyMoney.

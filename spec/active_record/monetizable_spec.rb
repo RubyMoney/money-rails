@@ -20,6 +20,14 @@ if defined? ActiveRecord
         Service.create(charge_cents: 2000, discount_cents: 120)
       end
 
+      def update_product(*attributes)
+        if defined?(::ActiveRecord::VERSION) && ::ActiveRecord::VERSION::MAJOR >= 5
+          product.update(*attributes)
+        else
+          product.update_attributes(*attributes)
+        end
+      end
+
       context ".monetized_attributes" do
 
         class InheritedMonetizeProduct < Product
@@ -73,7 +81,7 @@ if defined? ActiveRecord
       end
 
       it "correctly updates from a Money object using update_attributes" do
-        expect(product.update_attributes(price: Money.new(215, "USD"))).to be_truthy
+        expect(update_product(price: Money.new(215, "USD"))).to be_truthy
         expect(product.price_cents).to eq(215)
       end
 
@@ -187,8 +195,8 @@ if defined? ActiveRecord
       end
 
       it "respects numericality validation when using update_attributes" do
-        expect(product.update_attributes(price_cents: "some text")).to be_falsey
-        expect(product.update_attributes(price_cents: 2000)).to be_truthy
+        expect(update_product(price_cents: "some text")).to be_falsey
+        expect(update_product(price_cents: 2000)).to be_truthy
       end
 
       it "uses numericality validation on money attribute" do
@@ -415,8 +423,8 @@ if defined? ActiveRecord
       end
 
       it "respects numericality validation when using update_attributes on money attribute" do
-        expect(product.update_attributes(price: "some text")).to be_falsey
-        expect(product.update_attributes(price: Money.new(320, 'USD'))).to be_truthy
+        expect(update_product(price: "some text")).to be_falsey
+        expect(update_product(price: Money.new(320, 'USD'))).to be_truthy
       end
 
       it "uses i18n currency format when validating" do
