@@ -1,0 +1,4 @@
+ru:
+  errors:
+    messages:
+      invalid_currency: должнa быть корректной валютой (например '100', '5%{decimal}24', или '123%{thousands}456%{decimal}78'). Получено %{currency}
