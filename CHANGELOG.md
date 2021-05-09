@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.14.1
+
+- Fix invalid_currency error definition
+- Add Russian translation for errors
+
 ## 1.14.0
 
 - Tweaks to support Ruby 3.0
