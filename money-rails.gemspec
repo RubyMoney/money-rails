@@ -26,8 +26,8 @@ Gem::Specification.new do |s|
 
   s.require_path = "lib"
 
-  s.add_dependency "money",         "< 7.0"
-  s.add_dependency "monetize",      "< 2.0"
+  s.add_dependency "money",         "~> 6.13"
+  s.add_dependency "monetize",      "~> 1.9"
   s.add_dependency "activesupport", ">= 3.0"
   s.add_dependency "railties",      ">= 3.0"
   s.add_dependency "mime-types",    "< 3" if RUBY_VERSION < '2.0' # mime-types > 3 depends on mime-types-data, which doesn't support ruby 1.9

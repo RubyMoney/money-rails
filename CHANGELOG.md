@@ -4,8 +4,8 @@
 
 - Fix invalid_currency error definition
 - Add Russian translation for errors
-- Loosen money version to < 7.0
-- Loosen monetize version to < 2.0
+- Loosen money version to ~> 6.13
+- Loosen monetize version to ~> 1.9
 
 ## 1.14.0
 
