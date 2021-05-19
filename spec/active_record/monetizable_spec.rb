@@ -400,6 +400,24 @@ if defined? ActiveRecord
         expect(product.errors[:price].first).to match(/is not a number/)
       end
 
+      it 'passes validation when using float values with . as delimiter' do
+        I18n.default_locale = :it
+        product.price_in_a_range = 100
+        puts product.price_in_a_range #=> 100,00
+        puts product.price_in_a_range_cents #=> 10000
+        expect(product).to be_valid
+
+        product.price_in_a_range = '100,0'
+        puts product.price_in_a_range #=> 100,00
+        puts product.price_in_a_range_cents #=> 10000
+        expect(product).to be_valid
+
+        product.price_in_a_range = 100.0
+        puts product.price_in_a_range #=> 100,00
+        puts product.price_in_a_range_cents #=> 10000
+        expect(product).to be_valid
+      end
+
       it "passes validation when amount contains spaces (999 999.99)" do
         product.price = "999 999.99"
         expect(product).to be_valid
