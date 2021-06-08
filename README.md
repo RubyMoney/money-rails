@@ -137,8 +137,14 @@ monetized field, you can use the `:allow_nil` parameter:
 monetize :optional_price_cents, allow_nil: true
 
 # in Migration
+# To set only the 'amount' column as null: true
 def change
   add_money :products, :optional_price, amount: { null: true, default: nil }
+end
+
+# in Migration to set both 'amount' and 'currency' columns to null: true
+def change
+  add_money :products, :optional_price, null: true
 end
 
 # now blank assignments are permitted

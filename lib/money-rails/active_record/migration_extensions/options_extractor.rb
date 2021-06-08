@@ -3,7 +3,12 @@ module MoneyRails
     module MigrationExtensions
       class OptionsExtractor
         def self.extract(attribute, table_name, accessor, options = {})
-          default = MoneyRails::Configuration.send("#{attribute}_column").merge(options[attribute] || {})
+          # Placing the default_for_both_columns first allows for 
+          # the options of the specific column to take precendence when they are passed. 
+          default_for_both_columns = {}
+          default_for_both_columns =default_for_both_columns.merge(null: options[:null]) if options.has_key?(:null) 
+
+          default = MoneyRails::Configuration.send("#{attribute}_column").merge(options[attribute] || default_for_both_columns)
 
           default[:column_name] ||= [default[:prefix], accessor, default[:postfix]].join
           default[:table_name] = table_name
