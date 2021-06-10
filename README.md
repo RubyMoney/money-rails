@@ -138,7 +138,8 @@ monetize :optional_price_cents, allow_nil: true
 
 # in Migration
 def change
-  add_money :products, :optional_price, amount: { null: true, default: nil }
+  add_money :products, :optional_price, amount: { null: true, default: nil }, currency: { null: true, default: nil } # Rails 3
+  add_monetize :products, :optional_price, amount: { null: true, default: nil }, currency: { null: true, default: nil } # Rails 4x and above
 end
 
 # now blank assignments are permitted
