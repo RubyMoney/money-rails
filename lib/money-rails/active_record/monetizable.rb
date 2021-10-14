@@ -148,6 +148,13 @@ module MoneyRails
             after_save do
               instance_variable_set "@#{name}_money_before_type_cast", nil
             end
+
+            # This hack ensures that if the currency exponent changed during
+            # initialization the subunit is updated correctly.
+            # See https://github.com/RubyMoney/money-rails/issues/645
+            after_initialize do
+              amount = public_send(name)
+            end
           end
         end
 
