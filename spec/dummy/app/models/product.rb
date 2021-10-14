@@ -56,4 +56,7 @@ class Product < ActiveRecord::Base
 
   # Using postfix to determine currency column (reduced_price_currency)
   monetize :reduced_price_cents, allow_nil: true
+
+  monetize :unvalidated_sale_price_amount, as: :unvalidated_sale_price,
+    with_model_currency: :sale_price_currency_code, disable_validation: true
 end

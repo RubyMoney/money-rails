@@ -1058,5 +1058,90 @@ if defined? ActiveRecord
         expect(currency).to eq(Money.default_currency)
       end
     end
+
+    context 'with an unvalidated model currency field' do
+      context 'when the model currency is different than the default' do
+        # FAILS
+        it 'sets the amount appropriately for the given currency' do
+          # This test fails because unvalidated_sale_price_amount is set
+          # according to the registered model currency USD and isn't updated
+          # when the currency changes to JPY
+          p = Product.new({
+            price_cents: 3000,
+            discount: 150,
+            bonus_cents: 200,
+            optional_price: 100,
+            delivery_fee_cents: 100,
+            restock_fee_cents: 2000,
+            reduced_price_cents: 1500,
+            reduced_price_currency: :lvl,
+            lambda_price_cents: 4000,
+            unvalidated_sale_price: 1000, # note this comes before the currency change
+            sale_price_currency_code: 'JPY',
+          })
+          expect(p.unvalidated_sale_price_amount).to eq(1000)
+        end
+
+        # FAILS
+        it 'same as above but with a save!' do
+          # This test fails because unvalidated_sale_price_amount is set
+          # according to the registered model currency USD and isn't updated
+          # when the currency changes to JPY
+          p = Product.new({
+            price_cents: 3000,
+            discount: 150,
+            bonus_cents: 200,
+            optional_price: 100,
+            delivery_fee_cents: 100,
+            restock_fee_cents: 2000,
+            reduced_price_cents: 1500,
+            reduced_price_currency: :lvl,
+            lambda_price_cents: 4000,
+            unvalidated_sale_price: 1000, # note this comes before the currency change
+            sale_price_currency_code: 'JPY',
+          })
+          p.save!
+          p.reload
+          expect(p.unvalidated_sale_price_amount).to eq(1000)
+        end
+
+        # SUCCEEDS
+        it 'reading the money field before reading the amount fixes the issue' do
+          p = Product.new({
+            price_cents: 3000,
+            discount: 150,
+            bonus_cents: 200,
+            optional_price: 100,
+            delivery_fee_cents: 100,
+            restock_fee_cents: 2000,
+            reduced_price_cents: 1500,
+            reduced_price_currency: :lvl,
+            lambda_price_cents: 4000,
+            unvalidated_sale_price: 1000, # note this comes before the currency change
+            sale_price_currency_code: 'JPY',
+          })
+          p.unvalidated_sale_price
+          expect(p.unvalidated_sale_price_amount).to eq(1000)
+        end
+
+        # SUCCEEDS
+        it 'putting the currency before the unvalidated_sale_price fixes the issue' do
+          p = Product.new({
+            price_cents: 3000,
+            discount: 150,
+            bonus_cents: 200,
+            optional_price: 100,
+            delivery_fee_cents: 100,
+            restock_fee_cents: 2000,
+            reduced_price_cents: 1500,
+            reduced_price_currency: :lvl,
+            lambda_price_cents: 4000,
+            sale_price_currency_code: 'JPY',
+            unvalidated_sale_price: 1000, # note this comes after the currency change
+          })
+          expect(p.unvalidated_sale_price_amount).to eq(1000)
+        end
+      end
+    end
   end
 end

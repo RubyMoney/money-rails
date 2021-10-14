@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2015_10_26_220420) do
+ActiveRecord::Schema.define(version: 2020_10_13_143420) do
 
   create_table "dummy_products", force: :cascade do |t|
     t.string "currency"
@@ -38,6 +38,7 @@ ActiveRecord::Schema.define(version: 2015_10_26_220420) do
     t.integer "special_price_cents"
     t.integer "lambda_price_cents"
     t.string "skip_validation_price_cents"
+    t.integer "unvalidated_sale_price_amount", default: 0, null: false
   end
 
   create_table "services", force: :cascade do |t|
