@@ -30,7 +30,7 @@ module MoneyRails
         return if options[:allow_nil] && raw_value.nil?
 
         # Set this before we modify raw_value below.
-        stringy = raw_value.present? && !raw_value.is_a?(Numeric) && !raw_value.is_a?(Money)
+        stringy = raw_value.present? && !raw_value.is_a?(Numeric) && !raw_value.is_a?(Money) && !raw_value.is_a?(Hash)
 
         if stringy
           # TODO: This is supporting legacy behaviour where a symbol can come from a i18n locale,
@@ -39,6 +39,11 @@ module MoneyRails
 
           # remove currency symbol
           raw_value = raw_value.to_s.gsub(symbol, "")
+        end
+
+        if raw_value.present? && raw_value.is_a?(Hash)
+          
+          raw_value = raw_value.to_money(currency)
         end
 
         # Cache abs_raw_value before normalizing because it's used in

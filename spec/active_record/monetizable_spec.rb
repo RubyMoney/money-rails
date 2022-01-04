@@ -400,6 +400,35 @@ if defined? ActiveRecord
         expect(product.errors[:price].first).to match(/is not a number/)
       end
 
+      it "passes validation when Money is given" do
+        product = Product.create(price_in_a_range: Money.new(5000, 'usd'))
+        expect(product.errors[:price_in_a_range].size).to eq(0)
+      end
+
+      it "passes validation when Hash which has cents and currency is given" do
+        product = Product.create(price_in_a_range: { cents: 5000, currency:'usd'})
+        expect(product.price_in_a_range).to eq(Money.new(5000, 'usd'))
+        expect(product.errors[:price_in_a_range].size).to eq(0)
+      end
+
+      it "passes validation when Hash without currency is given" do
+        product = Product.create(price_in_a_range: { cents: 5000 })
+        expect(product.price_in_a_range).to eq(Money.new(5000, 'usd'))
+        expect(product.errors[:price_in_a_range].size).to eq(0)
+      end
+
+      it "fails validation when Hash without cents is given because the default value is too small" do
+        product = Product.create(price_in_a_range: {something_other_key: 3338})
+        expect(product.errors[:price_in_a_range].size).to eq(1)
+        expect(product.errors[:price_in_a_range].first).to match(/greater than zero/)
+      end
+
+      it "fails validation when Hash without cents is given because the default value is too small2" do
+        product = Product.create(price_in_a_range: nil)
+        expect(product.errors[:price_in_a_range].size).to eq(0)
+        expect(product.errors[:price_in_a_range].first).to match(/greater than zero/)
+      end
+
       it "passes validation when amount contains spaces (999 999.99)" do
         product.price = "999 999.99"
         expect(product).to be_valid
