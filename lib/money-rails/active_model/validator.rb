@@ -42,7 +42,6 @@ module MoneyRails
         end
 
         if raw_value.present? && raw_value.is_a?(Hash)
-          
           raw_value = raw_value.to_money(currency)
         end
 
