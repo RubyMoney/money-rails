@@ -46,7 +46,7 @@
 
 - Bump money version to ~> 6.12.0
 - Bump monetize version to ~> 1.9.0
-- BREAKING CHANGE: Fix to rounding logic in this version from 1.11.0 can cause breaking changes for those relying on the incorrect behavior. Eee [the issue](https://github.com/RubyMoney/money-rails/issues/608) for details.
+- BREAKING CHANGE: Fix to rounding logic in this version from 1.11.0 can cause breaking changes for those relying on the incorrect behavior. See [the issue](https://github.com/RubyMoney/money-rails/issues/608) for details.
 
 ## 1.11.0
 
@@ -84,7 +84,7 @@
 - Fix attribute order possibly affecting the value of monetized attribute
 - Add support for RailsAdmin (use :money type)
 - Raise error when gem was unable to infer monetized attribute name
-- Revert decimal mark and thousands separator addtion, since formatting should depend on country and locale, instead of currency
+- Revert decimal mark and thousands separator addition, since formatting should depend on country and locale, instead of currency
 
 ## 1.6.1
 
@@ -148,8 +148,8 @@
 ## 1.1.0
 
 - Update dependencies to money 6.4.x and monetize 1.0.x.
-- Make subunit setter (e.g. `#price_cents=`) set the `before_type_cast...` va
-  riable. (Fixes validation errors.)
+- Make subunit setter (e.g. `#price_cents=`) set the `before_type_cast...`
+  variable. (Fixes validation errors.)
 - use HashWithIndifferentAccess instead of Hash for
   ActiveRecord::Base::monetized_attributes
 - Let the 'monetize' test helper work when testing against the model's class,
@@ -159,7 +159,7 @@
 - Upgrade specs to RSpec 3
 - Use #respond_to? instead of #try? when monetizing an aliased attribute.
 - Allow aliased attributes to be monetized
-- Fix compatability issue with Rails 4.2
+- Fix compatibility issue with Rails 4.2
 - Allow empty string as thousands separator.
 - Allow using a lambda to set default_currency
 
