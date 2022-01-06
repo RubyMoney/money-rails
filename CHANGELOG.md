@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.14.1
+
+- Fix invalid_currency error definition
+- Add Russian translation for errors
+- Loosen money version to ~> 6.13
+- Loosen monetize version to ~> 1.9
+
 ## 1.14.0
 
 - Tweaks to support Ruby 3.0
