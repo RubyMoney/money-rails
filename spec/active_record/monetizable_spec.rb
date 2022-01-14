@@ -245,7 +245,7 @@ if defined? ActiveRecord
         product.price = "12,23.24"
         expect(product.save).to be_falsey
         expect(product.errors[:price].size).to eq(1)
-        expect(product.errors[:price].first).to match(/must be a valid/)
+        expect(product.errors[:price].first).to match(/has invalid format/)
         expect(product.errors[:price].first).to match(/Got 12,23.24/)
       end
 
@@ -253,7 +253,7 @@ if defined? ActiveRecord
         product.price = "1.234,56"
         expect(product.save).to be_falsey
         expect(product.errors[:price].size).to eq(1)
-        expect(product.errors[:price].first).to match(/must be a valid/)
+        expect(product.errors[:price].first).to match(/has invalid format/)
         expect(product.errors[:price].first).to match(/Got 1.234,56/)
       end
 
