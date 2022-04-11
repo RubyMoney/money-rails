@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.14.1
+## 1.15.0
 
 - Fix invalid_currency error definition
 - Add Russian translation for errors
