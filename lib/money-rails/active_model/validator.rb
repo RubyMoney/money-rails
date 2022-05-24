@@ -111,6 +111,7 @@ module MoneyRails
       # Remove thousands separators, normalize decimal mark,
       # remove whitespaces and _ (E.g. 99 999 999 or 12_300_200.20)
       def normalize(details)
+        return details.raw_value if details.raw_value.is_a?(Numeric)
         details.raw_value
           .to_s
           .gsub(details.thousands_separator, '')
