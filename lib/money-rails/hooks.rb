@@ -56,6 +56,17 @@ module MoneyRails
         require 'money-rails/helpers/action_view_extension'
         ::ActionView::Base.send :include, MoneyRails::ActionViewExtension
       end
+
+      # For ActiveSupport
+      ActiveSupport.on_load(:active_job) do |v|
+        if defined?(::ActiveJob::Serializers)
+          require 'money-rails/active_job/money_serializer'
+          Rails.application.config.active_job.tap do |config|
+            config.custom_serializers ||= []
+            config.custom_serializers << MoneyRails::ActiveJob::MoneySerializer
+          end
+        end
+      end
     end
   end
 end
