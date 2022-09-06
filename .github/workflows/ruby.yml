@@ -22,6 +22,14 @@ jobs:
         ruby-version: ['2.6', '2.7', '3.0']
         mongodb-version: ['4.4']
         sqlite-version: ['3.0']
+        gemfile:
+          - rails5
+          - rails6.1
+          - mongoid6
+          - mongoid7
+
+    env:
+      BUNDLE_GEMFILE: ${{ github.workspace }}/gemfiles/${{ matrix.gemfile }}.gemfile
 
     steps:
     - uses: actions/checkout@v2
