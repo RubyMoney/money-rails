@@ -1,0 +1,16 @@
+source 'https://rubygems.org'
+
+gem 'rails', '~> 7.0.0'
+gem 'i18n',  '~> 1.6'
+
+platforms :jruby do
+  gem "activerecord-jdbc-adapter"
+  gem "activerecord-jdbcsqlite3-adapter"
+  gem "jruby-openssl"
+end
+
+platforms :ruby do
+  gem "sqlite3", "~> 1.4"
+end
+
+gemspec path: '../'

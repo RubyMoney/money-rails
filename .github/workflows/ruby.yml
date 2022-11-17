@@ -25,9 +25,13 @@ jobs:
         gemfile:
           - rails5
           - rails6.1
+          - rails7.0
           - mongoid6
           - mongoid7
+          - default
         exclude:
+          - ruby-version: '2.6'
+            gemfile: rails7.0
           - ruby-version: '3.0'
             gemfile: rails5
 
