@@ -27,6 +27,9 @@ jobs:
           - rails6.1
           - mongoid6
           - mongoid7
+        exclude:
+          - ruby-version: '3.0'
+            gemfile: rails5
 
     env:
       BUNDLE_GEMFILE: gemfiles/${{ matrix.gemfile }}.gemfile
