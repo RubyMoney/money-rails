@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.15.0
+
+- Bump money version to ~> 6.16
+- Tweak to invalid currency message
+
 ## 1.14.1
 
 - Fix invalid_currency error definition
