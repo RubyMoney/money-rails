@@ -276,6 +276,8 @@ MoneyRails.configure do |config|
   config.default_currency = -> { Tenant.current.default_currency }
 end
 ```
+Be aware that this **does not work in Rails 7+**, as the lamda is evaluated immediately, and therefore requires your model to be loaded already.
+Workarounds include wrapping the initialization in `ActiveSupport::Reloader.to_prepare`, or creating a function that rescues unloaded constants with an initialization-time default, and running that in your lambda.
 
 In many cases this is not enough, so there are some other options to
 meet your needs.
