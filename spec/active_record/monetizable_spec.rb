@@ -105,6 +105,24 @@ if defined? ActiveRecord
         expect(transaction.amount_cents).to eq(20000)
       end
 
+      it "does not raise exception on value assignment to attribute" do
+        class Price
+          include ActiveModel::Model
+          include ActiveModel::Attributes
+          include ActiveModel::AttributeMethods
+          include MoneyRails::ActiveRecord::Monetizable
+
+          define_model_callbacks :save,  only: [:after]
+
+          attribute :value_cents, :integer
+
+          monetize :value_cents
+        end
+
+        price = Price.new(value_cents: 12)
+        expect { price.value = 10 }.not_to raise_error
+      end
+
       it "raises an error if trying to create two attributes with the same name" do
         expect do
           class Product
