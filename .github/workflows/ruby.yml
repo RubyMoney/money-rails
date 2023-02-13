@@ -20,6 +20,7 @@ jobs:
     strategy:
       matrix:
         ruby-version: ['2.6', '2.7', '3.0']
+        rails-version: ['6.0', '6.1']
         mongodb-version: ['4.4']
         sqlite-version: ['3.0']
 
@@ -32,6 +33,8 @@ jobs:
       with:
         ruby-version: ${{ matrix.ruby-version }}
         bundler-cache: true # runs 'bundle install' and caches installed gems automatically
+      env:
+        TEST_RAILS_VERSION: ${{ matrix.rails-version }}
 
     - name: Start MongoDB
       uses: supercharge/mongodb-github-action@1.3.0

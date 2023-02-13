@@ -28,3 +28,12 @@ group :development do
   gem 'guard-rspec'
   gem 'guard-rails'
 end
+
+case ENV['TEST_RAILS_VERSION']
+when "6.0"
+  gem "activesupport", "~> 6.0.4"
+when "6.1"
+  gem "activesupport", "~> 6.1.4"
+when "7.0"
+  gem "activesupport", "~> 7.0.4"
+end
