@@ -35,7 +35,7 @@ task :prepare_test_env do
 end
 
 def run_with_gemfile(gemfile)
-  Bundler.with_clean_env do
+  Bundler.with_original_env do
     begin
       sh "BUNDLE_GEMFILE='#{gemfile}' bundle install --quiet"
       Rake.application['app:db:create'].invoke
@@ -61,6 +61,12 @@ namespace :spec do
       # Mongoid gem does not yet support ruby-3.0.0 https://github.com/mongodb/mongoid#compatibility
       next if framework == 'mongoid' || (framework == 'rails' && version == "5")
     end
+
+    # Skip Rails 7 unless the Ruby version is at least 2.7
+    if Gem::Version.new(RUBY_VERSION) < Gem::Version.new('2.7')
+      next if framework == 'rails' && version == "7"
+    end
+
 
     frameworks_versions[framework] ||= []
     frameworks_versions[framework] << file_name
