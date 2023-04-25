@@ -725,6 +725,10 @@ if defined? ActiveRecord
           expect(transaction.total).to eq(Money.new(3000, :usd))
         end
 
+        it "constructs the money object from the mapped method value with arguments" do
+          expect(transaction.total(1, bar: 2)).to eq(Money.new(3003, :usd))
+        end
+
         it "allows currency column postfix to be blank" do
           allow(MoneyRails::Configuration).to receive(:currency_column) { { postfix: nil, column_name: 'currency' } }
           expect(dummy_product_with_nil_currency.price.currency).to eq(Money::Currency.find(:gbp))
