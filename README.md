@@ -474,6 +474,12 @@ MoneyRails.configure do |config|
   #   symbol: nil,
   #   sign_before_symbol: nil
   # }
+
+  # Set whether an error should be raised when parsing money values
+  # This includes assigning to a monetized field with the wrong currency
+  # Default value is false
+  #
+  # config.raise_error_on_money_parsing = true
 end
 ```
 
@@ -493,6 +499,7 @@ end
 * `amount_column`: Provide values for the amount column (holding the fractional part of a money object).
 * `currency_column`: Provide default values or even disable (`present: false`) the currency column.
 * `rounding_mode`: Set `Money.rounding_mode` to one of the BigDecimal constants.
+* `raise_error_on_money_parsing`: Set whether errors should be raised when parsing money values
 
 ### Helpers
 
