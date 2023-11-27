@@ -10,7 +10,7 @@ module MoneyRails
 
       module ClassMethods
         def monetized_attributes
-          monetized_attributes = @monetized_attributes || {}
+          monetized_attributes = @monetized_attributes || {}.with_indifferent_access
 
           if superclass.respond_to?(:monetized_attributes)
             monetized_attributes.merge(superclass.monetized_attributes)
