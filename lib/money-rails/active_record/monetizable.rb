@@ -178,9 +178,19 @@ module MoneyRails
         end
       end
 
-      def read_monetized(name, subunit_name, options = {}, *args, **kwargs)
-        # Get the cents
-        amount = public_send(subunit_name, *args, **kwargs)
+      def read_monetized(name, subunit_name, options = nil, *args, **kwargs)
+        # Ruby 2.x compatibility
+        if options.nil?
+          options = kwargs
+          kwargs = {}
+        end
+
+        if kwargs.any?
+          amount = public_send(subunit_name, *args, **kwargs)
+        else
+          # Ruby 2.x does not allow empty kwargs
+          amount = public_send(subunit_name, *args)
+        end
 
         return if amount.nil? && options[:allow_nil]
         # Get the currency object
