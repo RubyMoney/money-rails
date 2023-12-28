@@ -8,6 +8,6 @@ class Transaction < ActiveRecord::Base
   monetize :optional_amount_cents, with_model_currency: :currency, allow_nil: true
 
   def total_cents(foo = 0, bar: 0)
-    return amount_cents + tax_cents + foo + bar
+    amount_cents + tax_cents + foo + bar
   end
 end
