@@ -18,7 +18,11 @@ module MoneyRails
                                     else
                                       false
                                     end
-            current_adapter = ::ActiveRecord::Base.connection_db_config[:adapter]
+            current_adapter = if ::ActiveRecord::Base.respond_to?(:connection_db_config)
+                                ::ActiveRecord::Base.connection_db_config.configuration_hash[:adapter]
+                              else
+                                ::ActiveRecord::Base.connection_config[:adapter]
+                              end
             postgresql_with_money = rails42 && PG_ADAPTERS.include?(current_adapter)
           end
         end
