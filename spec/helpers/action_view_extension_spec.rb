@@ -105,6 +105,11 @@ describe 'MoneyRails::ActionViewExtension', type: :helper do
       let(:monetizable_object){ false }
       it { is_expected.to eq "00" }
     end
+
+    context 'with a negative monetizable object' do
+      let(:monetizable_object){ Money.new(-125) }
+      it { is_expected.to eq "25" }
+    end
   end
 
   context 'respects MoneyRails::Configuration settings' do

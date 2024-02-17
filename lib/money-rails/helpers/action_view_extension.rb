@@ -53,7 +53,7 @@ module MoneyRails
 
       value = value.to_money
 
-      format "%0#{value.currency.exponent}d", (value % value.currency.subunit_to_unit).cents
+      format "%0#{value.currency.exponent}d", (value.abs % value.currency.subunit_to_unit).cents
     end
   end
 end
