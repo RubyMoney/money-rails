@@ -1,7 +1,7 @@
 # RubyMoney - Money-Rails
 
 [![Gem Version](https://badge.fury.io/rb/money-rails.svg)](http://badge.fury.io/rb/money-rails)
-[![Build Status](https://secure.travis-ci.org/RubyMoney/money-rails.svg?branch=master)](http://travis-ci.org/RubyMoney/money-rails)
+[![Ruby](https://github.com/RubyMoney/money-rails/actions/workflows/ruby.yml/badge.svg)](https://github.com/RubyMoney/money-rails/actions/workflows/ruby.yml)
 [![License](http://img.shields.io/:license-mit-green.svg?style=flat)](http://opensource.org/licenses/MIT)
 
 ## Introduction
