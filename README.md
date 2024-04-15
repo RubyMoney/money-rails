@@ -189,6 +189,17 @@ to the validation you are willing to skip, like this:
 monetize :price_in_a_range_cents, numericality: false
 ```
 
+And you can also use `subunit_numericality` for subunit:
+
+```ruby
+monetize :price_in_a_range_cents,
+         allow_nil: true,
+         subunit_numericality: {
+           greater_than_or_equal_to: 0,
+           less_than_or_equal_to: 100_00
+         }
+```
+
 ### Mongoid 2.x and 3.x
 
 `Money` is available as a field type to supply during a field definition:
