@@ -949,6 +949,25 @@ if defined? ActiveRecord
         expect(price.amount).not_to eq(value.amount)
       end
 
+      context 'without a default currency' do
+        let(:product) { OtherProduct.new }
+
+        around do |example|
+          default_currency = Money.default_currency
+          Money.default_currency = nil
+
+          example.run
+
+          Money.default_currency = default_currency
+        end
+
+        it "errors a NoCurrency Error" do
+          expect do
+            product.write_monetized :price, :price_cents, 10.5, false, nil, {}
+          end.to raise_error(Money::Currency::NoCurrency)
+        end
+      end
+
       describe "instance_currency_name" do
         it "updates instance_currency_name attribute" do
           product.write_monetized :sale_price, :sale_price_amount, value, false, :sale_price_currency_code, {}
