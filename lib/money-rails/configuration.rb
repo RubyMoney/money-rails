@@ -35,7 +35,7 @@ module MoneyRails
     end
 
     def set_currency_column_for_default_currency!
-      iso_code = default_currency&.iso_code
+      iso_code = default_currency && default_currency.iso_code
       currency_column.merge! default: iso_code
     end
 
