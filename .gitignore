@@ -8,6 +8,7 @@ spec/dummy/db/schema.rb
 .rvmrc
 .rbenv-version
 .ruby-version
+.ruby-gemset
 
 # dummy dbs
 *.sqlite3*
