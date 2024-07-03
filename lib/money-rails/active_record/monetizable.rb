@@ -9,6 +9,8 @@ module MoneyRails
       extend ActiveSupport::Concern
 
       module ClassMethods
+        MODULE_NAME = :DynamicMoneyAttributes
+
         def monetized_attributes
           monetized_attributes = @monetized_attributes || {}.with_indifferent_access
 
@@ -116,23 +118,31 @@ module MoneyRails
               end
             end
 
-
-            # Getter for monetized attribute
-            define_method name do |*args, **kwargs|
-              read_monetized name, subunit_name, options, *args, **kwargs
+            if const_defined?(MODULE_NAME, false)
+              mod = const_get(MODULE_NAME)
+            else
+              mod = const_set(MODULE_NAME, Module.new)
+              include mod
             end
 
-            # Setter for monetized attribute
-            define_method "#{name}=" do |value|
-              write_monetized name, subunit_name, value, validation_enabled, instance_currency_name, options
-            end
+            mod.module_eval do
+              # Getter for monetized attribute
+              define_method name do |*args, **kwargs|
+                read_monetized name, subunit_name, options, *args, **kwargs
+              end
 
-            if validation_enabled
-              # Ensure that the before_type_cast value is cleared when setting
-              # the subunit value directly
-              define_method "#{subunit_name}=" do |value|
-                instance_variable_set "@#{name}_money_before_type_cast", nil
-                write_attribute(subunit_name, value)
+              # Setter for monetized attribute
+              define_method "#{name}=" do |value|
+                write_monetized name, subunit_name, value, validation_enabled, instance_currency_name, options
+              end
+
+              if validation_enabled
+                # Ensure that the before_type_cast value is cleared when setting
+                # the subunit value directly
+                define_method "#{subunit_name}=" do |value|
+                  instance_variable_set "@#{name}_money_before_type_cast", nil
+                  write_attribute(subunit_name, value)
+                end
               end
             end
 
