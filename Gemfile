@@ -9,7 +9,7 @@ platforms :jruby do
 end
 
 platforms :ruby do
-  gem "sqlite3"
+  gem "sqlite3", '~> 1.4'
 end
 
 platform :mri do
