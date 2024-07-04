@@ -30,6 +30,23 @@ if defined? ActiveRecord
 
       context ".monetized_attributes" do
 
+        it "allows adds methods to the inheritance chain" do
+          class MyProduct < ActiveRecord::Base
+            self.table_name = :products
+            monetize :price_cents
+            attr_reader :side_effect
+
+            def price=(value)
+              @side_effect = true
+              super
+            end
+          end
+
+          p = MyProduct.new(price: 10)
+          expect(p.price).to eq Money.new(10_00)
+          expect(p.side_effect).to be_truthy
+        end
+
         class InheritedMonetizeProduct < Product
           monetize :special_price_cents
         end

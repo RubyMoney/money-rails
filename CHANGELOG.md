@@ -4,6 +4,7 @@
 
 - Allow monetizing methods with kwargs
 - Fix money_only_cents for negative money
+- Allow `super` when overriding methods
 
 ## 1.15.0
 
