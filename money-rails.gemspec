@@ -31,7 +31,7 @@ Gem::Specification.new do |s|
   s.add_dependency "activesupport", ">= 6.1"
   s.add_dependency "railties",      ">= 6.1"
 
-  s.add_development_dependency "rails",       ">= 6.1", "< 7.1"
+  s.add_development_dependency "rails",       ">= 6.1", "< 8"
   s.add_development_dependency "rspec-rails", "~> 6"
   s.add_development_dependency "database_cleaner", '~> 2'
   s.add_development_dependency "bundler"
