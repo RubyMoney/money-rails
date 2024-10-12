@@ -105,6 +105,14 @@ if defined? ActiveRecord
         expect(transaction.amount_cents).to eq(20000)
       end
 
+      it "update to instance currency field gets applied to converted methods" do
+        transaction = Transaction.create(amount: '200', tax: '10', currency: 'USD')
+        expect(transaction.total).to eq(Money.new(21000, 'USD'))
+
+        transaction.currency = 'CLP'
+        expect(transaction.total).to eq(Money.new(210, 'CLP'))
+      end
+
       it "raises an error if trying to create two attributes with the same name" do
         expect do
           class Product
