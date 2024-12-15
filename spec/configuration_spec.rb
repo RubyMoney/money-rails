@@ -126,8 +126,15 @@ describe "configuration" do
     end
 
     describe "rounding mode" do
-      [BigDecimal::ROUND_UP, BigDecimal::ROUND_DOWN, BigDecimal::ROUND_HALF_UP, BigDecimal::ROUND_HALF_DOWN,
-       BigDecimal::ROUND_HALF_EVEN, BigDecimal::ROUND_CEILING, BigDecimal::ROUND_FLOOR].each do |mode|
+      [
+        BigDecimal::ROUND_UP,
+        BigDecimal::ROUND_DOWN,
+        BigDecimal::ROUND_HALF_UP,
+        BigDecimal::ROUND_HALF_DOWN,
+        BigDecimal::ROUND_HALF_EVEN,
+        BigDecimal::ROUND_CEILING,
+        BigDecimal::ROUND_FLOOR
+      ].each do |mode|
         context "when set to #{mode}" do
           it "sets Money.rounding mode to #{mode}" do
             MoneyRails.rounding_mode = mode
@@ -142,6 +149,5 @@ describe "configuration" do
         end
       end
     end
-
   end
 end
