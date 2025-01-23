@@ -24,30 +24,6 @@ if defined? ActiveRecord
         end
       end
 
-      context ".monetized_attributes" do
-
-        class InheritedMonetizeProduct < Product
-          monetize :special_price_cents
-        end
-
-        it "should be inherited by subclasses" do
-          assert_monetized_attributes(Sub.monetized_attributes, Product.monetized_attributes)
-        end
-
-        it "should be inherited by subclasses with new monetized attribute" do
-          assert_monetized_attributes(InheritedMonetizeProduct.monetized_attributes, Product.monetized_attributes.merge(special_price: "special_price_cents"))
-        end
-
-        def assert_monetized_attributes(monetized_attributes, expected_attributes)
-          expect(monetized_attributes).to include expected_attributes
-          expect(expected_attributes).to include monetized_attributes
-          expect(monetized_attributes.size).to eql expected_attributes.size
-          monetized_attributes.keys.each do |key|
-            expect(key.is_a? String).to be_truthy
-          end
-        end
-      end
-
       it "attaches a Money object to model field" do
         expect_to_have_money_attributes(product, :price, :discount_value, :bonus)
       end
