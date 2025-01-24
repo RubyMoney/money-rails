@@ -9,6 +9,36 @@ module MoneyRails
         def decimal_pieces
           @decimal_pieces ||= abs_raw_value.split(decimal_mark)
         end
+
+        def has_too_many_decimal_points?
+          decimal_pieces.length > 2
+        end
+
+        def thousand_separator_after_decimal_mark?
+          return false unless thousands_separator.present?
+
+          decimal_pieces.length == 2 && decimal_pieces[1].include?(thousands_separator)
+        end
+
+        def invalid_thousands_separation?
+          pieces_array = decimal_pieces[0].split(thousands_separator.presence)
+
+          return false if pieces_array.length <= 1
+          return true  if pieces_array[0].length > 3
+
+          pieces_array[1..-1].any? do |thousands_group|
+            thousands_group.length != 3
+          end
+        end
+
+        # Remove thousands separators, normalize decimal mark,
+        # remove whitespaces and _ (E.g. 99 999 999 or 12_300_200.20)
+        def normalize
+          raw_value.to_s
+                   .gsub(thousands_separator, '')
+                   .gsub(decimal_mark, '.')
+                   .gsub(/[\s_]/, '')
+        end
       end
 
       def validate_each(record, attr, _value)
@@ -35,17 +65,16 @@ module MoneyRails
         # Cache abs_raw_value before normalizing because it's used in
         # many places and relies on the original raw_value.
         details = generate_details(raw_value, currency)
-        normalized_raw_value = normalize(details)
+        normalized_raw_value = details.normalize
 
         super(record, attr, normalized_raw_value)
 
         return unless stringy
         return if record_already_has_error?(record, attr, normalized_raw_value)
 
-        add_error!(record, attr, details) if
-          value_has_too_many_decimal_points(details) ||
-          thousand_separator_after_decimal_mark(details) ||
-          invalid_thousands_separation(details)
+        add_error!(record, attr, details) if details.has_too_many_decimal_points? ||
+                                             details.thousand_separator_after_decimal_mark? ||
+                                             details.invalid_thousands_separation?
       end
 
       private
@@ -76,37 +105,6 @@ module MoneyRails
           currency: details.abs_raw_value,
           attribute: attr_name
         )
-      end
-
-      def value_has_too_many_decimal_points(details)
-        ![1, 2].include?(details.decimal_pieces.length)
-      end
-
-      def thousand_separator_after_decimal_mark(details)
-        details.thousands_separator.present? &&
-          details.decimal_pieces.length == 2 &&
-          details.decimal_pieces[1].include?(details.thousands_separator)
-      end
-
-      def invalid_thousands_separation(details)
-        pieces_array = details.decimal_pieces[0].split(details.thousands_separator.presence)
-
-        return false if pieces_array.length <= 1
-        return true  if pieces_array[0].length > 3
-
-        pieces_array[1..-1].any? do |thousands_group|
-          thousands_group.length != 3
-        end
-      end
-
-      # Remove thousands separators, normalize decimal mark,
-      # remove whitespaces and _ (E.g. 99 999 999 or 12_300_200.20)
-      def normalize(details)
-        details.raw_value
-          .to_s
-          .gsub(details.thousands_separator, '')
-          .gsub(details.decimal_mark, '.')
-          .gsub(/[\s_]/, '')
       end
 
       def lookup(key, currency)
