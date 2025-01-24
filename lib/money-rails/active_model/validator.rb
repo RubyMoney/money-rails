@@ -12,20 +12,11 @@ module MoneyRails
       end
 
       def validate_each(record, attr, _value)
-        subunit_attr = record.class.monetized_attributes[attr.to_s]
         currency = record.public_send("currency_for_#{attr}")
 
         # WARNING: Currently this is only defined in ActiveRecord extension!
         before_type_cast = :"#{attr}_money_before_type_cast"
-        raw_value = record.try(before_type_cast)
-
-        # If raw value is nil and changed subunit is nil, then
-        # nil is a assigned value, else we should treat the
-        # subunit value as the one assigned.
-        if raw_value.nil? && record.public_send(subunit_attr)
-          subunit_value = record.public_send(subunit_attr)
-          raw_value = subunit_value.to_f / currency.subunit_to_unit
-        end
+        raw_value = record.try(before_type_cast) || record.public_send(attr)
 
         return if options[:allow_nil] && raw_value.nil?
 
