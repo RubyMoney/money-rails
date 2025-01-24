@@ -806,6 +806,20 @@ if defined? ActiveRecord
               transaction.amount = "$123"
               expect(transaction.valid?).to be_truthy
             end
+
+            it "is valid when the monetize field is set" do
+              transaction.amount = 5_000
+              transaction.currency = :eur
+
+              expect(transaction.valid?).to be_truthy
+            end
+
+            it "is valid when the monetize field is not set" do
+              transaction.update(amount: 5_000, currency: :eur)
+              transaction.reload # reload to simulate the retrieved object
+
+              expect(transaction.valid?).to be_truthy
+            end
           end
         end
       end
