@@ -38,8 +38,7 @@ def run_with_gemfile(gemfile)
   Bundler.with_original_env do
     begin
       sh "BUNDLE_GEMFILE='#{gemfile}' bundle install --quiet"
-      Rake.application['app:db:create'].invoke
-      Rake.application['app:db:test:prepare'].invoke
+      Rake.application['prepare_test_env'].invoke
       sh "BUNDLE_GEMFILE='#{gemfile}' bundle exec rake spec"
     ensure
       Rake.application['app:db:drop:all'].execute
