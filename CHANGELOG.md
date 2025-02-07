@@ -4,6 +4,7 @@
 
 - Allow monetizing methods with kwargs
 - Fix money_only_cents for negative money
+- Allow `nil` to be set as the default currency
 
 ## 1.15.0
 

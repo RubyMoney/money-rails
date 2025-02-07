@@ -20,7 +20,7 @@ module MoneyRails
     # Configuration parameters
 
     def default_currency
-      Money::Currency.new(Money.default_currency)
+      Money::Currency.new(Money.default_currency) if Money.default_currency
     end
 
     # Set default currency of money library
@@ -35,7 +35,7 @@ module MoneyRails
     end
 
     def set_currency_column_for_default_currency!
-      iso_code = default_currency.iso_code
+      iso_code = default_currency && default_currency.iso_code
       currency_column.merge! default: iso_code
     end
 

@@ -10,20 +10,26 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2015_10_26_220420) do
-
+ActiveRecord::Schema.define(version: 2024_04_25_081448) do
   create_table "dummy_products", force: :cascade do |t|
     t.string "currency"
     t.integer "price_cents"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
+  end
+
+  create_table "other_products", force: :cascade do |t|
+    t.string "currency"
+    t.integer "price_cents"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
   end
 
   create_table "products", force: :cascade do |t|
     t.integer "price_cents"
     t.integer "discount"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.integer "bonus_cents"
     t.integer "optional_price_cents"
     t.integer "sale_price_amount", default: 0, null: false
@@ -43,16 +49,16 @@ ActiveRecord::Schema.define(version: 2015_10_26_220420) do
   create_table "services", force: :cascade do |t|
     t.integer "charge_cents"
     t.integer "discount_cents"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
   end
 
   create_table "transactions", force: :cascade do |t|
     t.integer "amount_cents"
     t.integer "tax_cents"
     t.string "currency"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.integer "optional_amount_cents"
   end
 
