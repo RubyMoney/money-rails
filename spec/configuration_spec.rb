@@ -167,5 +167,4 @@ describe "configuration" do
       Money.add_rate("USD", "EUR", 0.5)
     end
   end
-
 end
