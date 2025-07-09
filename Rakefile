@@ -57,16 +57,9 @@ namespace :spec do
 
     # Ruby 3 exclusions
     if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('3.0.0')
-      # Rails 5 does not support ruby-3.0.0 https://github.com/rails/rails/issues/40938#issuecomment-751569171
       # Mongoid gem does not yet support ruby-3.0.0 https://github.com/mongodb/mongoid#compatibility
-      next if framework == 'mongoid' || (framework == 'rails' && version == "5")
+      next if framework == 'mongoid'
     end
-
-    # Skip Rails 7 unless the Ruby version is at least 2.7
-    if Gem::Version.new(RUBY_VERSION) < Gem::Version.new('2.7')
-      next if framework == 'rails' && version == "7"
-    end
-
 
     frameworks_versions[framework] ||= []
     frameworks_versions[framework] << file_name

@@ -4,9 +4,6 @@ require File.expand_path('../boot', __FILE__)
 require "active_record/railtie"
 require "action_controller/railtie"
 require "action_mailer/railtie"
-unless Rails::VERSION::MAJOR >= 4
-  require "active_resource/railtie"
-end
 require "sprockets/railtie"
 
 Bundler.require
