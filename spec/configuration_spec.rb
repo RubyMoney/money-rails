@@ -138,7 +138,7 @@ describe "configuration" do
 
       context "when passed an invalid value" do
         it "should raise an ArgumentError" do
-          expect(lambda{MoneyRails.rounding_mode = "booyakasha"}).to raise_error(ArgumentError, 'booyakasha is not a valid rounding mode')
+          expect { MoneyRails.rounding_mode = "booyakasha" }.to raise_error(ArgumentError, 'booyakasha is not a valid rounding mode')
         end
       end
     end
