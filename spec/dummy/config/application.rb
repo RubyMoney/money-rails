@@ -1,12 +1,10 @@
 require File.expand_path('../boot', __FILE__)
+require "logger"
 
 # Pick the frameworks you want:
 require "active_record/railtie"
 require "action_controller/railtie"
 require "action_mailer/railtie"
-unless Rails::VERSION::MAJOR >= 4
-  require "active_resource/railtie"
-end
 require "sprockets/railtie"
 
 Bundler.require
@@ -17,6 +15,13 @@ module Dummy
 
     if I18n.respond_to?(:enforce_available_locales)
       I18n.enforce_available_locales = false # removes deprecation warning
+    end
+
+    # Load configuration defaults for the current Rails version
+    if Rails::VERSION::MAJOR >= 7
+      config.load_defaults 7.0
+    elsif Rails::VERSION::MAJOR == 6
+      config.load_defaults 6.1
     end
 
     # Settings in config/environments/* take precedence over those specified here.

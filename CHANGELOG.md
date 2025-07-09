@@ -4,6 +4,7 @@
 
 - Allow monetizing methods with kwargs
 - Fix money_only_cents for negative money
+- BREAKING CHANGE: Drop support for Ruby < 3 and Rails < 6.1
 
 ## 1.15.0
 
