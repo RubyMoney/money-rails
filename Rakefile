@@ -15,8 +15,6 @@ end
 APP_RAKEFILE = File.expand_path("../spec/dummy/Rakefile", __FILE__)
 GEMFILES_PATH = 'gemfiles/*.gemfile'.freeze
 
-load 'rails/tasks/engine.rake' if File.exist?(APP_RAKEFILE)
-
 require 'rake'
 require 'rspec/core/rake_task'
 
@@ -28,22 +26,29 @@ task spec: :prepare_test_env
 
 desc "Prepare money-rails engine test environment"
 task :prepare_test_env do
-  Rake.application['app:db:drop:all'].invoke
-  Rake.application['app:db:create'].invoke if Rails::VERSION::MAJOR >= 5
-  Rake.application['app:db:migrate'].invoke
-  Rake.application['app:db:test:prepare'].invoke
+  load APP_RAKEFILE if File.exist?(APP_RAKEFILE)
+  invoke_db_task("drop")
+  invoke_db_task("create")
+  invoke_db_task("migrate")
+  invoke_db_task("test:prepare")
 end
 
 def run_with_gemfile(gemfile)
   Bundler.with_original_env do
-    begin
-      sh "BUNDLE_GEMFILE='#{gemfile}' bundle install --quiet"
-      Rake.application['app:db:create'].invoke
-      Rake.application['app:db:test:prepare'].invoke
-      sh "BUNDLE_GEMFILE='#{gemfile}' bundle exec rake spec"
-    ensure
-      Rake.application['app:db:drop:all'].execute
-    end
+    lockfile = "#{gemfile}.lock"
+    File.delete(lockfile) if File.exist?(lockfile)
+    sh "BUNDLE_GEMFILE=#{gemfile} bundle install --quiet"
+    sh "BUNDLE_GEMFILE=#{gemfile} bundle exec rake spec"
+  end
+end
+
+def invoke_db_task(task)
+  if Rake::Task.task_defined?("db:#{task}")
+    Rake.application["db:#{task}"].invoke
+  elsif Rake::Task.task_defined?("app:db:#{task}")
+    Rake.application["app:db:#{task}"].invoke
+  else
+    puts "No db task found for #{task}"
   end
 end
 
