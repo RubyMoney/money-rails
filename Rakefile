@@ -27,10 +27,10 @@ task spec: :prepare_test_env
 desc "Prepare money-rails engine test environment"
 task :prepare_test_env do
   load APP_RAKEFILE if File.exist?(APP_RAKEFILE)
-  invoke_db_task("drop")
-  invoke_db_task("create")
-  invoke_db_task("migrate")
-  invoke_db_task("test:prepare")
+  Rake.application["db:drop"].invoke
+  Rake.application["db:create"].invoke
+  Rake.application["db:migrate"].invoke
+  Rake.application["db:test:prepare"].invoke
 end
 
 def run_with_gemfile(gemfile)
@@ -39,16 +39,6 @@ def run_with_gemfile(gemfile)
     File.delete(lockfile) if File.exist?(lockfile)
     sh "BUNDLE_GEMFILE=#{gemfile} bundle install --quiet"
     sh "BUNDLE_GEMFILE=#{gemfile} bundle exec rake spec"
-  end
-end
-
-def invoke_db_task(task)
-  if Rake::Task.task_defined?("db:#{task}")
-    Rake.application["db:#{task}"].invoke
-  elsif Rake::Task.task_defined?("app:db:#{task}")
-    Rake.application["app:db:#{task}"].invoke
-  else
-    puts "No db task found for #{task}"
   end
 end
 
