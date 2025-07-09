@@ -2,6 +2,10 @@ source 'https://rubygems.org'
 
 gem 'rails', '~> 6.1.0'
 gem 'i18n',  '~> 1.6'
+gem "bigdecimal"
+gem "mutex_m"
+gem "benchmark"
+gem "drb"
 
 platforms :jruby do
   gem "activerecord-jdbc-adapter"

@@ -10,7 +10,7 @@ module MoneyRails
 
       module ClassMethods
         def monetized_attributes
-          monetized_attributes = @monetized_attributes || {}
+          monetized_attributes = @monetized_attributes || {}.with_indifferent_access
 
           if superclass.respond_to?(:monetized_attributes)
             monetized_attributes.merge(superclass.monetized_attributes)
@@ -118,8 +118,8 @@ module MoneyRails
 
 
             # Getter for monetized attribute
-            define_method name do |*args|
-              read_monetized name, subunit_name, options, *args
+            define_method name do |*args, **kwargs|
+              read_monetized name, subunit_name, options, *args, **kwargs
             end
 
             # Setter for monetized attribute
@@ -178,9 +178,19 @@ module MoneyRails
         end
       end
 
-      def read_monetized(name, subunit_name, options = {}, *args)
-        # Get the cents
-        amount = public_send(subunit_name, *args)
+      def read_monetized(name, subunit_name, options = nil, *args, **kwargs)
+        # Ruby 2.x compatibility
+        if options.nil?
+          options = kwargs
+          kwargs = {}
+        end
+
+        if kwargs.any?
+          amount = public_send(subunit_name, *args, **kwargs)
+        else
+          # Ruby 2.x does not allow empty kwargs
+          amount = public_send(subunit_name, *args)
+        end
 
         return if amount.nil? && options[:allow_nil]
         # Get the currency object

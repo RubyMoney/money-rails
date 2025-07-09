@@ -15,8 +15,6 @@ end
 APP_RAKEFILE = File.expand_path("../spec/dummy/Rakefile", __FILE__)
 GEMFILES_PATH = 'gemfiles/*.gemfile'.freeze
 
-load 'rails/tasks/engine.rake' if File.exist?(APP_RAKEFILE)
-
 require 'rake'
 require 'rspec/core/rake_task'
 
@@ -28,22 +26,19 @@ task spec: :prepare_test_env
 
 desc "Prepare money-rails engine test environment"
 task :prepare_test_env do
-  Rake.application['app:db:drop:all'].invoke
-  Rake.application['app:db:create'].invoke if Rails::VERSION::MAJOR >= 5
-  Rake.application['app:db:migrate'].invoke
-  Rake.application['app:db:test:prepare'].invoke
+  load APP_RAKEFILE if File.exist?(APP_RAKEFILE)
+  Rake.application["db:drop"].invoke
+  Rake.application["db:create"].invoke
+  Rake.application["db:migrate"].invoke
+  Rake.application["db:test:prepare"].invoke
 end
 
 def run_with_gemfile(gemfile)
-  Bundler.with_clean_env do
-    begin
-      sh "BUNDLE_GEMFILE='#{gemfile}' bundle install --quiet"
-      Rake.application['app:db:create'].invoke
-      Rake.application['app:db:test:prepare'].invoke
-      sh "BUNDLE_GEMFILE='#{gemfile}' bundle exec rake spec"
-    ensure
-      Rake.application['app:db:drop:all'].execute
-    end
+  Bundler.with_original_env do
+    lockfile = "#{gemfile}.lock"
+    File.delete(lockfile) if File.exist?(lockfile)
+    sh "BUNDLE_GEMFILE=#{gemfile} bundle install --quiet"
+    sh "BUNDLE_GEMFILE=#{gemfile} bundle exec rake spec"
   end
 end
 
@@ -57,9 +52,8 @@ namespace :spec do
 
     # Ruby 3 exclusions
     if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('3.0.0')
-      # Rails 5 does not support ruby-3.0.0 https://github.com/rails/rails/issues/40938#issuecomment-751569171
       # Mongoid gem does not yet support ruby-3.0.0 https://github.com/mongodb/mongoid#compatibility
-      next if framework == 'mongoid' || (framework == 'rails' && version == "5")
+      next if framework == 'mongoid'
     end
 
     frameworks_versions[framework] ||= []
