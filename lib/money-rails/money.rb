@@ -5,6 +5,12 @@ class Money
   class << self
     alias_method :orig_default_formatting_rules, :default_formatting_rules
 
+    # Temporarily sets the default bank for Money operations within the block
+    #
+    # @param bank [Money::Bank] the bank to use temporarily
+    # @yield the block to execute with the temporary bank
+    # @return [Object] the return value of the yielded block
+    #
     def with_bank(bank)
       old_bank, ::Money.default_bank = ::Money.default_bank, bank
       yield
