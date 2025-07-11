@@ -14,7 +14,7 @@ platforms :jruby do
 end
 
 platforms :ruby do
-  gem "sqlite3", '~> 1.4'
+  gem "sqlite3", "~> 1.4"
 end
 
 group :development do
