@@ -10,7 +10,7 @@ spec/dummy/db/schema.rb
 .ruby-version
 
 # dummy dbs
-*.sqlite3
+*.sqlite3*
 
 # rcov generated
 coverage
