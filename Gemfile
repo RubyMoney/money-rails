@@ -14,8 +14,4 @@ end
 
 group :development do
   gem "pry"
-  gem 'rb-inotify', '~> 0.9'
-  gem 'guard'
-  gem 'guard-rspec'
-  gem 'guard-rails'
 end
