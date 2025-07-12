@@ -1,4 +1,3 @@
-# -*- encoding: utf-8 -*-
 require File.expand_path('../lib/money-rails/version', __FILE__)
 
 Gem::Specification.new do |s|
@@ -25,6 +24,8 @@ Gem::Specification.new do |s|
   s.test_files    = s.files.grep(/^spec\//)
 
   s.require_path = "lib"
+
+  s.required_ruby_version = '>= 3.1'
 
   s.add_dependency "money",         "~> 6.16"
   s.add_dependency "monetize",      "~> 1.9"
