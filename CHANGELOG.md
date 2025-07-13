@@ -2,10 +2,12 @@
 
 ## Unreleased
 
+- **Breaking change**: Drop support for Ruby < 3 and Rails < 6.1
+- **Breaking change**: Requires `money` gem version ~> 7.0
 - Allow monetizing methods with kwargs
-- Fix money_only_cents for negative money
-- BREAKING CHANGE: Drop support for Ruby < 3 and Rails < 6.1
+- Fix `money_only_cents` for negative money
 - Allow `nil` to be set as the default currency
+- Portuguese translation for errors
 
 ## 1.15.0
 
