@@ -248,7 +248,7 @@ class Transaction < ActiveRecord::Base
   monetize :price_cents
   monetize :tax_cents
   monetize :total_cents
-  
+
   def total_cents
     price_cents + tax_cents
   end
@@ -576,12 +576,12 @@ For examples on using the test_helpers look at
 
 ## Supported ORMs/ODMs
 
-* ActiveRecord (>= 3.x)
+* ActiveRecord (>= 6.1)
 * Mongoid (>= 2.x)
 
 ## Supported Ruby interpreters
 
-* MRI Ruby >= 2.6
+* MRI Ruby >= 3.0
 
 You can see a full list of the currently supported interpreters in
 [ruby.yml](https://github.com/RubyMoney/money-rails/blob/main/.github/workflows/ruby.yml)
