@@ -2,6 +2,11 @@ source 'https://rubygems.org'
 
 gemspec
 
+gem "bigdecimal"
+gem "mutex_m"
+gem "benchmark"
+gem "drb"
+
 platforms :jruby do
   gem "activerecord-jdbc-adapter"
   gem "activerecord-jdbcsqlite3-adapter"
@@ -9,22 +14,10 @@ platforms :jruby do
 end
 
 platforms :ruby do
-  gem "sqlite3"
-end
-
-platform :mri do
-  # gem "ruby-prof", "~> 0.11.2"
-
-  case RUBY_VERSION
-  when /^1.9/
-    gem 'debugger'
-  end
+  gem "sqlite3", "~> 1.4"
 end
 
 group :development do
   gem "pry"
-  gem 'rb-inotify', '~> 0.9'
-  gem 'guard'
-  gem 'guard-rspec'
-  gem 'guard-rails'
+  gem "money", git: "https://github.com/RubyMoney/money.git"
 end

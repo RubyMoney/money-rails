@@ -1,5 +1,3 @@
-# encoding: utf-8
-
 require 'spec_helper'
 
 class Sub < Product; end
@@ -955,6 +953,25 @@ if defined? ActiveRecord
 
         expect(price).to be_an_instance_of(Money)
         expect(price.amount).not_to eq(value.amount)
+      end
+
+      context 'without a default currency' do
+        let(:product) { OtherProduct.new }
+
+        around do |example|
+          default_currency = Money.default_currency
+          Money.default_currency = nil
+
+          example.run
+
+          Money.default_currency = default_currency
+        end
+
+        it "errors a NoCurrency Error" do
+          expect do
+            product.write_monetized :price, :price_cents, 10.5, false, nil, {}
+          end.to raise_error(Money::Currency::NoCurrency)
+        end
       end
 
       describe "instance_currency_name" do
