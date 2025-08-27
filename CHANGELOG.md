@@ -8,6 +8,7 @@
 - Fix `money_only_cents` for negative money
 - Allow `nil` to be set as the default currency
 - Portuguese translation for errors
+- Skip subunit write for non-attributes in `read_monetized`
 
 ## 1.15.0
 
