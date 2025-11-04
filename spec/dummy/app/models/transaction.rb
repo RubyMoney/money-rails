@@ -3,7 +3,7 @@ class Transaction < ActiveRecord::Base
                           subunit_numericality: {
                             only_integer: true,
                             greater_than: 0,
-                            less_than_or_equal_to: 2_000_000,
+                            less_than_or_equal_to: 20_000_00,
                           },
                           numericality: {
                             greater_than: 0,
