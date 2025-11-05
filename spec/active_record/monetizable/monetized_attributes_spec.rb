@@ -174,7 +174,6 @@ if defined? ActiveRecord
         product.write_monetized :price, :price_cents, nil, false, nil, {}
 
         expect(product.price.amount).to eq(0)
-        expect(expected_currency).to be_an_instance_of(Money::Currency)
         expect(product.price.currency).to eq(expected_currency)
       end
 

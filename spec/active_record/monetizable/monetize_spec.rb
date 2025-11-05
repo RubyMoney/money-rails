@@ -33,15 +33,14 @@ if defined? ActiveRecord
       end
 
       it "attaches a Money object to model field" do
-        [:price, :discount_value, :bonus].each do |attribute|
-          expect(product.send(attribute)).to be_an_instance_of(Money)
-        end
+        expect(product.price).to be_an_instance_of(Money)
+        expect(product.discount_value).to be_an_instance_of(Money)
+        expect(product.bonus).to be_an_instance_of(Money)
       end
 
       it "attaches Money objects to multiple model fields" do
-        [:delivery_fee, :restock_fee].each do |attribute|
-          expect(product.send(attribute)).to be_an_instance_of(Money)
-        end
+        expect(product.delivery_fee).to be_an_instance_of(Money)
+        expect(product.restock_fee).to be_an_instance_of(Money)
       end
 
       it "returns the expected money amount as a Money object" do

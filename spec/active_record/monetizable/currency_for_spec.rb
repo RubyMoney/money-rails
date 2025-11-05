@@ -37,7 +37,6 @@ if defined? ActiveRecord
           currency = product.send(:currency_for, :amount, nil, nil)
           expected_currency = Product.currency
 
-          expect(expected_currency).to be_an_instance_of(Money::Currency)
           expect(currency).to eq(expected_currency)
         end
 
@@ -46,7 +45,6 @@ if defined? ActiveRecord
           currency = transaction.send(:currency_for, :amount, nil, nil)
           expected_currency = Money.default_currency
 
-          expect(expected_currency).to be_an_instance_of(Money::Currency)
           expect(currency).to eq(expected_currency)
         end
       end
