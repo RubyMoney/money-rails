@@ -1,13 +1,9 @@
 require 'spec_helper'
 
-require_relative 'money_helpers'
-
 class Sub < Product; end
 
 if defined? ActiveRecord
   describe MoneyRails::ActiveRecord::Monetizable do
-    include MoneyHelpers
-
     let(:product) do
       Product.create(
         price_cents: 3000,
@@ -37,22 +33,28 @@ if defined? ActiveRecord
       end
 
       it "attaches a Money object to model field" do
-        expect_to_have_money_attributes(product, :price, :discount_value, :bonus)
+        [:price, :discount_value, :bonus].each do |attribute|
+          expect(product.send(attribute)).to be_an_instance_of(Money)
+        end
       end
 
       it "attaches Money objects to multiple model fields" do
-        expect_to_have_money_attributes(product, :delivery_fee, :restock_fee)
+        [:delivery_fee, :restock_fee].each do |attribute|
+          expect(product.send(attribute)).to be_an_instance_of(Money)
+        end
       end
 
       it "returns the expected money amount as a Money object" do
-        expect_equal_money_instance(product.price, amount: 3000, currency: "USD")
+        expected_money = Money.new(30_00, "USD")
+
+        expect(product.price).to eq(expected_money)
       end
 
       it "assigns the correct value from a Money object" do
         product.price = Money.new(3210, "USD")
 
         expect(product.save).to be_truthy
-        expect_money_attribute_cents_value(product, :price, 3210)
+        expect(product.price_cents).to eq(3210)
       end
 
       it "assigns the correct value from a Money object using create" do
@@ -64,12 +66,12 @@ if defined? ActiveRecord
         )
 
         expect(product.valid?).to be_truthy
-        expect_money_attribute_cents_value(product, :price, 3210)
+        expect(product.price_cents).to eq(3210)
       end
 
       it "correctly updates from a Money object using update_attributes" do
         expect(update_product(price: Money.new(215, "USD"))).to be_truthy
-        expect_money_attribute_cents_value(product, :price, 215)
+        expect(product.price_cents).to eq(215)
       end
 
       it "assigns the correct value from params" do
@@ -78,19 +80,21 @@ if defined? ActiveRecord
 
         expect(product.valid?).to be_truthy
         expect(product.amount.currency.subunit_to_unit).to eq(1)
-        expect_money_attribute_cents_value(product, :amount, 20000)
+        expect(product.amount_cents).to eq(20000)
       end
 
       # TODO: This is a slightly controversial example, btu it reflects the current behaviour
       it "re-assigns cents amount when subunit/unit ratio changes preserving amount in units" do
-        transaction = Transaction.create(amount: '20000', tax: '1000', currency: 'USD')
+        transaction = Transaction.create(amount: "20000", tax: "1000", currency: "USD")
+        expected_money = Money.new(20000_00, "USD")
 
-        expect_equal_money_instance(transaction.amount, amount: 20000_00, currency: 'USD')
+        expect(transaction.amount).to eq(expected_money)
 
-        transaction.currency = 'CLP'
+        transaction.currency = "CLP"
+        expected_money = Money.new(200_00, "CLP")
 
-        expect_equal_money_instance(transaction.amount, amount: 20000, currency: 'CLP')
-        expect_money_attribute_cents_value(transaction, :amount, 20000)
+        expect(transaction.amount).to eq(expected_money)
+        expect(transaction.amount_cents).to eq(20000)
       end
 
       it "update to instance currency field gets applied to converted methods" do
@@ -137,12 +141,14 @@ if defined? ActiveRecord
 
         sub_product = SubProduct.new(discount: 100)
 
-        expect_to_be_a_money_instance(sub_product.discount_price)
+        expect(sub_product.discount_price).to be_an_instance_of(Money)
         expect(sub_product.discount_price.currency.id).to equal :gbp
       end
 
       it "respects :as argument" do
-        expect_equal_money_instance(product.discount_value, amount: 150, currency: "USD")
+        expected_money = Money.new(150, "USD")
+
+        expect(product.discount_value).to eq(expected_money)
       end
 
       it "uses numericality validation" do
@@ -400,14 +406,14 @@ if defined? ActiveRecord
         product.price = "999 999.99"
 
         expect(product).to be_valid
-        expect_money_attribute_cents_value(product, :price, 99999999)
+        expect(product.price_cents).to eq(99999999)
       end
 
       it "passes validation when amount contains underscores (999_999.99)" do
         product.price = "999_999.99"
 
         expect(product).to be_valid
-        expect_money_attribute_cents_value(product, :price, 99999999)
+        expect(product.price_cents).to eq(99999999)
       end
 
       it "passes validation if money value has correct format" do
@@ -422,19 +428,20 @@ if defined? ActiveRecord
 
       it "respects numericality validation when using update_attributes on money attribute" do
         expect(update_product(price: "some text")).to be_falsey
-        expect(update_product(price: Money.new(320, 'USD'))).to be_truthy
+        expect(update_product(price: Money.new(320, "USD"))).to be_truthy
       end
 
       it "uses i18n currency format when validating" do
         old_locale = I18n.locale
         I18n.locale = "en-GB"
-        Money.default_currency = Money::Currency.find('EUR')
+        Money.default_currency = Money::Currency.find("EUR")
+        expected_money = Money.new(12_00, :eur)
 
-        expect_equal_money_instance("12.00".to_money, amount: 1200, currency: :eur)
+        expect("12.00".to_money).to eq(expected_money)
 
         transaction = Transaction.new(amount: "12.00", tax: "13.00")
 
-        expect_money_attribute_cents_value(transaction, :amount, 1200)
+        expect(transaction.amount_cents).to eq(1200)
         expect(transaction.valid?).to be_truthy
 
         # reset locale setting
@@ -482,121 +489,153 @@ if defined? ActiveRecord
       end
 
       it "uses Money default currency if :with_currency has not been used" do
-        expect_money_currency_is(service.discount, :eur)
+        expected_currency = Money::Currency.find(:eur)
+
+        expect(service.discount.currency).to eq(expected_currency)
       end
 
       it "overrides default currency with the currency registered for the model" do
-        expect_money_currency_is(product.price, :usd)
+        expected_currency = Money::Currency.find(:usd)
+
+        expect(product.price.currency).to eq(expected_currency)
       end
 
       it "overrides default currency with the value of :with_currency argument" do
-        expect_money_currency_is(service.charge, :usd)
-        expect_money_currency_is(product.bonus, :gbp)
+        usd_currency = Money::Currency.find(:usd)
+        gbp_currency = Money::Currency.find(:gbp)
+
+        expect(service.charge.currency).to eq(usd_currency)
+        expect(product.bonus.currency).to eq(gbp_currency)
       end
 
       it "uses currency postfix to determine attribute that stores currency" do
-        expect_money_currency_is(product.reduced_price, :lvl)
+        expected_currency = Money::Currency.find(:lvl)
+
+        expect(product.reduced_price.currency).to eq(expected_currency)
       end
 
       it "correctly assigns Money objects to the attribute" do
         product.price = Money.new(2500, :USD)
+        product_price = product.price
 
         expect(product.save).to be_truthy
-        expect_money_cents_value(product.price, 2500)
-        expect_money_currency_code(product.price, "USD")
+        expect(product_price.cents).to eq(2500)
+        expect(product_price.currency.to_s).to eq("USD")
       end
 
       it "correctly assigns Fixnum objects to the attribute" do
         product.price = 25
+        product_price = product.price
+
         expect(product.save).to be_truthy
-        expect_money_cents_value(product.price, 2500)
-        expect_money_currency_code(product.price, "USD")
+        expect(product_price.cents).to eq(2500)
+        expect(product_price.currency.to_s).to eq("USD")
 
         service.discount = 2
+        service_discount = service.discount
+
         expect(service.save).to be_truthy
-        expect_money_cents_value(service.discount, 200)
-        expect_money_currency_code(service.discount, "EUR")
+        expect(service_discount.cents).to eq(200)
+        expect(service_discount.currency.to_s).to eq("EUR")
       end
 
       it "correctly assigns String objects to the attribute" do
         product.price = "25"
+        product_price = product.price
+
         expect(product.save).to be_truthy
-        expect_money_cents_value(product.price, 2500)
-        expect_money_currency_code(product.price, "USD")
+        expect(product_price.cents).to eq(2500)
+        expect(product_price.currency.to_s).to eq("USD")
 
         service.discount = "2"
+        service_discount = service.discount
+
         expect(service.save).to be_truthy
-        expect_money_cents_value(service.discount, 200)
-        expect_money_currency_code(service.discount, "EUR")
+        expect(service_discount.cents).to eq(200)
+        expect(service_discount.currency.to_s).to eq("EUR")
       end
 
       it "correctly assigns objects to a accessor attribute" do
         product.accessor_price = 1.23
 
         expect(product.save).to be_truthy
-        expect_money_cents_value(product.accessor_price, 123)
-        expect_money_attribute_cents_value(product, :accessor_price, 123)
+        expect(product.accessor_price.cents).to eq(123)
+        expect(product.accessor_price_cents).to eq(123)
       end
 
       it "overrides default, model currency with the value of :with_currency in fixnum assignments" do
         product.bonus = 25
+        product_bonus = product.bonus
+
         expect(product.save).to be_truthy
-        expect_money_cents_value(product.bonus, 2500)
-        expect_money_currency_code(product.bonus, "GBP")
+        expect(product_bonus.cents).to eq(2500)
+        expect(product_bonus.currency.to_s).to eq("GBP")
 
         service.charge = 2
+        service_charge = service.charge
+
         expect(service.save).to be_truthy
-        expect_money_cents_value(service.charge, 200)
-        expect_money_currency_code(service.charge, "USD")
+        expect(service_charge.cents).to eq(200)
+        expect(service_charge.currency.to_s).to eq("USD")
       end
 
       it "overrides default, model currency with the value of :with_currency in string assignments" do
         product.bonus = "25"
+        product_bonus = product.bonus
+
         expect(product.save).to be_truthy
-        expect_money_cents_value(product.bonus, 2500)
-        expect_money_currency_code(product.bonus, "GBP")
+        expect(product_bonus.cents).to eq(2500)
+        expect(product_bonus.currency.to_s).to eq("GBP")
 
         service.charge = "2"
+        service_charge = service.charge
+
         expect(service.save).to be_truthy
-        expect_money_cents_value(service.charge, 200)
-        expect_money_currency_code(service.charge, "USD")
+        expect(service_charge.cents).to eq(200)
+        expect(service_charge.currency.to_s).to eq("USD")
 
         product.lambda_price = "32"
+        product_lambda_price = product.lambda_price
+
         expect(product.save).to be_truthy
-        expect_money_cents_value(product.lambda_price, 3200)
-        expect_money_currency_code(product.lambda_price, "CAD")
+        expect(product_lambda_price.cents).to eq(3200)
+        expect(product_lambda_price.currency.to_s).to eq("CAD")
       end
 
       it "overrides default currency with model currency, in fixnum assignments" do
         product.discount_value = 5
+        discount_value = product.discount_value
 
         expect(product.save).to be_truthy
-        expect_money_cents_value(product.discount_value, 500)
-        expect_money_currency_code(product.discount_value, "USD")
+        expect(discount_value.cents).to eq(500)
+        expect(discount_value.currency.to_s).to eq("USD")
       end
 
       it "overrides default currency with model currency, in string assignments" do
         product.discount_value = "5"
+        discount_value = product.discount_value
 
         expect(product.save).to be_truthy
-        expect_money_cents_value(product.discount_value, 500)
-        expect_money_currency_code(product.discount_value, "USD")
+        expect(discount_value.cents).to eq(500)
+        expect(discount_value.currency.to_s).to eq("USD")
       end
 
       it "falls back to default currency, in fixnum assignments" do
         service.discount = 5
+        service_discount = service.discount
 
         expect(service.save).to be_truthy
-        expect_money_cents_value(service.discount, 500)
-        expect_money_currency_code(service.discount, "EUR")
+        expect(service_discount.cents).to eq(500)
+        expect(service_discount.currency.to_s).to eq("EUR")
       end
 
       it "falls back to default currency, in string assignments" do
         service.discount = "5"
+        service_discount = service.discount
 
         expect(service.save).to be_truthy
-        expect_money_cents_value(service.discount, 500)
-        expect_money_currency_code(service.discount, "EUR")
+        expect(service_discount.cents).to eq(500)
+        expect(service_discount.currency.to_s).to eq("EUR")
       end
 
       it "sets field to nil, in nil assignments if allow_nil is set" do
@@ -624,7 +663,7 @@ if defined? ActiveRecord
           pending if Rails::VERSION::MAJOR < 4
           product.renamed = "$10.00"
 
-          expect_money_attribute_cents_value(product, :aliased, 10_00)
+          expect(product.renamed_cents).to eq(10_00)
         end
       end
 
@@ -632,14 +671,14 @@ if defined? ActiveRecord
         it "has default currency if not specified" do
           product = Product.create(sale_price_amount: 1234)
 
-          expect_money_currency_code(product.sale_price, 'USD')
+          expect(product.sale_price.currency.to_s).to eq("USD")
         end
 
         it "is overridden by instance currency column" do
           product = Product.create(sale_price_amount: 1234,
                                    sale_price_currency_code: 'CAD')
 
-          expect_money_currency_code(product.sale_price, 'CAD')
+          expect(product.sale_price.currency.to_s).to eq("CAD")
         end
 
         it 'can change currency of custom column' do
@@ -651,14 +690,14 @@ if defined? ActiveRecord
             sale_price_currency_code: 'USD'
           )
 
-          expect_money_currency_code(product.sale_price, 'USD')
+          expect(product.sale_price.currency.to_s).to eq("USD")
 
           product.sale_price = Money.new 456, 'CAD'
           product.save
           product.reload
 
-          expect_money_currency_code(product.sale_price, 'CAD')
-          expect_money_currency_code(product.discount_value, 'USD')
+          expect(product.sale_price.currency.to_s).to eq("CAD")
+          expect(product.discount_value.currency.to_s).to eq("USD")
         end
       end
 
@@ -690,64 +729,83 @@ if defined? ActiveRecord
         end
 
         it "overrides default currency with the value of row currency" do
-          expect_money_currency_is(transaction.amount, :usd)
+          expected_currency = Money::Currency.find(:usd)
+
+          expect(transaction.amount.currency).to eq(expected_currency)
         end
 
         it "overrides default currency with the currency registered for the model" do
-          expect_money_currency_is(dummy_product_with_nil_currency.price, :gbp)
+          expected_currency = Money::Currency.find(:gbp)
+
+          expect(dummy_product_with_nil_currency.price.currency).to eq(expected_currency)
         end
 
         it "overrides default currency with the currency registered for the model if currency is invalid" do
-          expect_money_currency_is(dummy_product_with_invalid_currency.price, :gbp)
+          expected_currency = Money::Currency.find(:gbp)
+
+          expect(dummy_product_with_invalid_currency.price.currency).to eq(expected_currency)
         end
 
         it "overrides default and model currency with the row currency" do
-          expect_money_currency_is(dummy_product.price, :usd)
+          expected_currency = Money::Currency.find(:usd)
+
+          expect(dummy_product.price.currency).to eq(expected_currency)
         end
 
         it "constructs the money attribute from the stored mapped attribute values" do
-          expect_equal_money_instance(transaction.amount, amount: 2400, currency: :usd)
+          expected_money = Money.new(24_00, :usd)
+
+          expect(transaction.amount).to eq(expected_money)
         end
 
         it "correctly instantiates Money objects from the mapped attributes" do
           t = Transaction.new(amount_cents: 2500, currency: "CAD")
+          expected_money = Money.new(25_00, "CAD")
 
-          expect_equal_money_instance(t.amount, amount: 2500, currency: "CAD")
+          expect(t.amount).to eq(expected_money)
         end
 
         it "correctly assigns Money objects to the attribute" do
           transaction.amount = Money.new(2500, :eur)
+          transaction_amount = transaction.amount
 
           expect(transaction.save).to be_truthy
-          expect_equal_money_cents(transaction.amount, Money.new(2500, :eur))
-          expect_money_currency_code(transaction.amount, "EUR")
+          expect(transaction_amount.cents).to eq(Money.new(2500, :eur).cents)
+          expect(transaction.amount.currency.to_s).to eq("EUR")
         end
 
         it "uses default currency if a non Money object is assigned to the attribute" do
           transaction.amount = 234
 
-          expect_money_currency_code(transaction.amount, "USD")
+          expect(transaction.amount.currency.to_s).to eq("USD")
         end
 
         it "constructs the money object from the mapped method value" do
-          expect_equal_money_instance(transaction.total, amount: 3000, currency: :usd)
+          expected_money = Money.new(30_00, :usd)
+
+          expect(transaction.total).to eq(expected_money)
         end
 
         it "constructs the money object from the mapped method value with arguments" do
-          expect_equal_money_instance(transaction.total(1, bar: 2), amount: 3003, currency: :usd)
+          expected_money = Money.new(30_03, :usd)
+
+          expect(transaction.total(1, bar: 2)).to eq(expected_money)
         end
 
         it "allows currency column postfix to be blank" do
           allow(MoneyRails::Configuration).to receive(:currency_column) { { postfix: nil, column_name: 'currency' } }
-          expect_money_currency_is(dummy_product_with_nil_currency.price, :gbp)
+
+          expected_currency = Money::Currency.find(:gbp)
+
+          expect(dummy_product_with_nil_currency.price.currency).to eq(expected_currency)
         end
 
         it "updates inferred currency column based on currency column postfix" do
           product.reduced_price = Money.new(999_00, 'CAD')
           product.save
 
-          expect_money_attribute_cents_value(product, :reduced_price, 999_00)
-          expect_money_attribute_currency_value(product, :reduced_price, 'CAD')
+          expect(product.reduced_price_cents).to eq(999_00)
+          expect(product.reduced_price_currency).to eq('CAD')
         end
 
         context "and field with allow_nil: true" do

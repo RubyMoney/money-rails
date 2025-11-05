@@ -2,16 +2,15 @@
 
 require 'spec_helper'
 
-require_relative 'money_helpers'
-
 if defined? ActiveRecord
   describe MoneyRails::ActiveRecord::Monetizable do
-    include MoneyHelpers
-
     describe ".register_currency" do
       it "attaches currency at model level" do
-        expect_money_currency_is(Product, :usd)
-        expect_money_currency_is(DummyProduct, :gbp)
+        usd_currency = Money::Currency.find(:usd)
+        gbp_currency = Money::Currency.find(:gbp)
+
+        expect(Product.currency).to eq(usd_currency)
+        expect(DummyProduct.currency).to eq(gbp_currency)
       end
     end
   end

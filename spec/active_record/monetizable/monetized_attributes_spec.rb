@@ -2,16 +2,12 @@
 
 require 'spec_helper'
 
-require_relative 'money_helpers'
-
 if defined? ActiveRecord
   class InheritedMonetizeProduct < Product
     monetize :special_price_cents
   end
 
   describe MoneyRails::ActiveRecord::Monetizable do
-    include MoneyHelpers
-
     let(:product) do
       Product.create(
         price_cents: 3000,
@@ -55,11 +51,13 @@ if defined? ActiveRecord
         let(:reduced_price) { product.read_monetized(:reduced_price, :reduced_price_cents) }
 
         it "returns a Money object for monetized attribute" do
-          expect_to_be_a_money_instance(reduced_price)
+          expect(reduced_price).to be_an_instance_of(Money)
         end
 
         it "returns monetized attribute with correct amount and currency" do
-          expect_equal_money_instance(reduced_price, amount: product.reduced_price_cents, currency: product.reduced_price_currency)
+          expected_money = Money.new(product.reduced_price_cents, product.reduced_price_currency)
+
+          expect(reduced_price).to eq(expected_money)
         end
       end
 
@@ -69,7 +67,8 @@ if defined? ActiveRecord
           reduced_price = product.read_monetized(:reduced_price, :reduced_price_cents)
           memoized_reduced_price = product.instance_variable_get('@reduced_price')
 
-          expect_equal_money(memoized_reduced_price, reduced_price)
+          expect(reduced_price).to be_an_instance_of(Money)
+          expect(memoized_reduced_price).to eq(reduced_price)
         end
 
         context "when resetting memoized values" do
@@ -142,25 +141,26 @@ if defined? ActiveRecord
 
       it "sets monetized attribute's value to Money object" do
         product.write_monetized :price, :price_cents, value, false, nil, {}
+        product_price = product.price
 
-        expect_to_be_a_money_instance(product.price)
-        expect_money_attribute_cents_value(product, :price, value.cents)
+        expect(product_price).to be_an_instance_of(Money)
+        expect(product.price_cents).to eq(value.cents)
         # Because :price does not have a column for currency
-        expect_equal_money_currency(product.price, Product)
+        expect(product_price.currency).to eq(Product.currency)
       end
 
       it "sets monetized attribute's value from a given Fixnum" do
         product.write_monetized :price, :price_cents, 10, false, nil, {}
 
-        expect_to_be_a_money_instance(product.price)
-        expect_money_attribute_cents_value(product, :price, 1000)
+        expect(product.price).to be_an_instance_of(Money)
+        expect(product.price_cents).to eq(1000)
       end
 
       it "sets monetized attribute's value from a given Float" do
         product.write_monetized :price, :price_cents, 10.5, false, nil, {}
 
-        expect_to_be_a_money_instance(product.price)
-        expect_money_attribute_cents_value(product, :price, 1050)
+        expect(product.price).to be_an_instance_of(Money)
+        expect(product.price_cents).to eq(1050)
       end
 
       it "resets monetized attribute when given blank input" do
@@ -170,11 +170,12 @@ if defined? ActiveRecord
       end
 
       it "sets monetized attribute to 0 when given a blank value" do
-        currency = product.price.currency
+        expected_currency = product.price.currency
         product.write_monetized :price, :price_cents, nil, false, nil, {}
 
         expect(product.price.amount).to eq(0)
-        expect_equal_currency(product.price.currency, currency)
+        expect(expected_currency).to be_an_instance_of(Money::Currency)
+        expect(product.price.currency).to eq(expected_currency)
       end
 
       it "does not memoize monetized attribute's value if currency is read-only" do
@@ -182,7 +183,7 @@ if defined? ActiveRecord
 
         price = product.instance_variable_get('@price')
 
-        expect_to_be_a_money_instance(price)
+        expect(price).to be_an_instance_of(Money)
         expect(price.amount).not_to eq(value.amount)
       end
 
@@ -209,28 +210,32 @@ if defined? ActiveRecord
         it "updates instance_currency_name attribute" do
           product.write_monetized :sale_price, :sale_price_amount, value, false, :sale_price_currency_code, {}
 
-          expect_equal_money(product.sale_price, value)
+          expect(value).to be_an_instance_of(Money)
+          expect(product.sale_price).to eq(value)
           expect(product.sale_price_currency_code).to eq('LVL')
         end
 
         it "memoizes monetized attribute's value with currency" do
           product.write_monetized :sale_price, :sale_price_amount, value, false, :sale_price_currency_code, {}
 
-          expect_equal_money(product.instance_variable_get('@sale_price'), value)
+          expect(value).to be_an_instance_of(Money)
+          expect(product.instance_variable_get('@sale_price')).to eq(value)
         end
 
         it "ignores empty instance_currency_name" do
           product.write_monetized :sale_price, :sale_price_amount, value, false, '', {}
+          sale_price = product.sale_price
 
-          expect(product.sale_price.amount).to eq(value.amount)
-          expect_equal_money_currency(product.sale_price, Product)
+          expect(sale_price.amount).to eq(value.amount)
+          expect(sale_price.currency).to eq(Product.currency)
         end
 
         it "ignores instance_currency_name that model does not respond to" do
           product.write_monetized :sale_price, :sale_price_amount, value, false, :non_existing_currency, {}
+          sale_price = product.sale_price
 
-          expect(product.sale_price.amount).to eq(value.amount)
-          expect_equal_money_currency(product.sale_price, Product)
+          expect(sale_price.amount).to eq(value.amount)
+          expect(sale_price.currency).to eq(Product.currency)
         end
       end
 
@@ -240,7 +245,8 @@ if defined? ActiveRecord
         it "ignores values that do not implement to_money method" do
           product.write_monetized :price, :price_cents, [10], false, nil, {}
 
-          expect_equal_money(product.price, old_price_value)
+          expect(old_price_value).to be_an_instance_of(Money)
+          expect(product.price).to eq(old_price_value)
         end
 
         context "raise_error_on_money_parsing enabled" do
@@ -265,7 +271,8 @@ if defined? ActiveRecord
           it "ignores when given invalid value" do
             product.write_monetized :price, :price_cents, '10-50', false, nil, {}
 
-            expect_equal_money(product.price, old_price_value)
+            expect(old_price_value).to be_an_instance_of(Money)
+            expect(product.price).to eq(old_price_value)
           end
 
           it "raises a MoneyRails::Error error when trying to set invalid currency" do
@@ -273,7 +280,8 @@ if defined? ActiveRecord
             product.write_monetized :price, :price_cents, 10, false, nil, {}
 
             # Cannot use public accessor here because currency_for_price is stubbed
-            expect_equal_money(product.instance_variable_get('@price'), old_price_value)
+            expect(old_price_value).to be_an_instance_of(Money)
+            expect(product.instance_variable_get('@price')).to eq(old_price_value)
           end
         end
       end
