@@ -19,16 +19,10 @@ welcome to contribute to the project.
 
 ## Installation
 
-Add this line to your application's Gemfile:
-
-```ruby
-gem 'money-rails', '~> 1.12'
-```
-
-And then execute:
+Add it to your application’s Gemfile using:
 
 ```sh
-$ bundle
+bundle add money-rails
 ```
 
 Or install it yourself using:
@@ -40,11 +34,11 @@ $ gem install money-rails
 You can also use the money configuration initializer:
 
 ```sh
-$ rails g money_rails:initializer
+$ bin/rails generate money_rails:initializer
 ```
 
 There, you can define the default currency value and set other
-configuration parameters for the rails app.
+configuration parameters for the Rails app.
 
 Without Rails in rack-based applications, call during initialization:
 
