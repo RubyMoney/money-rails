@@ -72,5 +72,14 @@ end
 
 desc "Update CONTRIBUTORS file"
 task :contributors do
-  sh "git shortlog -s | awk '{ print $2 \" \" $3 }' | awk '{$1=$1}1' > CONTRIBUTORS"
+  list =
+    `git shortlog -s`
+      .split("\n")
+      .map { _1.split("\t").last }
+      .map { _1.gsub(/Carlos Hernandez/, "Carlos Hernández") }
+      .map { _1.gsub(/ó/, "ó") }
+      .uniq
+  File.write("CONTRIBUTORS", list.join("\n") + "\n")
 end
+
+task "release:guard_clean" => :contributors
