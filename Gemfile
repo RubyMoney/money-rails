@@ -17,7 +17,11 @@ platforms :ruby do
   gem "sqlite3", "~> 1.4"
 end
 
-group :development do
-  gem "pry"
-  gem "money", git: "https://github.com/RubyMoney/money.git"
-end
+# Debugging
+gem "pry"
+
+# Specs
+gem "rspec-rails", "~> 6"
+
+# Cleanup database on spec run
+gem "database_cleaner", "~> 2"
