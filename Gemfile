@@ -23,8 +23,5 @@ gem "pry"
 # Specs
 gem "rspec-rails", "~> 6"
 
-# Rails app to test against
-gem "rails", ">= 6.1", "< 8"
-
 # Cleanup database on spec run
 gem "database_cleaner", "~> 2"
