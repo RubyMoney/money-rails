@@ -2,8 +2,12 @@
 
 ## Unreleased
 
+## 2.0.0
+
+- **Breaking change**: Requires `money` gem version ~> 7.0.
+  See the [Money 7.0 upgrading guide](https://github.com/RubyMoney/money/blob/main/UPGRADING-7.0.md)
+- **Breaking change**: Requires `monetize` gem version ~> 7.0
 - **Breaking change**: Drop support for Ruby < 3 and Rails < 6.1
-- **Breaking change**: Requires `money` gem version ~> 7.0
 - Allow monetizing methods with kwargs
 - Fix `money_only_cents` for negative money
 - Allow `nil` to be set as the default currency
@@ -307,4 +311,3 @@
 ## 0.0.1
 
 - Hello World
-

@@ -72,5 +72,5 @@ end
 
 desc "Update CONTRIBUTORS file"
 task :contributors do
-  sh "git shortlog -s | awk '{ print $2 \" \" $3 }' > CONTRIBUTORS"
+  sh "git shortlog -s | awk '{ print $2 \" \" $3 }' | awk '{$1=$1}1' > CONTRIBUTORS"
 end
