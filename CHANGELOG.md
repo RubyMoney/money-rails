@@ -1,6 +1,7 @@
 # Changelog
 
 ## Unreleased
+- **Breaking change**: Drop support for Rails < 7.0
 
 ## 2.0.0
 

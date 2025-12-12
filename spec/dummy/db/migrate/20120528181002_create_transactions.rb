@@ -1,4 +1,4 @@
-class CreateTransactions < (Rails::VERSION::MAJOR >= 5 ? ActiveRecord::Migration[4.2] : ActiveRecord::Migration)
+class CreateTransactions < ActiveRecord::Migration[7.0]
   def change
     create_table :transactions do |t|
       t.integer :amount_cents

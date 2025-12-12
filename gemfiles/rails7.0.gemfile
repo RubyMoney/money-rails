@@ -2,3 +2,13 @@ eval_gemfile "../Gemfile"
 
 gem "rails", "~> 7.0.0"
 gem "sprockets-rails"
+
+platforms :ruby do
+  gem "sqlite3", "~> 1.4"
+end
+
+platforms :jruby do
+  gem "activerecord-jdbc-adapter"
+  gem "activerecord-jdbcsqlite3-adapter"
+  gem "jruby-openssl"
+end

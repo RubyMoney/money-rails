@@ -1,4 +1,4 @@
-class AddOtherProducts < (Rails::VERSION::MAJOR >= 5 ? ActiveRecord::Migration[4.2] : ActiveRecord::Migration)
+class AddOtherProducts < ActiveRecord::Migration[7.0]
   def change
     create_table "other_products", force: :cascade do |t|
       t.string "currency"

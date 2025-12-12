@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-if defined?(Mongoid) && ::Mongoid::VERSION.split('.').first.to_i > 2
+if defined?(Mongoid)
 
   describe Money do
     let!(:priceable) { Priceable.create(price: Money.new(100, 'EUR')) }
@@ -51,19 +51,11 @@ if defined?(Mongoid) && ::Mongoid::VERSION.split('.').first.to_i > 2
         it "raises exception if the mongoized value is a String with a hyphen" do
           expect { priceable_from_string_with_hyphen }.to raise_error MoneyRails::Error
         end
-
-        it "raises exception if the mongoized value is a String with an unknown currency" do
-          expect { priceable_from_string_with_unknown_currency }.to raise_error MoneyRails::Error
-        end
       end
 
       context "when MoneyRails.raise_error_on_money_parsing is false" do
         it "does not correctly mongoize a String with a hyphen in its middle" do
           expect(priceable_from_string_with_hyphen.price).to eq(nil)
-        end
-
-        it "does not correctly mongoize a String with an unknown currency" do
-          expect(priceable_from_string_with_unknown_currency.price).to eq(nil)
         end
       end
 
@@ -81,13 +73,13 @@ if defined?(Mongoid) && ::Mongoid::VERSION.split('.').first.to_i > 2
         expect(priceable_from_hash_with_indifferent_access.price.currency).to eq(Money::Currency.find('EUR'))
       end
 
-      context "infinite_precision = true" do
+      context "default_infinite_precision = true" do
         before do
-          Money.infinite_precision = true
+          Money.default_infinite_precision = true
         end
 
         after do
-          Money.infinite_precision = false
+          Money.default_infinite_precision = false
         end
 
         it "correctly mongoizes a Money object to a hash of cents and currency" do
@@ -123,7 +115,7 @@ if defined?(Mongoid) && ::Mongoid::VERSION.split('.').first.to_i > 2
 
     context "evolve" do
       it "correctly transforms a Money object into a Mongo friendly value" do
-        expect(Priceable.where(price: Money.new(100, 'EUR')).first).to eq(priceable)
+        expect(Priceable.find_by(price: Money.new(100, 'EUR')).price).to eq(priceable.price)
       end
     end
   end

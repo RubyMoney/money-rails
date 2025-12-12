@@ -13,16 +13,7 @@ require "money-rails"
 module Dummy
   class Application < Rails::Application
 
-    if I18n.respond_to?(:enforce_available_locales)
-      I18n.enforce_available_locales = false # removes deprecation warning
-    end
-
-    # Load configuration defaults for the current Rails version
-    if Rails::VERSION::MAJOR >= 7
-      config.load_defaults 7.0
-    elsif Rails::VERSION::MAJOR == 6
-      config.load_defaults 6.1
-    end
+    config.load_defaults Rails::VERSION::STRING.to_f
 
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers

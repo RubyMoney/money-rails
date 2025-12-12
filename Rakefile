@@ -14,9 +14,6 @@ APP_RAKEFILE = File.expand_path("../spec/dummy/Rakefile", __FILE__)
 GEMFILES_PATH = 'gemfiles/*.gemfile'.freeze
 
 require 'rake'
-require 'rspec/core/rake_task'
-
-RSpec::Core::RakeTask.new
 
 task default: "spec:all"
 task test: :spec
@@ -48,11 +45,11 @@ namespace :spec do
     framework, version = file_name.split(/(\d+)/)
     major, minor = version.split(//)
 
-    # Ruby 3 exclusions
-    if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('3.0.0')
-      # Mongoid gem does not yet support ruby-3.0.0 https://github.com/mongodb/mongoid#compatibility
-      next if framework == 'mongoid'
-    end
+    # Rails 8+ requires Ruby 3.2+
+    next if framework == 'rails' && major.to_i >= 8 && RUBY_VERSION < '3.2'
+
+    # activerecord-jdbc-adapter doesn't support Rails 8+ yet
+    next if framework == 'rails' && major.to_i >= 8 && RUBY_ENGINE == 'jruby'
 
     frameworks_versions[framework] ||= []
     frameworks_versions[framework] << file_name

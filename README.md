@@ -194,7 +194,7 @@ monetize :price_in_a_range_cents,
          }
 ```
 
-### Mongoid 2.x and 3.x
+### Mongoid
 
 `Money` is available as a field type to supply during a field definition:
 
@@ -570,12 +570,12 @@ For examples on using the test_helpers look at
 
 ## Supported ORMs/ODMs
 
-* ActiveRecord (>= 6.1)
-* Mongoid (>= 2.x)
+* ActiveRecord (>= 7.0)
+* Mongoid (>= 7.x)
 
 ## Supported Ruby interpreters
 
-* MRI Ruby >= 3.0
+* MRI Ruby >= 3.1
 
 You can see a full list of the currently supported interpreters in
 [ruby.yml](https://github.com/RubyMoney/money-rails/blob/main/.github/workflows/ruby.yml)
