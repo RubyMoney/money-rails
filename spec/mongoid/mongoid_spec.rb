@@ -57,6 +57,10 @@ if defined?(Mongoid)
         it "does not correctly mongoize a String with a hyphen in its middle" do
           expect(priceable_from_string_with_hyphen.price).to eq(nil)
         end
+
+        it "converts unknown currency to default currency" do
+          expect(priceable_from_string_with_unknown_currency.price).to eq(Money.new(100, 'EUR'))
+        end
       end
 
       it "correctly mongoizes a hash of cents and currency" do
