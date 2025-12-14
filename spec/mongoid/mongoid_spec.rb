@@ -115,7 +115,7 @@ if defined?(Mongoid)
 
     context "evolve" do
       it "correctly transforms a Money object into a Mongo friendly value" do
-        expect(Priceable.find_by(price: Money.new(100, 'EUR')).price).to eq(priceable.price)
+        expect(Priceable.where(price: Money.new(100, 'EUR')).first).to eq(priceable)
       end
     end
   end
