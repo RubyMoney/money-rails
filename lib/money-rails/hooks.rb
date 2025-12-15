@@ -53,8 +53,7 @@ module MoneyRails
 
       # For ActionView
       ActiveSupport.on_load(:action_view) do
-        require 'money-rails/helpers/action_view_extension'
-        ::ActionView::Base.send :include, MoneyRails::ActionViewExtension
+        ::ActionView::Base.include MoneyRails::ActionViewExtension
       end
 
       # For ActiveSupport

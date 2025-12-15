@@ -8,6 +8,8 @@ require 'money-rails/hooks'
 require 'money-rails/errors'
 
 module MoneyRails
+  autoload :ActionViewExtension, 'money-rails/helpers/action_view_extension'
+
   extend Configuration
 end
 
