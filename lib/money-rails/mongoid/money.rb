@@ -14,7 +14,7 @@ class Money
     # this custom class from it.
     def demongoize(object)
       if object.is_a?(Hash)
-          object = object.deep_symbolize_keys
+        object = object.symbolize_keys
         object.has_key?(:cents) ? ::Money.new(object[:cents], object[:currency_iso]) : nil
       end
     end
@@ -42,7 +42,7 @@ class Money
     private
 
     def mongoize_hash(hash)
-      hash = hash.deep_symbolize_keys
+      hash = hash.symbolize_keys
 
       # Guard for a blank form
       return nil if hash[:cents] == '' && hash[:currency_iso] == ''
