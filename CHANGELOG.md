@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Fix `MoneyRails::ActionViewExtension` not available during eager loading (GH-614)
+
 ## 2.0.0
 
 - **Breaking change**: Requires `money` gem version ~> 7.0.
