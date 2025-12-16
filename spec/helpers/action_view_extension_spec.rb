@@ -1,5 +1,13 @@
 require 'spec_helper'
 
+describe 'MoneyRails::ActionViewExtension' do
+  describe 'autoload' do
+    it 'is registered via autoload for eager loading compatibility' do
+      expect(MoneyRails.autoload?(:ActionViewExtension)).to eq('money-rails/helpers/action_view_extension')
+    end
+  end
+end
+
 describe 'MoneyRails::ActionViewExtension', type: :helper do
   describe '#currency_symbol' do
     subject { helper.currency_symbol }
