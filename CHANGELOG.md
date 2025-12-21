@@ -1,8 +1,9 @@
 # Changelog
 
 ## Unreleased
-- **Breaking change**: Drop support for Rails < 7.0
 
+- **Breaking change**: Drop support for Rails < 7.0
+- Allow `super` when overriding methods
 - Fix `MoneyRails::ActionViewExtension` not available during eager loading (GH-614)
 
 ## 2.0.0
