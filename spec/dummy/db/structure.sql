@@ -1,5 +1,6 @@
 CREATE TABLE "dummy_products" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "currency" varchar(255), "price_cents" integer, "created_at" datetime NOT NULL, "updated_at" datetime NOT NULL);
 CREATE TABLE "products" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "price_cents" integer, "discount" integer, "created_at" datetime NOT NULL, "updated_at" datetime NOT NULL, "bonus_cents" integer, "optional_price_cents" integer, "sale_price_amount" integer DEFAULT 0 NOT NULL, "sale_price_currency_code" varchar(255), "price_in_a_range_cents" integer);
+CREATE TABLE "other_products" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "price_cents" integer, "currency" varchar(255), "created_at" datetime NOT NULL, "updated_at" datetime NOT NULL;
 CREATE TABLE "schema_migrations" ("version" varchar(255) NOT NULL);
 CREATE TABLE "services" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "charge_cents" integer, "discount_cents" integer, "created_at" datetime NOT NULL, "updated_at" datetime NOT NULL);
 CREATE TABLE "transactions" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "amount_cents" integer, "tax_cents" integer, "currency" varchar(255), "created_at" datetime NOT NULL, "updated_at" datetime NOT NULL);

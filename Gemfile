@@ -2,29 +2,16 @@ source 'https://rubygems.org'
 
 gemspec
 
-platforms :jruby do
-  gem "activerecord-jdbc-adapter"
-  gem "activerecord-jdbcsqlite3-adapter"
-  gem "jruby-openssl"
-end
+gem "bigdecimal"
+gem "mutex_m"
+gem "benchmark"
+gem "drb"
 
-platforms :ruby do
-  gem "sqlite3", '~> 1.4'
-end
+# Debugging
+gem "pry"
 
-platform :mri do
-  # gem "ruby-prof", "~> 0.11.2"
+# Specs
+gem "rspec-rails", "~> 6"
 
-  case RUBY_VERSION
-  when /^1.9/
-    gem 'debugger'
-  end
-end
-
-group :development do
-  gem "pry"
-  gem 'rb-inotify', '~> 0.9'
-  gem 'guard'
-  gem 'guard-rspec'
-  gem 'guard-rails'
-end
+# Cleanup database on spec run
+gem "database_cleaner", "~> 2"

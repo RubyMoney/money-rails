@@ -1,5 +1,3 @@
-# encoding: utf-8
-
 require 'rubygems'
 require 'bundler'
 require 'bundler/gem_tasks'
@@ -15,12 +13,7 @@ end
 APP_RAKEFILE = File.expand_path("../spec/dummy/Rakefile", __FILE__)
 GEMFILES_PATH = 'gemfiles/*.gemfile'.freeze
 
-load 'rails/tasks/engine.rake' if File.exist?(APP_RAKEFILE)
-
 require 'rake'
-require 'rspec/core/rake_task'
-
-RSpec::Core::RakeTask.new
 
 task default: "spec:all"
 task test: :spec
@@ -28,22 +21,19 @@ task spec: :prepare_test_env
 
 desc "Prepare money-rails engine test environment"
 task :prepare_test_env do
-  Rake.application['app:db:drop:all'].invoke
-  Rake.application['app:db:create'].invoke if Rails::VERSION::MAJOR >= 5
-  Rake.application['app:db:migrate'].invoke
-  Rake.application['app:db:test:prepare'].invoke
+  load APP_RAKEFILE if File.exist?(APP_RAKEFILE)
+  Rake.application["db:drop"].invoke
+  Rake.application["db:create"].invoke
+  Rake.application["db:migrate"].invoke
+  Rake.application["db:test:prepare"].invoke
 end
 
 def run_with_gemfile(gemfile)
   Bundler.with_original_env do
-    begin
-      sh "BUNDLE_GEMFILE='#{gemfile}' bundle install --quiet"
-      Rake.application['app:db:create'].invoke
-      Rake.application['app:db:test:prepare'].invoke
-      sh "BUNDLE_GEMFILE='#{gemfile}' bundle exec rake spec"
-    ensure
-      Rake.application['app:db:drop:all'].execute
-    end
+    lockfile = "#{gemfile}.lock"
+    File.delete(lockfile) if File.exist?(lockfile)
+    sh "BUNDLE_GEMFILE=#{gemfile} bundle install --quiet"
+    sh "BUNDLE_GEMFILE=#{gemfile} bundle exec rake spec"
   end
 end
 
@@ -55,18 +45,11 @@ namespace :spec do
     framework, version = file_name.split(/(\d+)/)
     major, minor = version.split(//)
 
-    # Ruby 3 exclusions
-    if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('3.0.0')
-      # Rails 5 does not support ruby-3.0.0 https://github.com/rails/rails/issues/40938#issuecomment-751569171
-      # Mongoid gem does not yet support ruby-3.0.0 https://github.com/mongodb/mongoid#compatibility
-      next if framework == 'mongoid' || (framework == 'rails' && version == "5")
-    end
+    # Rails 8+ requires Ruby 3.2+
+    next if framework == 'rails' && major.to_i >= 8 && RUBY_VERSION < '3.2'
 
-    # Skip Rails 7 unless the Ruby version is at least 2.7
-    if Gem::Version.new(RUBY_VERSION) < Gem::Version.new('2.7')
-      next if framework == 'rails' && version == "7"
-    end
-
+    # activerecord-jdbc-adapter doesn't support Rails 8+ yet
+    next if framework == 'rails' && major.to_i >= 8 && RUBY_ENGINE == 'jruby'
 
     frameworks_versions[framework] ||= []
     frameworks_versions[framework] << file_name
@@ -86,5 +69,15 @@ end
 
 desc "Update CONTRIBUTORS file"
 task :contributors do
-  sh "git shortlog -s | awk '{ print $2 \" \" $3 }' > CONTRIBUTORS"
+  list = `git shortlog -s`.lines.map do |line|
+    line
+      .split("\t")
+      .last
+      .sub(/Carlos Hernandez/, "Carlos Hernández")
+      .sub(/Ralf S. Bongiolo/, "Ralf Schmitz Bongiolo")
+      .gsub(/ó/, "ó")
+  end
+  File.write("CONTRIBUTORS", list.uniq.sort.join)
 end
+
+task "release:guard_clean" => :contributors

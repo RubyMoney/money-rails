@@ -1,0 +1,8 @@
+eval_gemfile "../Gemfile"
+
+gem "rails", "~> 8.1.0"
+gem "sprockets-rails"
+
+platforms :ruby do
+  gem "sqlite3", "~> 2.1"
+end

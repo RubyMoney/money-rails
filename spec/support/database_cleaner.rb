@@ -1,13 +1,19 @@
-DatabaseCleaner[:active_record].strategy = :transaction if defined? ActiveRecord
-DatabaseCleaner[:mongoid].strategy = :truncation if defined? Mongoid
 
 RSpec.configure do |config|
   config.before :suite do
-    DatabaseCleaner.clean_with :truncation
+    if defined?(Mongoid)
+      DatabaseCleaner[:mongoid].clean_with :deletion
+      DatabaseCleaner[:mongoid].strategy = :deletion
+    else
+      DatabaseCleaner[:active_record].clean_with :truncation
+      DatabaseCleaner[:active_record].strategy = :transaction
+    end
   end
+
   config.before :each do
     DatabaseCleaner.start
   end
+
   config.after :each do
     DatabaseCleaner.clean
   end

@@ -19,16 +19,10 @@ welcome to contribute to the project.
 
 ## Installation
 
-Add this line to your application's Gemfile:
-
-```ruby
-gem 'money-rails', '~> 1.12'
-```
-
-And then execute:
+Add it to your application’s Gemfile using:
 
 ```sh
-$ bundle
+bundle add money-rails
 ```
 
 Or install it yourself using:
@@ -40,11 +34,11 @@ $ gem install money-rails
 You can also use the money configuration initializer:
 
 ```sh
-$ rails g money_rails:initializer
+$ bin/rails generate money_rails:initializer
 ```
 
 There, you can define the default currency value and set other
-configuration parameters for the rails app.
+configuration parameters for the Rails app.
 
 Without Rails in rack-based applications, call during initialization:
 
@@ -200,7 +194,7 @@ monetize :price_in_a_range_cents,
          }
 ```
 
-### Mongoid 2.x and 3.x
+### Mongoid
 
 `Money` is available as a field type to supply during a field definition:
 
@@ -248,7 +242,7 @@ class Transaction < ActiveRecord::Base
   monetize :price_cents
   monetize :tax_cents
   monetize :total_cents
-  
+
   def total_cents
     price_cents + tax_cents
   end
@@ -576,12 +570,12 @@ For examples on using the test_helpers look at
 
 ## Supported ORMs/ODMs
 
-* ActiveRecord (>= 3.x)
-* Mongoid (>= 2.x)
+* ActiveRecord (>= 7.0)
+* Mongoid (>= 7.x)
 
 ## Supported Ruby interpreters
 
-* MRI Ruby >= 2.6
+* MRI Ruby >= 3.1
 
 You can see a full list of the currently supported interpreters in
 [ruby.yml](https://github.com/RubyMoney/money-rails/blob/main/.github/workflows/ruby.yml)

@@ -1,12 +1,10 @@
 require File.expand_path('../boot', __FILE__)
+require "logger"
 
 # Pick the frameworks you want:
 require "active_record/railtie"
 require "action_controller/railtie"
 require "action_mailer/railtie"
-unless Rails::VERSION::MAJOR >= 4
-  require "active_resource/railtie"
-end
 require "sprockets/railtie"
 
 Bundler.require
@@ -15,9 +13,7 @@ require "money-rails"
 module Dummy
   class Application < Rails::Application
 
-    if I18n.respond_to?(:enforce_available_locales)
-      I18n.enforce_available_locales = false # removes deprecation warning
-    end
+    config.load_defaults Rails::VERSION::STRING.to_f
 
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers

@@ -2,13 +2,15 @@
 gemfiles/*.lock
 Gemfile.lock
 
+spec/dummy/db/schema.rb
+
 # RVM / rbenv version files
 .rvmrc
 .rbenv-version
 .ruby-version
 
 # dummy dbs
-*.sqlite3
+*.sqlite3*
 
 # rcov generated
 coverage
