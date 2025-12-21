@@ -30,7 +30,7 @@ if defined? ActiveRecord
 
       context ".monetized_attributes" do
 
-        it "allows adds methods to the inheritance chain" do
+        it "adds methods to the inheritance chain" do
           class MyProduct < ActiveRecord::Base
             self.table_name = :products
             monetize :price_cents
