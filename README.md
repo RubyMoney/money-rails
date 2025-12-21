@@ -598,12 +598,6 @@ You can also run the test suite against a specific ORM or Rails version, `rake -
 
 If you are testing against mongoid, make sure to have the mongod process running before executing the suite,  (E.g. `sudo mongod --quiet`)
 
-## Maintainers
-
-* Andreas Loupasakis (https://github.com/alup)
-* Shane Emmons (https://github.com/semmons99)
-* Simone Carletti (https://github.com/weppos)
-
 ## License
 
 [MIT License](https://github.com/RubyMoney/money-rails/blob/main/LICENSE). Copyright 2023 RubyMoney.
