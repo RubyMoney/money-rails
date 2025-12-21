@@ -373,9 +373,6 @@ currency values, so they have the highest precedence.
 
 ```ruby
 class Transaction < ActiveRecord::Base
-  # This model has a separate currency column
-  attr_accessible :amount_cents, :currency, :tax_cents
-
   # Use model level currency
   register_currency :gbp
 
