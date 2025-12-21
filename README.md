@@ -274,17 +274,13 @@ from a field in a configuration model called `Tenant` in this example:
 
 ```ruby
 # config/initializers/money.rb
-MoneyRails.configure do |config|
-  # set the default currency based on client configuration
-  config.default_currency = -> { Tenant.current.default_currency }
+ActiveSupport::Reloader.to_prepare do
+  MoneyRails.configure do |config|
+    # set the default currency based on client configuration
+    config.default_currency = -> { Tenant.current.default_currency }
+  end
 end
 ```
-
-Be aware that this **does not work in Rails 7+**, as the lambda is evaluated
-immediately, and therefore requires your model to be already loaded.
-Workarounds include wrapping the initialization in
-`ActiveSupport::Reloader.to_prepare`, or creating a function that rescues
-unloaded constants with an initialization-time default, and running that in your lambda.
 
 In many cases this is not enough, so there are some other options to
 meet your needs.
