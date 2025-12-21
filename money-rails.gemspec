@@ -21,8 +21,8 @@ Gem::Specification.new do |s|
 
   s.add_dependency "money",         "~> 7.0"
   s.add_dependency "monetize",      "~> 2.0"
-  s.add_dependency "activesupport", ">= 6.1"
-  s.add_dependency "railties",      ">= 6.1"
+  s.add_dependency "activesupport", ">= 7.0"
+  s.add_dependency "railties",      ">= 7.0"
 
   if s.respond_to?(:metadata)
     s.metadata["changelog_uri"] = "https://github.com/RubyMoney/money-rails/blob/master/CHANGELOG.md"

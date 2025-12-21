@@ -1,4 +1,4 @@
-class AddBonusCentsToProduct < (Rails::VERSION::MAJOR >= 5 ? ActiveRecord::Migration[4.2] : ActiveRecord::Migration)
+class AddBonusCentsToProduct < ActiveRecord::Migration[7.0]
   def change
     add_column :products, :bonus_cents, :integer
 

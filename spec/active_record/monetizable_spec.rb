@@ -18,16 +18,7 @@ if defined? ActiveRecord
         Service.create(charge_cents: 2000, discount_cents: 120)
       end
 
-      def update_product(*attributes)
-        if defined?(::ActiveRecord::VERSION) && ::ActiveRecord::VERSION::MAJOR >= 5
-          product.update(*attributes)
-        else
-          product.update_attributes(*attributes)
-        end
-      end
-
       context ".monetized_attributes" do
-
         class InheritedMonetizeProduct < Product
           monetize :special_price_cents
         end
@@ -78,8 +69,8 @@ if defined? ActiveRecord
         expect(product.price_cents).to eq(3210)
       end
 
-      it "correctly updates from a Money object using update_attributes" do
-        expect(update_product(price: Money.new(215, "USD"))).to be_truthy
+      it "correctly updates from a Money object using update" do
+        expect(product.update(price: Money.new(215, "USD"))).to be_truthy
         expect(product.price_cents).to eq(215)
       end
 
@@ -200,9 +191,9 @@ if defined? ActiveRecord
         end
       end
 
-      it "respects numericality validation when using update_attributes" do
-        expect(update_product(price_cents: "some text")).to be_falsey
-        expect(update_product(price_cents: 2000)).to be_truthy
+      it "respects numericality validation when using update" do
+        expect(product.update(price_cents: "some text")).to be_falsey
+        expect(product.update(price_cents: 2000)).to be_truthy
       end
 
       it "uses numericality validation on money attribute" do
@@ -428,9 +419,9 @@ if defined? ActiveRecord
         expect(product.save).to be_truthy
       end
 
-      it "respects numericality validation when using update_attributes on money attribute" do
-        expect(update_product(price: "some text")).to be_falsey
-        expect(update_product(price: Money.new(320, 'USD'))).to be_truthy
+      it "respects numericality validation when using update on money attribute" do
+        expect(product.update(price: "some text")).to be_falsey
+        expect(product.update(price: Money.new(320, 'USD'))).to be_truthy
       end
 
       it "uses i18n currency format when validating" do
@@ -621,7 +612,6 @@ if defined? ActiveRecord
 
       context "when the monetized field is an aliased attribute" do
         it "writes the subunits to the original (unaliased) column" do
-          pending if Rails::VERSION::MAJOR < 4
           product.renamed = "$10.00"
           expect(product.aliased_cents).to eq 10_00
         end
