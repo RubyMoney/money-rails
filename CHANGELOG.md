@@ -5,7 +5,7 @@
 - **Breaking change**: Drop support for Rails < 7.0
 - Allow `super` when overriding methods
 - Fix `MoneyRails::ActionViewExtension` not available during eager loading (GH-614)
-- Support Mongoide 8.x and 9.x
+- Support Mongoid 8.x and 9.x
 
 ## 2.0.0
 
