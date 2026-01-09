@@ -14,6 +14,10 @@ module MoneyRails
       def deserialize(hash)
         Money.new(hash["cents"], hash["currency"])
       end
+
+      def klass
+        Money
+      end
     end
   end
 end
