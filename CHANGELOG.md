@@ -4,7 +4,8 @@
 
 - **Breaking change**: Drop support for Rails < 7.0
 - Allow `super` when overriding methods
-- Fix `MoneyRails::ActionViewExtension` not available during eager loading (GH-614)
+- Fix `MoneyRails::ActionViewExtension` not available during eager loading (#614)
+- Fix deprecation warning on the ActiveJob serializer to support future Rails 8.2 (#729)
 - Support Mongoid 8.x and 9.x
 
 ## 2.0.0
