@@ -6,7 +6,7 @@ if defined? ActiveRecord
   describe MoneyRails::ActiveRecord::MigrationExtensions::SchemaStatements do
     before :all do
       @connection = ActiveRecord::Base.connection
-      @connection.send :extend, MoneyRails::ActiveRecord::MigrationExtensions::SchemaStatements
+      @connection.send :extend, described_class
     end
 
     describe 'money' do
