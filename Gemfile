@@ -18,6 +18,7 @@ gem "rubocop", require: false
 gem "rubocop-performance", require: false
 gem "rubocop-rake", require: false
 gem "rubocop-rspec", require: false
+gem "rubocop-rspec_rails", require: false
 
 # Cleanup database on spec run
 gem "database_cleaner", "~> 2"
