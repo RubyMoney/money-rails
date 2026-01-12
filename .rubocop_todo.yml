@@ -634,6 +634,15 @@ Style/PercentLiteralDelimiters:
     - 'lib/money-rails/hooks.rb'
 
 # This cop supports unsafe autocorrection (--autocorrect-all).
+# Configuration parameters: EnforcedStyle.
+# SupportedStyles: short, verbose
+Style/PreferredHashMethods:
+  Exclude:
+    - 'lib/money-rails/active_record/monetizable.rb'
+    - 'lib/money-rails/mongoid/money.rb'
+    - 'spec/active_record/monetizable_spec.rb'
+
+# This cop supports unsafe autocorrection (--autocorrect-all).
 # Configuration parameters: EnforcedStyle, AllowedCompactTypes.
 # SupportedStyles: compact, exploded
 Style/RaiseArgs:
