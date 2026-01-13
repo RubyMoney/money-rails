@@ -522,8 +522,34 @@ So `humanized_money` will ignore `config.default_format = { no_cents_if_whole: f
 
 ### Testing
 
-If you use Rspec there is a test helper implementation.
-Just write `require "money-rails/test_helpers"` in `spec_helper.rb`.
+The test helpers work with both RSpec and Minitest.
+
+#### RSpec
+
+If you use RSpec, just require the test helpers in `spec_helper.rb`:
+
+```ruby
+require "money-rails/test_helpers"
+```
+
+The helpers will automatically be included in your RSpec tests.
+
+#### Minitest
+
+If you use Minitest, require the test helpers and include them in your test class:
+
+```ruby
+require "money-rails/test_helpers"
+
+class ProductTest < Minitest::Test
+  include MoneyRails::TestHelpers
+
+  def test_monetizes_price
+    matcher = monetize(:price_cents)
+    assert matcher.matches?(Product)
+  end
+end
+```
 
 #### The `monetize` matcher
 
