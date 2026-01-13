@@ -130,9 +130,9 @@ monetize :optional_price_cents, allow_nil: true
 # in Migration
 def change
   add_monetize :products,
-               :optional_price,
-               amount: { null: true, default: nil },
-               currency: { null: true, default: nil }
+    :optional_price,
+    amount: { null: true, default: nil },
+    currency: { null: true, default: nil }
 end
 
 # now blank assignments are permitted
@@ -187,11 +187,11 @@ And you can also use `subunit_numericality` for subunit:
 
 ```ruby
 monetize :price_in_a_range_cents,
-         allow_nil: true,
-         subunit_numericality: {
-           greater_than_or_equal_to: 0,
-           less_than_or_equal_to: 100_00
-         }
+  allow_nil: true,
+  subunit_numericality: {
+    greater_than_or_equal_to: 0,
+    less_than_or_equal_to: 100_00
+  }
 ```
 
 ### Mongoid
@@ -274,17 +274,13 @@ from a field in a configuration model called `Tenant` in this example:
 
 ```ruby
 # config/initializers/money.rb
-MoneyRails.configure do |config|
-  # set the default currency based on client configuration
-  config.default_currency = -> { Tenant.current.default_currency }
+ActiveSupport::Reloader.to_prepare do
+  MoneyRails.configure do |config|
+    # set the default currency based on client configuration
+    config.default_currency = -> { Tenant.current.default_currency }
+  end
 end
 ```
-
-Be aware that this **does not work in Rails 7+**, as the lambda is evaluated
-immediately, and therefore requires your model to be already loaded.
-Workarounds include wrapping the initialization in
-`ActiveSupport::Reloader.to_prepare`, or creating a function that rescues
-unloaded constants with an initialization-time default, and running that in your lambda.
 
 In many cases this is not enough, so there are some other options to
 meet your needs.
@@ -308,7 +304,7 @@ end
 Now `product.discount` and `product.bonus` will return a `Money` object using
 EUR as their currency, instead of the default USD.
 
-(This is not available in  Mongoid).
+(This is not available in Mongoid).
 
 #### Attribute Currency (`:with_currency`)
 
@@ -377,9 +373,6 @@ currency values, so they have the highest precedence.
 
 ```ruby
 class Transaction < ActiveRecord::Base
-  # This model has a separate currency column
-  attr_accessible :amount_cents, :currency, :tax_cents
-
   # Use model level currency
   register_currency :gbp
 
@@ -422,37 +415,39 @@ MoneyRails.configure do |config|
 
   # Default ActiveRecord migration configuration values for columns:
   #
-  # config.amount_column = { prefix: '',           # column name prefix
-  #                          postfix: '_cents',    # column name  postfix
-  #                          column_name: nil,     # full column name (overrides prefix, postfix and accessor name)
-  #                          type: :integer,       # column type
-  #                          present: true,        # column will be created
-  #                          null: false,          # other options will be treated as column options
-  #                          default: 0
-  #                        }
+  # config.amount_column = {
+  #   prefix: '',           # column name prefix
+  #   postfix: '_cents',    # column name  postfix
+  #   column_name: nil,     # full column name (overrides prefix, postfix and accessor name)
+  #   type: :integer,       # column type
+  #   present: true,        # column will be created
+  #   null: false,          # other options will be treated as column options
+  #   default: 0
+  # }
   #
-  # config.currency_column = { prefix: '',
-  #                            postfix: '_currency',
-  #                            column_name: nil,
-  #                            type: :string,
-  #                            present: true,
-  #                            null: false,
-  #                            default: 'USD'
-  #                          }
+  # config.currency_column = {
+  #   prefix: '',
+  #   postfix: '_currency',
+  #   column_name: nil,
+  #   type: :string,
+  #   present: true,
+  #   null: false,
+  #   default: 'USD'
+  # }
 
   # Register a custom currency
   #
   # Example:
   # config.register_currency = {
-  #   priority:            1,
-  #   iso_code:            "EU4",
-  #   name:                "Euro with subunit of 4 digits",
-  #   symbol:              "€",
-  #   symbol_first:        true,
-  #   subunit:             "Subcent",
-  #   subunit_to_unit:     10000,
+  #   priority: 1,
+  #   iso_code: "EU4",
+  #   name: "Euro with subunit of 4 digits",
+  #   symbol: "€",
+  #   symbol_first: true,
+  #   subunit: "Subcent",
+  #   subunit_to_unit: 10000,
   #   thousands_separator: ".",
-  #   decimal_mark:        ","
+  #   decimal_mark: ","
   # }
 
   # Specify a rounding mode
@@ -592,18 +587,8 @@ You can see a full list of the currently supported interpreters in
 
 ### How to run the tests
 
-Our tests are executed with several ORMs - see `Rakefile` for details. To install all required gems run `rake spec:all` That command will take care of installing all required gems for all the different Gemfiles and then running the test suite with the installed bundle.
+Our tests are executed with several ORMs - see `Rakefile` for details. To install all required gems run `rake spec:all`. That command will take care of installing all required gems for all the different Gemfiles and then running the test suite with the installed bundle.
 
 You can also run the test suite against a specific ORM or Rails version, `rake -T` will give you an idea of the possible task (take a look at the tasks under the spec: namespace).
 
-If you are testing against mongoid, make sure to have the mongod process running before executing the suite,  (E.g. `sudo mongod --quiet`)
-
-## Maintainers
-
-* Andreas Loupasakis (https://github.com/alup)
-* Shane Emmons (https://github.com/semmons99)
-* Simone Carletti (https://github.com/weppos)
-
-## License
-
-[MIT License](https://github.com/RubyMoney/money-rails/blob/main/LICENSE). Copyright 2023 RubyMoney.
+If you are testing against mongoid, make sure to have the mongod process running before executing the suite. (E.g. `sudo mongod --quiet`)
