@@ -1,15 +1,15 @@
 # RubyMoney - Money-Rails
 
-[![Gem Version](https://badge.fury.io/rb/money-rails.svg)](http://badge.fury.io/rb/money-rails)
+[![Gem Version](https://badge.fury.io/rb/money-rails.svg)](https://rubygems.org/gems/money-rails)
 [![Ruby](https://github.com/RubyMoney/money-rails/actions/workflows/ruby.yml/badge.svg)](https://github.com/RubyMoney/money-rails/actions/workflows/ruby.yml)
-[![License](http://img.shields.io/:license-mit-green.svg?style=flat)](http://opensource.org/licenses/MIT)
+[![License](https://img.shields.io/:license-mit-green.svg?style=flat)](https://opensource.org/licenses/MIT)
 
 ## Introduction
 
-This library provides integration of the [money](http://github.com/Rubymoney/money) gem with Rails.
+This library provides integration of the [money](https://github.com/Rubymoney/money) gem with Rails.
 
 Use `monetize` to specify which fields you want to be backed by
-Money objects and helpers provided by the [money](http://github.com/Rubymoney/money)
+Money objects and helpers provided by the [money](https://github.com/Rubymoney/money)
 gem.
 
 Currently, this library is in active development mode, so if you would
@@ -156,7 +156,7 @@ end
 #### Numericality validation options
 
 You can also pass along
-[numericality validation options](http://guides.rubyonrails.org/active_record_validations.html#numericality)
+[numericality validation options](https://guides.rubyonrails.org/active_record_validations.html#numericality)
 such as this:
 
 ```ruby
