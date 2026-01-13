@@ -1,5 +1,3 @@
-require 'rspec/expectations'
-
 module MoneyRails
   module TestHelpers
     def monetize(attribute)
@@ -113,6 +111,8 @@ module MoneyRails
   end
 end
 
-RSpec.configure do |config|
-  config.include MoneyRails::TestHelpers
+if defined?(RSpec)
+  RSpec.configure do |config|
+    config.include MoneyRails::TestHelpers
+  end
 end
