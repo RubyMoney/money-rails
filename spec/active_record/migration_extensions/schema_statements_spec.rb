@@ -8,7 +8,7 @@ if defined? ActiveRecord
       @connection = ActiveRecord::Base.connection
       @connection.drop_table :items if @connection.table_exists? :items
       @connection.create_table :items
-      @connection.send :extend, MoneyRails::ActiveRecord::MigrationExtensions::SchemaStatements
+      @connection.send :extend, described_class
     end
 
     describe 'add_money' do
