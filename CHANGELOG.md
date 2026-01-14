@@ -7,6 +7,7 @@
 - Fix `MoneyRails::ActionViewExtension` not available during eager loading (#614)
 - Fix deprecation warning on the ActiveJob serializer to support future Rails 8.2 (#729)
 - Support Mongoid 8.x and 9.x
+- `MoneyRails::TestHelpers` can be used in Minitest
 
 ## 2.0.0
 
