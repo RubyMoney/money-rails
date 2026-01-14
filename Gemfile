@@ -6,6 +6,7 @@ gem "bigdecimal"
 gem "mutex_m"
 gem "benchmark"
 gem "drb"
+gem "ostruct"
 
 # Debugging
 gem "pry"
