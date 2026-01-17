@@ -1,4 +1,4 @@
-class DummyProduct < ActiveRecord::Base
+class DummyProduct < ApplicationRecord
   # Use  as model level currency
   register_currency :gbp
 

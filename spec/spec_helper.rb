@@ -2,7 +2,7 @@ ENV["RAILS_ENV"] = 'test'
 # Require dummy Rails app
 require File.expand_path("../../spec/dummy/config/environment", __FILE__)
 
-require 'database_cleaner'
+require 'database_cleaner/core'
 require 'rspec/rails'
 
 # Requires supporting ruby files with custom matchers and macros, etc,

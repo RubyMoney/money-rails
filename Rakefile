@@ -46,10 +46,10 @@ namespace :spec do
     major, minor = version.split(//)
 
     # Rails 8+ requires Ruby 3.2+
-    next if framework == 'rails' && major.to_i >= 8 && RUBY_VERSION < '3.2'
+    next if framework == 'active_record' && major.to_i >= 8 && RUBY_VERSION < '3.2'
 
     # activerecord-jdbc-adapter doesn't support Rails 8+ yet
-    next if framework == 'rails' && major.to_i >= 8 && RUBY_ENGINE == 'jruby'
+    next if framework == 'active_record' && major.to_i >= 8 && RUBY_ENGINE == 'jruby'
 
     frameworks_versions[framework] ||= []
     frameworks_versions[framework] << file_name

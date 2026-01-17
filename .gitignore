@@ -25,6 +25,7 @@ doc
 # bundler
 .bundle
 vendor/bundle
+gemfiles/vendor
 bin
 
 # logging
