@@ -5,19 +5,19 @@ require 'bundler/gem_tasks'
 begin
   Bundler.setup(:default, :development)
 rescue Bundler::BundlerError => e
-  $stderr.puts e.message
-  $stderr.puts "Run `bundle install` to install missing gems"
+  warn e.message
+  warn "Run `bundle install` to install missing gems"
   exit e.status_code
 end
 
-APP_RAKEFILE = File.expand_path("../spec/dummy/Rakefile", __FILE__)
+APP_RAKEFILE = File.expand_path("spec/dummy/Rakefile", __dir__)
 GEMFILES_PATH = 'gemfiles/*.gemfile'.freeze
 
 require 'rake'
 
 task default: "spec:all"
-task test: :spec
-task spec: :prepare_test_env
+
+task spec: :prepare_test_env # rubocop:disable Rake/Desc
 
 desc "Prepare money-rails engine test environment"
 task :prepare_test_env do
@@ -30,7 +30,7 @@ end
 def run_with_gemfile(gemfile)
   Bundler.with_original_env do
     lockfile = "#{gemfile}.lock"
-    File.delete(lockfile) if File.exist?(lockfile)
+    FileUtils.rm_f(lockfile)
     sh "BUNDLE_GEMFILE=#{gemfile} bundle install --quiet"
     sh "BUNDLE_GEMFILE=#{gemfile} bundle exec rake spec"
   end
@@ -72,11 +72,11 @@ task :contributors do
     line
       .split("\t")
       .last
-      .sub(/Carlos Hernandez/, "Carlos Hernández")
-      .sub(/Ralf S. Bongiolo/, "Ralf Schmitz Bongiolo")
-      .gsub(/ó/, "ó")
+      .sub("Carlos Hernandez", "Carlos Hernández")
+      .sub("Ralf S. Bongiolo", "Ralf Schmitz Bongiolo")
+      .gsub("ó", "ó")
   end
   File.write("CONTRIBUTORS", list.uniq.sort.join)
 end
 
-task "release:guard_clean" => :contributors
+task "release:guard_clean" => :contributors # rubocop:disable Rake/Desc
