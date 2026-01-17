@@ -62,7 +62,7 @@ module Dummy
     # Raise errors instead of showing deprecation warnings
     config.active_support.disallowed_deprecation = :raise
     config.active_support.disallowed_deprecation_warnings = [
-      /will raise an error in Rails/
+      /will raise an error in Rails/,
     ]
   end
 end
