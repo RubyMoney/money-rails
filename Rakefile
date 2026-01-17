@@ -42,28 +42,28 @@ namespace :spec do
 
   Dir[GEMFILES_PATH].each do |gemfile|
     file_name = File.basename(gemfile, '.gemfile')
-    framework, version = file_name.split(/(\d+)/)
-    major, minor = version.split(//)
+    _, framework, version = file_name.match(/\A([a-z]+)([\d.]+)\z/).to_a
+    major, minor = version.split(".").map(&:to_i)
 
     # Rails 8+ requires Ruby 3.2+
-    next if framework == 'rails' && major.to_i >= 8 && RUBY_VERSION < '3.2'
+    next if framework == 'rails' && major >= 8 && RUBY_VERSION < '3.2'
 
     # activerecord-jdbc-adapter doesn't support Rails 8+ yet
-    next if framework == 'rails' && major.to_i >= 8 && RUBY_ENGINE == 'jruby'
+    next if framework == 'rails' && major >= 8 && RUBY_ENGINE == 'jruby'
 
     frameworks_versions[framework] ||= []
     frameworks_versions[framework] << file_name
 
-    desc "Run Tests against #{framework} #{[major, minor].compact.join('.')}"
+    desc "Run tests against #{framework.capitalize} #{version}"
     task(file_name) { run_with_gemfile gemfile }
   end
 
   frameworks_versions.each do |framework, versions|
-    desc "Run Tests against all supported #{framework} versions"
+    desc "Run tests against all supported #{framework.capitalize} versions"
     task framework => versions
   end
 
-  desc 'Run Tests against all ORMs'
+  desc 'Run tests against all ORMs'
   task all: frameworks_versions.keys
 end
 
