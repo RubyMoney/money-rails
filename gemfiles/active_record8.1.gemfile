@@ -1,7 +1,7 @@
 eval_gemfile "../Gemfile"
 
-gem "rails", "~> 8.0.0"
-gem "sprockets-rails"
+gem "rails", "~> 8.1.0"
+gem "database_cleaner-active_record"
 
 platforms :ruby do
   gem "sqlite3", "~> 2.1"

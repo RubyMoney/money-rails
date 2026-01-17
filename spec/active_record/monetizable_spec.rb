@@ -1,8 +1,8 @@
 require 'spec_helper'
 
-class Sub < Product; end
-
 if defined? ActiveRecord
+  class Sub < Product; end
+
   describe MoneyRails::ActiveRecord::Monetizable do
     let(:product) do
       Product.create(price_cents: 3000, discount: 150,

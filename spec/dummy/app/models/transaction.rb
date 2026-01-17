@@ -1,4 +1,4 @@
-class Transaction < ActiveRecord::Base
+class Transaction < ApplicationRecord
   monetize :amount_cents, with_model_currency: :currency
 
   monetize :tax_cents, with_model_currency: :currency
