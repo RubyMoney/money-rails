@@ -43,7 +43,7 @@ namespace :spec do
   Dir[GEMFILES_PATH].each do |gemfile|
     file_name = File.basename(gemfile, '.gemfile')
     _, framework, version = file_name.match(/\A([a-z]+)([\d.]+)\z/).to_a
-    major, minor = version.split(".").map(&:to_i)
+    major, _minor = version.split(".").map(&:to_i)
 
     # Rails 8+ requires Ruby 3.2+
     next if framework == 'rails' && major >= 8 && RUBY_VERSION < '3.2'
