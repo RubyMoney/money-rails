@@ -40,10 +40,10 @@ module MoneyRails
         @money_attribute_setter = "#{@money_attribute}="
 
         object_responds_to_attributes? &&
-          test_allow_nil &&
-          is_monetized? &&
-          test_currency_iso &&
-          test_currency_attribute
+          allows_nil? &&
+          monetized? &&
+          currency_iso_matches? &&
+          currency_attribute_matches?
       end
 
 
@@ -77,7 +77,7 @@ module MoneyRails
         @actual.respond_to?(@attribute) && @actual.respond_to?(@money_attribute)
       end
 
-      def test_allow_nil
+      def allows_nil?
         if @allow_nil
           @actual.public_send(@money_attribute_setter, "")
           @actual.public_send(@money_attribute).nil?
@@ -86,12 +86,12 @@ module MoneyRails
         end
       end
 
-      def is_monetized?
+      def monetized?
         @actual.public_send(@money_attribute_setter, 1)
         @actual.public_send(@money_attribute).instance_of?(Money)
       end
 
-      def test_currency_iso
+      def currency_iso_matches?
         if @currency_iso
           @actual.public_send(@money_attribute).currency.id == @currency_iso
         else
@@ -99,7 +99,7 @@ module MoneyRails
         end
       end
 
-      def test_currency_attribute
+      def currency_attribute_matches?
         if @currency_attribute
           @actual.public_send(@money_attribute).currency == @actual.public_send(@currency_attribute)
         else
