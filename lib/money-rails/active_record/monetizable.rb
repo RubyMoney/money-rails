@@ -58,7 +58,8 @@ module MoneyRails
             end
 
             # Optional accessor to be run on an instance to detect currency
-            instance_currency_name = options[:with_model_currency] ||
+            instance_currency_name =
+              options[:with_model_currency] ||
               options[:model_currency] ||
               MoneyRails::Configuration.currency_column[:column_name]
 
@@ -71,8 +72,10 @@ module MoneyRails
 
             # This attribute allows per column currency values
             # Overrides row and default currency
-            field_currency_name = options[:with_currency] ||
-              options[:field_currency] || nil
+            field_currency_name =
+              options[:with_currency] ||
+              options[:field_currency] ||
+              nil
 
             # Create a reverse mapping of the monetized attributes
             track_monetized_attribute name, subunit_name
@@ -266,7 +269,7 @@ module MoneyRails
           # the regular writer, which works with store_accessors
           public_send("#{subunit_name}=", money.try(:cents))
         elsif self.class.respond_to?(:attribute_aliases) &&
-            self.class.attribute_aliases.key?(subunit_name)
+              self.class.attribute_aliases.key?(subunit_name)
           # If the attribute is aliased, make sure we write to the original
           # attribute name or an error will be raised.
           # (Note: 'attribute_aliases' doesn't exist in Rails 3.x, so we
@@ -295,9 +298,9 @@ module MoneyRails
       end
 
       def currency_for(name, instance_currency_name, field_currency_name)
-        if instance_currency_name.present? && respond_to?(instance_currency_name) &&
-            Money::Currency.find(public_send(instance_currency_name))
-
+        if instance_currency_name.present? &&
+           respond_to?(instance_currency_name) &&
+           Money::Currency.find(public_send(instance_currency_name))
           Money::Currency.find(public_send(instance_currency_name))
         elsif field_currency_name.respond_to?(:call)
           Money::Currency.find(field_currency_name.call(self))
