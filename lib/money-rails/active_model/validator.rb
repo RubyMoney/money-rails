@@ -79,7 +79,9 @@ module MoneyRails
         attr_name = attr.to_s.tr('.', '_').humanize
         attr_name = record.class.human_attribute_name(attr, default: attr_name)
 
-        record.errors.add(attr, :invalid_currency,
+        record.errors.add(
+          attr,
+          :invalid_currency,
           thousands: details.thousands_separator,
           decimal: details.decimal_mark,
           currency: details.abs_raw_value,
@@ -111,7 +113,8 @@ module MoneyRails
       # Remove thousands separators, normalize decimal mark,
       # remove whitespaces and _ (E.g. 99 999 999 or 12_300_200.20)
       def normalize(details)
-        details.raw_value
+        details
+          .raw_value
           .to_s
           .gsub(details.thousands_separator, '')
           .gsub(details.decimal_mark, '.')
