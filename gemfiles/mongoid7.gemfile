@@ -1,4 +1,4 @@
-eval_gemfile "../Gemfile"
+eval_gemfile "../Gemfile.default"
 
 gem "mongoid", "~> 7.0"
 gem "actionpack", "~> 7.0.0"
