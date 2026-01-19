@@ -52,9 +52,9 @@ module MoneyRails
         return if record_already_has_error?(record, attr, normalized_raw_value)
 
         add_error!(record, attr, details) if
-          value_has_too_many_decimal_points(details) ||
-          thousand_separator_after_decimal_mark(details) ||
-          invalid_thousands_separation(details)
+          value_has_too_many_decimal_points?(details) ||
+          thousand_separator_after_decimal_mark?(details) ||
+          invalid_thousands_separation?(details)
       end
 
       private
@@ -89,17 +89,17 @@ module MoneyRails
         )
       end
 
-      def value_has_too_many_decimal_points(details)
+      def value_has_too_many_decimal_points?(details)
         ![1, 2].include?(details.decimal_pieces.length)
       end
 
-      def thousand_separator_after_decimal_mark(details)
+      def thousand_separator_after_decimal_mark?(details)
         details.thousands_separator.present? &&
           details.decimal_pieces.length == 2 &&
           details.decimal_pieces[1].include?(details.thousands_separator)
       end
 
-      def invalid_thousands_separation(details)
+      def invalid_thousands_separation?(details)
         pieces_array = details.decimal_pieces[0].split(details.thousands_separator.presence)
 
         return false if pieces_array.length <= 1

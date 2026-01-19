@@ -265,24 +265,6 @@ Naming/FileName:
     - 'Rakefile.rb'
     - 'lib/money-rails.rb'
 
-# Configuration parameters: Mode, AllowedMethods, AllowedPatterns, AllowBangMethods, WaywardPredicates.
-# AllowedMethods: call
-# WaywardPredicates: nonzero?
-Naming/PredicateMethod:
-  Exclude:
-    - 'lib/money-rails/active_model/validator.rb'
-    - 'lib/money-rails/test_helpers.rb'
-
-# Configuration parameters: NamePrefix, ForbiddenPrefixes, AllowedMethods, MethodDefinitionMacros, UseSorbetSigs.
-# NamePrefix: is_, has_, have_, does_
-# ForbiddenPrefixes: is_, has_, have_, does_
-# AllowedMethods: is_a?
-# MethodDefinitionMacros: define_method, define_singleton_method
-Naming/PredicatePrefix:
-  Exclude:
-    - 'spec/**/*'
-    - 'lib/money-rails/test_helpers.rb'
-
 # This cop supports safe autocorrection (--autocorrect).
 Performance/RedundantSplitRegexpArgument:
   Exclude:
