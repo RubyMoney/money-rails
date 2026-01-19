@@ -1,4 +1,4 @@
-class Product < ActiveRecord::Base
+class Product < ApplicationRecord
   # Use USD as model level currency
   register_currency :usd
 

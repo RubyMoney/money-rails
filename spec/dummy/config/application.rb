@@ -1,11 +1,8 @@
 require File.expand_path('../boot', __FILE__)
 require "logger"
 
-# Pick the frameworks you want:
-require "active_record/railtie"
+require "active_record/railtie" unless ENV['BUNDLE_GEMFILE']&.include?('mongoid')
 require "action_controller/railtie"
-require "action_mailer/railtie"
-require "sprockets/railtie"
 
 Bundler.require
 require "money-rails"
@@ -51,10 +48,10 @@ module Dummy
     # config.active_record.schema_format = :sql
 
     # Enable the asset pipeline
-    config.assets.enabled = true
+    # config.assets.enabled = true
 
     # Version of your assets, change this if you want to expire all your assets
-    config.assets.version = '1.0'
+    # config.assets.version = '1.0'
 
     # Currentcy Lambda test
     config.lambda_test = 'cad'
@@ -62,7 +59,7 @@ module Dummy
     # Raise errors instead of showing deprecation warnings
     config.active_support.disallowed_deprecation = :raise
     config.active_support.disallowed_deprecation_warnings = [
-      /will raise an error in Rails/
+      /will raise an error in Rails/,
     ]
   end
 end

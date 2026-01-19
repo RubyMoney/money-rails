@@ -1,3 +1,3 @@
-class OtherProduct < ActiveRecord::Base
+class OtherProduct < ApplicationRecord
   monetize :price_cents
 end

@@ -1,8 +1,8 @@
 require 'spec_helper'
 
-class Item < ActiveRecord::Base; end
-
 if defined? ActiveRecord
+  class Item < ActiveRecord::Base; end
+
   describe MoneyRails::ActiveRecord::MigrationExtensions::SchemaStatements do
     before :all do
       @connection = ActiveRecord::Base.connection

@@ -2,8 +2,6 @@
 gemfiles/*.lock
 Gemfile.lock
 
-spec/dummy/db/schema.rb
-
 # RVM / rbenv version files
 .rvmrc
 .rbenv-version
@@ -25,6 +23,7 @@ doc
 # bundler
 .bundle
 vendor/bundle
+gemfiles/vendor
 bin
 
 # logging

@@ -24,7 +24,6 @@ task :prepare_test_env do
   load APP_RAKEFILE if File.exist?(APP_RAKEFILE)
   Rake.application["db:drop"].invoke
   Rake.application["db:create"].invoke
-  Rake.application["db:migrate"].invoke
   Rake.application["db:test:prepare"].invoke
 end
 
@@ -46,10 +45,10 @@ namespace :spec do
     major, _minor = version.split(".").map(&:to_i)
 
     # Rails 8+ requires Ruby 3.2+
-    next if framework == 'rails' && major >= 8 && RUBY_VERSION < '3.2'
+    next if framework == 'active_record' && major >= 8 && RUBY_VERSION < '3.2'
 
     # activerecord-jdbc-adapter doesn't support Rails 8+ yet
-    next if framework == 'rails' && major >= 8 && RUBY_ENGINE == 'jruby'
+    next if framework == 'active_record' && major >= 8 && RUBY_ENGINE == 'jruby'
 
     frameworks_versions[framework] ||= []
     frameworks_versions[framework] << file_name
