@@ -21,4 +21,4 @@ jobs:
           ruby-version: "4.0"
           bundler-cache: true
       - name: RuboCop
-        run: bin/rubocop --format github --format clang
+        run: bundle exec rubocop --format github --format clang
