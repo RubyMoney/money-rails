@@ -185,21 +185,10 @@ Lint/ConstantDefinitionInBlock:
 Lint/EmptyBlock:
   Exclude:
     - 'spec/dummy/config/routes.rb'
-
-# This cop supports unsafe autocorrection (--autocorrect-all).
-Lint/NonAtomicFileOperation:
-  Exclude:
-    - 'Rakefile'
-
 # This cop supports safe autocorrection (--autocorrect).
 Lint/RedundantStringCoercion:
   Exclude:
     - 'spec/helpers/form_helper_spec.rb'
-
-# This cop supports safe autocorrection (--autocorrect).
-Lint/ScriptPermission:
-  Exclude:
-    - 'spec/dummy/Rakefile'
 
 # This cop supports safe autocorrection (--autocorrect).
 Lint/SendWithMixinArgument:
@@ -262,13 +251,7 @@ Metrics/PerceivedComplexity:
 # AllowedAcronyms: CLI, DSL, ACL, API, ASCII, CPU, CSS, DNS, EOF, GUID, HTML, HTTP, HTTPS, ID, IP, JSON, LHS, QPS, RAM, RHS, RPC, SLA, SMTP, SQL, SSH, TCP, TLS, TTL, UDP, UI, UID, UUID, URI, URL, UTF8, VM, XML, XMPP, XSRF, XSS
 Naming/FileName:
   Exclude:
-    - 'Rakefile.rb'
     - 'lib/money-rails.rb'
-
-# This cop supports safe autocorrection (--autocorrect).
-Performance/RedundantSplitRegexpArgument:
-  Exclude:
-    - 'Rakefile'
 
 # This cop supports safe autocorrection (--autocorrect).
 Performance/RegexpMatch:
@@ -480,11 +463,6 @@ RSpecRails/InferredSpecType:
     - 'spec/helpers/form_helper_spec.rb'
 
 # This cop supports safe autocorrection (--autocorrect).
-Rake/Desc:
-  Exclude:
-    - 'Rakefile'
-
-# This cop supports safe autocorrection (--autocorrect).
 # Configuration parameters: EnforcedStyle.
 # SupportedStyles: prefer_alias, prefer_alias_method
 Style/Alias:
@@ -535,9 +513,7 @@ Style/ConditionalAssignment:
 # This cop supports safe autocorrection (--autocorrect).
 Style/ExpandPathArguments:
   Exclude:
-    - 'Rakefile'
     - 'lib/generators/money_rails/initializer_generator.rb'
-    - 'spec/dummy/Rakefile'
     - 'spec/dummy/config.ru'
     - 'spec/dummy/config/application.rb'
     - 'spec/dummy/config/environment.rb'
@@ -635,11 +611,6 @@ Style/RedundantFileExtensionInRequire:
     - 'lib/money-rails/money.rb'
 
 # This cop supports safe autocorrection (--autocorrect).
-Style/RedundantRegexpArgument:
-  Exclude:
-    - 'Rakefile'
-
-# This cop supports safe autocorrection (--autocorrect).
 Style/RedundantRegexpEscape:
   Exclude:
     - 'spec/helpers/form_helper_spec.rb'
@@ -665,16 +636,6 @@ Style/SlicingWithRange:
 # SupportedStyles: use_perl_names, use_english_names, use_builtin_english_names
 Style/SpecialGlobalVars:
   EnforcedStyle: use_perl_names
-
-# This cop supports safe autocorrection (--autocorrect).
-Style/StderrPuts:
-  Exclude:
-    - 'Rakefile'
-
-# This cop supports unsafe autocorrection (--autocorrect-all).
-Style/StringChars:
-  Exclude:
-    - 'Rakefile'
 
 # This cop supports safe autocorrection (--autocorrect).
 # Configuration parameters: EnforcedStyle, ConsistentQuotesInMultiline.
