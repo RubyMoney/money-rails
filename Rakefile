@@ -41,7 +41,7 @@ namespace :spec do
 
   Dir[GEMFILES_PATH].each do |gemfile|
     file_name = File.basename(gemfile, '.gemfile')
-    _, framework, version = file_name.match(/\A([a-z]+)([\d.]+)\z/).to_a
+    _, framework, version = file_name.match(/\A([a-z_]+)([\d.]+)\z/).to_a
     major, _minor = version.split(".").map(&:to_i)
 
     # Rails 8+ requires Ruby 3.2+
@@ -53,12 +53,12 @@ namespace :spec do
     frameworks_versions[framework] ||= []
     frameworks_versions[framework] << file_name
 
-    desc "Run tests against #{framework.capitalize} #{version}"
+    desc "Run tests against #{framework} #{version}"
     task(file_name) { run_with_gemfile gemfile }
   end
 
   frameworks_versions.each do |framework, versions|
-    desc "Run tests against all supported #{framework.capitalize} versions"
+    desc "Run tests against all supported #{framework} versions"
     task framework => versions
   end
 
