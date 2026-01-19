@@ -22,11 +22,11 @@ if defined? ActiveRecord
           precision: 4,
           scale: 2,
           default: 1,
-          null: true
+          null: true,
         }, currency: {
           prefix: :currency_prefix,
           postfix: :currency_postfix,
-          column_name: :currency
+          column_name: :currency,
         }
 
         Item.reset_column_information

@@ -12,7 +12,7 @@ module MoneyRails
 
       options = {
         no_cents_if_whole: MoneyRails::Configuration.no_cents_if_whole.nil? ? true : MoneyRails::Configuration.no_cents_if_whole,
-        symbol: false
+        symbol: false,
       }.merge(options)
       options.delete(:symbol) if options[:disambiguate]
 
@@ -38,7 +38,7 @@ module MoneyRails
       options = {
         no_cents: true,
         no_cents_if_whole: false,
-        symbol: false
+        symbol: false,
       }.merge(options)
 
       humanized_money(value, options)

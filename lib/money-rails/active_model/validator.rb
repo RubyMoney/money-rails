@@ -61,7 +61,7 @@ module MoneyRails
 
       DEFAULTS = {
         decimal_mark: '.',
-        thousands_separator: ','
+        thousands_separator: ',',
       }.freeze
 
       def generate_details(raw_value, currency)
@@ -85,7 +85,7 @@ module MoneyRails
           thousands: details.thousands_separator,
           decimal: details.decimal_mark,
           currency: details.abs_raw_value,
-          attribute: attr_name
+          attribute: attr_name,
         )
       end
 

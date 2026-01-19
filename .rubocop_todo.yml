@@ -55,11 +55,6 @@ Layout/EmptyLinesAroundClassBody:
     - 'spec/dummy/config/application.rb'
 
 # This cop supports safe autocorrection (--autocorrect).
-Layout/EmptyLinesAroundMethodBody:
-  Exclude:
-    - 'spec/dummy/db/migrate/20120402080348_add_bonus_cents_to_product.rb'
-
-# This cop supports safe autocorrection (--autocorrect).
 # Configuration parameters: EnforcedStyle.
 # SupportedStyles: empty_lines, empty_lines_except_namespace, empty_lines_special, no_empty_lines
 Layout/EmptyLinesAroundModuleBody:
@@ -156,13 +151,6 @@ Layout/SpaceInsideHashLiteralBraces:
 Layout/SpaceInsideParens:
   Exclude:
     - 'spec/mongoid/mongoid_spec.rb'
-
-# This cop supports safe autocorrection (--autocorrect).
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: final_newline, final_blank_line
-Layout/TrailingEmptyLines:
-  Exclude:
-    - 'spec/dummy/app/models/dummy_product.rb'
 
 # This cop supports unsafe autocorrection (--autocorrect-all).
 # Configuration parameters: AllowSafeAssignment.
@@ -647,45 +635,6 @@ Style/StringLiterals:
 Style/StructInheritance:
   Exclude:
     - 'lib/money-rails/active_model/validator.rb'
-
-# This cop supports safe autocorrection (--autocorrect).
-# Configuration parameters: EnforcedStyleForMultiline.
-# SupportedStylesForMultiline: comma, consistent_comma, diff_comma, no_comma
-Style/TrailingCommaInArguments:
-  Exclude:
-    - 'lib/money-rails/active_model/validator.rb'
-    - 'spec/active_record/monetizable_spec.rb'
-    - 'spec/test_helpers_spec.rb'
-
-# This cop supports safe autocorrection (--autocorrect).
-# Configuration parameters: EnforcedStyleForMultiline.
-# SupportedStylesForMultiline: comma, consistent_comma, diff_comma, no_comma
-Style/TrailingCommaInArrayLiteral:
-  Exclude:
-    - 'lib/money-rails/configuration.rb'
-
-# This cop supports safe autocorrection (--autocorrect).
-# Configuration parameters: EnforcedStyleForMultiline.
-# SupportedStylesForMultiline: comma, consistent_comma, diff_comma, no_comma
-Style/TrailingCommaInHashLiteral:
-  Exclude:
-    - 'lib/money-rails/active_model/validator.rb'
-    - 'lib/money-rails/active_record/monetizable.rb'
-    - 'lib/money-rails/helpers/action_view_extension.rb'
-    - 'lib/money-rails/money.rb'
-    - 'lib/money-rails/mongoid/money.rb'
-    - 'spec/active_record/migration_extensions/schema_statements_spec.rb'
-    - 'spec/active_record/migration_extensions/table_spec.rb'
-    - 'spec/dummy/app/models/product.rb'
-    - 'spec/dummy/config/initializers/money.rb'
-    - 'spec/mongoid/mongoid_spec.rb'
-
-# This cop supports safe autocorrection (--autocorrect).
-# Configuration parameters: AllowNamedUnderscoreVariables.
-Style/TrailingUnderscoreVariable:
-  Exclude:
-    - 'lib/money-rails/active_record/migration_extensions/schema_statements_pg.rb'
-    - 'lib/money-rails/active_record/migration_extensions/table_pg.rb'
 
 # This cop supports safe autocorrection (--autocorrect).
 Style/UnlessElse:

@@ -40,7 +40,7 @@ if defined? ActiveRecord
           is_expected.to(
             monetize(:sale_price_amount)
               .as(:sale_price)
-              .with_model_currency(:sale_price_currency_code)
+              .with_model_currency(:sale_price_currency_code),
           )
         end
 

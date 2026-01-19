@@ -24,12 +24,12 @@ class Product < ApplicationRecord
   monetize :price_in_a_range_cents, allow_nil: true,
                                     subunit_numericality: {
                                       greater_than: 0,
-                                      less_than_or_equal_to: 10000
+                                      less_than_or_equal_to: 100_00,
                                     },
                                     numericality: {
                                       greater_than: 0,
                                       less_than_or_equal_to: 100,
-                                      message: "must be greater than zero and less than $100"
+                                      message: "must be greater than zero and less than $100",
                                     }
 
   # Skip validations separately from each other
