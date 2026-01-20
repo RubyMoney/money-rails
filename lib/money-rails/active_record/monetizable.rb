@@ -108,7 +108,7 @@ module MoneyRails
               if (subunit_numericality = options.fetch(:subunit_numericality, true))
                 validates subunit_name, {
                   allow_nil: options[:allow_nil],
-                  numericality: subunit_numericality
+                  numericality: subunit_numericality,
                 }
               end
 
@@ -116,7 +116,7 @@ module MoneyRails
               if (numericality = options.fetch(:numericality, true))
                 validates name.to_sym, {
                   allow_nil: options[:allow_nil],
-                  'money_rails/active_model/money' => numericality
+                  'money_rails/active_model/money' => numericality,
                 }
               end
             end

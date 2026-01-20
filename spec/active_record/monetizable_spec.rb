@@ -652,7 +652,7 @@ if defined? ActiveRecord
             bonus: Money.new(10,'GBP'),
             discount: 10,
             sale_price_amount: 1234,
-            sale_price_currency_code: 'USD'
+            sale_price_currency_code: 'USD',
           )
 
           expect(product.sale_price.currency.to_s).to eq('USD')
@@ -699,13 +699,13 @@ if defined? ActiveRecord
 
         it "overrides default currency with the currency registered for the model" do
           expect(dummy_product_with_nil_currency.price.currency).to eq(
-            Money::Currency.find(:gbp)
+            Money::Currency.find(:gbp),
           )
         end
 
         it "overrides default currency with the currency registered for the model if currency is invalid" do
           expect(dummy_product_with_invalid_currency.price.currency).to eq(
-            Money::Currency.find(:gbp)
+            Money::Currency.find(:gbp),
           )
         end
 

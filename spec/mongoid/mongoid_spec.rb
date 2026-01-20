@@ -20,7 +20,7 @@ if defined?(Mongoid)
     let(:priceable_with_hash_field) {
       Priceable.create(price_hash: {
         key1: Money.new(100, "EUR"),
-        key2: Money.new(200, "USD")
+        key2: Money.new(200, "USD"),
       })
     }
 

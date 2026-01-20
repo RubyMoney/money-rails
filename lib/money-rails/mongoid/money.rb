@@ -4,7 +4,7 @@ class Money
   def mongoize
     {
       cents:        cents.to_f,
-      currency_iso: currency.iso_code
+      currency_iso: currency.iso_code,
     }
   end
 
