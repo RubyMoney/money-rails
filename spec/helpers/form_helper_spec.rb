@@ -12,7 +12,7 @@ if defined? ActiveRecord
     context "textfield" do
       it "uses the current value of money field in textfield" do
         helper.instance_variable_set :@product, product
-        expect(helper.text_field(:product, :price)).to match(/value=\"#{product.price.to_s}\"/)
+        expect(helper.text_field(:product, :price)).to match(/value="#{product.price.to_s}"/)
       end
     end
   end

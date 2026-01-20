@@ -1,6 +1,6 @@
 require "spec_helper"
 
-if defined?(::ActiveJob::Serializers)
+if defined?(ActiveJob::Serializers)
   describe MoneyRails::ActiveJob::MoneySerializer do
     let(:money) { Money.new(1_00, "EUR") }
     let(:serialized_money) do
