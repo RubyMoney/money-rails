@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require "active_support/core_ext/module/aliasing.rb"
-require "active_support/core_ext/hash/reverse_merge.rb"
+require "active_support/core_ext/module/aliasing"
+require "active_support/core_ext/hash/reverse_merge"
 
 class Money
   class << self

@@ -404,35 +404,6 @@ Style/RaiseArgs:
     - 'lib/money-rails/active_record/monetizable.rb'
 
 # This cop supports safe autocorrection (--autocorrect).
-Style/RedundantBegin:
-  Exclude:
-    - 'spec/active_record/monetizable_spec.rb'
-
-# This cop supports safe autocorrection (--autocorrect).
-# Configuration parameters: AllowedMethods.
-# AllowedMethods: nonzero?
-Style/RedundantCondition:
-  Exclude:
-    - 'lib/money-rails/helpers/action_view_extension.rb'
-
-# This cop supports safe autocorrection (--autocorrect).
-Style/RedundantConstantBase:
-  Exclude:
-    - 'lib/money-rails.rb'
-    - 'spec/active_job/money_serializer_spec.rb'
-    - 'spec/dummy/config.ru'
-
-# This cop supports safe autocorrection (--autocorrect).
-Style/RedundantFileExtensionInRequire:
-  Exclude:
-    - 'lib/money-rails/money.rb'
-
-# This cop supports safe autocorrection (--autocorrect).
-Style/RedundantRegexpEscape:
-  Exclude:
-    - 'spec/helpers/form_helper_spec.rb'
-
-# This cop supports safe autocorrection (--autocorrect).
 Style/SelfAssignment:
   Exclude:
     - 'lib/money-rails/active_record/monetizable.rb'
