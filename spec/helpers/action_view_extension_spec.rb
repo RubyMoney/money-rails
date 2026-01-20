@@ -28,7 +28,7 @@ describe "MoneyRails::ActionViewExtension", type: :helper do
   end
 
   describe "#humanized_money" do
-    let(:money_object){ Money.new(12500) }
+    let(:money_object) { Money.new(12500) }
     let(:options) { {} }
     subject { helper.humanized_money money_object, options }
     it { is_expected.to be_a String }
@@ -95,27 +95,27 @@ describe "MoneyRails::ActionViewExtension", type: :helper do
   end
 
   describe "#money_only_cents" do
-    let(:monetizable_object){ Money.new(125_00) }
+    let(:monetizable_object) { Money.new(125_00) }
     subject { helper.money_only_cents monetizable_object }
     it { is_expected.to eq "00" }
 
     context "with a non-money object" do
-      let(:monetizable_object){ 125 }
+      let(:monetizable_object) { 125 }
       it { is_expected.to eq "00" }
     end
 
     context "with less than 10 cents" do
-      let(:monetizable_object){ Money.new(8) }
+      let(:monetizable_object) { Money.new(8) }
       it { is_expected.to eq "08" }
     end
 
     context "with a non monetizable object" do
-      let(:monetizable_object){ false }
+      let(:monetizable_object) { false }
       it { is_expected.to eq "00" }
     end
 
     context "with a negative monetizable object" do
-      let(:monetizable_object){ Money.new(-1_25) }
+      let(:monetizable_object) { Money.new(-1_25) }
       it { is_expected.to eq "25" }
     end
   end

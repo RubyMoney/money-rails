@@ -648,8 +648,8 @@ if defined? ActiveRecord
 
         it "can change currency of custom column" do
           product = Product.create!(
-            price: Money.new(10,"USD"),
-            bonus: Money.new(10,"GBP"),
+            price: Money.new(10, "USD"),
+            bonus: Money.new(10, "GBP"),
             discount: 10,
             sale_price_amount: 1234,
             sale_price_currency_code: "USD",
