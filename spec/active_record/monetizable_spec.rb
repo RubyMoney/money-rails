@@ -889,6 +889,7 @@ if defined? ActiveRecord
           Service.create(discount_cents: nil)
         end
         let(:default_currency_lambda) { double("Default Currency Fallback") }
+
         subject { service.read_monetized(:discount, :discount_cents, options) }
 
         around(:each) do |example|
@@ -901,6 +902,7 @@ if defined? ActiveRecord
 
         context "when allow_nil options is set" do
           let(:options) { { allow_nil: true } }
+
           it "does not attempt to read the fallback default currency" do
             expect(default_currency_lambda).not_to receive(:read_currency)
             subject
