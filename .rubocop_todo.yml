@@ -6,57 +6,6 @@
 # Note that changes in the inspected code, or installation of new
 # versions of RuboCop, may require this file to be generated again.
 
-# This cop supports safe autocorrection (--autocorrect).
-# Configuration parameters: AllowDoxygenCommentStyle, AllowGemfileRubyComment, AllowRBSInlineAnnotation, AllowSteepAnnotation.
-Layout/LeadingCommentSpace:
-  Exclude:
-    - 'lib/money-rails/configuration.rb'
-
-# This cop supports safe autocorrection (--autocorrect).
-Layout/LeadingEmptyLines:
-  Exclude:
-    - 'spec/support/database_cleaner.rb'
-
-# This cop supports safe autocorrection (--autocorrect).
-Layout/SpaceAfterComma:
-  Exclude:
-    - 'spec/active_record/monetizable_spec.rb'
-
-# This cop supports safe autocorrection (--autocorrect).
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: space, no_space
-Layout/SpaceAroundEqualsInParameterDefault:
-  Exclude:
-    - 'lib/money-rails/active_record/migration_extensions/schema_statements.rb'
-    - 'lib/money-rails/active_record/migration_extensions/schema_statements_pg.rb'
-    - 'lib/money-rails/active_record/migration_extensions/table.rb'
-    - 'lib/money-rails/active_record/migration_extensions/table_pg.rb'
-    - 'lib/money-rails/helpers/action_view_extension.rb'
-
-# This cop supports safe autocorrection (--autocorrect).
-# Configuration parameters: EnforcedStyle, EnforcedStyleForEmptyBraces.
-# SupportedStyles: space, no_space
-# SupportedStylesForEmptyBraces: space, no_space
-Layout/SpaceBeforeBlockBraces:
-  Exclude:
-    - 'spec/helpers/action_view_extension_spec.rb'
-
-# This cop supports safe autocorrection (--autocorrect).
-# Configuration parameters: EnforcedStyle, EnforcedStyleForEmptyBraces, SpaceBeforeBlockParameters.
-# SupportedStyles: space, no_space
-# SupportedStylesForEmptyBraces: space, no_space
-Layout/SpaceInsideBlockBraces:
-  Exclude:
-    - 'spec/mongoid/mongoid_spec.rb'
-    - 'spec/spec_helper.rb'
-
-# This cop supports safe autocorrection (--autocorrect).
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: space, compact, no_space
-Layout/SpaceInsideParens:
-  Exclude:
-    - 'spec/mongoid/mongoid_spec.rb'
-
 # This cop supports unsafe autocorrection (--autocorrect-all).
 # Configuration parameters: AllowSafeAssignment.
 Lint/AssignmentInCondition:
@@ -145,6 +94,7 @@ Metrics/PerceivedComplexity:
 # AllowedAcronyms: CLI, DSL, ACL, API, ASCII, CPU, CSS, DNS, EOF, GUID, HTML, HTTP, HTTPS, ID, IP, JSON, LHS, QPS, RAM, RHS, RPC, SLA, SMTP, SQL, SSH, TCP, TLS, TTL, UDP, UI, UID, UUID, URI, URL, UTF8, VM, XML, XMPP, XSRF, XSS
 Naming/FileName:
   Exclude:
+    - 'Rakefile.rb'
     - 'lib/money-rails.rb'
 
 # This cop supports safe autocorrection (--autocorrect).

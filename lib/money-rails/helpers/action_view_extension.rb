@@ -6,7 +6,7 @@ module MoneyRails
       content_tag(:span, Money::Currency.find(currency).symbol, class: "currency_symbol")
     end
 
-    def humanized_money(value, options={})
+    def humanized_money(value, options = {})
       if !options || !options.is_a?(Hash)
         warn "humanized_money now takes a hash of formatting options, please specify { symbol: true }"
         options = { symbol: options }
@@ -27,11 +27,11 @@ module MoneyRails
       end
     end
 
-    def humanized_money_with_symbol(value, options={})
+    def humanized_money_with_symbol(value, options = {})
       humanized_money(value, options.merge(symbol: true))
     end
 
-    def money_without_cents(value, options={})
+    def money_without_cents(value, options = {})
       if !options || !options.is_a?(Hash)
         warn "money_without_cents now takes a hash of formatting options, please specify { symbol: true }"
         options = { symbol: options }
