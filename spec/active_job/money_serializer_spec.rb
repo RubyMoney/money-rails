@@ -1,4 +1,4 @@
-require 'spec_helper'
+require "spec_helper"
 
 if defined?(::ActiveJob::Serializers)
   describe MoneyRails::ActiveJob::MoneySerializer do

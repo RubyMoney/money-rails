@@ -60,8 +60,8 @@ module MoneyRails
       private
 
       DEFAULTS = {
-        decimal_mark: '.',
-        thousands_separator: ',',
+        decimal_mark: ".",
+        thousands_separator: ",",
       }.freeze
 
       def generate_details(raw_value, currency)
@@ -76,7 +76,7 @@ module MoneyRails
       end
 
       def add_error!(record, attr, details)
-        attr_name = attr.to_s.tr('.', '_').humanize
+        attr_name = attr.to_s.tr(".", "_").humanize
         attr_name = record.class.human_attribute_name(attr, default: attr_name)
 
         record.errors.add(
@@ -116,9 +116,9 @@ module MoneyRails
         details
           .raw_value
           .to_s
-          .gsub(details.thousands_separator, '')
-          .gsub(details.decimal_mark, '.')
-          .gsub(/[\s_]/, '')
+          .gsub(details.thousands_separator, "")
+          .gsub(details.decimal_mark, ".")
+          .gsub(/[\s_]/, "")
       end
 
       def lookup(key, currency)

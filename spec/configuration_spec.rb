@@ -1,4 +1,4 @@
-require 'spec_helper'
+require "spec_helper"
 
 describe "configuration" do
 
@@ -13,8 +13,8 @@ describe "configuration" do
     end
 
     it "adds exchange rates given in config initializer" do
-      expect(Money.us_dollar(100).bank.get_rate('USD', 'CAD')).to eq(1.24515)
-      expect(Money.ca_dollar(100).bank.get_rate('CAD', 'USD')).to eq(0.803115)
+      expect(Money.us_dollar(100).bank.get_rate("USD", "CAD")).to eq(1.24515)
+      expect(Money.ca_dollar(100).bank.get_rate("CAD", "USD")).to eq(0.803115)
     end
 
     it "sets no_cents_if_whole value for formatted output globally" do
@@ -76,7 +76,7 @@ describe "configuration" do
       value = Money.new(-12345600, "EUR")
       symbol = Money::Currency.find(:eur).symbol
 
-      MoneyRails.default_format = { format: '%n%u' }
+      MoneyRails.default_format = { format: "%n%u" }
       expect(value.format).to match(/#{symbol}\z/)
 
       # Override with "classic" format options for backward compatibility
@@ -93,7 +93,7 @@ describe "configuration" do
       old_currency = MoneyRails.default_currency
       MoneyRails.default_currency = :inr
 
-      expect(MoneyRails.default_currency.subunit).to eq 'Paisa'
+      expect(MoneyRails.default_currency.subunit).to eq "Paisa"
       expect(MoneyRails.amount_column[:postfix]).to eq("_cents") # not localized
 
       expect(MoneyRails.currency_column[:default]).to eq(MoneyRails.default_currency.iso_code)
@@ -138,7 +138,7 @@ describe "configuration" do
 
       context "when passed an invalid value" do
         it "should raise an ArgumentError" do
-          expect { MoneyRails.rounding_mode = "booyakasha" }.to raise_error(ArgumentError, 'booyakasha is not a valid rounding mode')
+          expect { MoneyRails.rounding_mode = "booyakasha" }.to raise_error(ArgumentError, "booyakasha is not a valid rounding mode")
         end
       end
     end

@@ -1,22 +1,22 @@
-require 'spec_helper'
+require "spec_helper"
 
 if defined?(Mongoid)
 
   describe Money do
-    let!(:priceable) { Priceable.create(price: Money.new(100, 'EUR')) }
+    let!(:priceable) { Priceable.create(price: Money.new(100, "EUR")) }
     let(:priceable_from_nil) { Priceable.create(price: nil) }
     let(:priceable_from_num) { Priceable.create(price: 1) }
-    let(:priceable_from_string) { Priceable.create(price: '1 EUR' )}
+    let(:priceable_from_string) { Priceable.create(price: "1 EUR" )}
     let(:priceable_from_hash) { Priceable.create(price: {cents: 100, currency_iso: "EUR"} )}
     let(:priceable_from_blank_strings_hash) {
-      Priceable.create(price: {cents: '', currency_iso: ''})
+      Priceable.create(price: {cents: "", currency_iso: ""})
     }
     let(:priceable_from_hash_with_indifferent_access) {
       Priceable.create(price: {cents: 100, currency_iso: "EUR"}.with_indifferent_access)
     }
-    let(:priceable_from_string_with_hyphen) { Priceable.create(price: '1-2 EUR' )}
-    let(:priceable_from_string_with_unknown_currency) { Priceable.create(price: '1 TLDR') }
-    let(:priceable_with_infinite_precision) { Priceable.create(price: Money.new(BigDecimal('100.1'), 'EUR')) }
+    let(:priceable_from_string_with_hyphen) { Priceable.create(price: "1-2 EUR" )}
+    let(:priceable_from_string_with_unknown_currency) { Priceable.create(price: "1 TLDR") }
+    let(:priceable_with_infinite_precision) { Priceable.create(price: Money.new(BigDecimal("100.1"), "EUR")) }
     let(:priceable_with_hash_field) {
       Priceable.create(price_hash: {
         key1: Money.new(100, "EUR"),
@@ -31,7 +31,7 @@ if defined?(Mongoid)
 
       it "correctly mongoizes a Money object to a hash of cents and currency" do
         expect(priceable.price.cents).to eq(100)
-        expect(priceable.price.currency).to eq(Money::Currency.find('EUR'))
+        expect(priceable.price.currency).to eq(Money::Currency.find("EUR"))
       end
 
       it "correctly mongoizes a Numeric object to a hash of cents and currency" do
@@ -41,7 +41,7 @@ if defined?(Mongoid)
 
       it "correctly mongoizes a String object to a hash of cents and currency" do
         expect(priceable_from_string.price.cents).to eq(100)
-        expect(priceable_from_string.price.currency).to eq(Money::Currency.find('EUR'))
+        expect(priceable_from_string.price.currency).to eq(Money::Currency.find("EUR"))
       end
 
       context "when MoneyRails.raise_error_on_money_parsing is true" do
@@ -59,13 +59,13 @@ if defined?(Mongoid)
         end
 
         it "converts unknown currency to default currency" do
-          expect(priceable_from_string_with_unknown_currency.price).to eq(Money.new(100, 'EUR'))
+          expect(priceable_from_string_with_unknown_currency.price).to eq(Money.new(100, "EUR"))
         end
       end
 
       it "correctly mongoizes a hash of cents and currency" do
         expect(priceable_from_hash.price.cents).to eq(100)
-        expect(priceable_from_hash.price.currency).to eq(Money::Currency.find('EUR'))
+        expect(priceable_from_hash.price.currency).to eq(Money::Currency.find("EUR"))
       end
 
       it "mongoizes a hash of blank strings for cents and currency to nil" do
@@ -74,7 +74,7 @@ if defined?(Mongoid)
 
       it "correctly mongoizes a HashWithIndifferentAccess of cents and currency" do
         expect(priceable_from_hash_with_indifferent_access.price.cents).to eq(100)
-        expect(priceable_from_hash_with_indifferent_access.price.currency).to eq(Money::Currency.find('EUR'))
+        expect(priceable_from_hash_with_indifferent_access.price.currency).to eq(Money::Currency.find("EUR"))
       end
 
       context "default_infinite_precision = true" do
@@ -87,8 +87,8 @@ if defined?(Mongoid)
         end
 
         it "correctly mongoizes a Money object to a hash of cents and currency" do
-          expect(priceable_with_infinite_precision.price.cents).to eq(BigDecimal('100.1'))
-          expect(priceable_with_infinite_precision.price.currency).to eq(Money::Currency.find('EUR'))
+          expect(priceable_with_infinite_precision.price.cents).to eq(BigDecimal("100.1"))
+          expect(priceable_with_infinite_precision.price.currency).to eq(Money::Currency.find("EUR"))
         end
       end
     end
@@ -96,22 +96,22 @@ if defined?(Mongoid)
     it "correctly serializes a Hash field containing Money objects" do
       expect(priceable_with_hash_field.price_hash[:key1][:cents]).to eq(100)
       expect(priceable_with_hash_field.price_hash[:key2][:cents]).to eq(200)
-      expect(priceable_with_hash_field.price_hash[:key1][:currency_iso]).to eq('EUR')
-      expect(priceable_with_hash_field.price_hash[:key2][:currency_iso]).to eq('USD')
+      expect(priceable_with_hash_field.price_hash[:key1][:currency_iso]).to eq("EUR")
+      expect(priceable_with_hash_field.price_hash[:key2][:currency_iso]).to eq("USD")
     end
 
     context "demongoize" do
       subject { Priceable.first.price }
 
       it { is_expected.to be_an_instance_of(Money) }
-      it { is_expected.to eq(Money.new(100, 'EUR')) }
+      it { is_expected.to eq(Money.new(100, "EUR")) }
 
       it "returns nil if a nil value was stored" do
         nil_priceable = Priceable.create(price: nil)
         expect(nil_priceable.price).to be_nil
       end
 
-      it 'returns nil if an unknown value was stored' do
+      it "returns nil if an unknown value was stored" do
         zero_priceable = Priceable.create(price: [])
         expect(zero_priceable.price).to be_nil
       end
@@ -119,7 +119,7 @@ if defined?(Mongoid)
 
     context "evolve" do
       it "correctly transforms a Money object into a Mongo friendly value" do
-        expect(Priceable.where(price: Money.new(100, 'EUR')).first).to eq(priceable)
+        expect(Priceable.where(price: Money.new(100, "EUR")).first).to eq(priceable)
       end
     end
   end

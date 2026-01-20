@@ -1,6 +1,6 @@
-require 'active_support/concern'
-require 'active_support/core_ext/array/extract_options'
-require 'active_support/deprecation/reporting'
+require "active_support/concern"
+require "active_support/core_ext/array/extract_options"
+require "active_support/deprecation/reporting"
 
 module MoneyRails
   module ActiveRecord
@@ -116,7 +116,7 @@ module MoneyRails
               if (numericality = options.fetch(:numericality, true))
                 validates name.to_sym, {
                   allow_nil: options[:allow_nil],
-                  'money_rails/active_model/money' => numericality,
+                  "money_rails/active_model/money" => numericality,
                 }
               end
             end

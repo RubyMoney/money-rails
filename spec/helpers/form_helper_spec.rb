@@ -1,4 +1,4 @@
-require 'spec_helper'
+require "spec_helper"
 
 if defined? ActiveRecord
   describe "Test helper in form blocks", type: :helper do

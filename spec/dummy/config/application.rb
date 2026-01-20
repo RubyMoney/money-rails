@@ -1,7 +1,7 @@
-require File.expand_path('../boot', __FILE__)
+require File.expand_path("../boot", __FILE__)
 require "logger"
 
-require "active_record/railtie" unless ENV['BUNDLE_GEMFILE']&.include?('mongoid')
+require "active_record/railtie" unless ENV["BUNDLE_GEMFILE"]&.include?("mongoid")
 require "action_controller/railtie"
 
 Bundler.require
@@ -54,7 +54,7 @@ module Dummy
     # config.assets.version = '1.0'
 
     # Currentcy Lambda test
-    config.lambda_test = 'cad'
+    config.lambda_test = "cad"
 
     # Raise errors instead of showing deprecation warnings
     config.active_support.disallowed_deprecation = :raise
