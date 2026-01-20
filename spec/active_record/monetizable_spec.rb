@@ -938,7 +938,7 @@ if defined? ActiveRecord
       it "resets monetized attribute when given blank input" do
         product.write_monetized :price, :price_cents, nil, false, nil, { allow_nil: true }
 
-        expect(product.price).to eq(nil)
+        expect(product.price).to be_nil
       end
 
       it "sets monetized attribute to 0 when given a blank value" do

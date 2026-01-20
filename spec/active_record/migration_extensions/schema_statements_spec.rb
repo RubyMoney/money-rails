@@ -54,8 +54,8 @@ if defined? ActiveRecord
       end
 
       context "without currency column" do
-        it { expect(Item.columns_hash["price_without_currency_cents"]).not_to be nil }
-        it { expect(Item.columns_hash["price_without_currency_currency"]).to be nil }
+        it { expect(Item.columns_hash["price_without_currency_cents"]).not_to be_nil }
+        it { expect(Item.columns_hash["price_without_currency_currency"]).to be_nil }
       end
 
       context "full options" do
@@ -71,7 +71,7 @@ if defined? ActiveRecord
         end
 
         describe "currency" do
-          it { expect(Item.columns_hash["currency"]).not_to be nil }
+          it { expect(Item.columns_hash["currency"]).not_to be_nil }
         end
       end
     end
@@ -89,13 +89,13 @@ if defined? ActiveRecord
         Item.reset_column_information
       end
 
-      it { expect(Item.columns_hash["price_cents"]).to be nil }
-      it { expect(Item.columns_hash["price_currency"]).to be nil }
+      it { expect(Item.columns_hash["price_cents"]).to be_nil }
+      it { expect(Item.columns_hash["price_currency"]).to be_nil }
 
-      it { expect(Item.columns_hash["price_without_currency_cents"]).to be nil }
+      it { expect(Item.columns_hash["price_without_currency_cents"]).to be_nil }
 
-      it { expect(Item.columns_hash["prefix_price_with_full_options_postfix"]).to be nil }
-      it { expect(Item.columns_hash["currency"]).to be nil }
+      it { expect(Item.columns_hash["prefix_price_with_full_options_postfix"]).to be_nil }
+      it { expect(Item.columns_hash["currency"]).to be_nil }
     end
   end
 end
