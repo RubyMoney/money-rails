@@ -122,7 +122,6 @@ describe "MoneyRails::ActionViewExtension", type: :helper do
 
   context "respects MoneyRails::Configuration settings" do
     context "with no_cents_if_whole: false" do
-
       before do
         MoneyRails.configure do |config|
           config.no_cents_if_whole = false
@@ -147,7 +146,6 @@ describe "MoneyRails::ActionViewExtension", type: :helper do
     end
 
     context "with no_cents_if_whole: nil" do
-
       before do
         MoneyRails.configure do |config|
           config.no_cents_if_whole = nil
@@ -172,7 +170,6 @@ describe "MoneyRails::ActionViewExtension", type: :helper do
     end
 
     context "with no_cents_if_whole: true" do
-
       before do
         MoneyRails.configure do |config|
           config.no_cents_if_whole = true
@@ -195,8 +192,5 @@ describe "MoneyRails::ActionViewExtension", type: :helper do
         it { is_expected.not_to include "00" }
       end
     end
-
-
   end
-
 end

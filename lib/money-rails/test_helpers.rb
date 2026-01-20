@@ -46,7 +46,6 @@ module MoneyRails
           currency_attribute_matches?
       end
 
-
       def description
         desc = "monetize #{@attribute}"
         desc << " as #{@as}" if @as
@@ -106,7 +105,6 @@ module MoneyRails
           true
         end
       end
-
     end
   end
 end

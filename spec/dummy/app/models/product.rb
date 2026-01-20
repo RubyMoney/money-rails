@@ -39,6 +39,7 @@ class Product < ApplicationRecord
   monetize :lambda_price_cents, with_currency: ->(_product) { Rails.configuration.lambda_test }, allow_nil: true
 
   attr_accessor :accessor_price_cents
+
   monetize :accessor_price_cents, disable_validation: true
 
   monetize :validates_method_amount_cents, allow_nil: true

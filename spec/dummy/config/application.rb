@@ -9,7 +9,6 @@ require "money-rails"
 
 module Dummy
   class Application < Rails::Application
-
     config.load_defaults Rails::VERSION::STRING.to_f
 
     # Settings in config/environments/* take precedence over those specified here.

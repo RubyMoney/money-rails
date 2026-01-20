@@ -206,6 +206,7 @@ module MoneyRails
         end
 
         return if amount.nil? && options[:allow_nil]
+
         # Get the currency object
         attr_currency = public_send("currency_for_#{name}")
 
@@ -258,6 +259,7 @@ module MoneyRails
               return nil
             rescue Money::Currency::UnknownCurrency, Monetize::ParseError => e
               raise MoneyRails::Error, e.message if MoneyRails.raise_error_on_money_parsing
+
               return nil
             end
           end
@@ -288,6 +290,7 @@ module MoneyRails
             current_currency = public_send("currency_for_#{name}")
             if current_currency != money_currency.id
               raise ReadOnlyCurrencyException.new("Can't change readonly currency '#{current_currency}' to '#{money_currency}' for field '#{name}'") if MoneyRails.raise_error_on_money_parsing
+
               return nil
             end
           end

@@ -2,7 +2,6 @@ require "spec_helper"
 
 if defined? ActiveRecord
   describe "TestHelpers" do
-
     require "money-rails/test_helpers"
     include MoneyRails::TestHelpers
 
@@ -13,9 +12,7 @@ if defined? ActiveRecord
     end
 
     describe "monetize matcher" do
-
       shared_context "monetize matcher" do
-
         it "matches model attribute without a '_cents' suffix by default" do
           is_expected.to monetize(:price)
         end
