@@ -7,12 +7,12 @@ if defined?(Mongoid)
     let(:priceable_from_nil) { Priceable.create(price: nil) }
     let(:priceable_from_num) { Priceable.create(price: 1) }
     let(:priceable_from_string) { Priceable.create(price: "1 EUR" )}
-    let(:priceable_from_hash) { Priceable.create(price: {cents: 100, currency_iso: "EUR"} )}
+    let(:priceable_from_hash) { Priceable.create(price: { cents: 100, currency_iso: "EUR" } )}
     let(:priceable_from_blank_strings_hash) {
-      Priceable.create(price: {cents: "", currency_iso: ""})
+      Priceable.create(price: { cents: "", currency_iso: "" })
     }
     let(:priceable_from_hash_with_indifferent_access) {
-      Priceable.create(price: {cents: 100, currency_iso: "EUR"}.with_indifferent_access)
+      Priceable.create(price: { cents: 100, currency_iso: "EUR" }.with_indifferent_access)
     }
     let(:priceable_from_string_with_hyphen) { Priceable.create(price: "1-2 EUR" )}
     let(:priceable_from_string_with_unknown_currency) { Priceable.create(price: "1 TLDR") }

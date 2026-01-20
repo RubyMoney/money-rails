@@ -52,7 +52,7 @@ if defined? ActiveRecord
           expect(monetized_attributes).to include expected_attributes
           expect(expected_attributes).to include monetized_attributes
           expect(monetized_attributes.size).to eql expected_attributes.size
-          monetized_attributes.keys.each do |key|
+          monetized_attributes.each_key do |key|
             expect(key.is_a? String).to be_truthy
           end
         end
@@ -238,7 +238,7 @@ if defined? ActiveRecord
       it "shouldn't init empty key in errors" do
         product.price = Money.new(320, "USD")
         product.valid?
-        expect(product.errors.has_key?(:price)).to be_falsey
+        expect(product.errors.key?(:price)).to be_falsey
       end
 
       it "fails validation with the proper error message if money value is invalid decimal" do

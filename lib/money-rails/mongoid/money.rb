@@ -3,7 +3,7 @@ class Money
   # Converts an object of this instance into a database friendly value.
   def mongoize
     {
-      cents:        cents.to_f,
+      cents: cents.to_f,
       currency_iso: currency.iso_code,
     }
   end
@@ -15,7 +15,7 @@ class Money
     def demongoize(object)
       if object.is_a?(Hash)
         object = object.symbolize_keys
-        object.has_key?(:cents) ? ::Money.new(object[:cents], object[:currency_iso]) : nil
+        object.key?(:cents) ? ::Money.new(object[:cents], object[:currency_iso]) : nil
       end
     end
 

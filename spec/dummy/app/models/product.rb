@@ -18,19 +18,21 @@ class Product < ApplicationRecord
   monetize :bonus_cents, with_currency: :gbp
 
   # Use currency column to determine currency for this field only
-  monetize :sale_price_amount, as: :sale_price,
-    with_model_currency: :sale_price_currency_code
+  monetize :sale_price_amount,
+           as: :sale_price,
+           with_model_currency: :sale_price_currency_code
 
-  monetize :price_in_a_range_cents, allow_nil: true,
-                                    subunit_numericality: {
-                                      greater_than: 0,
-                                      less_than_or_equal_to: 100_00,
-                                    },
-                                    numericality: {
-                                      greater_than: 0,
-                                      less_than_or_equal_to: 100,
-                                      message: "must be greater than zero and less than $100",
-                                    }
+  monetize :price_in_a_range_cents,
+           allow_nil: true,
+           subunit_numericality: {
+             greater_than: 0,
+             less_than_or_equal_to: 100_00,
+           },
+           numericality: {
+             greater_than: 0,
+             less_than_or_equal_to: 100,
+             message: "must be greater than zero and less than $100",
+           }
 
   # Skip validations separately from each other
   monetize :skip_validation_price_cents, subunit_numericality: false, numericality: false, allow_nil: true

@@ -232,7 +232,7 @@ module MoneyRails
 
         if MoneyRails::Configuration.preserve_user_input
           value_before_type_cast = instance_variable_get "@#{name}_money_before_type_cast"
-          if errors.has_key?(name.to_sym)
+          if errors.key?(name.to_sym)
             result.define_singleton_method(:to_s) { value_before_type_cast }
             result.define_singleton_method(:format) { |_| value_before_type_cast }
           end

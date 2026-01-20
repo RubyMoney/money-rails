@@ -80,7 +80,7 @@ describe "configuration" do
       expect(value.format).to match(/#{symbol}\z/)
 
       # Override with "classic" format options for backward compatibility
-      MoneyRails.default_format = {sign_before_symbol: :false}
+      MoneyRails.default_format = { sign_before_symbol: :false }
       MoneyRails.sign_before_symbol = true
       expect(value.format).to match(/-#{symbol}/)
 
