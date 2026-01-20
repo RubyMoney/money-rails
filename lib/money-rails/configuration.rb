@@ -92,7 +92,7 @@ module MoneyRails
     mattr_accessor :raise_error_on_money_parsing
     @@raise_error_on_money_parsing = false
 
-    #Configure whether to maintain invalid user input after validations
+    # Configure whether to maintain invalid user input after validations
     mattr_accessor :preserve_user_input
     @@preserve_user_input = false
   end

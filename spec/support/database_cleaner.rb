@@ -1,4 +1,3 @@
-
 RSpec.configure do |config|
   config.before :suite do
     if defined?(Mongoid)
