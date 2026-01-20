@@ -1,22 +1,5 @@
-source 'https://rubygems.org'
-
-gemspec
-
-gem "bigdecimal"
-gem "mutex_m"
-gem "benchmark"
-gem "drb"
-gem "ostruct"
-
-# Debugging
-gem "pry"
-
-# Specs
-gem "rspec-rails", "~> 6"
-
-# Linting
-gem "rubocop", require: false
-gem "rubocop-performance", require: false
-gem "rubocop-rake", require: false
-gem "rubocop-rspec", require: false
-gem "rubocop-rspec_rails", require: false
+if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new("3.2.0")
+  eval_gemfile "gemfiles/active_record8.1.gemfile"
+else
+  eval_gemfile "gemfiles/active_record7.0.gemfile"
+end
