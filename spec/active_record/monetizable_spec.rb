@@ -372,7 +372,7 @@ if defined? ActiveRecord
         expect(product.errors[:validates_method_amount].first).to match(/must be greater than zero and less than \$100/)
       end
 
-      it "fails validation with the proper error message on the cents field " do
+      it "fails validation with the proper error message on the cents field" do
         product.price_in_a_range = "-12"
         expect(product.valid?).to be_falsey
         expect(product.errors[:price_in_a_range_cents].size).to eq(1)

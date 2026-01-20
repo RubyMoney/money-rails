@@ -62,16 +62,6 @@ Layout/EmptyLinesAroundModuleBody:
     - 'lib/money-rails/configuration.rb'
 
 # This cop supports safe autocorrection (--autocorrect).
-# Configuration parameters: AllowForAlignment, AllowBeforeTrailingComments, ForceEqualSignAlignment.
-Layout/ExtraSpacing:
-  Exclude:
-    - 'lib/money-rails/active_record/migration_extensions/schema_statements_pg.rb'
-    - 'lib/money-rails/active_record/migration_extensions/table_pg.rb'
-    - 'spec/dummy/config.ru'
-    - 'spec/dummy/config/environments/test.rb'
-    - 'spec/dummy/script/rails'
-
-# This cop supports safe autocorrection (--autocorrect).
 # Configuration parameters: AllowMultipleStyles, EnforcedHashRocketStyle, EnforcedColonStyle, EnforcedLastArgumentHashStyle.
 # SupportedHashRocketStyles: key, separator, table
 # SupportedColonStyles: key, separator, table
@@ -108,16 +98,6 @@ Layout/SpaceAroundEqualsInParameterDefault:
     - 'lib/money-rails/active_record/migration_extensions/table.rb'
     - 'lib/money-rails/active_record/migration_extensions/table_pg.rb'
     - 'lib/money-rails/helpers/action_view_extension.rb'
-
-# This cop supports safe autocorrection (--autocorrect).
-# Configuration parameters: AllowForAlignment, EnforcedStyleForExponentOperator, EnforcedStyleForRationalLiterals.
-# SupportedStylesForExponentOperator: space, no_space
-# SupportedStylesForRationalLiterals: space, no_space
-Layout/SpaceAroundOperators:
-  Exclude:
-    - 'lib/money-rails/active_record/migration_extensions/schema_statements_pg.rb'
-    - 'lib/money-rails/active_record/migration_extensions/table_pg.rb'
-    - 'spec/dummy/config/environments/test.rb'
 
 # This cop supports safe autocorrection (--autocorrect).
 # Configuration parameters: EnforcedStyle, EnforcedStyleForEmptyBraces.
@@ -173,6 +153,7 @@ Lint/ConstantDefinitionInBlock:
 Lint/EmptyBlock:
   Exclude:
     - 'spec/dummy/config/routes.rb'
+
 # This cop supports safe autocorrection (--autocorrect).
 Lint/RedundantStringCoercion:
   Exclude:
@@ -329,11 +310,6 @@ RSpec/ExampleWording:
   Exclude:
     - 'spec/active_record/monetizable_spec.rb'
     - 'spec/configuration_spec.rb'
-
-# This cop supports safe autocorrection (--autocorrect).
-RSpec/ExcessiveDocstringSpacing:
-  Exclude:
-    - 'spec/active_record/monetizable_spec.rb'
 
 RSpec/ExpectInHook:
   Exclude:
