@@ -1,4 +1,4 @@
-require File.expand_path("../boot", __FILE__)
+require File.expand_path("boot", __dir__)
 require "logger"
 
 require "active_record/railtie" unless ENV["BUNDLE_GEMFILE"]&.include?("mongoid")

@@ -35,14 +35,20 @@ Layout/SpaceInsideArrayPercentLiteral:
 Lint/BinaryOperatorWithIdenticalOperands:
   # In specs we want to test instances of Money are really equal.
   Exclude:
-    - 'spec/**/*'
+    - "spec/**/*"
+
+# Naming
+
+Naming/FileName:
+  Exclude:
+    - "lib/money-rails.rb"
 
 # RSpec
 
 RSpec/DescribedClass:
   Exclude:
     # Prefer Money.new(…) to described_class.new(…)
-    - 'spec/mongoid/mongoid_spec.rb'
+    - "spec/mongoid/mongoid_spec.rb"
 
 RSpec/MultipleExpectations:
   # Do not limit the amount of expectations in a spec
@@ -122,7 +128,7 @@ Style/TrailingCommaInHashLiteral:
 
 Style/YodaCondition:
   # Sometimes in specs it makes more sense to write
-  #   2 >= Money.new(2, 'USD')
+  #   2 >= Money.new(2, "USD")
   # over
-  #   Money.new(2, 'USD') <= 2
+  #   Money.new(2, "USD") <= 2
   Enabled: false
