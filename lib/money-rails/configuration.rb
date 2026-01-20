@@ -3,7 +3,6 @@ require "active_support/core_ext/module/attribute_accessors"
 require "active_support/core_ext/string/inflections"
 
 module MoneyRails
-
   # MoneyRails configuration module.
   # This is extended by MoneyRails to provide configuration settings.
   module Configuration
@@ -50,6 +49,7 @@ module MoneyRails
         BigDecimal::ROUND_FLOOR,
       ]
       raise ArgumentError, "#{mode} is not a valid rounding mode" unless valid_modes.include?(mode)
+
       Money.rounding_mode = mode
     end
     # Set default bank object

@@ -1,5 +1,4 @@
 class Money
-
   # Converts an object of this instance into a database friendly value.
   def mongoize
     {
@@ -9,7 +8,6 @@ class Money
   end
 
   class << self
-
     # Get the object as it was stored in the database, and instantiate
     # this custom class from it.
     def demongoize(object)
@@ -54,6 +52,7 @@ class Money
       object.to_money.mongoize
     rescue Money::Currency::UnknownCurrency, Monetize::ParseError => e
       return nil unless MoneyRails.raise_error_on_money_parsing
+
       raise MoneyRails::Error, e.message
     end
   end

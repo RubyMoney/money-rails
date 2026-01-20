@@ -1,9 +1,7 @@
 require "spec_helper"
 
 describe "configuration" do
-
   describe "initializer" do
-
     it "sets default currency" do
       expect(Money.default_currency).to eq(Money::Currency.new(:eur))
     end
@@ -142,6 +140,5 @@ describe "configuration" do
         end
       end
     end
-
   end
 end
