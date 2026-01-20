@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Transaction < ApplicationRecord
   monetize :amount_cents, with_model_currency: :currency
 

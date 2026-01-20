@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 if defined? Mongoid
   class Priceable
     include Mongoid::Document

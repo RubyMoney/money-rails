@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "rubygems"
 require "bundler"
 require "bundler/gem_tasks"
@@ -11,7 +13,7 @@ rescue Bundler::BundlerError => e
 end
 
 APP_RAKEFILE = File.expand_path("spec/dummy/Rakefile", __dir__)
-GEMFILES_PATH = "gemfiles/*.gemfile".freeze
+GEMFILES_PATH = "gemfiles/*.gemfile"
 
 require "rake"
 
