@@ -1,4 +1,4 @@
-require 'spec_helper'
+require "spec_helper"
 
 if defined? ActiveRecord
   class Sub < Product; end
@@ -92,7 +92,7 @@ if defined? ActiveRecord
       end
 
       it "assigns the correct value from params" do
-        params_clp = { amount: '20000', tax: '1000', currency: 'CLP' }
+        params_clp = { amount: "20000", tax: "1000", currency: "CLP" }
         product = Transaction.create(params_clp)
         expect(product.valid?).to be_truthy
         expect(product.amount.currency.subunit_to_unit).to eq(1)
@@ -101,22 +101,22 @@ if defined? ActiveRecord
 
       # TODO: This is a slightly controversial example, btu it reflects the current behaviour
       it "re-assigns cents amount when subunit/unit ratio changes preserving amount in units" do
-        transaction = Transaction.create(amount: '20000', tax: '1000', currency: 'USD')
+        transaction = Transaction.create(amount: "20000", tax: "1000", currency: "USD")
 
-        expect(transaction.amount).to eq(Money.new(20000_00, 'USD'))
+        expect(transaction.amount).to eq(Money.new(20000_00, "USD"))
 
-        transaction.currency = 'CLP'
+        transaction.currency = "CLP"
 
-        expect(transaction.amount).to eq(Money.new(20000, 'CLP'))
+        expect(transaction.amount).to eq(Money.new(20000, "CLP"))
         expect(transaction.amount_cents).to eq(20000)
       end
 
       it "update to instance currency field gets applied to converted methods" do
-        transaction = Transaction.create(amount: '200', tax: '10', currency: 'USD')
-        expect(transaction.total).to eq(Money.new(21000, 'USD'))
+        transaction = Transaction.create(amount: "200", tax: "10", currency: "USD")
+        expect(transaction.total).to eq(Money.new(21000, "USD"))
 
-        transaction.currency = 'CLP'
-        expect(transaction.total).to eq(Money.new(210, 'CLP'))
+        transaction.currency = "CLP"
+        expect(transaction.total).to eq(Money.new(210, "CLP"))
       end
 
       it "raises an error if trying to create two attributes with the same name" do
@@ -137,7 +137,7 @@ if defined? ActiveRecord
 
       it "raises an error when unable to infer attribute name" do
         old_postfix = MoneyRails::Configuration.amount_column[:postfix]
-        MoneyRails::Configuration.amount_column[:postfix] = '_pennies'
+        MoneyRails::Configuration.amount_column[:postfix] = "_pennies"
 
         expect do
           class AnotherProduct < Product
@@ -172,7 +172,7 @@ if defined? ActiveRecord
       end
 
       it "skips numericality validation when disabled" do
-        product.accessor_price_cents = 'not_valid'
+        product.accessor_price_cents = "not_valid"
         expect(product.save).to be_truthy
       end
 
@@ -221,17 +221,17 @@ if defined? ActiveRecord
         expect(product.save).to be_truthy
 
         product.sale_price = "12.34"
-        product.sale_price_currency_code = 'EUR'
+        product.sale_price_currency_code = "EUR"
         expect(product.valid?).to be_truthy
       end
 
       it "separately skips price validations" do
-        product.skip_validation_price = 'hundred thousands'
+        product.skip_validation_price = "hundred thousands"
         expect(product.save).to be_truthy
       end
 
       it "separately skips subunit validations" do
-        product.skip_validation_price_cents = 'ten million'
+        product.skip_validation_price_cents = "ten million"
         expect(product.save).to be_truthy
       end
 
@@ -273,8 +273,8 @@ if defined? ActiveRecord
 
       it "allows an empty string as the thousands separator" do
         begin
-          I18n.locale = 'en-US'
-          product.price = '10.00'
+          I18n.locale = "en-US"
+          product.price = "10.00"
           expect(product).to be_valid
         ensure
           I18n.locale = I18n.default_locale
@@ -438,14 +438,14 @@ if defined? ActiveRecord
 
       it "respects numericality validation when using update on money attribute" do
         expect(product.update(price: "some text")).to be_falsey
-        expect(product.update(price: Money.new(320, 'USD'))).to be_truthy
+        expect(product.update(price: Money.new(320, "USD"))).to be_truthy
       end
 
       it "uses i18n currency format when validating" do
         old_locale = I18n.locale
 
         I18n.locale = "en-GB"
-        Money.default_currency = Money::Currency.find('EUR')
+        Money.default_currency = Money::Currency.find("EUR")
         expect("12.00".to_money).to eq(Money.new(1200, :eur))
         transaction = Transaction.new(amount: "12.00", tax: "13.00")
         expect(transaction.amount_cents).to eq(1200)
@@ -637,32 +637,32 @@ if defined? ActiveRecord
       context "for column with model currency:" do
         it "has default currency if not specified" do
           product = Product.create(sale_price_amount: 1234)
-          product.sale_price.currency.to_s == 'USD'
+          product.sale_price.currency.to_s == "USD"
         end
 
         it "is overridden by instance currency column" do
           product = Product.create(sale_price_amount: 1234,
-                                   sale_price_currency_code: 'CAD')
-          expect(product.sale_price.currency.to_s).to eq('CAD')
+                                   sale_price_currency_code: "CAD")
+          expect(product.sale_price.currency.to_s).to eq("CAD")
         end
 
-        it 'can change currency of custom column' do
+        it "can change currency of custom column" do
           product = Product.create!(
-            price: Money.new(10,'USD'),
-            bonus: Money.new(10,'GBP'),
+            price: Money.new(10,"USD"),
+            bonus: Money.new(10,"GBP"),
             discount: 10,
             sale_price_amount: 1234,
-            sale_price_currency_code: 'USD',
+            sale_price_currency_code: "USD",
           )
 
-          expect(product.sale_price.currency.to_s).to eq('USD')
+          expect(product.sale_price.currency.to_s).to eq("USD")
 
-          product.sale_price = Money.new 456, 'CAD'
+          product.sale_price = Money.new 456, "CAD"
           product.save
           product.reload
 
-          expect(product.sale_price.currency.to_s).to eq('CAD')
-          expect(product.discount_value.currency.to_s).to eq('USD')
+          expect(product.sale_price.currency.to_s).to eq("CAD")
+          expect(product.discount_value.currency.to_s).to eq("USD")
         end
       end
 
@@ -743,16 +743,16 @@ if defined? ActiveRecord
         end
 
         it "allows currency column postfix to be blank" do
-          allow(MoneyRails::Configuration).to receive(:currency_column) { { postfix: nil, column_name: 'currency' } }
+          allow(MoneyRails::Configuration).to receive(:currency_column) { { postfix: nil, column_name: "currency" } }
           expect(dummy_product_with_nil_currency.price.currency).to eq(Money::Currency.find(:gbp))
         end
 
         it "updates inferred currency column based on currency column postfix" do
-          product.reduced_price = Money.new(999_00, 'CAD')
+          product.reduced_price = Money.new(999_00, "CAD")
           product.save
 
           expect(product.reduced_price_cents).to eq(999_00)
-          expect(product.reduced_price_currency).to eq('CAD')
+          expect(product.reduced_price_currency).to eq("CAD")
         end
 
         context "and field with allow_nil: true" do
@@ -845,10 +845,10 @@ if defined? ActiveRecord
 
       context "memoize" do
         it "memoizes monetized attribute's value" do
-          product.instance_variable_set '@reduced_price', nil
+          product.instance_variable_set "@reduced_price", nil
           reduced_price = product.read_monetized(:reduced_price, :reduced_price_cents)
 
-          expect(product.instance_variable_get('@reduced_price')).to eq(reduced_price)
+          expect(product.instance_variable_get("@reduced_price")).to eq(reduced_price)
         end
 
         it "resets memoized attribute's value if amount has changed" do
@@ -860,7 +860,7 @@ if defined? ActiveRecord
 
         it "resets memoized attribute's value if currency has changed" do
           reduced_price = product.read_monetized(:reduced_price, :reduced_price_cents)
-          product.reduced_price_currency = 'CAD'
+          product.reduced_price_currency = "CAD"
 
           expect(product.read_monetized(:reduced_price, :reduced_price_cents)).not_to eq(reduced_price)
         end
@@ -874,17 +874,17 @@ if defined? ActiveRecord
         end
 
         it "has no effect if validation passes" do
-          product.price = '14'
+          product.price = "14"
 
           expect(product.save).to be_truthy
-          expect(product.read_monetized(:price, :price_cents).to_s).to eq('14.00')
+          expect(product.read_monetized(:price, :price_cents).to_s).to eq("14.00")
         end
 
         it "preserves user input if validation fails" do
-          product.price = '14,0'
+          product.price = "14,0"
 
           expect(product.save).to be_falsy
-          expect(product.read_monetized(:price, :price_cents).to_s).to eq('14,0')
+          expect(product.read_monetized(:price, :price_cents).to_s).to eq("14,0")
         end
       end
 
@@ -914,7 +914,7 @@ if defined? ActiveRecord
     end
 
     describe "#write_monetized" do
-      let(:value) { Money.new(1_000, 'LVL') }
+      let(:value) { Money.new(1_000, "LVL") }
 
       it "sets monetized attribute's value to Money object" do
         product.write_monetized :price, :price_cents, value, false, nil, {}
@@ -956,13 +956,13 @@ if defined? ActiveRecord
       it "does not memoize monetized attribute's value if currency is read-only" do
         product.write_monetized :price, :price_cents, value, false, nil, {}
 
-        price = product.instance_variable_get('@price')
+        price = product.instance_variable_get("@price")
 
         expect(price).to be_an_instance_of(Money)
         expect(price.amount).not_to eq(value.amount)
       end
 
-      context 'without a default currency' do
+      context "without a default currency" do
         let(:product) { OtherProduct.new }
 
         around do |example|
@@ -986,17 +986,17 @@ if defined? ActiveRecord
           product.write_monetized :sale_price, :sale_price_amount, value, false, :sale_price_currency_code, {}
 
           expect(product.sale_price).to eq(value)
-          expect(product.sale_price_currency_code).to eq('LVL')
+          expect(product.sale_price_currency_code).to eq("LVL")
         end
 
         it "memoizes monetized attribute's value with currency" do
           product.write_monetized :sale_price, :sale_price_amount, value, false, :sale_price_currency_code, {}
 
-          expect(product.instance_variable_get('@sale_price')).to eq(value)
+          expect(product.instance_variable_get("@sale_price")).to eq(value)
         end
 
         it "ignores empty instance_currency_name" do
-          product.write_monetized :sale_price, :sale_price_amount, value, false, '', {}
+          product.write_monetized :sale_price, :sale_price_amount, value, false, "", {}
 
           expect(product.sale_price.amount).to eq(value.amount)
           expect(product.sale_price.currency).to eq(Product.currency)
@@ -1025,12 +1025,12 @@ if defined? ActiveRecord
 
           it "raises a MoneyRails::Error when given an invalid value" do
             expect {
-              product.write_monetized :price, :price_cents, '10-50', false, nil, {}
+              product.write_monetized :price, :price_cents, "10-50", false, nil, {}
             }.to raise_error(MoneyRails::Error)
           end
 
           it "raises a MoneyRails::Error error when trying to set invalid currency" do
-            allow(product).to receive(:currency_for_price).and_return('INVALID_CURRENCY')
+            allow(product).to receive(:currency_for_price).and_return("INVALID_CURRENCY")
             expect {
               product.write_monetized :price, :price_cents, 10, false, nil, {}
             }.to raise_error(MoneyRails::Error)
@@ -1039,17 +1039,17 @@ if defined? ActiveRecord
 
         context "raise_error_on_money_parsing disabled" do
           it "ignores when given invalid value" do
-            product.write_monetized :price, :price_cents, '10-50', false, nil, {}
+            product.write_monetized :price, :price_cents, "10-50", false, nil, {}
 
             expect(product.price).to eq(old_price_value)
           end
 
           it "raises a MoneyRails::Error error when trying to set invalid currency" do
-            allow(product).to receive(:currency_for_price).and_return('INVALID_CURRENCY')
+            allow(product).to receive(:currency_for_price).and_return("INVALID_CURRENCY")
             product.write_monetized :price, :price_cents, 10, false, nil, {}
 
             # Can not use public accessor here because currency_for_price is stubbed
-            expect(product.instance_variable_get('@price')).to eq(old_price_value)
+            expect(product.instance_variable_get("@price")).to eq(old_price_value)
           end
         end
       end
@@ -1057,27 +1057,27 @@ if defined? ActiveRecord
 
     describe "#currency_for" do
       it "detects currency based on instance currency name" do
-        product = Product.new(sale_price_currency_code: 'CAD')
+        product = Product.new(sale_price_currency_code: "CAD")
         currency = product.send(:currency_for, :sale_price, :sale_price_currency_code, nil)
 
         expect(currency).to be_an_instance_of(Money::Currency)
-        expect(currency.iso_code).to eq('CAD')
+        expect(currency.iso_code).to eq("CAD")
       end
 
       it "detects currency based on currency passed as a block" do
         product = Product.new
-        currency = product.send(:currency_for, :lambda_price, nil, ->(_) { 'CAD' })
+        currency = product.send(:currency_for, :lambda_price, nil, ->(_) { "CAD" })
 
         expect(currency).to be_an_instance_of(Money::Currency)
-        expect(currency.iso_code).to eq('CAD')
+        expect(currency.iso_code).to eq("CAD")
       end
 
       it "detects currency based on currency passed explicitly" do
         product = Product.new
-        currency = product.send(:currency_for, :bonus, nil, 'CAD')
+        currency = product.send(:currency_for, :bonus, nil, "CAD")
 
         expect(currency).to be_an_instance_of(Money::Currency)
-        expect(currency.iso_code).to eq('CAD')
+        expect(currency.iso_code).to eq("CAD")
       end
 
       it "falls back to a registered currency" do

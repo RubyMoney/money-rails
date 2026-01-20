@@ -1,4 +1,4 @@
-require 'spec_helper'
+require "spec_helper"
 
 if defined? ActiveRecord
   class Item < ActiveRecord::Base; end
@@ -11,7 +11,7 @@ if defined? ActiveRecord
       @connection.send :extend, described_class
     end
 
-    describe 'add_money' do
+    describe "add_money" do
       before do
         @connection.add_money :items, :price
         @connection.add_money :items, :price_without_currency, currency: { present: false }
@@ -32,9 +32,9 @@ if defined? ActiveRecord
         Item.reset_column_information
       end
 
-      context 'default options' do
-        describe 'amount' do
-          subject { Item.columns_hash['price_cents'] }
+      context "default options" do
+        describe "amount" do
+          subject { Item.columns_hash["price_cents"] }
 
           it { expect(subject.default.to_i).to eq(0) }
           it { expect(Item.new.public_send(subject.name)).to eq(0) }
@@ -42,25 +42,25 @@ if defined? ActiveRecord
           it { expect(subject.type).to eq(:integer) }
         end
 
-        describe 'currency' do
-          subject { Item.columns_hash['price_currency'] }
+        describe "currency" do
+          subject { Item.columns_hash["price_currency"] }
 
           # set in spec/dummy/config/initializers/money.rb
-          it { expect(subject.default).to eq('EUR') }
+          it { expect(subject.default).to eq("EUR") }
 
           it { expect(subject.null).to be(false) }
           it { expect(subject.type).to eq(:string) }
         end
       end
 
-      context 'without currency column' do
-        it { expect(Item.columns_hash['price_without_currency_cents']).not_to be nil }
-        it { expect(Item.columns_hash['price_without_currency_currency']).to be nil }
+      context "without currency column" do
+        it { expect(Item.columns_hash["price_without_currency_cents"]).not_to be nil }
+        it { expect(Item.columns_hash["price_without_currency_currency"]).to be nil }
       end
 
-      context 'full options' do
-        describe 'amount' do
-          subject { Item.columns_hash['prefix_price_with_full_options_postfix'] }
+      context "full options" do
+        describe "amount" do
+          subject { Item.columns_hash["prefix_price_with_full_options_postfix"] }
 
           it { expect(subject.default.to_i).to eq(1) }
           it { expect(Item.new.public_send(subject.name)).to eq(1) }
@@ -70,13 +70,13 @@ if defined? ActiveRecord
           it { expect(subject.scale).to eq(2) }
         end
 
-        describe 'currency' do
-          it { expect(Item.columns_hash['currency']).not_to be nil }
+        describe "currency" do
+          it { expect(Item.columns_hash["currency"]).not_to be nil }
         end
       end
     end
 
-    describe 'remove_money' do
+    describe "remove_money" do
       before do
         @connection.add_money :items, :price
         @connection.add_money :items, :price_without_currency, currency: { present: false }
@@ -89,13 +89,13 @@ if defined? ActiveRecord
         Item.reset_column_information
       end
 
-      it { expect(Item.columns_hash['price_cents']).to be nil }
-      it { expect(Item.columns_hash['price_currency']).to be nil }
+      it { expect(Item.columns_hash["price_cents"]).to be nil }
+      it { expect(Item.columns_hash["price_currency"]).to be nil }
 
-      it { expect(Item.columns_hash['price_without_currency_cents']).to be nil }
+      it { expect(Item.columns_hash["price_without_currency_cents"]).to be nil }
 
-      it { expect(Item.columns_hash['prefix_price_with_full_options_postfix']).to be nil }
-      it { expect(Item.columns_hash['currency']).to be nil }
+      it { expect(Item.columns_hash["prefix_price_with_full_options_postfix"]).to be nil }
+      it { expect(Item.columns_hash["currency"]).to be nil }
     end
   end
 end

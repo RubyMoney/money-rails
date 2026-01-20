@@ -1,6 +1,6 @@
-require 'rubygems'
-require 'bundler'
-require 'bundler/gem_tasks'
+require "rubygems"
+require "bundler"
+require "bundler/gem_tasks"
 
 begin
   Bundler.setup(:default, :development)
@@ -11,9 +11,9 @@ rescue Bundler::BundlerError => e
 end
 
 APP_RAKEFILE = File.expand_path("spec/dummy/Rakefile", __dir__)
-GEMFILES_PATH = 'gemfiles/*.gemfile'.freeze
+GEMFILES_PATH = "gemfiles/*.gemfile".freeze
 
-require 'rake'
+require "rake"
 
 task default: "spec:all"
 
@@ -40,15 +40,15 @@ namespace :spec do
   frameworks_versions = {}
 
   Dir[GEMFILES_PATH].each do |gemfile|
-    file_name = File.basename(gemfile, '.gemfile')
+    file_name = File.basename(gemfile, ".gemfile")
     _, framework, version = file_name.match(/\A([a-z_]+)([\d.]+)\z/).to_a
     major, _minor = version.split(".").map(&:to_i)
 
     # Rails 8+ requires Ruby 3.2+
-    next if framework == 'active_record' && major >= 8 && RUBY_VERSION < '3.2'
+    next if framework == "active_record" && major >= 8 && RUBY_VERSION < "3.2"
 
     # activerecord-jdbc-adapter doesn't support Rails 8+ yet
-    next if framework == 'active_record' && major >= 8 && RUBY_ENGINE == 'jruby'
+    next if framework == "active_record" && major >= 8 && RUBY_ENGINE == "jruby"
 
     frameworks_versions[framework] ||= []
     frameworks_versions[framework] << file_name
@@ -62,7 +62,7 @@ namespace :spec do
     task framework => versions
   end
 
-  desc 'Run tests against all ORMs'
+  desc "Run tests against all ORMs"
   task all: frameworks_versions.keys
 end
 

@@ -1,7 +1,7 @@
-require 'spec_helper'
+require "spec_helper"
 
 if defined? ActiveRecord
-  describe 'TestHelpers' do
+  describe "TestHelpers" do
 
     require "money-rails/test_helpers"
     include MoneyRails::TestHelpers

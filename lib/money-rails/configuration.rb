@@ -1,6 +1,6 @@
-require 'active_support/core_ext/module/delegation'
-require 'active_support/core_ext/module/attribute_accessors'
-require 'active_support/core_ext/string/inflections'
+require "active_support/core_ext/module/delegation"
+require "active_support/core_ext/module/attribute_accessors"
+require "active_support/core_ext/string/inflections"
 
 module MoneyRails
 
@@ -69,10 +69,10 @@ module MoneyRails
 
     # Default ActiveRecord migration configuration values for columns
     mattr_accessor :amount_column
-    @@amount_column = { postfix: '_cents', type: :integer, null: false, default: 0, present: true }
+    @@amount_column = { postfix: "_cents", type: :integer, null: false, default: 0, present: true }
 
     mattr_accessor :currency_column
-    @@currency_column = { postfix: '_currency', type: :string, null: false, default: 'USD', present: true }
+    @@currency_column = { postfix: "_currency", type: :string, null: false, default: "USD", present: true }
 
     # Use nil values to ignore defaults
     mattr_accessor :no_cents_if_whole

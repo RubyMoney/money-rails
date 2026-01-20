@@ -5,8 +5,8 @@ module MoneyRails
     def self.init
       # For Active Record
       ActiveSupport.on_load(:active_record) do
-        require 'money-rails/active_model/validator'
-        require 'money-rails/active_record/monetizable'
+        require "money-rails/active_model/validator"
+        require "money-rails/active_record/monetizable"
         ::ActiveRecord::Base.send :include, MoneyRails::ActiveRecord::Monetizable
 
         current_adapter = ::ActiveRecord::Base.connection_db_config.configuration_hash[:adapter]
@@ -25,9 +25,9 @@ module MoneyRails
       end
 
       # For Mongoid
-      begin; require 'mongoid'; require 'mongoid/version'; rescue LoadError; end
+      begin; require "mongoid"; require "mongoid/version"; rescue LoadError; end
       if defined? ::Mongoid
-        require 'money-rails/mongoid/money'
+        require "money-rails/mongoid/money"
       end
 
       # For ActionView
@@ -38,7 +38,7 @@ module MoneyRails
       # For ActiveSupport
       ActiveSupport.on_load(:active_job) do |v|
         if defined?(::ActiveJob::Serializers)
-          require 'money-rails/active_job/money_serializer'
+          require "money-rails/active_job/money_serializer"
           Rails.application.config.active_job.tap do |config|
             config.custom_serializers ||= []
             config.custom_serializers << MoneyRails::ActiveJob::MoneySerializer

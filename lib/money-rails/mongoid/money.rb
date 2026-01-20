@@ -45,7 +45,7 @@ class Money
       hash = hash.symbolize_keys
 
       # Guard for a blank form
-      return nil if hash[:cents] == '' && hash[:currency_iso] == ''
+      return nil if hash[:cents] == "" && hash[:currency_iso] == ""
 
       ::Money.new(hash[:cents], hash[:currency_iso]).mongoize
     end

@@ -49,7 +49,7 @@ module MoneyRails
     end
 
     def money_only_cents(value)
-      return '00' unless value.respond_to?(:to_money)
+      return "00" unless value.respond_to?(:to_money)
 
       value = value.to_money
 

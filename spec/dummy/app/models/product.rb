@@ -46,7 +46,7 @@ class Product < ApplicationRecord
   validates :validates_method_amount, money: {
                                         greater_than: 0,
                                         less_than_or_equal_to: ->(product) { product.optional_price.to_f },
-                                        message: 'must be greater than zero and less than $100',
+                                        message: "must be greater than zero and less than $100",
                                       },
                                       allow_nil: true
 

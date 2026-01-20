@@ -4,11 +4,11 @@ require "monetize/core_extensions"
 require "money-rails/configuration"
 require "money-rails/money"
 require "money-rails/version"
-require 'money-rails/hooks'
-require 'money-rails/errors'
+require "money-rails/hooks"
+require "money-rails/errors"
 
 module MoneyRails
-  autoload :ActionViewExtension, 'money-rails/helpers/action_view_extension'
+  autoload :ActionViewExtension, "money-rails/helpers/action_view_extension"
 
   extend Configuration
 end
