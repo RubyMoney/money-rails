@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "rubygems"
 
 # Default to rails7.0.gemfile if BUNDLE_GEMFILE is not set

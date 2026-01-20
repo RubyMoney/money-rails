@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class DummyProduct < ApplicationRecord
   # Use  as model level currency
   register_currency :gbp

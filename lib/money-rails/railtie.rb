@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module MoneyRails
   class Railtie < ::Rails::Railtie
     initializer "moneyrails.initialize", after: "active_record.initialize_database" do

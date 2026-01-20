@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Money
   # Converts an object of this instance into a database friendly value.
   def mongoize
