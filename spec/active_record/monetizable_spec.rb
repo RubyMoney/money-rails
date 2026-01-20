@@ -272,13 +272,11 @@ if defined? ActiveRecord
       end
 
       it "allows an empty string as the thousands separator" do
-        begin
-          I18n.locale = "en-US"
-          product.price = "10.00"
-          expect(product).to be_valid
-        ensure
-          I18n.locale = I18n.default_locale
-        end
+        I18n.locale = "en-US"
+        product.price = "10.00"
+        expect(product).to be_valid
+      ensure
+        I18n.locale = I18n.default_locale
       end
 
       it "passes validation if money value is a Float and the currency decimal mark is not period" do
@@ -796,12 +794,10 @@ if defined? ActiveRecord
 
           context "when using :currency locale backend" do
             around(:each) do |example|
-              begin
-                Money.locale_backend = :currency
-                example.run
-              ensure
-                Money.locale_backend = :i18n
-              end
+              Money.locale_backend = :currency
+              example.run
+            ensure
+              Money.locale_backend = :i18n
             end
 
             it "does not validate with the locale's decimal mark" do
