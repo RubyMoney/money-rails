@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module MoneyRails
   module Generators
     class InitializerGenerator < ::Rails::Generators::Base

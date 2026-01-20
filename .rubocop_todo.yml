@@ -341,12 +341,6 @@ Style/ConditionalAssignment:
     - 'lib/money-rails/active_record/monetizable.rb'
     - 'lib/money-rails/test_helpers.rb'
 
-# This cop supports unsafe autocorrection (--autocorrect-all).
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: always, always_true, never
-Style/FrozenStringLiteralComment:
-  Enabled: false
-
 # This cop supports safe autocorrection (--autocorrect).
 # Configuration parameters: AllowIfModifier.
 Style/IfInsideElse:

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "rails_admin/config/fields"
 require "rails_admin/config/fields/types/integer"
 require "money-rails/helpers/action_view_extension"

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module MoneyRails
   class Hooks
     PG_ADAPTERS = %w(activerecord-jdbcpostgresql-adapter postgresql postgis)

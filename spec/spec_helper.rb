@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 ENV["RAILS_ENV"] = "test"
 # Require dummy Rails app
 require File.expand_path("../spec/dummy/config/environment", __dir__)
