@@ -57,7 +57,7 @@ if defined?(Mongoid)
 
       context "when MoneyRails.raise_error_on_money_parsing is false" do
         it "does not correctly mongoize a String with a hyphen in its middle" do
-          expect(priceable_from_string_with_hyphen.price).to eq(nil)
+          expect(priceable_from_string_with_hyphen.price).to be_nil
         end
 
         it "converts unknown currency to default currency" do
@@ -71,7 +71,7 @@ if defined?(Mongoid)
       end
 
       it "mongoizes a hash of blank strings for cents and currency to nil" do
-        expect(priceable_from_blank_strings_hash.price).to eq(nil)
+        expect(priceable_from_blank_strings_hash.price).to be_nil
       end
 
       it "correctly mongoizes a HashWithIndifferentAccess of cents and currency" do
