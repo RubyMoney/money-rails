@@ -3,7 +3,7 @@
 module MoneyRails
   module Generators
     class InitializerGenerator < ::Rails::Generators::Base
-      source_root File.expand_path("../../templates", __FILE__)
+      source_root File.expand_path("../templates", __dir__)
 
       desc "Creates a sample MoneyRails initializer."
 

@@ -89,14 +89,6 @@ Metrics/ParameterLists:
 Metrics/PerceivedComplexity:
   Max: 25
 
-# Configuration parameters: ExpectMatchingDefinition, CheckDefinitionPathHierarchy, CheckDefinitionPathHierarchyRoots, Regex, IgnoreExecutableScripts, AllowedAcronyms.
-# CheckDefinitionPathHierarchyRoots: lib, spec, test, src
-# AllowedAcronyms: CLI, DSL, ACL, API, ASCII, CPU, CSS, DNS, EOF, GUID, HTML, HTTP, HTTPS, ID, IP, JSON, LHS, QPS, RAM, RHS, RPC, SLA, SMTP, SQL, SSH, TCP, TLS, TTL, UDP, UI, UID, UUID, URI, URL, UTF8, VM, XML, XMPP, XSRF, XSS
-Naming/FileName:
-  Exclude:
-    - 'Rakefile.rb'
-    - 'lib/money-rails.rb'
-
 # This cop supports safe autocorrection (--autocorrect).
 Performance/RegexpMatch:
   Exclude:
@@ -348,16 +340,6 @@ Style/ConditionalAssignment:
   Exclude:
     - 'lib/money-rails/active_record/monetizable.rb'
     - 'lib/money-rails/test_helpers.rb'
-
-# This cop supports safe autocorrection (--autocorrect).
-Style/ExpandPathArguments:
-  Exclude:
-    - 'lib/generators/money_rails/initializer_generator.rb'
-    - 'spec/dummy/config.ru'
-    - 'spec/dummy/config/application.rb'
-    - 'spec/dummy/config/environment.rb'
-    - 'spec/dummy/script/rails'
-    - 'spec/spec_helper.rb'
 
 # This cop supports safe autocorrection (--autocorrect).
 # Configuration parameters: AllowIfModifier.
