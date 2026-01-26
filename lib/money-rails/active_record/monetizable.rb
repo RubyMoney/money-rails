@@ -51,7 +51,7 @@ module MoneyRails
                 raise ArgumentError, "monetizable attribute name cannot be the same as options[:as] parameter"
               end
 
-            elsif subunit_name =~ /#{MoneyRails::Configuration.amount_column[:postfix]}$/
+            elsif /#{MoneyRails::Configuration.amount_column[:postfix]}$/.match?(subunit_name)
               name = subunit_name.sub(/#{MoneyRails::Configuration.amount_column[:postfix]}$/, "")
             else
               raise ArgumentError, "Unable to infer the name of the monetizable attribute for '#{subunit_name}'. " \
