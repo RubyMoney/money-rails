@@ -284,7 +284,7 @@ module MoneyRails
           write_attribute(subunit_name, money.try(:cents))
         end
 
-        if money_currency = money.try(:currency)
+        if (money_currency = money.try(:currency))
           # Update currency iso value if there is an instance currency attribute
           if instance_currency_name.present? && respond_to?("#{instance_currency_name}=")
             public_send("#{instance_currency_name}=", money_currency.iso_code)
@@ -302,7 +302,7 @@ module MoneyRails
         instance_variable_set "@#{name}", money
       end
 
-      def currency_for(name, instance_currency_name, field_currency_name)
+      def currency_for(_name, instance_currency_name, field_currency_name)
         if instance_currency_name.present? &&
            respond_to?(instance_currency_name) &&
            Money::Currency.find(public_send(instance_currency_name))
