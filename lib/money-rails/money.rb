@@ -5,7 +5,7 @@ require "active_support/core_ext/hash/reverse_merge"
 
 class Money
   class << self
-    alias_method :orig_default_formatting_rules, :default_formatting_rules
+    alias orig_default_formatting_rules default_formatting_rules
 
     def default_formatting_rules
       rules = orig_default_formatting_rules || {}
