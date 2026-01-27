@@ -61,10 +61,12 @@ module MoneyRails
 
       private
 
+      # rubocop:disable Lint/UselessConstantScoping
       DEFAULTS = {
         decimal_mark: ".",
         thousands_separator: ",",
       }.freeze
+      # rubocop:enable Lint/UselessConstantScoping
 
       def generate_details(raw_value, currency)
         thousands_separator = lookup(:thousands_separator, currency)

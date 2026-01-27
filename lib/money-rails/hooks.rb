@@ -27,7 +27,13 @@ module MoneyRails
       end
 
       # For Mongoid
-      begin; require "mongoid"; require "mongoid/version"; rescue LoadError; end
+      begin
+        require "mongoid"
+        require "mongoid/version"
+      rescue LoadError
+        # Do nothing
+      end
+
       if defined? ::Mongoid
         require "money-rails/mongoid/money"
       end

@@ -3,8 +3,6 @@
 require "spec_helper"
 
 if defined? ActiveRecord
-  class Sub < Product; end
-
   describe MoneyRails::ActiveRecord::Monetizable do
     let(:product) do
       Product.create(price_cents: 3000, discount: 150,
@@ -22,7 +20,7 @@ if defined? ActiveRecord
 
       context ".monetized_attributes" do
         it "adds methods to the inheritance chain" do
-          class MyProduct < ActiveRecord::Base
+          my_class = Class.new(ActiveRecord::Base) do
             self.table_name = :products
             monetize :price_cents
             attr_reader :side_effect
@@ -33,21 +31,28 @@ if defined? ActiveRecord
             end
           end
 
-          p = MyProduct.new(price: 10)
+          p = my_class.new(price: 10)
           expect(p.price).to eq Money.new(10_00)
           expect(p.side_effect).to be_truthy
         end
 
-        class InheritedMonetizeProduct < Product
-          monetize :special_price_cents
-        end
-
         it "should be inherited by subclasses" do
-          assert_monetized_attributes(Sub.monetized_attributes, Product.monetized_attributes)
+          sub_class = Class.new(Product)
+          assert_monetized_attributes(
+            sub_class.monetized_attributes,
+            Product.monetized_attributes,
+          )
         end
 
         it "should be inherited by subclasses with new monetized attribute" do
-          assert_monetized_attributes(InheritedMonetizeProduct.monetized_attributes, Product.monetized_attributes.merge(special_price: "special_price_cents"))
+          inherited_class = Class.new(Product) do
+            monetize :special_price_cents
+          end
+
+          assert_monetized_attributes(
+            inherited_class.monetized_attributes,
+            Product.monetized_attributes.merge(special_price: "special_price_cents"),
+          )
         end
 
         def assert_monetized_attributes(monetized_attributes, expected_attributes)
@@ -123,39 +128,52 @@ if defined? ActiveRecord
 
       it "raises an error if trying to create two attributes with the same name" do
         expect do
-          class Product
+          Product.class_eval do
             monetize :discount, as: :price
           end
-        end.to raise_error ArgumentError
+        end.to raise_error(
+          ArgumentError,
+          "Product already has a monetized attribute called 'price'",
+        )
       end
 
       it "raises an error if Money object has the same attribute name as the monetizable attribute" do
         expect do
-          class AnotherProduct < Product
+          Class.new(Product) do
             monetize :price_cents, as: :price_cents
           end
-        end.to raise_error ArgumentError
+        end.to raise_error(
+          ArgumentError,
+          "monetizable attribute name cannot be the same as options[:as] parameter",
+        )
       end
 
-      it "raises an error when unable to infer attribute name" do
-        old_postfix = MoneyRails::Configuration.amount_column[:postfix]
-        MoneyRails::Configuration.amount_column[:postfix] = "_pennies"
+      context "with custom postfix" do
+        around do |example|
+          old_postfix = MoneyRails::Configuration.amount_column[:postfix]
+          MoneyRails::Configuration.amount_column[:postfix] = "_pennies"
+          example.call
+          MoneyRails::Configuration.amount_column[:postfix] = old_postfix
+        end
 
-        expect do
-          class AnotherProduct < Product
-            monetize :price_cents
-          end
-        end.to raise_error ArgumentError
-
-        MoneyRails::Configuration.amount_column[:postfix] = old_postfix
+        it "raises an error when unable to infer attribute name" do
+          expect do
+            Class.new(Product) do
+              monetize :price_cents
+            end
+          end.to raise_error(
+            ArgumentError,
+            /\AUnable to infer the name of the monetizable attribute for 'price_cents'./,
+          )
+        end
       end
 
       it "allows subclass to redefine attribute with the same name" do
-        class SubProduct < Product
+        sub_product_class = Class.new(Product) do
           monetize :discount, as: :discount_price, with_currency: :gbp
         end
 
-        sub_product = SubProduct.new(discount: 100)
+        sub_product = sub_product_class.new(discount: 100)
 
         expect(sub_product.discount_price).to be_an_instance_of(Money)
         expect(sub_product.discount_price.currency.id).to equal :gbp
@@ -196,7 +214,10 @@ if defined? ActiveRecord
         it "raises an exception if it can't change currency" do
           expect {
             Product.new.price = Money.new(10, "RUB")
-          }.to raise_error(MoneyRails::ActiveRecord::Monetizable::ReadOnlyCurrencyException, "Can't change readonly currency 'USD' to 'RUB' for field 'price'")
+          }.to raise_error(
+            MoneyRails::ActiveRecord::Monetizable::ReadOnlyCurrencyException,
+            "Can't change readonly currency 'USD' to 'RUB' for field 'price'",
+          )
         end
       end
 
@@ -977,7 +998,7 @@ if defined? ActiveRecord
         it "errors a NoCurrency Error" do
           expect do
             product.write_monetized :price, :price_cents, 10.5, false, nil, {}
-          end.to raise_error(Money::Currency::NoCurrency)
+          end.to raise_error(Money::Currency::NoCurrency, "must provide a currency")
         end
       end
 
