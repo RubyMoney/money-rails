@@ -6,17 +6,6 @@
 # Note that changes in the inspected code, or installation of new
 # versions of RuboCop, may require this file to be generated again.
 
-# This cop supports unsafe autocorrection (--autocorrect-all).
-# Configuration parameters: AllowSafeAssignment.
-Lint/AssignmentInCondition:
-  Exclude:
-    - 'lib/money-rails/active_record/monetizable.rb'
-
-# This cop supports unsafe autocorrection (--autocorrect-all).
-Lint/BooleanSymbol:
-  Exclude:
-    - 'spec/configuration_spec.rb'
-
 # Configuration parameters: AllowedMethods.
 # AllowedMethods: enums
 Lint/ConstantDefinitionInBlock:
@@ -28,33 +17,10 @@ Lint/EmptyBlock:
   Exclude:
     - 'spec/dummy/config/routes.rb'
 
-# This cop supports safe autocorrection (--autocorrect).
-Lint/RedundantStringCoercion:
-  Exclude:
-    - 'spec/helpers/form_helper_spec.rb'
-
-# This cop supports safe autocorrection (--autocorrect).
-Lint/SendWithMixinArgument:
-  Exclude:
-    - 'lib/money-rails/hooks.rb'
-
 # Configuration parameters: AllowComments, AllowNil.
 Lint/SuppressedException:
   Exclude:
     - 'lib/money-rails/hooks.rb'
-
-# This cop supports safe autocorrection (--autocorrect).
-# Configuration parameters: IgnoreEmptyBlocks, AllowUnusedKeywordArguments.
-Lint/UnusedBlockArgument:
-  Exclude:
-    - 'lib/money-rails/hooks.rb'
-
-# This cop supports safe autocorrection (--autocorrect).
-# Configuration parameters: AllowUnusedKeywordArguments, IgnoreEmptyMethods, IgnoreNotImplementedMethods, NotImplementedExceptions.
-# NotImplementedExceptions: NotImplementedError
-Lint/UnusedMethodArgument:
-  Exclude:
-    - 'lib/money-rails/active_record/monetizable.rb'
 
 Lint/UselessConstantScoping:
   Exclude:
