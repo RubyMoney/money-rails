@@ -55,16 +55,6 @@ Metrics/ParameterLists:
 Metrics/PerceivedComplexity:
   Max: 25
 
-# This cop supports safe autocorrection (--autocorrect).
-Performance/RegexpMatch:
-  Exclude:
-    - 'lib/money-rails/active_record/monetizable.rb'
-
-# This cop supports safe autocorrection (--autocorrect).
-Performance/StringIdentifierArgument:
-  Exclude:
-    - 'spec/active_record/monetizable_spec.rb'
-
 RSpec/BeforeAfterAll:
   Exclude:
     - '**/spec/spec_helper.rb'

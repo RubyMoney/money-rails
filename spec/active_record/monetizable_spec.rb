@@ -843,10 +843,10 @@ if defined? ActiveRecord
 
       context "memoize" do
         it "memoizes monetized attribute's value" do
-          product.instance_variable_set "@reduced_price", nil
+          product.instance_variable_set :@reduced_price, nil
           reduced_price = product.read_monetized(:reduced_price, :reduced_price_cents)
 
-          expect(product.instance_variable_get("@reduced_price")).to eq(reduced_price)
+          expect(product.instance_variable_get(:@reduced_price)).to eq(reduced_price)
         end
 
         it "resets memoized attribute's value if amount has changed" do
@@ -956,7 +956,7 @@ if defined? ActiveRecord
       it "does not memoize monetized attribute's value if currency is read-only" do
         product.write_monetized :price, :price_cents, value, false, nil, {}
 
-        price = product.instance_variable_get("@price")
+        price = product.instance_variable_get(:@price)
 
         expect(price).to be_an_instance_of(Money)
         expect(price.amount).not_to eq(value.amount)
@@ -992,7 +992,7 @@ if defined? ActiveRecord
         it "memoizes monetized attribute's value with currency" do
           product.write_monetized :sale_price, :sale_price_amount, value, false, :sale_price_currency_code, {}
 
-          expect(product.instance_variable_get("@sale_price")).to eq(value)
+          expect(product.instance_variable_get(:@sale_price)).to eq(value)
         end
 
         it "ignores empty instance_currency_name" do
@@ -1049,7 +1049,7 @@ if defined? ActiveRecord
             product.write_monetized :price, :price_cents, 10, false, nil, {}
 
             # Can not use public accessor here because currency_for_price is stubbed
-            expect(product.instance_variable_get("@price")).to eq(old_price_value)
+            expect(product.instance_variable_get(:@price)).to eq(old_price_value)
           end
         end
       end
