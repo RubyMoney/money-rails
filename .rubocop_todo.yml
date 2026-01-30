@@ -165,11 +165,6 @@ RSpec/ReceiveMessages:
   Exclude:
     - 'spec/money_spec.rb'
 
-RSpec/RepeatedExample:
-  Exclude:
-    - 'spec/active_record/monetizable_spec.rb'
-    - 'spec/helpers/action_view_extension_spec.rb'
-
 # This cop supports safe autocorrection (--autocorrect).
 # Configuration parameters: EnforcedStyle.
 # SupportedStyles: and_return, block
