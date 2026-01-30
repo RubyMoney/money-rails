@@ -212,9 +212,9 @@ if defined? ActiveRecord
         end
 
         it "raises an exception if it can't change currency" do
-          expect {
+          expect do
             Product.new.price = Money.new(10, "RUB")
-          }.to raise_error(
+          end.to raise_error(
             MoneyRails::ActiveRecord::Monetizable::ReadOnlyCurrencyException,
             "Can't change readonly currency 'USD' to 'RUB' for field 'price'",
           )
@@ -1045,16 +1045,16 @@ if defined? ActiveRecord
           after { MoneyRails.raise_error_on_money_parsing = false }
 
           it "raises a MoneyRails::Error when given an invalid value" do
-            expect {
+            expect do
               product.write_monetized :price, :price_cents, "10-50", false, nil, {}
-            }.to raise_error(MoneyRails::Error)
+            end.to raise_error(MoneyRails::Error)
           end
 
           it "raises a MoneyRails::Error error when trying to set invalid currency" do
             allow(product).to receive(:currency_for_price).and_return("INVALID_CURRENCY")
-            expect {
+            expect do
               product.write_monetized :price, :price_cents, 10, false, nil, {}
-            }.to raise_error(MoneyRails::Error)
+            end.to raise_error(MoneyRails::Error)
           end
         end
 

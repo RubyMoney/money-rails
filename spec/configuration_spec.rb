@@ -105,9 +105,9 @@ describe "configuration" do
     it "accepts default currency which doesn't have minor unit" do
       old_currency = MoneyRails.default_currency
 
-      expect {
+      expect do
         MoneyRails.default_currency = :jpy
-      }.to_not raise_error
+      end.to_not raise_error
 
       expect(MoneyRails.amount_column[:postfix]).to eq("_cents")
 
