@@ -913,7 +913,7 @@ if defined? ActiveRecord
         end
         let(:default_currency_lambda) { double("Default Currency Fallback") }
 
-        subject { service.read_monetized(:discount, :discount_cents, options) }
+        let(:read_monetized) { service.read_monetized(:discount, :discount_cents, options) }
 
         around(:each) do |example|
           service # Instantiate instance which relies on Money.default_currency
@@ -928,7 +928,7 @@ if defined? ActiveRecord
 
           it "does not attempt to read the fallback default currency" do
             expect(default_currency_lambda).not_to receive(:read_currency)
-            subject
+            read_monetized
           end
         end
       end

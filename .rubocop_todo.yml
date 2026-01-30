@@ -121,14 +121,6 @@ RSpec/MultipleDescribes:
 RSpec/MultipleMemoizedHelpers:
   Max: 11
 
-# Configuration parameters: EnforcedStyle, IgnoreSharedExamples.
-# SupportedStyles: always, named_only
-RSpec/NamedSubject:
-  Exclude:
-    - 'spec/active_record/migration_extensions/schema_statements_spec.rb'
-    - 'spec/active_record/migration_extensions/table_spec.rb'
-    - 'spec/active_record/monetizable_spec.rb'
-
 # Configuration parameters: AllowedGroups.
 RSpec/NestedGroups:
   Max: 5

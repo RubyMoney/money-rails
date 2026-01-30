@@ -36,22 +36,22 @@ if defined? ActiveRecord
 
       context "default options" do
         describe "amount" do
-          subject { Item.columns_hash["price_cents"] }
+          let(:column) { Item.columns_hash["price_cents"] }
 
-          it { expect(subject.default.to_i).to eq(0) }
-          it { expect(Item.new.public_send(subject.name)).to eq(0) }
-          it { expect(subject.null).to be(false) }
-          it { expect(subject.type).to eq(:integer) }
+          it { expect(column.default.to_i).to eq(0) }
+          it { expect(Item.new.public_send(column.name)).to eq(0) }
+          it { expect(column.null).to be(false) }
+          it { expect(column.type).to eq(:integer) }
         end
 
         describe "currency" do
-          subject { Item.columns_hash["price_currency"] }
+          let(:column) { Item.columns_hash["price_currency"] }
 
           # set in spec/dummy/config/initializers/money.rb
-          it { expect(subject.default).to eq("EUR") }
+          it { expect(column.default).to eq("EUR") }
 
-          it { expect(subject.null).to be(false) }
-          it { expect(subject.type).to eq(:string) }
+          it { expect(column.null).to be(false) }
+          it { expect(column.type).to eq(:string) }
         end
       end
 
@@ -62,14 +62,14 @@ if defined? ActiveRecord
 
       context "full options" do
         describe "amount" do
-          subject { Item.columns_hash["prefix_price_with_full_options_postfix"] }
+          let(:column) { Item.columns_hash["prefix_price_with_full_options_postfix"] }
 
-          it { expect(subject.default.to_i).to eq(1) }
-          it { expect(Item.new.public_send(subject.name)).to eq(1) }
-          it { expect(subject.null).to be(true) }
-          it { expect(subject.type).to eq(:decimal) }
-          it { expect(subject.precision).to eq(4) }
-          it { expect(subject.scale).to eq(2) }
+          it { expect(column.default.to_i).to eq(1) }
+          it { expect(Item.new.public_send(column.name)).to eq(1) }
+          it { expect(column.null).to be(true) }
+          it { expect(column.type).to eq(:decimal) }
+          it { expect(column.precision).to eq(4) }
+          it { expect(column.scale).to eq(2) }
         end
 
         describe "currency" do
