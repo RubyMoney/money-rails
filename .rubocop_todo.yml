@@ -6,26 +6,6 @@
 # Note that changes in the inspected code, or installation of new
 # versions of RuboCop, may require this file to be generated again.
 
-# Configuration parameters: AllowedMethods.
-# AllowedMethods: enums
-Lint/ConstantDefinitionInBlock:
-  Exclude:
-    - 'spec/active_record/monetizable_spec.rb'
-
-# Configuration parameters: AllowComments, AllowEmptyLambdas.
-Lint/EmptyBlock:
-  Exclude:
-    - 'spec/dummy/config/routes.rb'
-
-# Configuration parameters: AllowComments, AllowNil.
-Lint/SuppressedException:
-  Exclude:
-    - 'lib/money-rails/hooks.rb'
-
-Lint/UselessConstantScoping:
-  Exclude:
-    - 'lib/money-rails/active_model/validator.rb'
-
 # Configuration parameters: AllowedMethods, AllowedPatterns, CountRepeatedAttributes.
 Metrics/AbcSize:
   Max: 70
@@ -127,10 +107,6 @@ RSpec/ImplicitSubject:
 RSpec/LeadingSubject:
   Exclude:
     - 'spec/helpers/action_view_extension_spec.rb'
-
-RSpec/LeakyConstantDeclaration:
-  Exclude:
-    - 'spec/active_record/monetizable_spec.rb'
 
 # Configuration parameters: .
 # SupportedStyles: have_received, receive
@@ -306,12 +282,6 @@ Style/RaiseArgs:
 Style/SelfAssignment:
   Exclude:
     - 'lib/money-rails/active_record/monetizable.rb'
-
-# This cop supports safe autocorrection (--autocorrect).
-# Configuration parameters: AllowAsExpressionSeparator.
-Style/Semicolon:
-  Exclude:
-    - 'lib/money-rails/hooks.rb'
 
 # This cop supports unsafe autocorrection (--autocorrect-all).
 Style/SlicingWithRange:
