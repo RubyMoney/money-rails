@@ -43,23 +43,6 @@ RSpec/BeforeAfterAll:
     - 'spec/active_record/migration_extensions/schema_statements_spec.rb'
     - 'spec/active_record/migration_extensions/table_spec.rb'
 
-# This cop supports safe autocorrection (--autocorrect).
-RSpec/ContextMethod:
-  Exclude:
-    - 'spec/active_record/monetizable_spec.rb'
-
-# Configuration parameters: Prefixes, AllowedPatterns.
-# Prefixes: when, with, without
-RSpec/ContextWording:
-  Exclude:
-    - 'spec/active_record/migration_extensions/schema_statements_spec.rb'
-    - 'spec/active_record/migration_extensions/table_spec.rb'
-    - 'spec/active_record/monetizable_spec.rb'
-    - 'spec/helpers/action_view_extension_spec.rb'
-    - 'spec/helpers/form_helper_spec.rb'
-    - 'spec/mongoid/mongoid_spec.rb'
-    - 'spec/test_helpers_spec.rb'
-
 # Configuration parameters: IgnoredMetadata.
 RSpec/DescribeClass:
   Exclude:

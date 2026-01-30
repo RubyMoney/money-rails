@@ -18,7 +18,7 @@ if defined? ActiveRecord
         Service.create(charge_cents: 2000, discount_cents: 120)
       end
 
-      context ".monetized_attributes" do
+      describe ".monetized_attributes" do
         it "adds methods to the inheritance chain" do
           my_class = Class.new(ActiveRecord::Base) do
             self.table_name = :products
@@ -655,7 +655,7 @@ if defined? ActiveRecord
         end
       end
 
-      context "for column with model currency:" do
+      context "with a column with model currency" do
         it "has default currency if not specified" do
           product = Product.create(sale_price_amount: 1234)
           product.sale_price.currency.to_s == "USD"
@@ -687,7 +687,7 @@ if defined? ActiveRecord
         end
       end
 
-      context "for model with currency column:" do
+      context "with a model with currency column" do
         let(:transaction) do
           Transaction.create(amount_cents: 2400, tax_cents: 600,
                              currency: :usd)
@@ -776,7 +776,7 @@ if defined? ActiveRecord
           expect(product.reduced_price_currency).to eq("CAD")
         end
 
-        context "and field with allow_nil: true" do
+        context "with a field with allow_nil: true" do
           it "doesn't set currency to nil when setting the field to nil" do
             t = Transaction.new(amount_cents: 2500, currency: "CAD")
             t.optional_amount = nil
@@ -786,7 +786,7 @@ if defined? ActiveRecord
 
         # TODO: these specs should mock locale_backend with expected values
         #       instead of manipulating it directly
-        context "and an Italian locale" do
+        context "with an Italian locale" do
           around(:each) do |example|
             I18n.with_locale(:it) do
               example.run
@@ -862,7 +862,7 @@ if defined? ActiveRecord
         expect(reduced_price).to eq(Money.new(product.reduced_price_cents, product.reduced_price_currency))
       end
 
-      context "memoize" do
+      context "when memoized" do
         it "memoizes monetized attribute's value" do
           product.instance_variable_set :@reduced_price, nil
           reduced_price = product.read_monetized(:reduced_price, :reduced_price_cents)
@@ -1040,7 +1040,7 @@ if defined? ActiveRecord
           expect(product.price).to eq(old_price_value)
         end
 
-        context "raise_error_on_money_parsing enabled" do
+        context "with raise_error_on_money_parsing enabled" do
           before { MoneyRails.raise_error_on_money_parsing = true }
           after { MoneyRails.raise_error_on_money_parsing = false }
 
@@ -1058,7 +1058,7 @@ if defined? ActiveRecord
           end
         end
 
-        context "raise_error_on_money_parsing disabled" do
+        context "with raise_error_on_money_parsing disabled" do
           it "ignores when given invalid value" do
             product.write_monetized :price, :price_cents, "10-50", false, nil, {}
 

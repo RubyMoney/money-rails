@@ -26,7 +26,7 @@ if defined?(Mongoid)
       })
     }
 
-    context "mongoize" do
+    context "when mongoizing" do
       it "correctly mongoizes nil to nil" do
         expect(priceable_from_nil.price).to be_nil
       end
@@ -79,7 +79,7 @@ if defined?(Mongoid)
         expect(priceable_from_hash_with_indifferent_access.price.currency).to eq(Money::Currency.find("EUR"))
       end
 
-      context "default_infinite_precision = true" do
+      context "with default_infinite_precision = true" do
         before do
           Money.default_infinite_precision = true
         end
@@ -102,7 +102,7 @@ if defined?(Mongoid)
       expect(priceable_with_hash_field.price_hash[:key2][:currency_iso]).to eq("USD")
     end
 
-    context "demongoize" do
+    context "when demongoizing" do
       subject { Priceable.first.price }
 
       it { is_expected.to be_an_instance_of(Money) }
@@ -119,7 +119,7 @@ if defined?(Mongoid)
       end
     end
 
-    context "evolve" do
+    context "when evolving" do
       it "correctly transforms a Money object into a Mongo friendly value" do
         expect(Priceable.where(price: Money.new(100, "EUR")).first).to eq(priceable)
       end

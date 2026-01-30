@@ -34,7 +34,7 @@ if defined? ActiveRecord
         Item.reset_column_information
       end
 
-      context "default options" do
+      context "with default options" do
         describe "amount" do
           subject { Item.columns_hash["price_cents"] }
 
@@ -60,7 +60,7 @@ if defined? ActiveRecord
         it { expect(Item.columns_hash["price_without_currency_currency"]).to be_nil }
       end
 
-      context "full options" do
+      context "with full options" do
         describe "amount" do
           subject { Item.columns_hash["prefix_price_with_full_options_postfix"] }
 
