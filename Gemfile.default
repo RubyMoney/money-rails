@@ -20,3 +20,8 @@ gem "rubocop-performance", require: false
 gem "rubocop-rake", require: false
 gem "rubocop-rspec", require: false
 gem "rubocop-rspec_rails", require: false
+
+# Fix GitHub CI caching issue by forcing specific version
+if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new("3.2")
+  gem "erb", "6.0.0"
+end

@@ -32,11 +32,12 @@ module MoneyRails
       end
 
       def matches?(actual)
-        if actual.is_a?(Class)
-          @actual = actual.new
-        else
-          @actual = actual.class.new
-        end
+        @actual =
+          if actual.is_a?(Class)
+            actual.new
+          else
+            actual.class.new
+          end
 
         @money_attribute = @as.presence || @attribute.to_s.sub(/_cents$/, "")
         @money_attribute_setter = "#{@money_attribute}="

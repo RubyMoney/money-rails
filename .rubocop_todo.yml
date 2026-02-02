@@ -209,20 +209,6 @@ Style/CommentedKeyword:
   Exclude:
     - 'lib/money-rails/test_helpers.rb'
 
-# This cop supports safe autocorrection (--autocorrect).
-# Configuration parameters: EnforcedStyle, SingleLineConditionsOnly, IncludeTernaryExpressions.
-# SupportedStyles: assign_to_condition, assign_inside_condition
-Style/ConditionalAssignment:
-  Exclude:
-    - 'lib/money-rails/active_record/monetizable.rb'
-    - 'lib/money-rails/test_helpers.rb'
-
-# This cop supports safe autocorrection (--autocorrect).
-# Configuration parameters: AllowIfModifier.
-Style/IfInsideElse:
-  Exclude:
-    - 'lib/money-rails/active_record/monetizable.rb'
-
 Style/MixinUsage:
   Exclude:
     - 'lib/money-rails/rails_admin.rb'
