@@ -10,21 +10,21 @@ if defined?(Mongoid)
     let(:priceable_from_num) { Priceable.create(price: 1) }
     let(:priceable_from_string) { Priceable.create(price: "1 EUR") }
     let(:priceable_from_hash) { Priceable.create(price: { cents: 100, currency_iso: "EUR" }) }
-    let(:priceable_from_blank_strings_hash) {
+    let(:priceable_from_blank_strings_hash) do
       Priceable.create(price: { cents: "", currency_iso: "" })
-    }
-    let(:priceable_from_hash_with_indifferent_access) {
+    end
+    let(:priceable_from_hash_with_indifferent_access) do
       Priceable.create(price: { cents: 100, currency_iso: "EUR" }.with_indifferent_access)
-    }
+    end
     let(:priceable_from_string_with_hyphen) { Priceable.create(price: "1-2 EUR") }
     let(:priceable_from_string_with_unknown_currency) { Priceable.create(price: "1 TLDR") }
     let(:priceable_with_infinite_precision) { Priceable.create(price: Money.new(BigDecimal("100.1"), "EUR")) }
-    let(:priceable_with_hash_field) {
+    let(:priceable_with_hash_field) do
       Priceable.create(price_hash: {
         key1: Money.new(100, "EUR"),
         key2: Money.new(200, "USD"),
       })
-    }
+    end
 
     context "when mongoizing" do
       it "correctly mongoizes nil to nil" do
