@@ -8,9 +8,7 @@ describe "MoneyRails::ActionViewExtension" do
       expect(MoneyRails.autoload?(:ActionViewExtension)).to eq("money-rails/helpers/action_view_extension")
     end
   end
-end
 
-describe "MoneyRails::ActionViewExtension", type: :helper do
   describe "#currency_symbol" do
     subject { helper.currency_symbol }
 

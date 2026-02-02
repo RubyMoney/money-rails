@@ -137,7 +137,7 @@ describe "configuration" do
       end
 
       context "when passed an invalid value" do
-        it "should raise an ArgumentError" do
+        it "raises an ArgumentError" do
           expect { MoneyRails.rounding_mode = "booyakasha" }.to raise_error(ArgumentError, "booyakasha is not a valid rounding mode")
         end
       end
