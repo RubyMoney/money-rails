@@ -47,7 +47,7 @@ describe "MoneyRails::ActionViewExtension" do
     context "with deprecated symbol" do
       let(:options) { true }
 
-      before(:each) do
+      before do
         allow(helper).to receive(:warn)
       end
 

@@ -52,15 +52,6 @@ RSpec/ExampleLength:
 
 # This cop supports safe autocorrection (--autocorrect).
 # Configuration parameters: EnforcedStyle.
-# SupportedStyles: implicit, each, example
-RSpec/HookArgument:
-  Exclude:
-    - 'spec/active_record/monetizable_spec.rb'
-    - 'spec/helpers/action_view_extension_spec.rb'
-    - 'spec/support/database_cleaner.rb'
-
-# This cop supports safe autocorrection (--autocorrect).
-# Configuration parameters: EnforcedStyle.
 # SupportedStyles: single_line_only, single_statement_only, disallow, require_implicit
 RSpec/ImplicitSubject:
   Exclude:

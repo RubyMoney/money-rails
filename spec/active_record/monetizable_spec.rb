@@ -781,7 +781,7 @@ if defined? ActiveRecord
         # TODO: these specs should mock locale_backend with expected values
         #       instead of manipulating it directly
         context "with an Italian locale" do
-          around(:each) do |example|
+          around do |example|
             I18n.with_locale(:it) do
               example.run
             end
@@ -810,7 +810,7 @@ if defined? ActiveRecord
           end
 
           context "when using :currency locale backend" do
-            around(:each) do |example|
+            around do |example|
               Money.locale_backend = :currency
               example.run
             ensure
@@ -880,7 +880,7 @@ if defined? ActiveRecord
       end
 
       context "with preserve_user_input set" do
-        around(:each) do |example|
+        around do |example|
           MoneyRails::Configuration.preserve_user_input = true
           example.run
           MoneyRails::Configuration.preserve_user_input = false
@@ -909,7 +909,7 @@ if defined? ActiveRecord
 
         let(:read_monetized) { service.read_monetized(:discount, :discount_cents, options) }
 
-        around(:each) do |example|
+        around do |example|
           service # Instantiate instance which relies on Money.default_currency
           original_default_currency = Money.default_currency
           Money.default_currency = -> { default_currency_lambda.read_currency }
