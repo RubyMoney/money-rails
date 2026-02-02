@@ -56,7 +56,8 @@ module MoneyRails
         desc
       end
 
-      def failure_message # RSpec 3.x
+      # RSpec 3.x
+      def failure_message
         msg = "expected that #{@attribute} of #{@actual} would be monetized"
         msg << " as #{@as}" if @as
         msg << " with currency #{@currency_iso}" if @currency_iso
@@ -64,7 +65,8 @@ module MoneyRails
       end
       alias failure_message_for_should failure_message # RSpec 1.2, 2.x, and minitest-matchers
 
-      def failure_message_when_negated # RSpec 3.x
+      # RSpec 3.x
+      def failure_message_when_negated
         msg = "expected that #{@attribute} of #{@actual} would not be monetized"
         msg << " as #{@as}" if @as
         msg << " with currency #{@currency_iso}" if @currency_iso
