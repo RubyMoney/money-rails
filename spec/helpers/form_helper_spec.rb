@@ -10,8 +10,8 @@ if defined? ActiveRecord
                      sale_price_amount: 1200)
     end
 
-    context "textfield" do
-      it "uses the current value of money field in textfield" do
+    context "when calling text_field" do
+      it "uses the current value of money field" do
         helper.instance_variable_set :@product, product
         expect(helper.text_field(:product, :price)).to match(/value="#{product.price}"/)
       end

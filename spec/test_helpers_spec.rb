@@ -14,7 +14,7 @@ if defined? ActiveRecord
     end
 
     describe "monetize matcher" do
-      shared_context "monetize matcher" do
+      shared_context "with monetize matcher" do
         it "matches model attribute without a '_cents' suffix by default" do
           is_expected.to monetize(:price)
         end
@@ -58,12 +58,12 @@ if defined? ActiveRecord
 
       describe "testing against an instance of the model class" do
         subject { product }
-        include_context "monetize matcher"
+        include_context "with monetize matcher"
       end
 
       describe "testing against the model class itself" do
         subject { Product }
-        include_context "monetize matcher"
+        include_context "with monetize matcher"
       end
     end
   end

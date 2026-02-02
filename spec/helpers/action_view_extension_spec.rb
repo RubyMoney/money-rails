@@ -144,7 +144,7 @@ describe "MoneyRails::ActionViewExtension", type: :helper do
     end
   end
 
-  context "respects MoneyRails::Configuration settings" do
+  context "with MoneyRails::Configuration settings" do
     context "with no_cents_if_whole: false" do
       before do
         MoneyRails.configure do |config|
