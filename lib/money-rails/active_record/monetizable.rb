@@ -200,12 +200,13 @@ module MoneyRails
           kwargs = {}
         end
 
-        if kwargs.any?
-          amount = public_send(subunit_name, *args, **kwargs)
-        else
-          # Ruby 2.x does not allow empty kwargs
-          amount = public_send(subunit_name, *args)
-        end
+        amount =
+          if kwargs.any?
+            public_send(subunit_name, *args, **kwargs)
+          else
+            # Ruby 2.x does not allow empty kwargs
+            public_send(subunit_name, *args)
+          end
 
         return if amount.nil? && options[:allow_nil]
 
@@ -251,19 +252,17 @@ module MoneyRails
         # Use nil or get a Money object
         if options[:allow_nil] && value.blank?
           money = nil
+        elsif value.is_a?(Money)
+          money = value
         else
-          if value.is_a?(Money)
-            money = value
-          else
-            begin
-              money = value.to_money(public_send("currency_for_#{name}"))
-            rescue NoMethodError
-              return nil
-            rescue Money::Currency::UnknownCurrency, Monetize::ParseError => e
-              raise MoneyRails::Error, e.message if MoneyRails.raise_error_on_money_parsing
+          begin
+            money = value.to_money(public_send("currency_for_#{name}"))
+          rescue NoMethodError
+            return nil
+          rescue Money::Currency::UnknownCurrency, Monetize::ParseError => e
+            raise MoneyRails::Error, e.message if MoneyRails.raise_error_on_money_parsing
 
-              return nil
-            end
+            return nil
           end
         end
 
