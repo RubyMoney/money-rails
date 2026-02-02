@@ -32,7 +32,7 @@ describe "MoneyRails::ActionViewExtension" do
     let(:money_object) { Money.new(12500) }
     let(:options) { {} }
 
-    subject { helper.humanized_money money_object, options }
+    subject(:humanized_money) { helper.humanized_money money_object, options }
 
     it { is_expected.to be_a String }
     it { is_expected.not_to include Money.default_currency.symbol }
@@ -48,10 +48,13 @@ describe "MoneyRails::ActionViewExtension" do
       let(:options) { true }
 
       before(:each) do
-        expect(helper).to receive(:warn)
+        allow(helper).to receive(:warn)
       end
 
-      it { is_expected.to include Money.default_currency.symbol }
+      it do
+        expect(humanized_money).to include Money.default_currency.symbol
+        expect(helper).to have_received(:warn)
+      end
     end
 
     context "with a currency with an alternate symbol" do
@@ -82,7 +85,9 @@ describe "MoneyRails::ActionViewExtension" do
   describe "#money_without_cents" do
     let(:options) { {} }
 
-    subject { helper.money_without_cents Money.new(12500), options }
+    subject(:money_without_cents) do
+      helper.money_without_cents Money.new(12500), options
+    end
 
     it { is_expected.to be_a String }
     it { is_expected.not_to include Money.default_currency.symbol }
@@ -91,11 +96,14 @@ describe "MoneyRails::ActionViewExtension" do
     context "with deprecated symbol" do
       let(:options) { true }
 
-      before(:each) do
-        expect(helper).to receive(:warn)
+      before do
+        allow(helper).to receive(:warn)
       end
 
-      it { is_expected.to include Money.default_currency.symbol }
+      it do
+        expect(money_without_cents).to include Money.default_currency.symbol
+        expect(helper).to have_received(:warn)
+      end
     end
   end
 

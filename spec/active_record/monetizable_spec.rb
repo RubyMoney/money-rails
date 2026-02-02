@@ -920,9 +920,14 @@ if defined? ActiveRecord
         context "when allow_nil options is set" do
           let(:options) { { allow_nil: true } }
 
+          before do
+            allow(default_currency_lambda).to receive(:read_currency)
+          end
+
           it "does not attempt to read the fallback default currency" do
-            expect(default_currency_lambda).not_to receive(:read_currency)
             read_monetized
+
+            expect(default_currency_lambda).not_to have_receive(:read_currency)
           end
         end
       end
