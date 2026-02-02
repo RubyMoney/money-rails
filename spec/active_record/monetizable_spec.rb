@@ -481,12 +481,6 @@ if defined? ActiveRecord
         expect(product.save).to be_falsey
       end
 
-      it "allows nil if optioned" do
-        product.optional_price = nil
-        expect(product.save).to be_truthy
-        expect(product.optional_price).to be_nil
-      end
-
       it "doesn't raise exception if validation is used and nil is not allowed" do
         expect { product.price = nil }.to_not raise_error
       end

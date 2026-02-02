@@ -21,13 +21,11 @@ describe "MoneyRails::ActionViewExtension", type: :helper do
       subject { helper.currency_symbol(Money::Currency.find(:brl)) }
 
       it { is_expected.to include Money::Currency.find(:brl).symbol }
-      it { is_expected.to include Money::Currency.find(:brl).symbol }
     end
 
     context "with given currency symbol" do
       subject { helper.currency_symbol(:brl) }
 
-      it { is_expected.to include Money::Currency.find(:brl).symbol }
       it { is_expected.to include Money::Currency.find(:brl).symbol }
     end
   end
