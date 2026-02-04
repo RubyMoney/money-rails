@@ -3,7 +3,7 @@
 require "spec_helper"
 
 if defined? ActiveRecord
-  describe "Test helper in form blocks", type: :helper do
+  describe "Test helper in form blocks" do
     let :product do
       Product.create(price_cents: 3000, discount: 150,
                      bonus_cents: 200, optional_price: 100,

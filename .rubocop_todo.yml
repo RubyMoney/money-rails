@@ -58,14 +58,6 @@ RSpec/DescribeClass:
 RSpec/ExampleLength:
   Max: 24
 
-# This cop supports safe autocorrection (--autocorrect).
-# Configuration parameters: CustomTransform, IgnoredWords, DisallowedExamples.
-# DisallowedExamples: works
-RSpec/ExampleWording:
-  Exclude:
-    - 'spec/active_record/monetizable_spec.rb'
-    - 'spec/configuration_spec.rb'
-
 RSpec/ExpectInHook:
   Exclude:
     - 'spec/helpers/action_view_extension_spec.rb'
@@ -95,10 +87,6 @@ RSpec/LeadingSubject:
 # SupportedStyles: have_received, receive
 RSpec/MessageSpies:
   EnforcedStyle: receive
-
-RSpec/MultipleDescribes:
-  Exclude:
-    - 'spec/helpers/action_view_extension_spec.rb'
 
 # Configuration parameters: AllowSubject.
 RSpec/MultipleMemoizedHelpers:
@@ -156,13 +144,6 @@ RSpec/SharedContext:
 RSpec/VerifiedDoubles:
   Exclude:
     - 'spec/active_record/monetizable_spec.rb'
-
-# This cop supports unsafe autocorrection (--autocorrect-all).
-# Configuration parameters: Inferences.
-RSpecRails/InferredSpecType:
-  Exclude:
-    - 'spec/helpers/action_view_extension_spec.rb'
-    - 'spec/helpers/form_helper_spec.rb'
 
 # This cop supports safe autocorrection (--autocorrect).
 # Configuration parameters: AllowHeredoc, AllowURI, AllowQualifiedName, URISchemes, AllowRBSInlineAnnotation, AllowCopDirectives, AllowedPatterns, SplitStrings.

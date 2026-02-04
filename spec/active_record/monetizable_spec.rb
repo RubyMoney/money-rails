@@ -36,7 +36,7 @@ if defined? ActiveRecord
           expect(p.side_effect).to be_truthy
         end
 
-        it "should be inherited by subclasses" do
+        it "is inherited by subclasses" do
           sub_class = Class.new(Product)
           assert_monetized_attributes(
             sub_class.monetized_attributes,
@@ -44,7 +44,7 @@ if defined? ActiveRecord
           )
         end
 
-        it "should be inherited by subclasses with new monetized attribute" do
+        it "is inherited by subclasses with new monetized attribute" do
           inherited_class = Class.new(Product) do
             monetize :special_price_cents
           end
@@ -258,7 +258,7 @@ if defined? ActiveRecord
         expect(product.save).to be_truthy
       end
 
-      it "shouldn't init empty key in errors" do
+      it "does not init empty key in errors" do
         product.price = Money.new(320, "USD")
         product.valid?
         expect(product.errors.key?(:price)).to be_falsey
