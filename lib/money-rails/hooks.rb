@@ -2,7 +2,7 @@
 
 module MoneyRails
   class Hooks
-    PG_ADAPTERS = %w(activerecord-jdbcpostgresql-adapter postgresql postgis)
+    PG_ADAPTERS = %w[activerecord-jdbcpostgresql-adapter postgresql postgis].freeze
 
     def self.init
       # For Active Record
@@ -15,9 +15,9 @@ module MoneyRails
         postgresql_with_money = PG_ADAPTERS.include?(current_adapter)
 
         require "money-rails/active_record/migration_extensions/options_extractor"
-        %w{schema_statements table}.each do |file|
+        %w[schema_statements table].each do |file|
           require "money-rails/active_record/migration_extensions/#{file}_pg"
-          if !postgresql_with_money
+          unless postgresql_with_money
             require "money-rails/active_record/migration_extensions/#{file}"
           end
         end

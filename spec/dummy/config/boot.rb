@@ -5,13 +5,13 @@ require "rubygems"
 # Default to rails7.0.gemfile if BUNDLE_GEMFILE is not set
 default_gemfile = File.expand_path("../../../gemfiles/rails7.0.gemfile", __dir__)
 
-unless ENV["BUNDLE_GEMFILE"]
+if ENV["BUNDLE_GEMFILE"]
+  puts "Using Gemfile: #{ENV['BUNDLE_GEMFILE']}"
+else
   puts "No BUNDLE_GEMFILE specified, defaulting to rails7.0.gemfile"
   ENV["BUNDLE_GEMFILE"] = default_gemfile
-else
-  puts "Using Gemfile: #{ENV['BUNDLE_GEMFILE']}"
 end
 
 require "bundler/setup" if File.exist?(ENV["BUNDLE_GEMFILE"])
 
-$:.unshift File.expand_path("../../../lib", __dir__)
+$LOAD_PATH.unshift File.expand_path("../../../lib", __dir__)

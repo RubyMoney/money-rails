@@ -60,7 +60,7 @@ if defined? ActiveRecord
           expect(expected_attributes).to include monetized_attributes
           expect(monetized_attributes.size).to eql expected_attributes.size
           monetized_attributes.each_key do |key|
-            expect(key.is_a? String).to be_truthy
+            expect(key.is_a?(String)).to be_truthy
           end
         end
       end

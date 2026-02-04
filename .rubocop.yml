@@ -60,6 +60,10 @@ Style/ClassAndModuleChildren:
   # Sometimes the nested is better than the compact.
   Enabled: false
 
+Style/ClassVars:
+  Exclude:
+    - "lib/money-rails/configuration.rb"
+
 Style/Documentation:
   # Not all modules need a comment.
   Enabled: false
