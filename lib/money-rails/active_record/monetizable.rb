@@ -70,7 +70,7 @@ module MoneyRails
               instance_currency_name = "#{name}#{MoneyRails::Configuration.currency_column[:postfix]}"
             end
 
-            instance_currency_name = instance_currency_name && instance_currency_name.to_s
+            instance_currency_name &&= instance_currency_name.to_s
 
             # This attribute allows per column currency values
             # Overrides row and default currency
@@ -290,7 +290,7 @@ module MoneyRails
           else
             current_currency = public_send("currency_for_#{name}")
             if current_currency != money_currency.id
-              raise ReadOnlyCurrencyException.new("Can't change readonly currency '#{current_currency}' to '#{money_currency}' for field '#{name}'") if MoneyRails.raise_error_on_money_parsing
+              raise ReadOnlyCurrencyException, "Can't change readonly currency '#{current_currency}' to '#{money_currency}' for field '#{name}'" if MoneyRails.raise_error_on_money_parsing
 
               return nil
             end

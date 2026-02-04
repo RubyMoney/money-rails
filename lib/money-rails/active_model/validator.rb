@@ -3,7 +3,7 @@
 module MoneyRails
   module ActiveModel
     class MoneyValidator < ::ActiveModel::Validations::NumericalityValidator
-      class Details < Struct.new(:raw_value, :thousands_separator, :decimal_mark)
+      Details = Struct.new(:raw_value, :thousands_separator, :decimal_mark) do
         def abs_raw_value
           @abs_raw_value ||= raw_value.to_s.sub(/^\s*-/, "").strip
         end
@@ -109,7 +109,7 @@ module MoneyRails
         return false if pieces_array.length <= 1
         return true  if pieces_array[0].length > 3
 
-        pieces_array[1..-1].any? do |thousands_group|
+        pieces_array[1..].any? do |thousands_group|
           thousands_group.length != 3
         end
       end
