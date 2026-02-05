@@ -927,7 +927,7 @@ if defined? ActiveRecord
           it "does not attempt to read the fallback default currency" do
             read_monetized
 
-            expect(default_currency_lambda).not_to have_receive(:read_currency)
+            expect(default_currency_lambda).not_to have_received(:read_currency)
           end
         end
       end
