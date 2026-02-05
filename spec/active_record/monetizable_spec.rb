@@ -652,7 +652,7 @@ if defined? ActiveRecord
       context "with a column with model currency" do
         it "has default currency if not specified" do
           product = Product.create(sale_price_amount: 1234)
-          product.sale_price.currency.to_s == "USD"
+          expect(product.sale_price.currency.to_s).to eq("USD")
         end
 
         it "is overridden by instance currency column" do
@@ -909,7 +909,12 @@ if defined? ActiveRecord
         let(:service) do
           Service.create(discount_cents: nil)
         end
-        let(:default_currency_lambda) { double("Default Currency Fallback") }
+
+        # rubocop:disable RSpec/VerifiedDoubles
+        let(:default_currency_lambda) do
+          double :default_fallback, read_currency: nil
+        end
+        # rubocop:enable RSpec/VerifiedDoubles
 
         let(:read_monetized) { service.read_monetized(:discount, :discount_cents, options) }
 
@@ -923,10 +928,6 @@ if defined? ActiveRecord
 
         context "when allow_nil options is set" do
           let(:options) { { allow_nil: true } }
-
-          before do
-            allow(default_currency_lambda).to receive(:read_currency)
-          end
 
           it "does not attempt to read the fallback default currency" do
             read_monetized
