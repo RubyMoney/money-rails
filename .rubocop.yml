@@ -49,6 +49,7 @@ RSpec/DescribedClass:
   Exclude:
     # Prefer Money.new(…) to described_class.new(…)
     - "spec/mongoid/mongoid_spec.rb"
+    - "spec/money_spec.rb"
 
 RSpec/MultipleExpectations:
   # Do not limit the amount of expectations in a spec
