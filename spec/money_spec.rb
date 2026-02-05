@@ -24,8 +24,10 @@ describe "Money overrides" do
 
     it "gives priority to original defaults" do
       allow(Money).to receive(:orig_default_formatting_rules).and_return(symbol: "£")
-      allow(MoneyRails::Configuration).to receive(:symbol).and_return("€")
-      allow(MoneyRails::Configuration).to receive(:default_format).and_return(symbol: "€")
+      allow(MoneyRails::Configuration).to receive_messages(
+        symbol: "€",
+        default_format: { symbol: "€" },
+      )
 
       expect(Money.default_formatting_rules).to include(symbol: "£")
     end

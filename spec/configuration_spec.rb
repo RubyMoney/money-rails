@@ -107,7 +107,7 @@ describe "configuration" do
 
       expect do
         MoneyRails.default_currency = :jpy
-      end.to_not raise_error
+      end.not_to raise_error
 
       expect(MoneyRails.amount_column[:postfix]).to eq("_cents")
 

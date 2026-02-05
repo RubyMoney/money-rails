@@ -29,10 +29,10 @@ describe "MoneyRails::ActionViewExtension" do
   end
 
   describe "#humanized_money" do
+    subject(:humanized_money) { helper.humanized_money money_object, options }
+
     let(:money_object) { Money.new(12500) }
     let(:options) { {} }
-
-    subject(:humanized_money) { helper.humanized_money money_object, options }
 
     it { is_expected.to be_a String }
     it { is_expected.not_to include Money.default_currency.symbol }
@@ -83,11 +83,11 @@ describe "MoneyRails::ActionViewExtension" do
   end
 
   describe "#money_without_cents" do
-    let(:options) { {} }
-
     subject(:money_without_cents) do
       helper.money_without_cents Money.new(12500), options
     end
+
+    let(:options) { {} }
 
     it { is_expected.to be_a String }
     it { is_expected.not_to include Money.default_currency.symbol }
@@ -117,9 +117,9 @@ describe "MoneyRails::ActionViewExtension" do
   end
 
   describe "#money_only_cents" do
-    let(:monetizable_object) { Money.new(125_00) }
-
     subject { helper.money_only_cents monetizable_object }
+
+    let(:monetizable_object) { Money.new(125_00) }
 
     it { is_expected.to eq "00" }
 

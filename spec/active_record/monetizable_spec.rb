@@ -482,7 +482,7 @@ if defined? ActiveRecord
       end
 
       it "doesn't raise exception if validation is used and nil is not allowed" do
-        expect { product.price = nil }.to_not raise_error
+        expect { product.price = nil }.not_to raise_error
       end
 
       it "doesn't save nil values if validation is used and nil is not allowed" do
@@ -758,8 +758,12 @@ if defined? ActiveRecord
         end
 
         it "allows currency column postfix to be blank" do
-          allow(MoneyRails::Configuration).to receive(:currency_column) { { postfix: nil, column_name: "currency" } }
-          expect(dummy_product_with_nil_currency.price.currency).to eq(Money::Currency.find(:gbp))
+          allow(MoneyRails::Configuration)
+            .to receive(:currency_column)
+            .and_return({ postfix: nil, column_name: "currency" })
+
+          expect(dummy_product_with_nil_currency.price.currency)
+            .to eq(Money::Currency.find(:gbp))
         end
 
         it "updates inferred currency column based on currency column postfix" do
