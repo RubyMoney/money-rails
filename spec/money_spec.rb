@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-describe "Money overrides" do
+describe Money do
   describe ".default_formatting_rules" do
     it "uses defauts set as individual options" do
       allow(MoneyRails::Configuration).to receive(:symbol).and_return("£")

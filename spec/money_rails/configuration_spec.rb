@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-describe "configuration" do
+describe MoneyRails::Configuration do
   describe "initializer" do
     it "sets default currency" do
       expect(Money.default_currency).to eq(Money::Currency.new(:eur))
@@ -17,25 +17,50 @@ describe "configuration" do
       expect(Money.ca_dollar(100).bank.get_rate("CAD", "USD")).to eq(0.803115)
     end
 
-    it "sets no_cents_if_whole value for formatted output globally" do
-      # Enable formatting to depend only on currency (to avoid default symbols for :en)
-      Money.locale_backend = :currency
+    context "with currency backend" do
+      let(:value) { Money.new(123_456_00, "EUR") }
+      let(:mark) { Money::Currency.find(:eur).decimal_mark }
 
-      value = Money.new(12345600, "EUR")
-      mark = Money::Currency.find(:eur).decimal_mark
-      expect(value.format).to match(/#{mark}/)
+      around do |example|
+        # Enable formatting to depend only on currency (to avoid default symbols for :en)
+        Money.locale_backend = :currency
+        example.call
+        Money.locale_backend = :i18n
+      end
 
-      MoneyRails.no_cents_if_whole = true
-      expect(value.format).not_to match(/#{mark}/)
-      expect(value.format(no_cents_if_whole: false)).to match(/#{mark}/)
+      context "with no cents if whole nil" do
+        before do
+          MoneyRails.no_cents_if_whole = nil
+        end
 
-      MoneyRails.no_cents_if_whole = false
-      expect(value.format).to match(/#{mark}/)
-      expect(value.format(no_cents_if_whole: true)).not_to match(/#{mark}/)
+        it { expect(value.format).to include(mark) }
+      end
 
-      # Reset global settings
-      MoneyRails.no_cents_if_whole = nil
-      Money.locale_backend = :i18n
+      context "with no cents if whole enabled" do
+        around do |example|
+          MoneyRails.no_cents_if_whole = true
+          example.call
+          MoneyRails.no_cents_if_whole = nil
+        end
+
+        it do
+          expect(value.format).not_to include(mark)
+          expect(value.format(no_cents_if_whole: false)).to include(mark)
+        end
+      end
+
+      context "with no cents if whole disabled" do
+        around do |example|
+          MoneyRails.no_cents_if_whole = false
+          example.call
+          MoneyRails.no_cents_if_whole = nil
+        end
+
+        it do
+          expect(value.format).to include(mark)
+          expect(value.format(no_cents_if_whole: true)).not_to include(mark)
+        end
+      end
     end
 
     it "sets symbol for formatted output globally" do
