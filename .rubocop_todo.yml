@@ -50,18 +50,6 @@ RSpec/DescribeClass:
 RSpec/ExampleLength:
   Max: 24
 
-# This cop supports safe autocorrection (--autocorrect).
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: single_line_only, single_statement_only, disallow, require_implicit
-RSpec/ImplicitSubject:
-  Exclude:
-    - 'spec/test_helpers_spec.rb'
-
-# This cop supports safe autocorrection (--autocorrect).
-RSpec/LeadingSubject:
-  Exclude:
-    - 'spec/helpers/action_view_extension_spec.rb'
-
 # Configuration parameters: AllowSubject.
 RSpec/MultipleMemoizedHelpers:
   Max: 11
@@ -69,55 +57,6 @@ RSpec/MultipleMemoizedHelpers:
 # Configuration parameters: AllowedGroups.
 RSpec/NestedGroups:
   Max: 5
-
-# Configuration parameters: AllowedPatterns.
-# AllowedPatterns: ^expect_, ^assert_
-RSpec/NoExpectationExample:
-  Exclude:
-    - 'spec/active_record/monetizable_spec.rb'
-
-# This cop supports safe autocorrection (--autocorrect).
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: not_to, to_not
-RSpec/NotToNot:
-  Exclude:
-    - 'spec/active_record/monetizable_spec.rb'
-    - 'spec/configuration_spec.rb'
-
-# This cop supports unsafe autocorrection (--autocorrect-all).
-RSpec/Output:
-  Exclude:
-    - 'spec/dummy/config/boot.rb'
-
-# This cop supports unsafe autocorrection (--autocorrect-all).
-# Configuration parameters: Strict, EnforcedStyle, AllowedExplicitMatchers.
-# SupportedStyles: inflected, explicit
-RSpec/PredicateMatcher:
-  Exclude:
-    - 'spec/active_job/money_serializer_spec.rb'
-    - 'spec/active_record/monetizable_spec.rb'
-
-# This cop supports unsafe autocorrection (--autocorrect-all).
-RSpec/ReceiveMessages:
-  Exclude:
-    - 'spec/money_spec.rb'
-
-# This cop supports safe autocorrection (--autocorrect).
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: and_return, block
-RSpec/ReturnFromStub:
-  Exclude:
-    - 'spec/active_record/monetizable_spec.rb'
-
-# This cop supports safe autocorrection (--autocorrect).
-RSpec/SharedContext:
-  Exclude:
-    - 'spec/test_helpers_spec.rb'
-
-# Configuration parameters: IgnoreNameless, IgnoreSymbolicNames.
-RSpec/VerifiedDoubles:
-  Exclude:
-    - 'spec/active_record/monetizable_spec.rb'
 
 # This cop supports safe autocorrection (--autocorrect).
 # Configuration parameters: AllowHeredoc, AllowURI, AllowQualifiedName, URISchemes, AllowRBSInlineAnnotation, AllowCopDirectives, AllowedPatterns, SplitStrings.

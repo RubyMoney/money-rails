@@ -54,6 +54,17 @@ RSpec/MultipleExpectations:
   # Do not limit the amount of expectations in a spec
   Enabled: false
 
+RSpec/Output:
+  Exclude:
+    - "spec/dummy/**/*"
+
+RSpec/PredicateMatcher:
+  # Do not force calling:
+  #   expect(money).to be_serialize(…)
+  # Instead of the more explicit:
+  #   expect(money.serialize?(…)).to be_truthy
+  Enabled: false
+
 # Style
 
 Style/ClassAndModuleChildren:
