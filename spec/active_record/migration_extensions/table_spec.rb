@@ -6,10 +6,12 @@ if defined? ActiveRecord
   class Item < ActiveRecord::Base; end
 
   describe MoneyRails::ActiveRecord::MigrationExtensions::SchemaStatements do
+    # rubocop:disable RSpec/BeforeAfterAll
     before :all do
       @connection = ActiveRecord::Base.connection
       @connection.send :extend, described_class
     end
+    # rubocop:enable RSpec/BeforeAfterAll
 
     describe "money" do
       before do
