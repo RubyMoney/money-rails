@@ -26,7 +26,7 @@ jobs:
     name: Test (Ruby ${{ matrix.ruby-version }}, MongoDB ${{ matrix.mongodb-version }})
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
 
     - name: Set up Ruby
     # To automatically get bug fixes and new Ruby versions for ruby/setup-ruby,
