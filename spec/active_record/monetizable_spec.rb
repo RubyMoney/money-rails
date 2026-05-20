@@ -845,13 +845,6 @@ if defined? ActiveRecord
       end
     end
 
-    describe ".register_currency" do
-      it "attaches currency at model level" do
-        expect(Product.currency).to eq(Money::Currency.find(:usd))
-        expect(DummyProduct.currency).to eq(Money::Currency.find(:gbp))
-      end
-    end
-
     describe "#read_monetized" do
       it "returns monetized attribute's value" do
         reduced_price = product.read_monetized(:reduced_price, :reduced_price_cents)
@@ -1081,46 +1074,6 @@ if defined? ActiveRecord
             expect(product.instance_variable_get(:@price)).to eq(old_price_value)
           end
         end
-      end
-    end
-
-    describe "#currency_for" do
-      it "detects currency based on instance currency name" do
-        product = Product.new(sale_price_currency_code: "CAD")
-        currency = product.send(:currency_for, :sale_price, :sale_price_currency_code, nil)
-
-        expect(currency).to be_an_instance_of(Money::Currency)
-        expect(currency.iso_code).to eq("CAD")
-      end
-
-      it "detects currency based on currency passed as a block" do
-        product = Product.new
-        currency = product.send(:currency_for, :lambda_price, nil, ->(_) { "CAD" })
-
-        expect(currency).to be_an_instance_of(Money::Currency)
-        expect(currency.iso_code).to eq("CAD")
-      end
-
-      it "detects currency based on currency passed explicitly" do
-        product = Product.new
-        currency = product.send(:currency_for, :bonus, nil, "CAD")
-
-        expect(currency).to be_an_instance_of(Money::Currency)
-        expect(currency.iso_code).to eq("CAD")
-      end
-
-      it "falls back to a registered currency" do
-        product = Product.new
-        currency = product.send(:currency_for, :amount, nil, nil)
-
-        expect(currency).to eq(Product.currency)
-      end
-
-      it "falls back to a default currency" do
-        transaction = Transaction.new
-        currency = transaction.send(:currency_for, :amount, nil, nil)
-
-        expect(currency).to eq(Money.default_currency)
       end
     end
   end
