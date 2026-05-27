@@ -4,6 +4,14 @@ require File.expand_path("boot", __dir__)
 require "logger"
 
 require "active_record/railtie" unless ENV["BUNDLE_GEMFILE"]&.include?("mongoid")
+# The Mongoid gemfiles depend on Action Pack only, not the full rails gem, so the
+# activejob gem may be unavailable. Load it only when present (the serializer specs
+# are guarded by `defined?(ActiveJob::Serializers)`).
+begin
+  require "active_job/railtie"
+rescue LoadError
+  nil
+end
 require "action_controller/railtie"
 
 Bundler.require
