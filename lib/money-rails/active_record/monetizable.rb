@@ -271,12 +271,9 @@ module MoneyRails
           # We haven't defined our own subunit writer, so we can invoke
           # the regular writer, which works with store_accessors
           public_send("#{subunit_name}=", money.try(:cents))
-        elsif self.class.respond_to?(:attribute_aliases) &&
-              self.class.attribute_aliases.key?(subunit_name)
+        elsif self.class.attribute_aliases.key?(subunit_name)
           # If the attribute is aliased, make sure we write to the original
           # attribute name or an error will be raised.
-          # (Note: 'attribute_aliases' doesn't exist in Rails 3.x, so we
-          # can't tell if the attribute was aliased.)
           original_name = self.class.attribute_aliases[subunit_name.to_s]
           write_attribute(original_name, money.try(:cents))
         else
