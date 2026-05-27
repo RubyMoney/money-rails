@@ -43,14 +43,20 @@ module MoneyRails
         ::ActionView::Base.include MoneyRails::ActionViewExtension
       end
 
-      # For ActiveSupport
-      ActiveSupport.on_load(:active_job) do
-        if defined?(::ActiveJob::Serializers)
-          require "money-rails/active_job/money_serializer"
-          Rails.application.config.active_job.tap do |config|
-            config.custom_serializers ||= []
-            config.custom_serializers << MoneyRails::ActiveJob::MoneySerializer
-          end
+      # For Active Job
+      #
+      # Registered during initialization rather than inside an
+      # `ActiveSupport.on_load(:active_job)` block so the serializer is present in
+      # `config.active_job.custom_serializers` before Rails consumes the list. Rails
+      # reads it at different points across versions (`after_initialize` on <= 8.0,
+      # `on_load(:active_job)` on 8.1.0/8.1.1, `on_load(:active_job_arguments)` on 8.1.2+),
+      # any of which an `:active_job` hook here could lose the race to. See issue #779 and
+      # rails/rails commits b7cd3018ef (8.1.0) and c0dc92e9e9 (8.1.2).
+      if defined?(::ActiveJob::Serializers)
+        require "money-rails/active_job/money_serializer"
+        Rails.application.config.active_job.tap do |config|
+          config.custom_serializers ||= []
+          config.custom_serializers << MoneyRails::ActiveJob::MoneySerializer
         end
       end
     end
