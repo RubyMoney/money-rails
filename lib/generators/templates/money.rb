@@ -9,6 +9,9 @@ MoneyRails.configure do |config|
   #
   # Example:
   # config.default_bank = EuCentralBank.new
+  #
+  # Other bank implementations:
+  # config.default_bank = Money::Bank::UniRate.new           # https://github.com/UniRate-API/money-unirate-api
 
   # Add exchange rates to current money bank object.
   # (The conversion rate refers to one direction only)

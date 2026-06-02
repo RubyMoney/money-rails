@@ -400,6 +400,9 @@ MoneyRails.configure do |config|
   #
   # Example:
   # config.default_bank = EuCentralBank.new
+  #
+  # Other bank implementations:
+  # config.default_bank = Money::Bank::UniRate.new           # https://github.com/UniRate-API/money-unirate-api
 
   # Add exchange rates to current money bank object.
   # (The conversion rate refers to one direction only)
@@ -494,7 +497,11 @@ end
 * `add_rate`: Provide custom exchange rate for currencies in one direction only! This
   rate is added to the attached bank object.
 * `default_bank`: The default bank object holding exchange rates etc.
-  (https://github.com/RubyMoney/money#currency-exchange)
+  (https://github.com/RubyMoney/money#currency-exchange).
+  Third-party banks include
+  [eu_central_bank](https://github.com/RubyMoney/eu_central_bank),
+  [google_currency](https://github.com/RubyMoney/google_currency), and
+  [money-unirate-api](https://github.com/UniRate-API/money-unirate-api).
 * `default_format`: Force `Money#format` to use these options for formatting.
 * `amount_column`: Provide values for the amount column (holding the fractional part of a money object).
 * `currency_column`: Provide default values or even disable (`present: false`) the currency column.
