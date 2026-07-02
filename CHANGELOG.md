@@ -2,7 +2,7 @@
 
 ## Unreleased
 
-- Fix `MoneyRails::ActiveJob::MoneySerializer` not being registered on Rails 8.1+ (#779)
+- Fix `MoneyRails::ActiveJob::MoneySerializer` not being registered on Rails 8.1+, and on older versions without eager loading (#779)
 
 ## 3.0.0
 
