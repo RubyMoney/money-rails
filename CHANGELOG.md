@@ -4,7 +4,7 @@
 
 - Register the Active Record and Action View integrations when the gem is required, instead of from the railtie initializer
 - Add a top-level `null` option to the `add_monetize`/`monetize` migration helpers (#775)
-- Fix `MoneyRails::ActiveJob::MoneySerializer` not being registered on Rails 8.1+ (#779)
+- Fix `MoneyRails::ActiveJob::MoneySerializer` not being registered on Rails 8.1+, and on older versions without eager loading (#779)
 
 ## 3.0.0
 
