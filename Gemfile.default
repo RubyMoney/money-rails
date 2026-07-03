@@ -16,11 +16,11 @@ gem "pry"
 gem "rspec-rails", "~> 6"
 
 # Linting
-gem "rubocop", require: false
-gem "rubocop-performance", require: false
-gem "rubocop-rake", require: false
-gem "rubocop-rspec", require: false
-gem "rubocop-rspec_rails", require: false
+gem "rubocop", "~> 1.88.0", require: false
+gem "rubocop-performance", "~> 1.26.0", require: false
+gem "rubocop-rake", "~> 0.7.0", require: false
+gem "rubocop-rspec", "~> 3.10.0", require: false
+gem "rubocop-rspec_rails", "~> 2.32.0", require: false
 
 # Fix GitHub CI caching issue by forcing specific version
 if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new("3.2")
