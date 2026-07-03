@@ -26,3 +26,8 @@ gem "rubocop-rspec_rails", require: false
 if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new("3.2")
   gem "erb", "6.0.0"
 end
+
+# rdoc >= 8 pulls in rbs, whose C extension fails to build on JRuby and breaks
+# `bundle install`. rdoc < 8 has no rbs dependency and still satisfies irb's
+# `rdoc >= 4.0.0` requirement, so pin it below 8 on JRuby only.
+gem "rdoc", "< 8", platforms: :jruby
