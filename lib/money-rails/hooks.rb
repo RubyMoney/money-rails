@@ -43,15 +43,10 @@ module MoneyRails
         ::ActionView::Base.include MoneyRails::ActionViewExtension
       end
 
-      # For ActiveSupport
-      ActiveSupport.on_load(:active_job) do
-        if defined?(::ActiveJob::Serializers)
-          require "money-rails/active_job/money_serializer"
-          Rails.application.config.active_job.tap do |config|
-            config.custom_serializers ||= []
-            config.custom_serializers << MoneyRails::ActiveJob::MoneySerializer
-          end
-        end
+      # For Active Job
+      if defined?(::ActiveJob::Serializers)
+        require "money-rails/active_job/money_serializer"
+        ::ActiveJob::Serializers.add_serializers(MoneyRails::ActiveJob::MoneySerializer)
       end
     end
   end
