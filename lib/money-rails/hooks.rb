@@ -5,12 +5,11 @@ module MoneyRails
     PG_ADAPTERS = %w[activerecord-jdbcpostgresql-adapter postgresql postgis].freeze
 
     def self.init
-      # For Active Record
+      # For Active Record migrations
+      #
+      # These stay here, and not in money-rails.rb, because picking the migration
+      # extensions requires a configured database connection.
       ActiveSupport.on_load(:active_record) do
-        require "money-rails/active_model/validator"
-        require "money-rails/active_record/monetizable"
-        ::ActiveRecord::Base.include(MoneyRails::ActiveRecord::Monetizable)
-
         current_adapter = ::ActiveRecord::Base.connection_db_config.configuration_hash[:adapter]
         postgresql_with_money = PG_ADAPTERS.include?(current_adapter)
 
@@ -36,11 +35,6 @@ module MoneyRails
 
       if defined? ::Mongoid
         require "money-rails/mongoid/money"
-      end
-
-      # For ActionView
-      ActiveSupport.on_load(:action_view) do
-        ::ActionView::Base.include MoneyRails::ActionViewExtension
       end
 
       # For ActiveSupport
