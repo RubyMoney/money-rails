@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Register the Active Record and Action View integrations when the gem is required, instead of from the railtie initializer
+
 ## 3.0.0
 
 - **Breaking change**: Drop support for Rails < 7.0
