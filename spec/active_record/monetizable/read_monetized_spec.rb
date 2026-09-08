@@ -15,7 +15,7 @@ if defined? ActiveRecord
         restock_fee_cents: 2000,
         reduced_price_cents: 1500,
         reduced_price_currency: :lvl,
-        lambda_price_cents: 4000
+        lambda_price_cents: 4000,
       )
     end
 
