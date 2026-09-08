@@ -613,8 +613,8 @@ You can see a full list of the currently supported interpreters in
 
 ### How to run the tests
 
-Our tests are executed with several ORMs - see `Rakefile` for details. To install all required gems run `rake spec:all`. That command will take care of installing all required gems for all the different Gemfiles and then running the test suite with the installed bundle.
+Our tests are executed with several ORMs - see `Rakefile` for details. To install all required gems run `bin/rake spec:all`. That command will take care of installing all required gems for all the different Gemfiles and then running the test suite with the installed bundle.
 
-You can also run the test suite against a specific ORM or Rails version, `rake -T` will give you an idea of the possible task (take a look at the tasks under the spec: namespace).
+You can also run the test suite against a specific ORM or Rails version, `bin/rake -T` will give you an idea of the possible task (take a look at the tasks under the spec: namespace).
 
 If you are testing against mongoid, make sure to have a MongoDB server running before executing the suite (e.g. `sudo mongod --quiet` or `docker run --rm -p 27017:27017 mongo:latest`).

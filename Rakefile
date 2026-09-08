@@ -34,7 +34,7 @@ def run_with_gemfile(gemfile)
     lockfile = "#{gemfile}.lock"
     FileUtils.rm_f(lockfile)
     sh "BUNDLE_GEMFILE=#{gemfile} bundle install --quiet"
-    sh "BUNDLE_GEMFILE=#{gemfile} bundle exec rake spec"
+    sh "BUNDLE_GEMFILE=#{gemfile} bin/rake spec"
   end
 end
 
