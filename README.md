@@ -133,6 +133,10 @@ def change
     :optional_price,
     amount: { null: true, default: nil },
     currency: { null: true, default: nil }
+
+  # `null` can also be passed at the top level to apply to both columns;
+  # per-column options still take precedence:
+  add_monetize :products, :optional_price, null: true
 end
 
 # now blank assignments are permitted

@@ -100,6 +100,46 @@ if defined? ActiveRecord
           expect(result[1]).to eq("orders")
         end
       end
+
+      context "with a top-level null option" do
+        let(:options) { { null: true } }
+
+        context "with :amount attribute" do
+          let(:attribute) { :amount }
+
+          it "passes null through to column options" do
+            expect(result[4]).to include(null: true)
+          end
+        end
+
+        context "with :currency attribute" do
+          let(:attribute) { :currency }
+
+          it "passes null through to column options" do
+            expect(result[4]).to include(null: true)
+          end
+        end
+
+        context "when the attribute overrides it" do
+          let(:options) { { null: true, amount: { null: false } } }
+
+          context "with :amount attribute" do
+            let(:attribute) { :amount }
+
+            it "uses the per-attribute value" do
+              expect(result[4]).to include(null: false)
+            end
+          end
+
+          context "with :currency attribute" do
+            let(:attribute) { :currency }
+
+            it "still uses the top-level value" do
+              expect(result[4]).to include(null: true)
+            end
+          end
+        end
+      end
     end
   end
 end
