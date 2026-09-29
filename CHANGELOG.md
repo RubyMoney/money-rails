@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Add a top-level `null` option to the `add_monetize`/`monetize` migration helpers (#775)
+
 ## 3.0.0
 
 - **Breaking change**: Drop support for Rails < 7.0

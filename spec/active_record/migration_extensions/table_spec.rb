@@ -19,6 +19,7 @@ if defined? ActiveRecord
         @connection.create_table :items do |t|
           t.money :price
           t.money :price_without_currency, currency: { present: false }
+          t.money :nullable_price, null: true
           t.money :price_with_full_options, amount: {
             prefix: :prefix_,
             postfix: :_postfix,
@@ -61,6 +62,11 @@ if defined? ActiveRecord
       context "without currency column" do
         it { expect(Item.columns_hash["price_without_currency_cents"]).not_to be_nil }
         it { expect(Item.columns_hash["price_without_currency_currency"]).to be_nil }
+      end
+
+      context "with top-level null: true" do
+        it { expect(Item.columns_hash["nullable_price_cents"].null).to be(true) }
+        it { expect(Item.columns_hash["nullable_price_currency"].null).to be(true) }
       end
 
       context "with full options" do
