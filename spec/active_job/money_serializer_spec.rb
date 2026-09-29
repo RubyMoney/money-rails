@@ -25,5 +25,13 @@ if defined?(ActiveJob::Serializers)
     describe "#deserialize" do
       it { expect(described_class.deserialize(serialized_money)).to eq(money) }
     end
+
+    describe "Active Job registration" do
+      it "round-trips Money through Active Job argument serialization" do
+        serialized = ActiveJob::Arguments.serialize([money])
+
+        expect(ActiveJob::Arguments.deserialize(serialized)).to eq([money])
+      end
+    end
   end
 end
