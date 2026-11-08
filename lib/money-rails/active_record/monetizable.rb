@@ -183,6 +183,8 @@ module MoneyRails
         private
 
         def track_monetized_attribute(name, value)
+          raise ArgumentError, "'#{name}' is not a valid monetizable attribute name. Use :as option to set a valid Ruby method name" unless /\A[[:alpha:]_][[:alnum:]_]*\z/.match?(name)
+
           @monetized_attributes ||= {}.with_indifferent_access
 
           if @monetized_attributes[name].present?
