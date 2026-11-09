@@ -61,6 +61,25 @@ if defined? ActiveRecord
         )
       end
 
+      it "raises an error if the monetizable attribute name is not a valid method name" do
+        expect do
+          Class.new(Product) do
+            monetize :"custom_frame-price_cents"
+          end
+        end.to raise_error(
+          ArgumentError,
+          /\A'custom_frame-price' is not a valid monetizable attribute name/,
+        )
+      end
+
+      it "allows an amount column that is not a valid method name when :as is a valid name" do
+        expect do
+          Class.new(Product) do
+            monetize :"custom_frame-price_cents", as: :custom_frame_price
+          end
+        end.not_to raise_error
+      end
+
       context "with custom postfix" do
         around do |example|
           old_postfix = MoneyRails::Configuration.amount_column[:postfix]

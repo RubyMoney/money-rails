@@ -4,6 +4,7 @@
 
 - Register the Active Record and Action View integrations when the gem is required, instead of from the railtie initializer
 - Add a top-level `null` option to the `add_monetize`/`monetize` migration helpers (#775)
+- Raise a clear error when the monetizable attribute name is not a valid method name (#699)
 
 ## 3.0.0
 
